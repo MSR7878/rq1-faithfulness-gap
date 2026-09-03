@@ -1,0 +1,21 @@
+# Core
+torch>=2.1
+torch-geometric>=2.5
+rdkit-pypi>=2022.9.5
+
+# Explainer implementations
+dive-into-graphs
+
+# Base GNN backbone
+chemprop>=2.0
+
+# Data / analysis
+numpy
+pandas
+scipy
+scikit-learn
+tqdm
+
+# Reproducibility / tracking
+wandb
+pyyaml
