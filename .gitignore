@@ -1,0 +1,22 @@
+# Data cache (see README.md) -- anchored so src/data/ is NOT ignored
+/data/
+
+# Third-party clones
+/third_party/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Training / experiment output
+checkpoints/
+runs/
+wandb/
+*.ckpt
+*.pt
+
+# OS / editor
+.DS_Store
+.vscode/

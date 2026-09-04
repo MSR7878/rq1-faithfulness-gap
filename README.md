@@ -9,12 +9,14 @@ decisions (mirrors the advisor-approved spec doc).
 
 ## Structure
 
-- `src/train/`   — D-MPNN training per dataset (Chemprop-based)
+- `src/data/`    — dataset loaders (MUTAG, GraphXAI-GT MUTAG, BBBP, Tox21 SR-p53, B-XAIC) + `sanity_check.py`
+- `src/train/`   — PyG-native D-MPNN (`dmpnn.py`, Yang et al. 2019) + 10-fold CV training (`train.py`)
 - `src/explain/` — GNNExplainer / PGExplainer / SubgraphX wrappers, uniform interface
 - `src/metrics/` — Fidelity+/-, GEF, GEA implementations + R1/R2/R3 masking references
 - `src/analysis/`— rank correlation (Spearman/Kendall), B-XAIC ground-truth validation
 - `configs/`     — per-dataset/per-explainer run configs (YAML)
 - `data/`        — dataset cache (gitignored)
+- `third_party/` — GraphXAI + B-XAIC clones, reference only (gitignored)
 
 ## Build order
 

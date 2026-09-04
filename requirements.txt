@@ -1,17 +1,35 @@
 # Core
+# For GPU, install torch from the matching CUDA wheel index BEFORE this file, e.g.
+#   pip install --index-url https://download.pytorch.org/whl/cu130 torch==2.14.0
+# (validated on an RTX 3050 Ti, driver CUDA 13.4, with torch 2.14.0+cu130).
+# A plain `pip install -r requirements.txt` pulls the CPU build from PyPI.
+# torch-geometric 2.8 uses native scatter -- no torch-scatter/torch-sparse needed.
 torch>=2.1
 torch-geometric>=2.5
-rdkit-pypi>=2022.9.5
+rdkit>=2022.9.5
 
 # Explainer implementations
-dive-into-graphs
+# NOTE: deferred to the explain phase. `dive-into-graphs` (DIG) pulls in
+# `pyscf`, which is source-only on Windows and needs an MSVC/nmake toolchain
+# to build -- it aborts the whole `pip install`. DIG is not imported by the
+# dataset loaders, the R1/R2/R3 masking refs, or the Fid/GEF/GEA metrics.
+# Install it separately when wiring up the explainers, e.g.
+#   pip install dive-into-graphs --no-deps
+#   pip install captum cilog typed-argument-parser==1.7.2 munch
+# dive-into-graphs
 
 # Base GNN backbone
-chemprop>=2.0
+# The RQ1 base model is a PyG-native D-MPNN (src/train/dmpnn.py) -- no runtime
+# dependency here. Chemprop is OPTIONAL, only as an accuracy cross-check:
+#   pip install "chemprop>=1.6,<2"   # needs numpy<2 (see below)
 
 # Data / analysis
-numpy
+# numpy pinned <2 to match the validated Phase-2 env; also required if you
+# install the optional chemprop (1.6.x imports np.VisibleDeprecationWarning,
+# removed in numpy 2.0). Nothing else in the stack needs the ceiling.
+numpy>=1.23,<2
 pandas
+huggingface_hub   # B-XAIC dataset release (mproszewska/B-XAIC on the HF Hub)
 scipy
 scikit-learn
 tqdm
