@@ -74,6 +74,80 @@ MUTAG-GraphXAI agreed within fold noise (0.873/0.945 vs 0.878/0.938).
 
 No result outside its expected range; nothing flagged for debug.
 
-R2/R1 masking references remain STUBBED (NotImplementedError) until R3 is
-validated end-to-end across all five variants -- per the locked build order.
-Explainers (Phase 3) not started.
+## Phase 3 status (explainer wiring -- mutag_graphxai only)
+
+All three explainers run against the trained D-MPNN (checkpoint
+runs/ckpt_mutag_graphxai.pt, single 70/15/15 split, test acc 0.966 / AUROC
+0.990). dmpnn.py's edge->node sum was moved to a MessagePassing layer (v4 note
+above) so PyG's Explainer stack hooks it natively; SubgraphX is DIG's, loaded
+via a stub-package trick that imports only shapley.py + subgraphx.py.
+* GNNExplainer -- torch_geometric.explain, node+edge object masks, explain_type=model
+* PGExplainer  -- torch_geometric.explain, edge masks, trained 30 ep on 131 train graphs
+* SubgraphX    -- DIG, MCTS+mc_l_shapley, zero_filling, LOCKED rollout 20 /
+  sample 30 (DIG default rollout; rollout 10 vs 20 checked -- see sensitivity note)
+Explanations target the model's predicted class; sparsity = top 25% of nodes.
+Metrics under R3 ONLY (R2/R1 still stubbed). n = 29 test molecules.
+
+R3 fill: 'mean' = per-feature marginal mean (spec default); 'mode' = one-hot of
+the most common atom. training_fill_vector() in masking.py builds either.
+
+Fidelity / GEF (mean-fill; mode-fill in parentheses):
+
+| explainer     | Fid+            | Fid-            | GEF             |
+|---------------|-----------------|----------------|-----------------|
+| GNNExplainer  | 0.092 (0.113)   | 0.008 (0.027)  | 0.061 (0.097)   |
+| PGExplainer   | -0.020 (-0.001) | 0.099 (0.097)  | 0.175 (0.170)   |
+| SubgraphX     | 0.058 (0.054)   | 0.045 (0.093)  | 0.112 (0.249)   |
+
+FINDING (R3): every Fidelity/GEF cell has std 2-4x its mean (e.g. GNNExplainer
+Fid+ 0.092 +/- 0.264) -- at n=29 the explainers are NOT separable on
+Fidelity/GEF under R3, with either fill. Cause: a saturated D-MPNN (logits
++/-8) plus a distribution-aware fill that dilutes rather than removes one-hot
+atom identity; masking the *true* NO2/NH2 motif shifts p by only ~0.04-0.09.
+R3 mean/mode-fill is near-inert as a faithfulness probe on saturated one-hot
+models. Recorded as an RQ1 result; R2 (zero-fill) is expected to have signal
+(zeroing all features flips every mutagenic prediction 1.00 -> 0.00).
+
+GEA (Jaccard vs NO2/NH2 ground truth; fill-independent):
+
+| explainer     | GEA Jaccard      | GEA micro |
+|---------------|------------------|-----------|
+| GNNExplainer  | 0.456 +/- 0.283  | 0.402     |
+| PGExplainer   | 0.245 +/- 0.269  | 0.196     |
+| SubgraphX     | 0.022 +/- 0.094  | 0.018     |   (rollout 20; rollout 10 gave 0.044 +/- 0.146 / 0.032)
+
+FINDING (GEA): a clear, large ordering GNNExplainer > PGExplainer >> SubgraphX
+at recovering the mutagenic motifs -- invisible if one looked only at Fidelity
+under R3. This is the first faithfulness-gap data point.
+
+SubgraphX rollout sensitivity: doubling MCTS rollout 10 -> 20 did NOT raise GEA
+(0.044 -> 0.022, within noise at n=29; Fid/GEF unchanged). Not an under-search
+artifact -- SubgraphX genuinely does not recover the NO2/NH2 motifs here: its
+mc_l_shapley objective rewards a connected subgraph that preserves the
+prediction under zero-filling, and on this saturated model that is the aromatic
+carbon scaffold, not the nitro group. Locked at rollout 20 (DIG default; runtime
+~1100s / 29 mols, acceptable) so "under-searched" is not an open question.
+
+### MUTAG (standard) -- same 188 molecules and split as mutag_graphxai, minus GT
+
+Separately trained checkpoint (runs/ckpt_mutag.pt, same seed/split logic ->
+identical train/val/test indices to mutag_graphxai, verified): test acc 0.897 /
+AUROC 0.979. No node_gt_mask/edge_gt_mask on this variant -- GEA not applicable
+(spec's applicability table). SubgraphX at the locked rollout=20.
+
+| explainer     | Fid+ (mean)     | Fid- (mean)      | GEF (mean)      | Fid+ (mode)    | Fid- (mode)     | GEF (mode)      |
+|---------------|-----------------|------------------|-----------------|----------------|-----------------|------------------|
+| GNNExplainer  | 0.055 +/- 0.263 | -0.024 +/- 0.112 | 0.045 +/- 0.102 | 0.116 +/- 0.340| -0.018 +/- 0.168| 0.071 +/- 0.170  |
+| PGExplainer   | 0.003 +/- 0.078 | 0.065 +/- 0.302  | 0.188 +/- 0.315 | 0.028 +/- 0.157| 0.077 +/- 0.325 | 0.189 +/- 0.325  |
+| SubgraphX     | 0.014 +/- 0.142 | -0.008 +/- 0.173 | 0.107 +/- 0.178 | 0.009 +/- 0.189| 0.120 +/- 0.347 | 0.285 +/- 0.387  |
+
+CROSS-DATASET CHECK (mean-fill, SubgraphX at matched rollout=20 on both sides):
+every Fid+/Fid-/GEF value moves by 0.01-0.04 between mutag_graphxai and MUTAG
+(std) -- well under 1 SE of the mean at n=29 (SE ~= std/sqrt(29) ~= 0.02-0.06).
+No meaningful divergence. CONFIRMS the R3-vacuity finding is a property of the
+D-MPNN architecture + mean/mode-fill masking, not specific to the GraphXAI
+variant or its ground-truth annotations.
+
+R3 pipeline is validated end-to-end on 2 of 5 variants (mutag_graphxai, MUTAG
+std). Next in the locked build order: BBBP, Tox21 (SR-p53), B-XAIC (indole).
+R2/R1 stay STUBBED until all five are done on R3.

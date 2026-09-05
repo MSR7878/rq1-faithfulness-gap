@@ -18,28 +18,56 @@ import torch
 from torch_geometric.data import Data
 
 
+def training_fill_vector(x_all: torch.Tensor, strategy: str = "mean") -> torch.Tensor:
+    """Build an R3 fill vector from stacked training-set node features.
+
+    * ``"mean"`` -- per-feature marginal mean (the spec's default R3). For
+      one-hot categoricals this is a *blended* vector, e.g. 0.70*C + 0.10*N + ...
+    * ``"mode"`` -- per-COLUMN most-frequent value, i.e. a real "typical atom"
+      rather than a fractional blend. Column-wise (not a single global one-hot)
+      so it's correct for both one-hot datasets (MUTAG: exactly one column is
+      1 more than half the time, so the other columns' modes are all 0 -- this
+      reduces to the intuitive "most common category" one-hot) and datasets
+      whose node features are several independently-scaled raw integer columns
+      (BBBP/Tox21's [atomic_num, chirality, degree, charge, numH, ...] from PyG
+      MoleculeNet) -- there, a single global one-hot of the loudest raw column
+      (e.g. atomic_num) would zero every other column instead of taking each
+      one's own typical value. (v4: was a global one-hot of ``mean.argmax()``;
+      fixed before it produced a degenerate "atomic_num~1, everything else 0"
+      fill on BBBP. Provably identical to the old formula on one-hot data, so
+      MUTAG/mutag_graphxai's already-reported mode-fill numbers stand.)
+    """
+    x_all = x_all.float()
+    mean = x_all.mean(dim=0)
+    if strategy == "mean":
+        return mean
+    if strategy == "mode":
+        return torch.mode(x_all, dim=0).values
+    raise ValueError(f"unknown fill strategy {strategy!r} (use 'mean' or 'mode')")
+
+
 def mask_r3_distribution_aware(
     data: Data,
     node_importance: torch.Tensor,
-    feature_means: torch.Tensor,
+    fill_vector: torch.Tensor,
     keep_top_k: float = 0.25,
 ) -> Data:
     """
     R3 -- Distribution-aware masking (build first).
 
-    Keeps graph topology intact. Non-explanation node features are
-    replaced with training-set marginal statistics (per-feature mean),
-    rather than zeroed -- this avoids handing the model an out-of-
-    distribution all-zero atom, which Limitation-2 of the proposal
+    Keeps graph topology intact. Non-explanation node features are replaced
+    with a training-set fill vector (``training_fill_vector``: "mean" per the
+    spec, or "mode"), rather than zeroed -- this avoids handing the model an
+    out-of-distribution all-zero atom, which Limitation-2 of the proposal
     argues conflates "importance" with "perturbation artifact".
 
     Args:
         data: full molecular graph.
         node_importance: (num_nodes,) importance scores from an explainer.
-        feature_means: (num_features,) training-set per-feature mean,
-            precomputed once per dataset and passed in (do not recompute
-            per-call -- expensive and leaks test statistics if computed
-            per-split incorrectly).
+        fill_vector: (num_features,) training-set fill, precomputed once per
+            dataset and passed in (do not recompute per-call -- expensive and
+            leaks test statistics if computed per-split incorrectly). Was named
+            ``feature_means`` before v4; any (num_features,) vector works.
         keep_top_k: fraction of nodes (by importance) to leave untouched.
 
     Returns:
@@ -51,7 +79,7 @@ def mask_r3_distribution_aware(
     mask_idx = torch.ones(x.size(0), dtype=torch.bool)
     mask_idx[keep_idx] = False
 
-    x[mask_idx] = feature_means.to(x.dtype)
+    x[mask_idx] = fill_vector.to(x.dtype)
 
     return Data(x=x, edge_index=data.edge_index, edge_attr=getattr(data, "edge_attr", None))
 

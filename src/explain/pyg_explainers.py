@@ -67,6 +67,10 @@ class PGExplainerWrapper:
         self.device = device
         self.epochs = epochs
         self.algorithm = PGExplainer(epochs=epochs, lr=lr)
+        # PGExplainer builds its edge-mask MLP on CPU and never moves it; the
+        # model + graphs are on `device`, so align them here.
+        self.algorithm = self.algorithm.to(device)
+        self.algorithm.device = device
         self.explainer = Explainer(
             model=self.model,
             algorithm=self.algorithm,

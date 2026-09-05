@@ -1,14 +1,16 @@
 """
-Phase 3 -- first faithfulness-gap data point (mutag_graphxai only).
+Phase 3 -- R3 validation per dataset variant (locked build order: run this once
+per dataset before R2/R1 get built).
 
-Loads the trained D-MPNN checkpoint, runs GNNExplainer / PGExplainer / SubgraphX
+Loads a trained D-MPNN checkpoint, runs GNNExplainer / PGExplainer / SubgraphX
 on the held-out test split, sanity-checks the explanations, then scores every
-(explainer, molecule) pair with Fidelity+/-, GEF and GEA under the R3 masking
-reference only (R2/R1 stay NotImplementedError, per the locked build order).
+(explainer, molecule) pair with Fidelity+/-, GEF and (where ground truth exists)
+GEA, under the R3 masking reference only (R2/R1 stay NotImplementedError).
 
-    python -m src.explain.run_phase3 --ckpt runs/ckpt_mutag_graphxai.pt
+    python -m src.explain.run_phase3 --dataset mutag_graphxai --ckpt runs/ckpt_mutag_graphxai.pt
+    python -m src.explain.run_phase3 --dataset mutag          --ckpt runs/ckpt_mutag.pt
 
-Outputs: a summary table to stdout + runs/phase3_mutag_graphxai.json
+Outputs: a summary table to stdout + runs/phase3_<dataset>.json
 """
 
 from __future__ import annotations
@@ -20,15 +22,16 @@ import time
 import numpy as np
 import torch
 
-from ..data import load_mutag_graphxai
+from ..data import LOADERS
 from ..metrics.fidelity import compute_fidelity
 from ..metrics.gef import compute_gef
 from ..metrics.gea import compute_gea
-from ..metrics.masking import mask_r3_distribution_aware
+from ..metrics.masking import mask_r3_distribution_aware, training_fill_vector
 from ..train.dmpnn import DMPNN, DMPNNConfig
 from .common import binarize_mean, to_cpu_data
 
-K_FRAC = 0.25  # explanation sparsity: top 25% of nodes
+K_FRAC = 0.25            # explanation sparsity: top 25% of nodes
+R3_FILLS = ("mean", "mode")  # both recorded -- Phase 3 R3 finding
 
 
 def load_model(ckpt_path: str, device):
@@ -46,148 +49,196 @@ def _pred_class(model, data, device) -> int:
     return int(lg.reshape(-1, lg.shape[-1])[0].argmax())
 
 
-def _masked_pair(cpu_data, node_imp, feat_means, device):
+def _masked_pair(cpu_data, node_imp, fill_vec, device):
     """R3 explanation-only (E) and explanation-removed (G\\E) graphs."""
-    E = mask_r3_distribution_aware(cpu_data, node_imp, feat_means, keep_top_k=K_FRAC)
-    GmE = mask_r3_distribution_aware(cpu_data, -node_imp, feat_means, keep_top_k=1.0 - K_FRAC)
+    E = mask_r3_distribution_aware(cpu_data, node_imp, fill_vec, keep_top_k=K_FRAC)
+    GmE = mask_r3_distribution_aware(cpu_data, -node_imp, fill_vec, keep_top_k=1.0 - K_FRAC)
     return E.to(device), GmE.to(device)
 
 
-def score_one(model, data, result, feat_means, device) -> dict:
+def score_one(model, data, result, fill_vec, device, has_gt: bool) -> dict:
     cpu_data = to_cpu_data(data)
     node_imp = result.node_importance.detach().cpu().float()
     y = result.target  # class the explanation is for (== model prediction)
 
     dev_data = data.to(device)
-    E, GmE = _masked_pair(cpu_data, node_imp, feat_means, device)
+    E, GmE = _masked_pair(cpu_data, node_imp, fill_vec, device)
 
     fid = compute_fidelity(model, dev_data, y, explanation_removed=GmE,
                            explanation_only=E, masking_reference="R3")
     gef = compute_gef(model, dev_data, masked_data=E, masking_reference="R3")
 
-    gt = data.node_gt_mask.detach().cpu().bool()
-    pred_mask = binarize_mean(node_imp)
-    gea = compute_gea(gt, pred_mask)
+    row = dict(fid_plus=fid.fid_plus, fid_minus=fid.fid_minus, gef=gef.gef)
+    if has_gt:
+        gt = data.node_gt_mask.detach().cpu().bool()
+        pred_mask = binarize_mean(node_imp)
+        gea = compute_gea(gt, pred_mask)
+        row.update(gea=gea.gea, gea_tp=gea.tp, gea_fp=gea.fp, gea_fn=gea.fn)
+    return row
 
-    return dict(fid_plus=fid.fid_plus, fid_minus=fid.fid_minus, gef=gef.gef,
-                gea=gea.gea, gea_tp=gea.tp, gea_fp=gea.fp, gea_fn=gea.fn)
 
-
-def sanity_check(name, results, datas, n_show=5):
+def sanity_check(name, results, datas, has_gt: bool, n_show=5):
     print(f"\n--- sanity check: {name} ---")
     empties = wholes = 0
     for i, (r, d) in enumerate(zip(results, datas)):
         n = d.num_nodes
         sel_mean = int(binarize_mean(r.node_importance).sum())
         sel_topk = int(r.topk_node_mask(K_FRAC).sum())
-        gt = d.node_gt_mask.cpu().bool()
-        overlap = int((r.topk_node_mask(K_FRAC) & gt).sum())
         if sel_mean == 0:
             empties += 1
         if sel_mean >= n:
             wholes += 1
         if i < n_show:
-            gt_idx = torch.nonzero(gt).view(-1).tolist()
             top_idx = torch.nonzero(r.topk_node_mask(K_FRAC)).view(-1).tolist()
-            print(f"  mol {i:2d}  N={n:2d}  |expl|(mean-thr)={sel_mean:2d}  |expl|(top{int(K_FRAC*100)}%)={sel_topk:2d}"
-                  f"  GT motif nodes={gt_idx}  top-k nodes={top_idx}  (overlap {overlap}/{len(gt_idx)})")
+            line = f"  mol {i:2d}  N={n:2d}  |expl|(mean-thr)={sel_mean:2d}  |expl|(top{int(K_FRAC*100)}%)={sel_topk:2d}  top-k nodes={top_idx}"
+            if has_gt:
+                gt = d.node_gt_mask.cpu().bool()
+                overlap = int((r.topk_node_mask(K_FRAC) & gt).sum())
+                gt_idx = torch.nonzero(gt).view(-1).tolist()
+                line += f"  GT motif nodes={gt_idx}  (overlap {overlap}/{len(gt_idx)})"
+            print(line)
     print(f"  => {empties} empty, {wholes} whole-graph explanations out of {len(results)}")
     assert empties == 0, f"{name}: {empties} empty explanations"
     assert wholes == 0, f"{name}: {wholes} whole-graph explanations"
 
 
-def summarize(rows: list[dict]) -> dict:
-    keys = ["fid_plus", "fid_minus", "gef", "gea"]
+def summarize(rows: list[dict], has_gt: bool) -> dict:
+    keys = ["fid_plus", "fid_minus", "gef"] + (["gea"] if has_gt else [])
     out = {}
     for k in keys:
         v = np.array([r[k] for r in rows], dtype=float)
         out[k] = (float(v.mean()), float(v.std()))
-    tp = sum(r["gea_tp"] for r in rows)
-    fp = sum(r["gea_fp"] for r in rows)
-    fn = sum(r["gea_fn"] for r in rows)
-    out["gea_micro"] = tp / (tp + fp + fn) if (tp + fp + fn) else 0.0
+    if has_gt:
+        tp = sum(r["gea_tp"] for r in rows)
+        fp = sum(r["gea_fp"] for r in rows)
+        fn = sum(r["gea_fn"] for r in rows)
+        out["gea_micro"] = tp / (tp + fp + fn) if (tp + fp + fn) else 0.0
     return out
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--ckpt", default="runs/ckpt_mutag_graphxai.pt")
+    ap.add_argument("--dataset", default="mutag_graphxai", choices=list(LOADERS))
+    ap.add_argument("--ckpt", default=None, help="default: runs/ckpt_<dataset>.pt")
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--gnn-epochs", type=int, default=200)
     ap.add_argument("--pg-epochs", type=int, default=30)
-    ap.add_argument("--sx-rollout", type=int, default=15)
-    ap.add_argument("--sx-sample", type=int, default=50)
-    ap.add_argument("--limit", type=int, default=None, help="cap #test molecules (debug)")
-    ap.add_argument("--out", default="runs/phase3_mutag_graphxai.json")
+    ap.add_argument("--sx-rollout", type=int, default=20)   # DIG default; locked (see spec)
+    ap.add_argument("--sx-sample", type=int, default=30)
+    ap.add_argument("--explainers", default="gnnexplainer,pgexplainer,subgraphx",
+                    help="comma list; subset to re-run just one method")
+    ap.add_argument("--limit", type=int, default=None,
+                    help="cap #test molecules explained -- a random (seeded) subsample of the "
+                         "test split, not a prefix, so bigger datasets stay comparable in n to "
+                         "MUTAG/mutag_graphxai (both n=29) without hours of SubgraphX MCTS")
+    ap.add_argument("--pg-train-limit", type=int, default=None,
+                    help="cap #graphs PGExplainer trains on (random seeded subsample of train) -- "
+                         "keeps PG training cost comparable across dataset sizes")
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--out", default=None, help="default: runs/phase3_<dataset>.json")
     args = ap.parse_args(argv)
+    want = {s.strip() for s in args.explainers.split(",") if s.strip()}
+    ckpt_path = args.ckpt or f"runs/ckpt_{args.dataset}.pt"
+    out_path = args.out or f"runs/phase3_{args.dataset}.json"
+    rng = np.random.default_rng(args.seed)
 
     device = torch.device(args.device)
-    model, ck = load_model(args.ckpt, device)
-    feat_means = ck["feature_means"].cpu().float()
+    model, ck = load_model(ckpt_path, device)
 
-    data_list, meta = load_mutag_graphxai()
-    test_idx = ck["split"]["test"]
-    train_idx = ck["split"]["train"]
-    if args.limit:
-        test_idx = test_idx[: args.limit]
+    data_list, meta = LOADERS[args.dataset]()
+    has_gt = meta.has_node_gt
+    test_idx = list(ck["split"]["test"])
+    train_idx = list(ck["split"]["train"])
+    if args.limit and args.limit < len(test_idx):
+        test_idx = sorted(rng.choice(test_idx, size=args.limit, replace=False).tolist())
+    pg_train_idx = train_idx
+    if args.pg_train_limit and args.pg_train_limit < len(train_idx):
+        pg_train_idx = sorted(rng.choice(train_idx, size=args.pg_train_limit, replace=False).tolist())
     test = [data_list[i] for i in test_idx]
     train = [data_list[i] for i in train_idx]
+    pg_train = [data_list[i] for i in pg_train_idx]
+
+    x_train = torch.cat([data_list[i].x.float() for i in train_idx], dim=0)
+    fills = {s: training_fill_vector(x_train, s) for s in R3_FILLS}
+    print(f"dataset={args.dataset}  has_ground_truth={has_gt}")
     print(f"model: test_acc={ck['metrics']['test_acc']:.3f} test_auroc={ck['metrics']['test_auroc']:.3f}"
-          f" | explaining {len(test)} test molecules (feat_means={feat_means.tolist()})")
+          f" | explaining {len(test)}/{len(ck['split']['test'])} test molecules"
+          + (f"  | PGExplainer trains on {len(pg_train)}/{len(train_idx)} train graphs" if "pgexplainer" in want else ""))
+    for s, v in fills.items():
+        print(f"  R3 fill '{s}': {[round(x, 3) for x in v.tolist()]}")
 
     from .pyg_explainers import GNNExplainerWrapper, PGExplainerWrapper
     from .dig_subgraphx import SubgraphXWrapper
 
     explainers = {}
-    explainers["gnnexplainer"] = GNNExplainerWrapper(model, device, epochs=args.gnn_epochs)
+    if "gnnexplainer" in want:
+        explainers["gnnexplainer"] = GNNExplainerWrapper(model, device, epochs=args.gnn_epochs)
 
-    pg = PGExplainerWrapper(model, device, epochs=args.pg_epochs)
-    t0 = time.time()
-    pg_losses = pg.train(train)
-    print(f"PGExplainer trained on {len(train)} graphs, {args.pg_epochs} epochs "
-          f"({time.time()-t0:.0f}s), loss {pg_losses[0]:.3f} -> {pg_losses[-1]:.3f}")
-    explainers["pgexplainer"] = pg
+    if "pgexplainer" in want:
+        pg = PGExplainerWrapper(model, device, epochs=args.pg_epochs)
+        t0 = time.time()
+        pg_losses = pg.train(pg_train)
+        print(f"PGExplainer trained on {len(pg_train)} graphs, {args.pg_epochs} epochs "
+              f"({time.time()-t0:.0f}s), loss {pg_losses[0]:.3f} -> {pg_losses[-1]:.3f}")
+        explainers["pgexplainer"] = pg
 
-    explainers["subgraphx"] = SubgraphXWrapper(
-        model, device, rollout=args.sx_rollout, sample_num=args.sx_sample, node_frac=K_FRAC)
+    if "subgraphx" in want:
+        explainers["subgraphx"] = SubgraphXWrapper(
+            model, device, rollout=args.sx_rollout, sample_num=args.sx_sample, node_frac=K_FRAC)
 
-    table = {}
-    per_mol = {}
+    # explain once per explainer, then score under each R3 fill
+    results_by = {}
     for name, ex in explainers.items():
         t0 = time.time()
-        results = [ex.explain(d) for d in test]
-        dt = time.time() - t0
-        sanity_check(name, results, test)
-        rows = [score_one(model, d, r, feat_means, device) for d, r in zip(test, results)]
-        per_mol[name] = rows
-        table[name] = summarize(rows)
-        table[name]["seconds"] = dt
-        print(f"  {name}: explained {len(test)} mols in {dt:.0f}s")
+        results_by[name] = [ex.explain(d) for d in test]
+        print(f"  {name}: explained {len(test)} mols in {time.time() - t0:.0f}s")
+        sanity_check(name, results_by[name], test, has_gt)
 
-    print("\n" + "=" * 78)
-    print(f"RQ1 first data point -- mutag_graphxai, R3 masking, top-{int(K_FRAC*100)}% node explanations")
-    print("=" * 78)
-    hdr = f"{'explainer':<14}{'Fid+':>16}{'Fid-':>16}{'GEF':>16}{'GEA (Jaccard)':>18}"
-    print(hdr)
-    print("-" * 78)
-    for name, s in table.items():
-        print(f"{name:<14}"
-              f"{s['fid_plus'][0]:>8.3f}±{s['fid_plus'][1]:<6.3f}"
-              f"{s['fid_minus'][0]:>8.3f}±{s['fid_minus'][1]:<6.3f}"
-              f"{s['gef'][0]:>8.3f}±{s['gef'][1]:<6.3f}"
-              f"{s['gea'][0]:>9.3f}±{s['gea'][1]:<6.3f}")
-    print("-" * 78)
-    print(f"{'(GEA micro)':<14}" + "".join(f"{table[n]['gea_micro']:>16.3f}" if False else "" for n in table))
-    for name, s in table.items():
-        print(f"  {name}: GEA micro-avg (pooled TP/FP/FN) = {s['gea_micro']:.3f}")
-    print("\nnotes: Fid+ higher = explanation more necessary; Fid- lower = more sufficient;")
-    print("       GEF lower = more faithful (bounded [0,1)); GEA higher = better GT overlap.")
+    tables = {}
+    per_mol = {}
+    for fill_name, fill_vec in fills.items():
+        tables[fill_name] = {}
+        per_mol[fill_name] = {}
+        for name, results in results_by.items():
+            rows = [score_one(model, d, r, fill_vec, device, has_gt) for d, r in zip(test, results)]
+            per_mol[fill_name][name] = rows
+            tables[fill_name][name] = summarize(rows, has_gt)
 
-    with open(args.out, "w") as f:
-        json.dump({"config": {"k_frac": K_FRAC, "ckpt": args.ckpt,
-                              "n_test": len(test), "device": str(device)},
-                   "summary": table, "per_molecule": per_mol}, f, indent=2)
-    print(f"\nsaved -> {args.out}")
+    gea_cols = "{'GEA Jaccard':>16}{'GEA micro':>12}" if has_gt else ""
+    for fill_name, table in tables.items():
+        print("\n" + "=" * 80)
+        print(f"{args.dataset} | R3 masking, fill='{fill_name}' | top-{int(K_FRAC*100)}% node explanations"
+              f" | n={len(test)}")
+        print("=" * 80)
+        hdr = f"{'explainer':<14}{'Fid+':>15}{'Fid-':>15}{'GEF':>15}"
+        if has_gt:
+            hdr += f"{'GEA Jaccard':>16}{'GEA micro':>12}"
+        print(hdr)
+        print("-" * 80)
+        for name, s in table.items():
+            line = (f"{name:<14}"
+                   f"{s['fid_plus'][0]:>7.3f}±{s['fid_plus'][1]:<6.3f}"
+                   f"{s['fid_minus'][0]:>7.3f}±{s['fid_minus'][1]:<6.3f}"
+                   f"{s['gef'][0]:>7.3f}±{s['gef'][1]:<6.3f}")
+            if has_gt:
+                line += f"{s['gea'][0]:>8.3f}±{s['gea'][1]:<6.3f}{s['gea_micro']:>12.3f}"
+            print(line)
+    print("\nFid+ higher = explanation more necessary | Fid- lower = more sufficient")
+    print("GEF lower = more faithful (bounded [0,1))" + ("" if not has_gt else
+          " | GEA higher = better GT overlap (GEA is fill-independent)"))
+    if not has_gt:
+        print(f"(no ground truth for {args.dataset} -- GEA not applicable, per spec's applicability table)")
+
+    with open(out_path, "w") as f:
+        json.dump({"config": {"dataset": args.dataset, "has_ground_truth": has_gt, "k_frac": K_FRAC,
+                              "ckpt": ckpt_path, "n_test": len(test), "n_test_full_split": len(ck["split"]["test"]),
+                              "n_pg_train": len(pg_train) if "pgexplainer" in want else None,
+                              "device": str(device), "r3_fills": list(R3_FILLS),
+                              "explainers": sorted(explainers),
+                              "sx_rollout": args.sx_rollout, "sx_sample": args.sx_sample},
+                   "fills": {k: v.tolist() for k, v in fills.items()},
+                   "summary": tables, "per_molecule": per_mol}, f, indent=2)
+    print(f"\nsaved -> {out_path}")
     return 0
 
 
