@@ -18,6 +18,17 @@ sums incoming edge states at v and excludes the reverse edge (w->v):
     h_v        = ReLU(W_o [x_v ; m_v])
     graph      = pool_v h_v   ->  FFN  ->  logits
 
+The edge->node sum ( sum_{e': dst(e')=v} h_{e'} ) runs through a tiny
+``MessagePassing`` layer (``_EdgeToNodeAggr``) rather than a raw ``scatter``, so
+PyG's ``torch_geometric.explain`` stack works natively against this model:
+``set_masks`` finds the layer and multiplies each per-bond message by the
+learned edge mask (GNNExplainer), and ``get_embeddings`` hooks its output for
+PGExplainer.  Equivalence to the previous raw-``scatter`` implementation is
+checked in ``src/train/test_mp_equivalence.py`` (bit-level, arbitrary weights).
+Note: the explicit ``- h_{rev(e)}`` term is applied outside the layer, so an
+edge mask does not attenuate that second-order reverse-edge subtraction -- the
+standard trade-off for DMPNN-in-PyG explainer setups.
+
 Assumes each undirected bond appears as both directed edges exactly once
 (true for TUDataset / MoleculeNet / the B-XAIC loader).  Topology-preserving
 masking references (R3, R2) keep that property, so ``rev`` is recomputed per
@@ -31,6 +42,7 @@ from dataclasses import dataclass
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import scatter
 
 
@@ -65,6 +77,24 @@ def _reverse_edge_index(edge_index: torch.Tensor, num_nodes: int) -> torch.Tenso
     return rev
 
 
+class _EdgeToNodeAggr(MessagePassing):
+    """sum_{e': dst(e')=v} h_{e'} -- a plain additive gather of per-directed-edge
+    states to their target node.  As a ``MessagePassing`` layer so PyG's
+    explainer ``set_masks`` / ``get_embeddings`` machinery can hook it; the
+    message *is* the edge state, so ``explain_message`` multiplies it by the
+    per-bond edge mask exactly as intended.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(aggr="add")  # flow='source_to_target': aggregate at edge_index[1]
+
+    def forward(self, edge_index: torch.Tensor, edge_state: torch.Tensor, num_nodes: int) -> torch.Tensor:
+        return self.propagate(edge_index, edge_state=edge_state, size=(num_nodes, num_nodes))
+
+    def message(self, edge_state: torch.Tensor) -> torch.Tensor:  # [E, hidden], one row per directed edge
+        return edge_state
+
+
 class DMPNN(nn.Module):
     def __init__(self, cfg: DMPNNConfig):
         super().__init__()
@@ -75,6 +105,7 @@ class DMPNN(nn.Module):
         self.W_h = nn.Linear(h, h, bias=False)
         self.W_o = nn.Linear(cfg.node_in + h, h)
         self.dropout = nn.Dropout(cfg.dropout)
+        self.aggr_edges = _EdgeToNodeAggr()
 
         ffn: list[nn.Module] = []
         d = h
@@ -106,12 +137,12 @@ class DMPNN(nn.Module):
         for _ in range(self.cfg.depth - 1):
             # sum of edge states arriving at each node, gathered back to edges by
             # the edge's *source*, then remove the reverse edge's contribution.
-            node_msg = scatter(h, dst, dim=0, dim_size=num_nodes, reduce="sum")
+            node_msg = self.aggr_edges(edge_index, h, num_nodes)
             m = node_msg[src] - h[rev]
             h = F.relu(h0 + self.W_h(m))
             h = self.dropout(h)
 
-        node_msg = scatter(h, dst, dim=0, dim_size=num_nodes, reduce="sum")
+        node_msg = self.aggr_edges(edge_index, h, num_nodes)
         h_v = F.relu(self.W_o(torch.cat([x, node_msg], dim=-1)))
         h_v = self.dropout(h_v)
 

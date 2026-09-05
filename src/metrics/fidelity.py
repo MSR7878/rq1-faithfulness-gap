@@ -63,4 +63,8 @@ def compute_fidelity(
 
 def _softmax_prob(model: torch.nn.Module, data: Data, y_true: int) -> torch.Tensor:
     logits = model(data.x, data.edge_index, getattr(data, "edge_attr", None))
-    return torch.softmax(logits, dim=-1)[y_true]
+    # Model returns graph-level logits shaped [1, C] (or [C]); collapse the
+    # optional batch dim before indexing the class, so `.item()` downstream
+    # sees a scalar rather than a length-C row.
+    probs = torch.softmax(logits.reshape(-1, logits.shape[-1]), dim=-1)[0]
+    return probs[y_true]

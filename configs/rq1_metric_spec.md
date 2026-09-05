@@ -11,6 +11,14 @@ metrics harness and the Phase-3 explainers. Chemprop is NOT a required runtime
 dependency (v3 named "D-MPNN (Chemprop)"; changed in v4). Chemprop may still be
 installed informally as an optional accuracy cross-check.
 
+v4 note (Phase 3 prep): the edge->node sum in dmpnn.py was moved from a raw
+torch_geometric scatter to a tiny MessagePassing layer so PyG's
+torch_geometric.explain stack (set_masks / get_embeddings) works natively.
+Computation-preserving: bit-identical forward vs the old scatter across 5 random
+seeds x 3 input configs (src/train/test_mp_equivalence.py), and mutag_graphxai
+10-fold CV re-run agrees (acc 0.884+/-0.061, AUROC 0.952+/-0.035 vs the v4-table
+0.884 / 0.943). BBBP/Tox21/B-XAIC weights stand without retraining.
+
 ## Metrics (verified against GraphXAI source, graphxai/metrics/metrics_graph.py)
 
 - Fid+  = (1/N) sum_i [ f(G_i)_yi - f(G_i \ E_i)_yi ]

@@ -124,6 +124,7 @@ def train_one(train_set, val_set, test_set, meta, args, device) -> dict:
         if epoch >= warmup and sel > best_sel:
             best_sel = sel
             best = {"val_acc": val_acc, "val_auroc": val_auroc, "epoch": epoch}
+            best["state"] = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
             if testl is not None:
                 ty, tp, _ = _collect(model, testl, device)
                 t_acc, t_auroc = _metrics(ty, tp)
@@ -167,6 +168,53 @@ def run_kfold(data_list, meta, args, device) -> None:
     print(f"  reference: {REFERENCE.get(meta.name, 'n/a')}")
 
 
+def _feature_means(data_list) -> torch.Tensor:
+    """Training-set per-node-feature mean -- the R3 masking reference fill value."""
+    xs = torch.cat([d.x.float() for d in data_list], dim=0)
+    return xs.mean(dim=0)
+
+
+def run_split(data_list, meta, args, device) -> None:
+    """Single stratified 70/15/15 split; trains one model and (with --save)
+    writes a checkpoint for downstream explanation work (Phase 3)."""
+    y = np.array(_labels(data_list))
+    idx = np.arange(len(y))
+    tr, tmp = train_test_split(idx, test_size=0.30, random_state=args.seed, stratify=y)
+    va, te = train_test_split(tmp, test_size=0.50, random_state=args.seed, stratify=y[tmp])
+    _set_seed(args.seed)
+    t0 = time.time()
+    out = train_one(
+        [data_list[i] for i in tr], [data_list[i] for i in va],
+        [data_list[i] for i in te], meta, args, device,
+    )
+    maj = max(y.sum(), len(y) - y.sum()) / len(y)
+    print("-" * 64)
+    print(f"{meta.name}: single 70/15/15 split  (train={len(tr)} val={len(va)} test={len(te)})")
+    print(f"  test accuracy = {out['test_acc']:.4f}")
+    print(f"  test AUROC    = {out['test_auroc']:.4f}  (val_auroc={out['val_auroc']:.3f}, ep{out['epoch']})")
+    print(f"  majority-class baseline acc = {maj:.4f} (AUROC 0.5)   {time.time() - t0:.0f}s")
+
+    if args.save:
+        ckpt = {
+            "dataset": args.dataset,
+            "bxaic_task": args.bxaic_task if args.dataset == "bxaic" else None,
+            "cfg": vars(DMPNNConfig(
+                node_in=meta.num_node_features, edge_in=meta.num_edge_features,
+                hidden=args.hidden, depth=args.depth, ffn_hidden=args.hidden,
+                dropout=args.dropout, num_classes=2, pool=args.pool,
+            )),
+            "state_dict": out["state"],
+            "feature_means": _feature_means([data_list[i] for i in tr]),
+            "split": {"train": tr.tolist(), "val": va.tolist(), "test": te.tolist()},
+            "metrics": {k: out[k] for k in ("val_acc", "val_auroc", "test_acc", "test_auroc", "epoch")},
+            "seed": args.seed,
+        }
+        import os
+        os.makedirs(os.path.dirname(args.save) or ".", exist_ok=True)
+        torch.save(ckpt, args.save)
+        print(f"  saved checkpoint -> {args.save}")
+
+
 def run_native_split(data_list, meta, args, device) -> None:
     if not all(hasattr(d, "split") for d in data_list):
         raise SystemExit(f"{meta.name} has no per-graph .split field; drop --native-split")
@@ -204,6 +252,7 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--bxaic-task", default="indole")
+    ap.add_argument("--save", default=None, help="path to write a checkpoint (single-split mode only)")
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args(argv)
 
@@ -219,8 +268,10 @@ def main(argv=None) -> int:
         run_native_split(data_list, meta, args, device)
     elif args.folds and args.folds > 1:
         run_kfold(data_list, meta, args, device)
+    elif args.save is not None:
+        run_split(data_list, meta, args, device)
     else:
-        raise SystemExit("pass --folds N (>=2) or --native-split")
+        raise SystemExit("pass --folds N (>=2), --native-split, or --save PATH (single split)")
     return 0
 
 
