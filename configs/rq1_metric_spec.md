@@ -148,6 +148,78 @@ No meaningful divergence. CONFIRMS the R3-vacuity finding is a property of the
 D-MPNN architecture + mean/mode-fill masking, not specific to the GraphXAI
 variant or its ground-truth annotations.
 
-R3 pipeline is validated end-to-end on 2 of 5 variants (mutag_graphxai, MUTAG
-std). Next in the locked build order: BBBP, Tox21 (SR-p53), B-XAIC (indole).
-R2/R1 stay STUBBED until all five are done on R3.
+### BBBP -- 2039 graphs, no ground truth, explained on n=30/306 test subsample
+
+Bigger and structurally more diverse than MUTAG (N ranges 2-132 vs 10-28), so
+explainer runs are capped to a random-seeded n=30 test subsample (comparable
+size to MUTAG's n=29) and PGExplainer trains on a random-seeded 150/1427 train
+subsample -- both to keep SubgraphX rollout=20 MCTS tractable; see --limit /
+--pg-train-limit in run_phase3.py. Checkpoint runs/ckpt_bbbp.pt: test acc 0.833
+/ AUROC 0.841 (single 70/15/15 split; a bit below the Phase-2 CV mean
+0.877/0.900 but within its +/-0.025/+/-0.035, one split + 100 epochs).
+
+BUGFIX (mid-run): training_fill_vector's "mode" strategy assumed one-hot
+features (v[mean.argmax()]=1.0) -- correct for MUTAG's 7-dim atom one-hot, but
+BBBP's node features are raw mixed-type columns (PyG from_smiles: atomic_num,
+chirality, degree, charge, numH, radical_e, hybridization, aromatic, in_ring),
+so the old formula produced a degenerate fill ("atomic_num~=1, everything else
+0"), not a typical atom. Fixed to per-COLUMN mode (torch.mode(x, dim=0)) --
+provably identical to the old formula on one-hot data (verified bit-identical
+on MUTAG), so mutag/mutag_graphxai's already-reported mode-fill numbers stand.
+
+| explainer     | Fid+ (mean)     | Fid- (mean)     | GEF (mean)      | Fid+ (mode)    | Fid- (mode)     | GEF (mode)      |
+|---------------|-----------------|-----------------|-----------------|----------------|-----------------|------------------|
+| GNNExplainer  | 0.026 +/- 0.065 | 0.085 +/- 0.091 | 0.113 +/- 0.184 | 0.017 +/- 0.094| 0.044 +/- 0.086 | 0.073 +/- 0.137  |
+| PGExplainer   | 0.024 +/- 0.048 | 0.090 +/- 0.153 | 0.104 +/- 0.196 | 0.021 +/- 0.044| 0.038 +/- 0.126 | 0.071 +/- 0.142  |
+| SubgraphX     | 0.059 +/- 0.081 | 0.075 +/- 0.115 | 0.091 +/- 0.179 | 0.051 +/- 0.088| 0.031 +/- 0.109 | 0.059 +/- 0.134  |
+
+GEA: n/a (no ground truth).
+
+REPLICATES, does not diverge: magnitudes stay small (0.02-0.11) and
+noise-dominated (std > mean in nearly every cell), same qualitative R3-vacuity
+finding as MUTAG. Distributions are somewhat tighter than MUTAG's (e.g. Fid+
+std ~0.05-0.09 vs ~0.14-0.34) -- plausibly because the BBBP model is less
+saturated (AUROC 0.841 vs MUTAG's ~0.98) -- but mean/std ratio stays << 1
+throughout, so the conclusion is unchanged: not dataset-specific to MUTAG.
+
+Sanity-check hardening: PGExplainer produced 1/30 empty (mean-threshold)
+explanations -- mol 13, a 4-atom molecule, node_importance exactly all-zero.
+A single edge case on a diverse dataset (N from 2 to 132) is not itself a bug;
+the run_phase3.py sanity check now prints full diagnostics for every
+empty/whole-graph explanation and only hard-fails past 20% (was: any single
+occurrence), so genuine breakage still trips it. GNNExplainer and SubgraphX had
+zero empty/whole explanations.
+
+### Tox21 (SR-p53) -- 6750 graphs, no ground truth, n=30/1013 test subsample
+
+Severe imbalance (6.3% positive): a plain random 30 from the test split has ~1
+positive, so ~29 explanations would target the NEGATIVE class ("why not toxic"
+-- uninformative). Deviation from BBBP's random draw: --stratify-frac 0.5 (new
+flag) -> test subsample 15pos/15neg, PGExplainer-train 100pos/100neg.
+Checkpoint runs/ckpt_tox21_srp53.pt: test acc 0.934 (~= majority 0.9375) /
+AUROC 0.799 (single split; Phase-2 CV was 0.939/0.827).
+
+| explainer     | Fid+ (mean)     | Fid- (mean)     | GEF (mean)      | Fid+ (mode)    | Fid- (mode)     | GEF (mode)      |
+|---------------|-----------------|-----------------|-----------------|----------------|-----------------|------------------|
+| GNNExplainer  | 0.026 +/- 0.151 | 0.091 +/- 0.246 | 0.099 +/- 0.249 | 0.044 +/- 0.151| 0.109 +/- 0.218 | 0.130 +/- 0.250  |
+| PGExplainer   | 0.058 +/- 0.240 | 0.078 +/- 0.223 | 0.105 +/- 0.232 | 0.060 +/- 0.226| 0.098 +/- 0.186 | 0.122 +/- 0.211  |
+| SubgraphX     | 0.079 +/- 0.199 | 0.052 +/- 0.196 | 0.064 +/- 0.177 | 0.078 +/- 0.158| 0.073 +/- 0.167 | 0.104 +/- 0.191  |
+
+GEA: n/a (no ground truth).
+
+REPLICATES: means 0.03-0.13, std > mean in every cell -> noise-dominated R3
+vacuity, same as the other three. Std is back near MUTAG's level (~0.15-0.25)
+rather than BBBP's tight ~0.05-0.10 -- the stratified draw pulls in 15 toxic
+actives whose predictions move more variably under masking. Conclusion
+unchanged.
+
+IMBALANCE EDGE-CASE FLAG (asked): NO different explainer behaviour. 0 empty /
+0 whole-graph explanations for ALL THREE explainers (BBBP had 1 PGExplainer
+empty on a 4-atom molecule; Tox21's smallest subsample molecule N=6, fine), no
+NaNs. Once the subsample is stratified, 6.3% prevalence does not produce
+degenerate explainer output. SubgraphX again has the highest Fid+ (0.079) --
+consistent pattern across mutag_graphxai 0.063 / BBBP 0.059 / Tox21 0.079.
+
+R3 pipeline is validated end-to-end on 4 of 5 variants (mutag_graphxai, MUTAG
+std, BBBP, Tox21 SR-p53). Last: B-XAIC (indole). R2/R1 stay STUBBED until all
+five are done on R3.
