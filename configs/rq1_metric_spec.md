@@ -28,10 +28,12 @@ seeds x 3 input configs (src/train/test_mp_equivalence.py), and mutag_graphxai
 
 ## Masking references -- build order R3 -> R2 -> R1
 
-- R3 (build first): distribution-aware, replace masked features with training-set
-  per-feature mean. Implemented: src/metrics/masking.py::mask_r3_distribution_aware
-- R2 (build second): zero-fill, topology kept. STUB, not yet implemented.
-- R1 (build third): hard removal, topology broken. STUB, not yet implemented.
+- R3 (built): distribution-aware fill. src/metrics/masking.py::mask_r3_distribution_aware
+  + training_fill_vector(strategy="mean"|"mode"). Keep top-k nodes, replace the
+  rest with a training-set fill vector; topology kept.
+- R2 (built): zero-fill, topology kept. mask_r2_zero_fill -- same top-k selection
+  as R3, masked node features set to 0.
+- R1 (build third): hard removal, topology broken. STUB (NotImplementedError).
 
 ## GEA applicability (ground truth required)
 
@@ -74,152 +76,120 @@ MUTAG-GraphXAI agreed within fold noise (0.873/0.945 vs 0.878/0.938).
 
 No result outside its expected range; nothing flagged for debug.
 
-## Phase 3 status (explainer wiring -- mutag_graphxai only)
+## Phase 3 status (explainer wiring + R3/R2 masking -- all 5 variants COMPLETE)
 
-All three explainers run against the trained D-MPNN (checkpoint
-runs/ckpt_mutag_graphxai.pt, single 70/15/15 split, test acc 0.966 / AUROC
-0.990). dmpnn.py's edge->node sum was moved to a MessagePassing layer (v4 note
-above) so PyG's Explainer stack hooks it natively; SubgraphX is DIG's, loaded
-via a stub-package trick that imports only shapley.py + subgraphx.py.
-* GNNExplainer -- torch_geometric.explain, node+edge object masks, explain_type=model
-* PGExplainer  -- torch_geometric.explain, edge masks, trained 30 ep on 131 train graphs
-* SubgraphX    -- DIG, MCTS+mc_l_shapley, zero_filling, LOCKED rollout 20 /
-  sample 30 (DIG default rollout; rollout 10 vs 20 checked -- see sensitivity note)
-Explanations target the model's predicted class; sparsity = top 25% of nodes.
-Metrics under R3 ONLY (R2/R1 still stubbed). n = 29 test molecules.
+Explainer wrappers in src/explain/: GNNExplainer + PGExplainer via
+torch_geometric.explain (the D-MPNN's edge->node sum runs through a
+MessagePassing layer so set_masks / get_embeddings hook it -- see v4 note),
+SubgraphX via DIG (stub-package import of only shapley.py + subgraphx.py;
+LOCKED rollout=20 / sample=30). One run per dataset (--masking both): torch +
+numpy seeded, explanations computed ONCE and cached (runs/expl_cache_<ds>.pt,
+keyed on ckpt+subsample+hyperparams), then scored under R3 mean-fill, R3
+mode-fill, and R2 zero-fill. K_FRAC=0.25 (top-25% of nodes). Explanations
+target the model's predicted class.
 
-R3 fill: 'mean' = per-feature marginal mean (spec default); 'mode' = one-hot of
-the most common atom. training_fill_vector() in masking.py builds either.
+Per-variant setup:
 
-Fidelity / GEF (mean-fill; mode-fill in parentheses):
+| variant         | ckpt (70/15/15)        | test acc / AUROC | explained n | notes |
+|-----------------|------------------------|------------------|-------------|-------|
+| mutag_graphxai  | ckpt_mutag_graphxai.pt | 0.966 / 0.989    | 29/29 (all; 19pos) | node+edge GT; GEA over all 29 |
+| MUTAG (std)     | ckpt_mutag.pt          | 0.897 / 0.979    | 29/29 (same split) | no GT |
+| BBBP            | ckpt_bbbp.pt           | 0.833 / 0.841    | 30/306 random | no GT; PGExplainer 1/30 empty (mol 13, N=4) -- benign |
+| Tox21 (SR-p53)  | ckpt_tox21_srp53.pt    | 0.934 / 0.799    | 30/1013 stratified 15pos/15neg | no GT; plain random -> ~1 pos, so --stratify-frac 0.5 |
+| B-XAIC (indole) | ckpt_bxaic.pt          | 0.998 / 1.000    | 30/7500 random (13pos), --max-nodes 80 | node+edge GT; GEA over the 13 positives only |
 
-| explainer     | Fid+            | Fid-            | GEF             |
-|---------------|-----------------|----------------|-----------------|
-| GNNExplainer  | 0.092 (0.113)   | 0.008 (0.027)  | 0.061 (0.097)   |
-| PGExplainer   | -0.020 (-0.001) | 0.099 (0.097)  | 0.175 (0.170)   |
-| SubgraphX     | 0.058 (0.054)   | 0.045 (0.093)  | 0.112 (0.249)   |
+training_fill_vector(x_train, strategy): "mean" = per-feature marginal mean;
+"mode" = per-COLUMN most-frequent value (v4 fix -- the old global-argmax one-hot
+was degenerate on BBBP/Tox21's raw mixed-type features; identical to old on
+one-hot data, verified bit-identical on MUTAG).
 
-FINDING (R3): every Fidelity/GEF cell has std 2-4x its mean (e.g. GNNExplainer
-Fid+ 0.092 +/- 0.264) -- at n=29 the explainers are NOT separable on
-Fidelity/GEF under R3, with either fill. Cause: a saturated D-MPNN (logits
-+/-8) plus a distribution-aware fill that dilutes rather than removes one-hot
-atom identity; masking the *true* NO2/NH2 motif shifts p by only ~0.04-0.09.
-R3 mean/mode-fill is near-inert as a faithfulness probe on saturated one-hot
-models. Recorded as an RQ1 result; R2 (zero-fill) is expected to have signal
-(zeroing all features flips every mutagenic prediction 1.00 -> 0.00).
+### Results -- Fid+ / Fid- / GEF (mean; std ~= 2-4x mean, in runs/phase3_<ds>.json)
 
-GEA (Jaccard vs NO2/NH2 ground truth; fill-independent):
+R3 columns are mean-fill. mode-fill differs materially only where noted below.
 
-| explainer     | GEA Jaccard      | GEA micro |
-|---------------|------------------|-----------|
-| GNNExplainer  | 0.456 +/- 0.283  | 0.402     |
-| PGExplainer   | 0.245 +/- 0.269  | 0.196     |
-| SubgraphX     | 0.022 +/- 0.094  | 0.018     |   (rollout 20; rollout 10 gave 0.044 +/- 0.146 / 0.032)
+| dataset / explainer      | Fid+ R3 | Fid- R3 | GEF R3 | Fid+ R2 | Fid- R2 | GEF R2 | GEA Jacc / micro |
+|--------------------------|---------|---------|--------|---------|---------|--------|------------------|
+| **mutag_graphxai** GNN   |  0.071  |  0.013  |  0.081 |  0.041  |  0.536  |  0.617 | **0.448** / 0.385 |
+| mutag_graphxai PG        | -0.018  |  0.087  |  0.151 |  0.048  |  0.553  |  0.618 | 0.300 / 0.247 |
+| mutag_graphxai SX        |  0.054  |  0.047  |  0.118 | **0.246** | 0.243 |  0.526 | 0.038 / 0.023 |
+| **MUTAG (std)** GNN      |  0.048  | -0.008  |  0.091 |  0.041  |  0.486  |  0.594 | -- |
+| MUTAG (std) PG           |  0.005  |  0.030  |  0.124 |  0.014  |  0.500  |  0.594 | -- |
+| MUTAG (std) SX           | -0.000  |  0.007  |  0.123 | **0.192** | 0.189 |  0.516 | -- |
+| **BBBP** GNN             |  0.025  |  0.076  |  0.097 |  0.063  |  0.095  |  0.175 | -- |
+| BBBP PG                  |  0.002  |  0.119  |  0.147 |  0.053  |  0.033  |  0.102 | -- |
+| BBBP SX                  |  0.057  |  0.074  |  0.097 |  0.146  |  0.027  |  0.137 | -- |
+| **Tox21 SR-p53** GNN     |  0.029  |  0.085  |  0.104 |  0.030  |  0.110  |  0.195 | -- |
+| Tox21 SR-p53 PG          |  0.083  |  0.015  |  0.020 |  0.121  |  0.099  |  0.151 | -- |
+| Tox21 SR-p53 SX          |  0.083  |  0.051  |  0.066 |  0.156  |  0.063  |  0.136 | -- |
+| **B-XAIC (indole)** GNN  |  0.411  |  0.104  |  0.206 |  0.335  |  0.465  |  0.574 | 0.216 / 0.204 |
+| B-XAIC (indole) PG       |  0.061  |  0.149  |  0.244 |  0.370  |  0.276  |  0.354 | **0.536** / 0.514 |
+| B-XAIC (indole) SX       |  0.067  |  0.051  |  0.119 |  0.401  |  0.098  |  0.155 | **0.680** / 0.564 |
 
-FINDING (GEA): a clear, large ordering GNNExplainer > PGExplainer >> SubgraphX
-at recovering the mutagenic motifs -- invisible if one looked only at Fidelity
-under R3. This is the first faithfulness-gap data point.
+mode-fill notables: B-XAIC GNN R3 Fid-/GEF collapse to ~0.005 (keep-only-
+explanation with a pure-carbon fill leaves the indole intact); MUTAG/SX R3-mode
+GEF 0.32 vs 0.12 mean-fill; otherwise mode ~= mean within noise.
 
-SubgraphX rollout sensitivity: doubling MCTS rollout 10 -> 20 did NOT raise GEA
-(0.044 -> 0.022, within noise at n=29; Fid/GEF unchanged). Not an under-search
-artifact -- SubgraphX genuinely does not recover the NO2/NH2 motifs here: its
-mc_l_shapley objective rewards a connected subgraph that preserves the
-prediction under zero-filling, and on this saturated model that is the aromatic
-carbon scaffold, not the nitro group. Locked at rollout 20 (DIG default; runtime
-~1100s / 29 mols, acceptable) so "under-searched" is not an open question.
+### Findings (paired Wilcoxon signed-rank, Holm-Bonferroni within block;
+### src/analysis/phase3_significance.py)
 
-### MUTAG (standard) -- same 188 molecules and split as mutag_graphxai, minus GT
+F1. R3 Fidelity/GEF is NOISE-DOMINATED on the 4 diffuse-decision datasets
+    (mutag_graphxai, MUTAG, BBBP, Tox21): means 0.00-0.15, std >> mean, no
+    explainer separates. Cause: saturated D-MPNN (logits +/-8) + a fill that
+    dilutes rather than deletes categorical identity -- masking even the TRUE
+    NO2/NH2 motif shifts p by < 0.1.
 
-Separately trained checkpoint (runs/ckpt_mutag.pt, same seed/split logic ->
-identical train/val/test indices to mutag_graphxai, verified): test acc 0.897 /
-AUROC 0.979. No node_gt_mask/edge_gt_mask on this variant -- GEA not applicable
-(spec's applicability table). SubgraphX at the locked rollout=20.
+F2. B-XAIC R3 Fidelity has a HEAVY RIGHT TAIL (GNNExplainer Fid+ mean 0.41,
+    median 0.001): B-XAIC's model has a LOCALIZABLE rule (exact indole
+    detection), so on a minority of molecules GNNExplainer's top-25% lands on
+    it and p flips. Still not a reliable discriminator -- GNN vs PG/SX Fid+
+    differences n.s. at n=30.
 
-| explainer     | Fid+ (mean)     | Fid- (mean)      | GEF (mean)      | Fid+ (mode)    | Fid- (mode)     | GEF (mode)      |
-|---------------|-----------------|------------------|-----------------|----------------|-----------------|------------------|
-| GNNExplainer  | 0.055 +/- 0.263 | -0.024 +/- 0.112 | 0.045 +/- 0.102 | 0.116 +/- 0.340| -0.018 +/- 0.168| 0.071 +/- 0.170  |
-| PGExplainer   | 0.003 +/- 0.078 | 0.065 +/- 0.302  | 0.188 +/- 0.315 | 0.028 +/- 0.157| 0.077 +/- 0.325 | 0.189 +/- 0.325  |
-| SubgraphX     | 0.014 +/- 0.142 | -0.008 +/- 0.173 | 0.107 +/- 0.178 | 0.009 +/- 0.189| 0.120 +/- 0.347 | 0.285 +/- 0.387  |
+F3. GEA ranking (masking-independent) is INVERTED between the two GT datasets,
+    and GNNExplainer's inversion is significant:
+      mutag_graphxai:  GNN 0.448 ~= PG 0.300  >>  SX 0.038
+                       GNN-PG p_Holm=0.084 n.s. ; GNN-SX p<1e-3 *** ; PG-SX p=0.0015 **
+      B-XAIC:          SX 0.680 ~= PG 0.536   >>  GNN 0.216
+                       GNN-PG p_Holm=7e-4 *** ; GNN-SX p_Holm=1e-3 *** ; PG-SX p=0.15 n.s.
+    GNNExplainer: top tier on mutag_graphxai, significantly WORST on B-XAIC.
+    SubgraphX: the mirror -- significantly worst on mutag_graphxai, top tier on
+    B-XAIC. PGExplainer: top tier on both (the stable method). Mechanism:
+    SubgraphX's "connected prediction-preserving subgraph" objective == the
+    indole GT (B-XAIC by design) but != the NO2/NH2 motif (not the
+    prediction-preserving scaffold for mutagenicity). GNNExplainer's soft masks
+    over-select (20-35 of ~40 nodes) -> poor Jaccard on compact motifs.
 
-CROSS-DATASET CHECK (mean-fill, SubgraphX at matched rollout=20 on both sides):
-every Fid+/Fid-/GEF value moves by 0.01-0.04 between mutag_graphxai and MUTAG
-(std) -- well under 1 SE of the mean at n=29 (SE ~= std/sqrt(29) ~= 0.02-0.06).
-No meaningful divergence. CONFIRMS the R3-vacuity finding is a property of the
-D-MPNN architecture + mean/mode-fill masking, not specific to the GraphXAI
-variant or its ground-truth annotations.
+F4. R2 zero-fill artifact is FEATURISATION-DEPENDENT, not a clean fix.
+    One-hot datasets (MUTAG family): R3->R2 inflates |Fid-| and GEF massively
+    and significantly for GNN & PG (mutag_graphxai GNN GEF 0.081->0.617,
+    p<1e-4) -- but this is the ARTIFACT of zeroing 75% of a one-hot graph
+    (OOD), not explanation quality: GNN 0.54 ~= PG 0.55.
+    Raw-integer datasets (BBBP, Tox21): R2 barely moves anything (BBBP PG/SX
+    R3->R2 n.s.; a zero vector in the 9-dim mixed feature space is far less
+    OOD). R2's severity depends on the featuriser, not the model.
 
-### BBBP -- 2039 graphs, no ground truth, explained on n=30/306 test subsample
+F5. R2 DOES separate SubgraphX where R3 could not, on Fid+/Fid-: SubgraphX's
+    compact CONNECTED explanation survives zero-fill (its E_i keeps a real
+    substructure), so under R2 it has significantly higher Fid+ and lower Fid-
+    than GNN/PG on mutag_graphxai, MUTAG, BBBP (GNN-SX, PG-SX p<0.01). On
+    B-XAIC, R2 separates ALL THREE on Fid-/GEF (GNN 0.465 > PG 0.276 > SX
+    0.098, all pairs sig) -- and there R2-Fidelity AGREES with GEA (SX best,
+    GNN worst). On mutag_graphxai R2-Fidelity DISAGREES with GEA (SX has best
+    Fid- but worst GEA) -- a further faithfulness-gap instance.
 
-Bigger and structurally more diverse than MUTAG (N ranges 2-132 vs 10-28), so
-explainer runs are capped to a random-seeded n=30 test subsample (comparable
-size to MUTAG's n=29) and PGExplainer trains on a random-seeded 150/1427 train
-subsample -- both to keep SubgraphX rollout=20 MCTS tractable; see --limit /
---pg-train-limit in run_phase3.py. Checkpoint runs/ckpt_bbbp.pt: test acc 0.833
-/ AUROC 0.841 (single 70/15/15 split; a bit below the Phase-2 CV mean
-0.877/0.900 but within its +/-0.025/+/-0.035, one split + 100 epochs).
+### R3 + R2 PHASE COMPLETE
 
-BUGFIX (mid-run): training_fill_vector's "mode" strategy assumed one-hot
-features (v[mean.argmax()]=1.0) -- correct for MUTAG's 7-dim atom one-hot, but
-BBBP's node features are raw mixed-type columns (PyG from_smiles: atomic_num,
-chirality, degree, charge, numH, radical_e, hybridization, aromatic, in_ring),
-so the old formula produced a degenerate fill ("atomic_num~=1, everything else
-0"), not a typical atom. Fixed to per-COLUMN mode (torch.mode(x, dim=0)) --
-provably identical to the old formula on one-hot data (verified bit-identical
-on MUTAG), so mutag/mutag_graphxai's already-reported mode-fill numbers stand.
+Pipeline runs cleanly on all 5 variants under R3 (mean+mode) and R2 (zero),
+explanations cached and shared across masking references. Headline: the
+explainer ranking is metric- AND masking- AND dataset-dependent -- no single
+"most faithful" explainer. GNNExplainer <-> SubgraphX swap ends of the GEA
+ranking between the two GT datasets (F3); R2 restores discriminative power for
+SubgraphX but on one-hot features only via an OOD artifact (F4, F5).
 
-| explainer     | Fid+ (mean)     | Fid- (mean)     | GEF (mean)      | Fid+ (mode)    | Fid- (mode)     | GEF (mode)      |
-|---------------|-----------------|-----------------|-----------------|----------------|-----------------|------------------|
-| GNNExplainer  | 0.026 +/- 0.065 | 0.085 +/- 0.091 | 0.113 +/- 0.184 | 0.017 +/- 0.094| 0.044 +/- 0.086 | 0.073 +/- 0.137  |
-| PGExplainer   | 0.024 +/- 0.048 | 0.090 +/- 0.153 | 0.104 +/- 0.196 | 0.021 +/- 0.044| 0.038 +/- 0.126 | 0.071 +/- 0.142  |
-| SubgraphX     | 0.059 +/- 0.081 | 0.075 +/- 0.115 | 0.091 +/- 0.179 | 0.051 +/- 0.088| 0.031 +/- 0.109 | 0.059 +/- 0.134  |
-
-GEA: n/a (no ground truth).
-
-REPLICATES, does not diverge: magnitudes stay small (0.02-0.11) and
-noise-dominated (std > mean in nearly every cell), same qualitative R3-vacuity
-finding as MUTAG. Distributions are somewhat tighter than MUTAG's (e.g. Fid+
-std ~0.05-0.09 vs ~0.14-0.34) -- plausibly because the BBBP model is less
-saturated (AUROC 0.841 vs MUTAG's ~0.98) -- but mean/std ratio stays << 1
-throughout, so the conclusion is unchanged: not dataset-specific to MUTAG.
-
-Sanity-check hardening: PGExplainer produced 1/30 empty (mean-threshold)
-explanations -- mol 13, a 4-atom molecule, node_importance exactly all-zero.
-A single edge case on a diverse dataset (N from 2 to 132) is not itself a bug;
-the run_phase3.py sanity check now prints full diagnostics for every
-empty/whole-graph explanation and only hard-fails past 20% (was: any single
-occurrence), so genuine breakage still trips it. GNNExplainer and SubgraphX had
-zero empty/whole explanations.
-
-### Tox21 (SR-p53) -- 6750 graphs, no ground truth, n=30/1013 test subsample
-
-Severe imbalance (6.3% positive): a plain random 30 from the test split has ~1
-positive, so ~29 explanations would target the NEGATIVE class ("why not toxic"
--- uninformative). Deviation from BBBP's random draw: --stratify-frac 0.5 (new
-flag) -> test subsample 15pos/15neg, PGExplainer-train 100pos/100neg.
-Checkpoint runs/ckpt_tox21_srp53.pt: test acc 0.934 (~= majority 0.9375) /
-AUROC 0.799 (single split; Phase-2 CV was 0.939/0.827).
-
-| explainer     | Fid+ (mean)     | Fid- (mean)     | GEF (mean)      | Fid+ (mode)    | Fid- (mode)     | GEF (mode)      |
-|---------------|-----------------|-----------------|-----------------|----------------|-----------------|------------------|
-| GNNExplainer  | 0.026 +/- 0.151 | 0.091 +/- 0.246 | 0.099 +/- 0.249 | 0.044 +/- 0.151| 0.109 +/- 0.218 | 0.130 +/- 0.250  |
-| PGExplainer   | 0.058 +/- 0.240 | 0.078 +/- 0.223 | 0.105 +/- 0.232 | 0.060 +/- 0.226| 0.098 +/- 0.186 | 0.122 +/- 0.211  |
-| SubgraphX     | 0.079 +/- 0.199 | 0.052 +/- 0.196 | 0.064 +/- 0.177 | 0.078 +/- 0.158| 0.073 +/- 0.167 | 0.104 +/- 0.191  |
-
-GEA: n/a (no ground truth).
-
-REPLICATES: means 0.03-0.13, std > mean in every cell -> noise-dominated R3
-vacuity, same as the other three. Std is back near MUTAG's level (~0.15-0.25)
-rather than BBBP's tight ~0.05-0.10 -- the stratified draw pulls in 15 toxic
-actives whose predictions move more variably under masking. Conclusion
-unchanged.
-
-IMBALANCE EDGE-CASE FLAG (asked): NO different explainer behaviour. 0 empty /
-0 whole-graph explanations for ALL THREE explainers (BBBP had 1 PGExplainer
-empty on a 4-atom molecule; Tox21's smallest subsample molecule N=6, fine), no
-NaNs. Once the subsample is stratified, 6.3% prevalence does not produce
-degenerate explainer output. SubgraphX again has the highest Fid+ (0.079) --
-consistent pattern across mutag_graphxai 0.063 / BBBP 0.059 / Tox21 0.079.
-
-R3 pipeline is validated end-to-end on 4 of 5 variants (mutag_graphxai, MUTAG
-std, BBBP, Tox21 SR-p53). Last: B-XAIC (indole). R2/R1 stay STUBBED until all
-five are done on R3.
+READY FOR R1 (hard removal -- explanation nodes/edges deleted, topology
+broken). src/metrics/masking.py::mask_r1_hard_removal is still
+NotImplementedError. Build it, add "R1" to run_phase3.py --masking (the harness
+already dispatches by reference). NB: R1 changes edge_index, so
+_reverse_edge_index / the MessagePassing forward must tolerate the reduced
+graph -- verify on a single molecule first. Then re-run the cached-explanation
+sweep. R1 is the aggressive upper-bound reference; expect the largest artifact
+on every dataset.

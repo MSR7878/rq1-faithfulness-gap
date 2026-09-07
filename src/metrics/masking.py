@@ -87,10 +87,25 @@ def mask_r3_distribution_aware(
 def mask_r2_zero_fill(data: Data, node_importance: torch.Tensor, keep_top_k: float = 0.25) -> Data:
     """
     R2 -- Zero-filled soft masking (build second).
-    Topology kept; non-explanation node features zeroed.
-    Matches GraphXAI's default node-masking behaviour (see metrics_graph.py).
+
+    Same top-k selection as R3 (keep the ``keep_top_k`` fraction of nodes with
+    the highest importance, mask the rest), but non-explanation node features
+    are set to ZERO rather than to a training-set statistic. Topology
+    (edge_index / edge_attr) is untouched -- only ``x`` rows change. This is
+    GraphXAI's default node-masking behaviour (metrics_graph.py), and the
+    aggressive counterpart to R3: Phase 3 showed R3's distribution-aware fill
+    barely perturbs a saturated categorical model, whereas an all-zero atom is
+    out-of-distribution and does move predictions (probed: MUTAG 1.00 -> 0.00).
     """
-    raise NotImplementedError("Build after R3 is validated -- see spec Section 4.")
+    x = data.x.clone().float()
+    num_keep = max(1, int(keep_top_k * node_importance.numel()))
+    keep_idx = torch.topk(node_importance, num_keep).indices
+    mask_idx = torch.ones(x.size(0), dtype=torch.bool)
+    mask_idx[keep_idx] = False
+
+    x[mask_idx] = 0.0
+
+    return Data(x=x, edge_index=data.edge_index, edge_attr=getattr(data, "edge_attr", None))
 
 
 def mask_r1_hard_removal(data: Data, node_importance: torch.Tensor, keep_top_k: float = 0.25) -> Data:
