@@ -226,3 +226,82 @@ masking-/metric-invariant "most faithful" explainer.
 R1 also has R2/R1-style edge cases: none broke (F6 note in table; verified).
 The masking sweep is done; Tox21 SR-p53 -> all 12 endpoints and the B-XAIC
 other tasks remain as scale-out per the datasets line at the top.
+
+## Scale-out -- Tox21 12 endpoints + B-XAIC 4 tasks (server: 2x V100, torch 2.6.0+cu118)
+
+Run on an IIT-Gn V100 box (driver 525 -> capped at cu118, so torch 2.6.0
+not 2.14.0 -- results comparable, not bit-identical to the tables above; the
+MP-equivalence test still passes bit-identical on 2.6). Same protocol: single
+70/15/15 split D-MPNN per endpoint/task, run_phase3 --masking all, n=30
+stratified 15/15, K_FRAC=0.25, SubgraphX rollout=20. Analysis:
+src/analysis/scaleout_summary.py. Two pipeline fixes shipped mid-run:
+  * gef.py: clamp softmax to >=1e-12 before log -- a near-perfect model
+    (B-XAIC, AUROC ~1.0) drove some softmax entries to exactly 0 -> log(0) ->
+    NaN GEF. (B-XAIC P/X hit this; re-scored after the fix.)
+  * run_phase3.sanity_check: warn + record `explainer_health` in the JSON
+    instead of hard-asserting on ">20% empty" -- see F10.
+
+### B-XAIC GEA across 4 task types (Jaccard vs substructure GT, R3/mean, masking-independent)
+
+| task    | substructure kind       | GNN   | PG    | SX    | order         | within-task Wilcoxon |
+|---------|-------------------------|-------|-------|-------|---------------|----------------------|
+| indole  | fused ring system       | 0.216 | 0.536 | 0.680 | SX > PG > GNN | GNN<PG *** , GNN<SX *** , PG-SX ns (n=13) |
+| PAINS   | reactive-group alert set| 0.209 | 0.150 | 0.327 | SX > GNN > PG | all ns (n=7) |
+| X       | halogen atom present    | 0.066 | 0.000 | 0.555 | SX > GNN > PG | GNN>PG ** , SX>GNN *** , SX>PG *** (n=13) |
+| P       | phosphorus atom present | 0.125 | 0.361 | 0.382 | SX > PG > GNN | GNN<PG ** , GNN<SX ** , PG-SX ns (n=15) |
+
+F9. SubgraphX is top (or tied-top) on GEA for EVERY B-XAIC task type -- ring,
+    alert-set, single-atom-presence alike -- and GNNExplainer is worst or
+    near-worst on all four. This is the exact OPPOSITE of mutag_graphxai
+    (GNN top, SX ~0). So the Phase-3 "inversion" (F3) is not an indole quirk:
+    whenever the annotated substructure IS the model's decision rule (B-XAIC
+    by construction), SubgraphX's prediction-preserving-subgraph objective
+    wins; when it is NOT (mutag_graphxai: nitro group != mutagenicity
+    scaffold), GNNExplainer's soft node masks win. The explainer ranking is a
+    function of model-rule / annotation alignment, not of the explainer.
+    (PGExplainer at GEA 0.000 on X: soft edge masks cannot localise a single
+    halogen atom at all.)
+
+### Tox21 -- 12 endpoints, aggregate (mean +/- sd of per-endpoint means, n=12)
+
+| masking | expl | Fid+            | Fid-            | GEF             |
+|---------|------|-----------------|-----------------|-----------------|
+| R3      | GNN  | 0.039 +/- 0.049 | 0.054 +/- 0.068 | 0.088 +/- 0.068 |
+| R3      | PG   | 0.034 +/- 0.046 | 0.063 +/- 0.076 | 0.097 +/- 0.075 |
+| R3      | SX   | 0.068 +/- 0.068 | 0.031 +/- 0.055 | 0.068 +/- 0.059 |
+| R2      | GNN  | 0.068 +/- 0.054 | 0.096 +/- 0.078 | 0.162 +/- 0.082 |
+| R2      | PG   | 0.049 +/- 0.035 | 0.113 +/- 0.083 | 0.184 +/- 0.089 |
+| R2      | SX   | 0.165 +/- 0.100 | 0.055 +/- 0.065 | 0.124 +/- 0.067 |
+| R1      | GNN  | 0.044 +/- 0.091 | 0.058 +/- 0.086 | 0.189 +/- 0.069 |
+| R1      | PG   | 0.037 +/- 0.086 | 0.057 +/- 0.088 | 0.189 +/- 0.071 |
+| R1      | SX   | 0.075 +/- 0.083 | 0.053 +/- 0.091 | 0.182 +/- 0.073 |
+
+The Phase-3 findings REPLICATE at scale across all 12 endpoints:
+  - R3 noise-dominated (F1): every cell ~0.03-0.10, sd ~= mean.
+  - R2 mild on raw-integer features (F4): GEF only ~0.12-0.18 (vs ~0.6 on
+    one-hot MUTAG); SubgraphX separates -- highest Fid+ (0.165), lowest Fid-
+    (0.055) (F5).
+  - R1 washout (F6): GEF converges to ~0.19 for all three explainers.
+
+F10. PGExplainer COLLAPSES to a degenerate uniform edge mask (node_importance
+     std = 0 on all 30 molecules -> empty mean-threshold explanation) on
+     exactly the 4 Tox21 endpoints whose D-MPNN barely beats majority
+     (test AUROC <= ~0.80: NR-AR, NR-Aromatase, NR-ER-LBD, SR-ARE).
+     GNNExplainer and SubgraphX never degenerate. PGExplainer's edge-mask MLP
+     needs informative base-model embeddings (get_embeddings) to train; a
+     near-majority model gives it nothing to learn from. These 4 endpoints'
+     PGExplainer rows are recorded but flagged unreliable in explainer_health.
+
+### FULL RQ1 PICTURE (5 core variants + 12 Tox21 endpoints + 4 B-XAIC tasks)
+
+No masking-, metric-, or dataset-invariant "most faithful" explainer:
+  - GEA ranking is set by model-rule / annotation alignment (F3, F9):
+    SubgraphX wins when they coincide (all B-XAIC), GNNExplainer when they
+    don't (mutag_graphxai).
+  - R3 Fidelity/GEF is near-vacuous wherever the decision rule is diffuse
+    (F1) -- 4 core datasets + all 12 Tox21 endpoints.
+  - R2/R1 add "signal" that is mostly perturbation artifact, featurisation-
+    and reference-dependent (F4-F7).
+  - Explainer robustness itself varies: PGExplainer degenerates on weak
+    models (F10); SubgraphX's compact connected explanations are the most
+    stable across masking references.

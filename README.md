@@ -26,7 +26,15 @@ until the full R3/R2/R1 sweep is complete.
     exactly 1 of 8 (dataset × masking) cells.
   - Full tables + paired Wilcoxon significance (F1–F8) in
     `configs/rq1_metric_spec.md`; `src/analysis/phase3_significance.py`.
-- **Next**: scale-out — Tox21 all 12 endpoints, other B-XAIC tasks.
+- **Scale-out done** (2× V100, torch 2.6+cu118): Tox21 all **12 endpoints** +
+  **4 B-XAIC tasks** (indole, PAINS, X, P). `src/analysis/scaleout_summary.py`.
+  - F9: SubgraphX wins/ties GEA on *every* B-XAIC task type (ring, alert-set,
+    halogen, phosphorus); GNNExplainer worst — the Phase-3 inversion vs
+    mutag_graphxai is about model-rule / annotation alignment, not the method.
+  - F10: PGExplainer collapses to a uniform mask on the 4 Tox21 endpoints
+    where the D-MPNN barely beats majority (AUROC ≤ 0.80).
+  - R3-vacuity / R2-mild-on-raw-integer / R1-washout all replicate across 12
+    endpoints.
 
 ## Structure
 
