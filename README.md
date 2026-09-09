@@ -35,11 +35,14 @@ until the full R3/R2/R1 sweep is complete.
     model-rule / annotation alignment, not the method. **PAINS (n=7) weakens:**
     nothing significant after Holm, point estimate only. GNNExplainer is the
     significantly-worst method only on indole/P (on X that's PGExplainer).
-  - F10: PGExplainer collapses to a uniform mask on 4/12 Tox21 endpoints
-    (NR-AR, NR-Aromatase, NR-ER-LBD, SR-ARE) — all weaker-model endpoints
-    (AUROC ≤ 0.805), but **the "AUROC ≤ 0.80" threshold is false**: NR-ER
-    (0.736) and NR-PPAR-γ (0.752) have weaker models and did *not* collapse.
-    Endpoint-specific / stochastic, likely seed-dependent.
+  - F10: PGExplainer's edge-mask MLP sometimes collapses to a degenerate
+    uniform mask. The single-seed scale-out flagged 4/12 Tox21 endpoints;
+    a **5-seed retest** (`src/analysis/f10_multiseed.py`) shows it's
+    **seed-dependent training noise, not an endpoint property** — none of the 4
+    collapse on every seed (NR-AR 3/5, SR-ARE 3/5, NR-Aromatase & NR-ER-LBD
+    1/5), a non-collapsed control (NR-PPAR-γ) collapses 1/5, and AUROC doesn't
+    separate collapsed from non-collapsed seeds. ~30% per-run failure chance on
+    any near-majority model; screen with `explainer_health` and multi-seed.
   - F11–F13: raw-integer R2/R1 inflation is small but *statistically real* at
     scale (not absent, contra F4's n=30 wording); R3 noise-domination is 12/12
     universal; GEA/Fidelity agree only for a single discrete localisable rule

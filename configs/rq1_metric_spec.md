@@ -292,27 +292,43 @@ The Phase-3 findings REPLICATE at scale across all 12 endpoints:
     (0.055) (F5).
   - R1 washout (F6): GEF converges to ~0.19 for all three explainers.
 
-F10. PGExplainer COLLAPSES to a degenerate uniform edge mask (node_importance
-     std = 0 on all 30 molecules -> empty mean-threshold explanation) on 4 of
-     the 12 Tox21 endpoints: NR-AR (AUROC 0.803), NR-Aromatase (0.805),
-     NR-ER-LBD (0.725), SR-ARE (0.757). GNNExplainer and SubgraphX never
-     degenerate. All 4 are in the weaker-model half -- BUT model AUROC does
-     NOT cleanly predict the collapse (block E):
-       collapsed AUROC range [0.725, 0.805] ; ok range [0.736, 0.902] -- OVERLAP.
-       NR-ER (0.736) and NR-PPAR-gamma (0.752) have WEAKER models than two of
-       the collapsed endpoints (NR-AR 0.803, NR-Aromatase 0.805) yet
-       PGExplainer trained fine on them.
-     So F10's original "test AUROC <= ~0.80 -> collapse" threshold is FALSE as
-     a rule -- flagged on full testing. What SURVIVES: PGExplainer's edge-mask
-     MLP needs informative base-model embeddings (get_embeddings) to train,
-     weak models make that harder, and the collapse only ever happens on
-     weak-ish models (all <= 0.805) -- but there is an endpoint-specific /
-     stochastic component (label geometry, the single seed's init; see
-     ## Limitations) that AUROC alone does not capture. Read it as "PGExplainer
-     is fragile on near-majority Tox21 models, non-deterministically", not
-     "AUROC 0.80 is the line". These 4 endpoints' PGExplainer rows are recorded
-     but flagged unreliable in explainer_health; block C excludes PG pairs on
-     them.
+F10. PGExplainer sometimes COLLAPSES to a degenerate uniform edge mask
+     (node_importance std = 0 on ~all 30 molecules -> empty mean-threshold
+     explanation; GNNExplainer and SubgraphX never do this). The single-seed
+     scale-out flagged this on 4/12 Tox21 endpoints (NR-AR, NR-Aromatase,
+     NR-ER-LBD, SR-ARE) and F10 originally read it as a property of those
+     endpoints / of "AUROC <= ~0.80". A 5-seed retest settles it:
+     COLLAPSE IS SEED-DEPENDENT TRAINING NOISE, not an endpoint property.
+     (src/analysis/f10_multiseed.py -- 6 endpoints x seeds 0-4; each seed is a
+     fresh 70/15/15 split + D-MPNN init + PG-MLP init; PGExplainer only, same
+     n=30 R3 protocol. #seeds (of 5) that collapsed:)
+       NR-AR        3/5      NR-Aromatase          1/5
+       NR-ER-LBD    1/5      SR-ARE                3/5
+       NR-ER (ctrl) 0/5      NR-PPAR-gamma (ctrl)  1/5
+     - NONE of the 4 "collapsed" endpoints collapse on every seed.
+     - A control that did NOT collapse in the scale-out (NR-PPAR-gamma)
+       collapses under 1/5 seeds here -- no endpoint is immune.
+     - Even fixed-seed-0 retraining flipped all 4: they collapsed 30/30 in the
+       scale-out but 0/30 on the rerun. D-MPNN training is GPU-nondeterministic
+       on the V100 (cuDNN / scatter-add), so "seed 0" is not one fixed model,
+       and the collapse follows the exact weights.
+     - AUROC does not separate collapsed from non-collapsed seeds WITHIN an
+       endpoint: NR-ER-LBD's one collapsed seed (AUROC 0.829) has a STRONGER
+       model than 3 of its 4 non-collapsed seeds; NR-PPAR-gamma collapsed at
+       its single strongest seed (0.847). Collapse only ever appears on
+       weak-ish models (these 6 endpoints span AUROC ~0.65-0.86) but is
+       otherwise ~1-in-3 per run (11/30 cells), ~independent of endpoint and
+       of AUROC within that weak band.
+     Mechanism: PGExplainer's edge-mask MLP optimisation is unstable when the
+     base model's embeddings carry little class signal; whether a given
+     (model init, MLP init) pair converges or dies is close to a coin flip.
+     REVISED CLAIM: not "these 4 endpoints collapse", not "AUROC <= 0.80
+     collapses" -- rather "PGExplainer has a ~30% per-run chance of training
+     failure on any near-majority Tox21 model, seed-dependent". Practical
+     consequence: a single PGExplainer run on a weak model is unreliable;
+     trust its metrics only from multi-seed runs with degenerate-explanation
+     screening (explainer_health). Block C's exclusion of PG pairs on the
+     4 scale-out endpoints still stands for THAT run's cached explanations.
 
 ### Scale-out significance battery (src/analysis/scaleout_significance.py; F1-F8 method: paired two-sided Wilcoxon, Holm within block, bootstrap 95% CI)
 
@@ -369,11 +385,12 @@ No masking-, metric-, or dataset-invariant "most faithful" explainer:
   - R2/R1 add "signal" that is mostly perturbation artifact, featurisation-
     and reference-dependent (F4-F7). At scale the raw-integer inflation is
     small but statistically real (F11), not absent.
-  - Explainer robustness itself varies: PGExplainer degenerates on ~near-
-    majority Tox21 models, non-deterministically (F10 -- AUROC does not cleanly
-    predict which); SubgraphX's compact connected explanations are the most
-    stable across masking references, and across-endpoint SX is a statistically
-    separate cluster from GNN/PG (F12).
+  - Explainer robustness itself varies: PGExplainer's edge-mask MLP has a ~30%
+    per-run chance of a training failure (degenerate uniform mask) on ANY
+    near-majority Tox21 model -- seed-dependent, not endpoint- or AUROC-tied
+    (F10, confirmed by a 5-seed retest). SubgraphX's compact connected
+    explanations are the most stable across masking references, and across-
+    endpoint SX is a statistically separate cluster from GNN/PG (F12).
   - Cross-metric (GEA vs Fidelity) agreement happens only for a single
     discrete localisable rule (B-XAIC X); the faithfulness gap is otherwise
     the norm (F8, F13).
@@ -395,10 +412,18 @@ No masking-, metric-, or dataset-invariant "most faithful" explainer:
   only a direct numeric splice of a core-table cell against a scale-out-table
   cell would be invalid. Paper wording: "core experiments torch 2.14+cu130,
   scale-out torch 2.6+cu118 on 2xV100; comparable, not bit-identical".
-- **Single seed per (dataset, endpoint, task).** One 70/15/15 split, one model
-  init, one explainer-training seed throughout. F10's PGExplainer collapse is
-  suspected to have a seed-dependent component that a multi-seed sweep would
-  pin down; not run (compute budget).
+- **Single seed per (dataset, endpoint, task)** for every table and for
+  findings F1-F9, F11-F13. One 70/15/15 split, one model init, one explainer-
+  training seed. EXCEPTION: F10 was retested with 5 seeds x 6 Tox21 endpoints
+  (src/analysis/f10_multiseed.py) -- that is what established the collapse is
+  seed noise, not an endpoint property. A broader multi-seed sweep of the
+  Fidelity/GEF/GEA tables was not run (compute budget); those effect sizes and
+  significance calls are single-seed and could shift a few points under
+  re-seeding, though the qualitative findings (F1 noise-domination, F5/F12
+  SX-separation direction, F9 GEA orderings) are large enough that a flip is
+  unlikely. Also note D-MPNN training is GPU-nondeterministic on the V100, so
+  even a re-run at the SAME seed does not reproduce the scale-out checkpoints
+  bit-for-bit (see F10).
 - **Small n on some cells.** B-XAIC PAINS GEA has only n=7 GT-present molecules
   (F9 has nothing significant there). Tox21 per-endpoint metrics use n=30
   stratified test molecules; cross-endpoint tests use n=12.
