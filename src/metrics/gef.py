@@ -49,10 +49,14 @@ def compute_gef(
         masking_reference: "R1", "R2", or "R3" -- recorded for analysis.
     """
     full_logits = model(data.x, data.edge_index, getattr(data, "edge_attr", None))
-    full_softmax = F.softmax(full_logits, dim=-1)
-
     masked_logits = model(masked_data.x, masked_data.edge_index, getattr(masked_data, "edge_attr", None))
-    masked_softmax = F.softmax(masked_logits, dim=-1)
+
+    # Clamp before log: a near-perfect model (B-XAIC, AUROC ~1.0) drives some
+    # softmax entries to exactly 0 in fp32, so F.kl_div(log p, q) hits log(0)
+    # and 0*log(0) -> NaN. eps=1e-12 leaves any non-degenerate value untouched.
+    eps = 1e-12
+    full_softmax = F.softmax(full_logits, dim=-1).clamp_min(eps)
+    masked_softmax = F.softmax(masked_logits, dim=-1).clamp_min(eps)
 
     kl = F.kl_div(full_softmax.log(), masked_softmax, reduction="sum")
     gef = (1 - torch.exp(-kl)).item()
