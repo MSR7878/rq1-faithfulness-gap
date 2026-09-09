@@ -27,14 +27,23 @@ until the full R3/R2/R1 sweep is complete.
   - Full tables + paired Wilcoxon significance (F1–F8) in
     `configs/rq1_metric_spec.md`; `src/analysis/phase3_significance.py`.
 - **Scale-out done** (2× V100, torch 2.6+cu118): Tox21 all **12 endpoints** +
-  **4 B-XAIC tasks** (indole, PAINS, X, P). `src/analysis/scaleout_summary.py`.
-  - F9: SubgraphX wins/ties GEA on *every* B-XAIC task type (ring, alert-set,
-    halogen, phosphorus); GNNExplainer worst — the Phase-3 inversion vs
-    mutag_graphxai is about model-rule / annotation alignment, not the method.
-  - F10: PGExplainer collapses to a uniform mask on the 4 Tox21 endpoints
-    where the D-MPNN barely beats majority (AUROC ≤ 0.80).
-  - R3-vacuity / R2-mild-on-raw-integer / R1-washout all replicate across 12
-    endpoints.
+  **4 B-XAIC tasks** (indole, PAINS, X, P). `src/analysis/scaleout_summary.py`
+  (tables) + `src/analysis/scaleout_significance.py` (full Wilcoxon/Holm
+  battery, matching F1–F8). Findings F9–F13; limitations noted in the spec.
+  - F9: SubgraphX is *significantly* top/tied-top on GEA for 3/4 B-XAIC tasks
+    (indole, X, P) — the Phase-3 inversion vs mutag_graphxai is about
+    model-rule / annotation alignment, not the method. **PAINS (n=7) weakens:**
+    nothing significant after Holm, point estimate only. GNNExplainer is the
+    significantly-worst method only on indole/P (on X that's PGExplainer).
+  - F10: PGExplainer collapses to a uniform mask on 4/12 Tox21 endpoints
+    (NR-AR, NR-Aromatase, NR-ER-LBD, SR-ARE) — all weaker-model endpoints
+    (AUROC ≤ 0.805), but **the "AUROC ≤ 0.80" threshold is false**: NR-ER
+    (0.736) and NR-PPAR-γ (0.752) have weaker models and did *not* collapse.
+    Endpoint-specific / stochastic, likely seed-dependent.
+  - F11–F13: raw-integer R2/R1 inflation is small but *statistically real* at
+    scale (not absent, contra F4's n=30 wording); R3 noise-domination is 12/12
+    universal; GEA/Fidelity agree only for a single discrete localisable rule
+    (B-XAIC X).
 
 ## Structure
 

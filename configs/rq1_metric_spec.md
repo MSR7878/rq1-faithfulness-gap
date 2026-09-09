@@ -1,4 +1,4 @@
-# RQ1 Metric Spec (locked) -- mirrors RQ1_Metric_Spec.docx v4
+# RQ1 Metric Spec (locked) -- mirrors RQ1_Metric_Spec.docx v5
 
 Datasets: MUTAG (standard), MUTAG (GraphXAI GT-labeled), BBBP, Tox21 (SR-p53
 phase 1, then all 12 endpoints), B-XAIC (task "indole" for phase 2 -- explicit
@@ -231,10 +231,12 @@ other tasks remain as scale-out per the datasets line at the top.
 
 Run on an IIT-Gn V100 box (driver 525 -> capped at cu118, so torch 2.6.0
 not 2.14.0 -- results comparable, not bit-identical to the tables above; the
-MP-equivalence test still passes bit-identical on 2.6). Same protocol: single
-70/15/15 split D-MPNN per endpoint/task, run_phase3 --masking all, n=30
-stratified 15/15, K_FRAC=0.25, SubgraphX rollout=20. Analysis:
-src/analysis/scaleout_summary.py. Two pipeline fixes shipped mid-run:
+MP-equivalence test still passes bit-identical on 2.6; see ## Limitations).
+Same protocol: single 70/15/15 split D-MPNN per endpoint/task, run_phase3
+--masking all, n=30 stratified 15/15, K_FRAC=0.25, SubgraphX rollout=20.
+Analysis: src/analysis/scaleout_summary.py (tables) +
+src/analysis/scaleout_significance.py (full F1-F8-style Wilcoxon/Holm battery,
+blocks A-E). Two pipeline fixes shipped mid-run:
   * gef.py: clamp softmax to >=1e-12 before log -- a near-perfect model
     (B-XAIC, AUROC ~1.0) drove some softmax entries to exactly 0 -> log(0) ->
     NaN GEF. (B-XAIC P/X hit this; re-scored after the fix.)
@@ -243,24 +245,31 @@ src/analysis/scaleout_summary.py. Two pipeline fixes shipped mid-run:
 
 ### B-XAIC GEA across 4 task types (Jaccard vs substructure GT, R3/mean, masking-independent)
 
-| task    | substructure kind       | GNN   | PG    | SX    | order         | within-task Wilcoxon |
-|---------|-------------------------|-------|-------|-------|---------------|----------------------|
+| task    | substructure kind       | GNN   | PG    | SX    | point order   | paired Wilcoxon + Holm (within task) |
+|---------|-------------------------|-------|-------|-------|---------------|-------------------------------------|
 | indole  | fused ring system       | 0.216 | 0.536 | 0.680 | SX > PG > GNN | GNN<PG *** , GNN<SX *** , PG-SX ns (n=13) |
-| PAINS   | reactive-group alert set| 0.209 | 0.150 | 0.327 | SX > GNN > PG | all ns (n=7) |
-| X       | halogen atom present    | 0.066 | 0.000 | 0.555 | SX > GNN > PG | GNN>PG ** , SX>GNN *** , SX>PG *** (n=13) |
-| P       | phosphorus atom present | 0.125 | 0.361 | 0.382 | SX > PG > GNN | GNN<PG ** , GNN<SX ** , PG-SX ns (n=15) |
+| X       | halogen atom present    | 0.066 | 0.000 | 0.555 | SX > GNN > PG | SX>GNN ** , SX>PG ** , GNN>PG ** (n=13) |
+| P       | phosphorus atom present | 0.125 | 0.361 | 0.382 | SX > PG > GNN | GNN<SX ** , GNN<PG ** , PG-SX ns (n=15) |
+| PAINS   | reactive-group alert set| 0.209 | 0.150 | 0.327 | SX > GNN > PG | ALL pairs ns after Holm (n=7) |
 
-F9. SubgraphX is top (or tied-top) on GEA for EVERY B-XAIC task type -- ring,
-    alert-set, single-atom-presence alike -- and GNNExplainer is worst or
-    near-worst on all four. This is the exact OPPOSITE of mutag_graphxai
-    (GNN top, SX ~0). So the Phase-3 "inversion" (F3) is not an indole quirk:
-    whenever the annotated substructure IS the model's decision rule (B-XAIC
-    by construction), SubgraphX's prediction-preserving-subgraph objective
-    wins; when it is NOT (mutag_graphxai: nitro group != mutagenicity
-    scaffold), GNNExplainer's soft node masks win. The explainer ranking is a
-    function of model-rule / annotation alignment, not of the explainer.
-    (PGExplainer at GEA 0.000 on X: soft edge masks cannot localise a single
-    halogen atom at all.)
+F9. GEA ranking by B-XAIC task type, under the full paired-Wilcoxon + Holm
+    battery (src/analysis/scaleout_significance.py, block A).
+    HOLDS on indole / X / P (3 of 4): SubgraphX is SIGNIFICANTLY top-or-tied-
+    top on every one, and this is the exact mirror of mutag_graphxai (GNN top,
+    SX ~0). So the Phase-3 "inversion" (F3) is confirmed as a real, repeatable
+    pattern, not an indole quirk: whenever the annotated substructure IS the
+    model's decision rule (B-XAIC by construction), SubgraphX's prediction-
+    preserving-subgraph objective wins.
+    WEAKENS on PAINS: with only n=7 GT-present molecules, NOTHING is significant
+    after Holm, and the point-estimate order even puts GNNExplainer ABOVE
+    PGExplainer. PAINS supports the "SX on top" reading by point estimate only.
+    The "GNNExplainer always worst" half is LOOSER than F9's original wording:
+    GNN is the significantly-worst method only on indole and P. On X the
+    significantly-worst method is PGExplainer (GEA exactly 0.000 -- soft edge
+    masks cannot localise a single halogen atom); on PAINS nothing is
+    significant. Precise surviving claim: model-rule / annotation alignment,
+    not the explainer, sets the GEA ranking -- SX wins that alignment on 3/4
+    B-XAIC tasks at significance.
 
 ### Tox21 -- 12 endpoints, aggregate (mean +/- sd of per-endpoint means, n=12)
 
@@ -284,24 +293,112 @@ The Phase-3 findings REPLICATE at scale across all 12 endpoints:
   - R1 washout (F6): GEF converges to ~0.19 for all three explainers.
 
 F10. PGExplainer COLLAPSES to a degenerate uniform edge mask (node_importance
-     std = 0 on all 30 molecules -> empty mean-threshold explanation) on
-     exactly the 4 Tox21 endpoints whose D-MPNN barely beats majority
-     (test AUROC <= ~0.80: NR-AR, NR-Aromatase, NR-ER-LBD, SR-ARE).
-     GNNExplainer and SubgraphX never degenerate. PGExplainer's edge-mask MLP
-     needs informative base-model embeddings (get_embeddings) to train; a
-     near-majority model gives it nothing to learn from. These 4 endpoints'
-     PGExplainer rows are recorded but flagged unreliable in explainer_health.
+     std = 0 on all 30 molecules -> empty mean-threshold explanation) on 4 of
+     the 12 Tox21 endpoints: NR-AR (AUROC 0.803), NR-Aromatase (0.805),
+     NR-ER-LBD (0.725), SR-ARE (0.757). GNNExplainer and SubgraphX never
+     degenerate. All 4 are in the weaker-model half -- BUT model AUROC does
+     NOT cleanly predict the collapse (block E):
+       collapsed AUROC range [0.725, 0.805] ; ok range [0.736, 0.902] -- OVERLAP.
+       NR-ER (0.736) and NR-PPAR-gamma (0.752) have WEAKER models than two of
+       the collapsed endpoints (NR-AR 0.803, NR-Aromatase 0.805) yet
+       PGExplainer trained fine on them.
+     So F10's original "test AUROC <= ~0.80 -> collapse" threshold is FALSE as
+     a rule -- flagged on full testing. What SURVIVES: PGExplainer's edge-mask
+     MLP needs informative base-model embeddings (get_embeddings) to train,
+     weak models make that harder, and the collapse only ever happens on
+     weak-ish models (all <= 0.805) -- but there is an endpoint-specific /
+     stochastic component (label geometry, the single seed's init; see
+     ## Limitations) that AUROC alone does not capture. Read it as "PGExplainer
+     is fragile on near-majority Tox21 models, non-deterministically", not
+     "AUROC 0.80 is the line". These 4 endpoints' PGExplainer rows are recorded
+     but flagged unreliable in explainer_health; block C excludes PG pairs on
+     them.
+
+### Scale-out significance battery (src/analysis/scaleout_significance.py; F1-F8 method: paired two-sided Wilcoxon, Holm within block, bootstrap 95% CI)
+
+Blocks B/C/D/E apply the F1-F8 rigor to all 16 scale-out cells (12 Tox21
+endpoints + 4 B-XAIC tasks). What this adds / changes vs the core findings:
+
+F11. R2/R1 inflation vs R3 (block B) IS statistically detectable on raw-integer
+     features -- contra F4's "barely moves / n.s.". Across the 12 Tox21
+     endpoints the R3->R2 |Fid-|/GEF increase is significant (p<0.05, often
+     p<0.001) for all three explainers on ~8/12 endpoints, and R3->R1 is
+     significant on nearly all. BUT the effect size stays small (|Fid-|/GEF
+     ~0.05 -> 0.10 -> 0.15) -- an order of magnitude below one-hot MUTAG
+     (GEF -> 0.6). F4's mechanism stands (a zero vector is far less OOD in the
+     9-dim mixed feature space); only its "n.s." wording was an n=30 artifact
+     that dissolves once 12 endpoints are pooled. The B-XAIC single-atom tasks
+     X / P show LARGE significant R1 GEF inflation (P: 0.00 -> 0.37-0.70, all
+     p<0.001) -- deleting the one discriminative atom is catastrophic
+     regardless of which explainer chose it: F6 washout in its purest form.
+
+F12. Per-endpoint explainer separability (block C) replicates F1 and F5 at
+     scale. Under R3, essentially nothing separates on any Tox21 endpoint
+     (block E: sd(per-molecule) > mean on 12/12 endpoints for every explainer
+     x metric -- F1 noise-domination is universal). Under R2, SubgraphX takes a
+     significantly higher Fid+ than GNN/PG on 5/12 endpoints (NR-AR **,
+     NR-Aromatase ***, NR-ER-LBD **, SR-ARE ***, SR-MMP ***) -- the F5 "R2
+     separates SX" effect. GNN vs PG separates on essentially no Tox21 cell
+     under any masking. Pooling across the 12 per-endpoint means (block E,
+     n=12): SubgraphX is significantly distinct from BOTH GNN and PG on R3 and
+     R2 Fid+/Fid-/GEF, while GNN-PG is never significant -- so at the across-
+     endpoint level SX is a separate cluster even though within any single
+     endpoint per-molecule noise dominates. (Both statements hold; they are at
+     different levels of aggregation.)
+
+F13. Cross-metric agreement (GEA order vs Fid+ order, block D) extends F8.
+     Over the 4 B-XAIC tasks x {R3,R2,R1} = 12 cells, GEA order matches Fid+
+     order in 5: indole/R2, PAINS/R2, and X under ALL of R3/R2/R1; P agrees
+     nowhere. GEA and Fidelity coincide only when the decision rule is a single
+     discrete localisable feature (halogen presence, X) -- there both metrics
+     point the same way at every masking reference. For a ring system (indole)
+     or a diffuse rule they agree at most under R2 and usually not at all. The
+     faithfulness gap (F8) is the norm; X is the instructive exception that
+     shows what full agreement requires, not a counterexample to it.
 
 ### FULL RQ1 PICTURE (5 core variants + 12 Tox21 endpoints + 4 B-XAIC tasks)
 
 No masking-, metric-, or dataset-invariant "most faithful" explainer:
   - GEA ranking is set by model-rule / annotation alignment (F3, F9):
-    SubgraphX wins when they coincide (all B-XAIC), GNNExplainer when they
-    don't (mutag_graphxai).
+    SubgraphX wins (significantly) when they coincide -- 3/4 B-XAIC tasks;
+    GNNExplainer when they don't (mutag_graphxai). PAINS (n=7) supports this by
+    point estimate only (F9).
   - R3 Fidelity/GEF is near-vacuous wherever the decision rule is diffuse
-    (F1) -- 4 core datasets + all 12 Tox21 endpoints.
+    (F1) -- 4 core datasets + all 12 Tox21 endpoints (noise-domination 12/12,
+    F12).
   - R2/R1 add "signal" that is mostly perturbation artifact, featurisation-
-    and reference-dependent (F4-F7).
-  - Explainer robustness itself varies: PGExplainer degenerates on weak
-    models (F10); SubgraphX's compact connected explanations are the most
-    stable across masking references.
+    and reference-dependent (F4-F7). At scale the raw-integer inflation is
+    small but statistically real (F11), not absent.
+  - Explainer robustness itself varies: PGExplainer degenerates on ~near-
+    majority Tox21 models, non-deterministically (F10 -- AUROC does not cleanly
+    predict which); SubgraphX's compact connected explanations are the most
+    stable across masking references, and across-endpoint SX is a statistically
+    separate cluster from GNN/PG (F12).
+  - Cross-metric (GEA vs Fidelity) agreement happens only for a single
+    discrete localisable rule (B-XAIC X); the faithfulness gap is otherwise
+    the norm (F8, F13).
+
+## Limitations
+
+- **Two torch / CUDA stacks (comparable, not bit-identical).** The 5 core
+  Phase-2/Phase-3 variants and the full R3/R2/R1 masking sweep (every table and
+  finding F1-F8) ran on the laptop under **torch 2.14.0 + cu130** (RTX 3050 Ti
+  Laptop). The scale-out -- Tox21's 12 endpoints and B-XAIC PAINS/X/P, findings
+  F9-F13 -- ran on the Ada 2xV100 box under **torch 2.6.0 + cu118** (driver 525
+  caps CUDA at 12.0, so the cu130 wheel will not load). The MP-equivalence test
+  (src/train/test_mp_equivalence.py) is bit-identical on both stacks, but
+  explainer fitting is stochastic (GNNExplainer/PGExplainer optimisation,
+  SubgraphX MCTS rollouts) and the two BLAS/cuDNN builds differ in low-order
+  bits, so per-molecule metric values are NOT reproducible across the boundary
+  to full precision. Every finding F1-F13 is computed from cells collected
+  entirely on ONE stack, so the within-block Wilcoxon/Holm tests are unaffected;
+  only a direct numeric splice of a core-table cell against a scale-out-table
+  cell would be invalid. Paper wording: "core experiments torch 2.14+cu130,
+  scale-out torch 2.6+cu118 on 2xV100; comparable, not bit-identical".
+- **Single seed per (dataset, endpoint, task).** One 70/15/15 split, one model
+  init, one explainer-training seed throughout. F10's PGExplainer collapse is
+  suspected to have a seed-dependent component that a multi-seed sweep would
+  pin down; not run (compute budget).
+- **Small n on some cells.** B-XAIC PAINS GEA has only n=7 GT-present molecules
+  (F9 has nothing significant there). Tox21 per-endpoint metrics use n=30
+  stratified test molecules; cross-endpoint tests use n=12.
