@@ -35,5 +35,8 @@ scikit-learn
 tqdm
 
 # Reproducibility / tracking
-wandb
+wandb   # optional tracking; not imported by src/ -- server env skips it
 pyyaml
+
+# Explainers (implicit)
+matplotlib   # DIG subgraphx.py imports matplotlib.pyplot at module load
