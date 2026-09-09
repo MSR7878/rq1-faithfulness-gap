@@ -12,18 +12,21 @@ until the full R3/R2/R1 sweep is complete.
 ## Status
 
 - **Phase 2** (datasets + D-MPNN): complete, 5/5 variants trained.
-- **Phase 3 / R3 + R2 masking**: complete, 5/5 variants (one seeded run per
-  dataset, explanations cached and scored under R3 mean-fill, R3 mode-fill, R2
-  zero-fill). Headline: the explainer ranking is metric-, masking- *and*
-  dataset-dependent — no single "most faithful" explainer.
+- **Phase 3 / masking-reference sweep**: complete — **R3 + R2 + R1**, 5/5
+  variants, 3 explainers, 4 metrics. One seeded run per dataset; explanations
+  cached and re-scored under R3 (mean+mode fill), R2 (zero-fill), R1 (hard
+  removal). Headline: **no masking-/metric-invariant "most faithful"
+  explainer.**
   - R3 Fidelity/GEF is noise-dominated on 4/5 (diffuse-decision datasets).
   - GEA ranking *inverts* between the GT datasets: GNN ≈ PG ≫ SX on
     mutag_graphxai, SX ≈ PG ≫ GNN on B-XAIC (GNNExplainer's flip significant).
-  - R2 zero-fill's perturbation artifact is featurisation-dependent (severe on
-    one-hot MUTAG family, mild on raw-integer BBBP/Tox21); it does restore
-    discriminative power for SubgraphX's compact connected explanations.
-  - Details + paired Wilcoxon significance in `configs/rq1_metric_spec.md`.
-- **Next**: R1 (hard removal, topology broken), then the same cached sweep.
+  - R2 restores signal but only via a featurisation-dependent OOD artifact on
+    one-hot data; R1 over-perturbs and washes even that out.
+  - Across GEA + Fid+ × {R3,R2,R1}, the explainer ranking agrees with GEA in
+    exactly 1 of 8 (dataset × masking) cells.
+  - Full tables + paired Wilcoxon significance (F1–F8) in
+    `configs/rq1_metric_spec.md`; `src/analysis/phase3_significance.py`.
+- **Next**: scale-out — Tox21 all 12 endpoints, other B-XAIC tasks.
 
 ## Structure
 
@@ -40,5 +43,5 @@ until the full R3/R2/R1 sweep is complete.
 
 1. `src/metrics/masking.py` — R3 (distribution-aware) reference only, first  ✔
 2. `src/metrics/fidelity.py`, `gef.py`, `gea.py` — validated against R3  ✔
-3. R2 (zero-fill) ✔ — same 5-variant sweep re-scored;  R1 (hard removal) next
+3. R2 (zero-fill) ✔  ·  R1 (hard removal) ✔ — full R3+R2+R1 × 5-variant sweep done
 4. Tox21: SR-p53 only until Phase 1 results validate the pipeline, then all 12 endpoints

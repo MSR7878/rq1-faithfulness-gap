@@ -92,40 +92,64 @@ def block_A():
                   f"p_Holm={adj[k]:.4f}  {star(adj[k]):>3}  ({hi_side} higher)")
 
 
+MASK_FILL = {"R3": ("R3", "mean"), "R2": ("R2", "zero"), "R1": ("R1", "hard")}
+
+
 def block_B():
-    print("\n" + "#" * 78 + "\n# B. R2 zero-fill inflation vs R3 mean-fill (paired per molecule)\n" + "#" * 78)
-    print(f"  {'dataset':<16}{'expl':<5}{'|Fid-| R3->R2':>22}{'p':>9}   {'GEF R3->R2':>20}{'p':>9}")
+    print("\n" + "#" * 78 + "\n# B. Masking inflation vs R3 mean-fill (paired per molecule, |Fid-| and GEF)\n" + "#" * 78)
+    print(f"  {'dataset':<16}{'expl':<5}   {'|Fid-|  R3 -> R2 (p) -> R1 (p)':<40}   {'GEF  R3 -> R2 (p) -> R1 (p)'}")
     for ds in DATASETS:
         dat = load(ds)
         for e in EXPL:
-            fm_r3 = np.abs(col(dat, "R3", "mean", e, "fid_minus"))
-            fm_r2 = np.abs(col(dat, "R2", "zero", e, "fid_minus"))
-            gf_r3 = col(dat, "R3", "mean", e, "gef")
-            gf_r2 = col(dat, "R2", "zero", e, "gef")
-            _, p_f = _w(fm_r3, fm_r2)
-            _, p_g = _w(gf_r3, gf_r2)
-            print(f"  {ds:<16}{SHORT[e]:<5}{fm_r3.mean():>9.3f} -> {fm_r2.mean():<8.3f}{p_f:>9.4f}   "
-                  f"{gf_r3.mean():>8.3f} -> {gf_r2.mean():<8.3f}{p_g:>9.4f}")
+            def g(mk, fl, metric):
+                return col(dat, mk, fl, e, metric)
+            fm = {m: np.abs(g(*MASK_FILL[m], "fid_minus")) for m in ("R3", "R2", "R1")}
+            gf = {m: g(*MASK_FILL[m], "gef") for m in ("R3", "R2", "R1")}
+            p_f2, p_f1 = _w(fm["R3"], fm["R2"])[1], _w(fm["R3"], fm["R1"])[1]
+            p_g2, p_g1 = _w(gf["R3"], gf["R2"])[1], _w(gf["R3"], gf["R1"])[1]
+            print(f"  {ds:<16}{SHORT[e]:<5}   "
+                  f"{fm['R3'].mean():.2f} ->{fm['R2'].mean():.2f}({p_f2:.3f}) ->{fm['R1'].mean():.2f}({p_f1:.3f})".ljust(40)
+                  + f"   {gf['R3'].mean():.2f} ->{gf['R2'].mean():.2f}({p_g2:.3f}) ->{gf['R1'].mean():.2f}({p_g1:.3f})")
 
 
 def block_C():
-    print("\n" + "#" * 78 + "\n# C. Explainer separability UNDER R2 (zero-fill), Wilcoxon pairwise + Holm\n" + "#" * 78)
+    print("\n" + "#" * 78 + "\n# C. Explainer separability UNDER each masking, Wilcoxon pairwise + Holm\n" + "#" * 78)
     for ds in DATASETS:
         dat = load(ds)
         print(f"\n[{ds}]")
-        for metric in ("fid_plus", "fid_minus", "gef"):
-            common, cols = common_col(dat, "R2", "zero", metric)
-            raw = {f"{SHORT[a]}-{SHORT[b]}": _w(cols[a], cols[b])[1] for a, b in PAIRS}
-            adj = holm(raw)
-            means = "  ".join(f"{SHORT[e]}={cols[e].mean():+.3f}" for e in EXPL)
-            sig = "  ".join(f"{k}:{star(adj[k])}" for k in raw)
-            print(f"  {metric:<10} {means:<44}  {sig}")
+        for mk in ("R2", "R1"):
+            _, fl = MASK_FILL[mk]
+            for metric in ("fid_plus", "fid_minus", "gef"):
+                common, cols = common_col(dat, mk, fl, metric)
+                raw = {f"{SHORT[a]}-{SHORT[b]}": _w(cols[a], cols[b])[1] for a, b in PAIRS}
+                adj = holm(raw)
+                means = "  ".join(f"{SHORT[e]}={cols[e].mean():+.3f}" for e in EXPL)
+                sig = "  ".join(f"{k}:{star(adj[k])}" for k in raw)
+                print(f"  {mk} {metric:<10} {means:<44}  {sig}")
+
+
+def block_D():
+    print("\n" + "#" * 78 + "\n# D. Cross-metric ranking agreement (GT datasets): GEA vs Fid+ under each\n"
+          "#    masking. Do the metrics rank the explainers the same way?\n" + "#" * 78)
+    for ds in GT_DATASETS:
+        dat = load(ds)
+        rank_gea = {e: col(dat, "R3", "mean", e, "gea").mean() for e in EXPL}
+        order_gea = sorted(EXPL, key=lambda e: -rank_gea[e])
+        print(f"\n[{ds}]  GEA (best->worst): {' > '.join(SHORT[e] for e in order_gea)}"
+              f"   ({', '.join(f'{SHORT[e]}={rank_gea[e]:.2f}' for e in order_gea)})")
+        for mk, fl in (("R3", "mean"), ("R2", "zero"), ("R1", "hard")):
+            rank_f = {e: col(dat, mk, fl, e, "fid_plus").mean() for e in EXPL}
+            order_f = sorted(EXPL, key=lambda e: -rank_f[e])
+            same = "agrees" if order_f == order_gea else "DIFFERS"
+            print(f"        {mk}-Fid+ : {' > '.join(SHORT[e] for e in order_f)}"
+                  f"   ({', '.join(f'{SHORT[e]}={rank_f[e]:.2f}' for e in order_f)})   [{same} with GEA]")
 
 
 def main() -> int:
     block_A()
     block_B()
     block_C()
+    block_D()
     print("\nWilcoxon two-sided, paired per molecule; Holm-Bonferroni over the 3 pairwise "
           "tests within a block. GEA n=13 (bxaic) -> min attainable two-sided p ~= 2.4e-4.")
     return 0

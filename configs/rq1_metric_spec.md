@@ -33,7 +33,9 @@ seeds x 3 input configs (src/train/test_mp_equivalence.py), and mutag_graphxai
   rest with a training-set fill vector; topology kept.
 - R2 (built): zero-fill, topology kept. mask_r2_zero_fill -- same top-k selection
   as R3, masked node features set to 0.
-- R1 (build third): hard removal, topology broken. STUB (NotImplementedError).
+- R1 (built): hard removal, topology broken. mask_r1_hard_removal -- delete the
+  masked nodes + incident edges, reindex survivors. Handles empty/isolated/
+  disconnected results without fallback (see Phase 3 R1 note).
 
 ## GEA applicability (ground truth required)
 
@@ -76,7 +78,7 @@ MUTAG-GraphXAI agreed within fold noise (0.873/0.945 vs 0.878/0.938).
 
 No result outside its expected range; nothing flagged for debug.
 
-## Phase 3 status (explainer wiring + R3/R2 masking -- all 5 variants COMPLETE)
+## Phase 3 status (explainer wiring + R3/R2/R1 masking -- all 5 variants COMPLETE)
 
 Explainer wrappers in src/explain/: GNNExplainer + PGExplainer via
 torch_geometric.explain (the D-MPNN's edge->node sum runs through a
@@ -103,31 +105,38 @@ training_fill_vector(x_train, strategy): "mean" = per-feature marginal mean;
 was degenerate on BBBP/Tox21's raw mixed-type features; identical to old on
 one-hot data, verified bit-identical on MUTAG).
 
-### Results -- Fid+ / Fid- / GEF (mean; std ~= 2-4x mean, in runs/phase3_<ds>.json)
+### Results -- Fid+ / Fid- / GEF (mean; std ~= 2-4x mean, full in runs/phase3_<ds>.json)
 
-R3 columns are mean-fill. mode-fill differs materially only where noted below.
+R3 columns are mean-fill. mode-fill differs materially only where noted.
 
-| dataset / explainer      | Fid+ R3 | Fid- R3 | GEF R3 | Fid+ R2 | Fid- R2 | GEF R2 | GEA Jacc / micro |
-|--------------------------|---------|---------|--------|---------|---------|--------|------------------|
-| **mutag_graphxai** GNN   |  0.071  |  0.013  |  0.081 |  0.041  |  0.536  |  0.617 | **0.448** / 0.385 |
-| mutag_graphxai PG        | -0.018  |  0.087  |  0.151 |  0.048  |  0.553  |  0.618 | 0.300 / 0.247 |
-| mutag_graphxai SX        |  0.054  |  0.047  |  0.118 | **0.246** | 0.243 |  0.526 | 0.038 / 0.023 |
-| **MUTAG (std)** GNN      |  0.048  | -0.008  |  0.091 |  0.041  |  0.486  |  0.594 | -- |
-| MUTAG (std) PG           |  0.005  |  0.030  |  0.124 |  0.014  |  0.500  |  0.594 | -- |
-| MUTAG (std) SX           | -0.000  |  0.007  |  0.123 | **0.192** | 0.189 |  0.516 | -- |
-| **BBBP** GNN             |  0.025  |  0.076  |  0.097 |  0.063  |  0.095  |  0.175 | -- |
-| BBBP PG                  |  0.002  |  0.119  |  0.147 |  0.053  |  0.033  |  0.102 | -- |
-| BBBP SX                  |  0.057  |  0.074  |  0.097 |  0.146  |  0.027  |  0.137 | -- |
-| **Tox21 SR-p53** GNN     |  0.029  |  0.085  |  0.104 |  0.030  |  0.110  |  0.195 | -- |
-| Tox21 SR-p53 PG          |  0.083  |  0.015  |  0.020 |  0.121  |  0.099  |  0.151 | -- |
-| Tox21 SR-p53 SX          |  0.083  |  0.051  |  0.066 |  0.156  |  0.063  |  0.136 | -- |
-| **B-XAIC (indole)** GNN  |  0.411  |  0.104  |  0.206 |  0.335  |  0.465  |  0.574 | 0.216 / 0.204 |
-| B-XAIC (indole) PG       |  0.061  |  0.149  |  0.244 |  0.370  |  0.276  |  0.354 | **0.536** / 0.514 |
-| B-XAIC (indole) SX       |  0.067  |  0.051  |  0.119 |  0.401  |  0.098  |  0.155 | **0.680** / 0.564 |
+| dataset / explainer      | Fid+ R3 | Fid- R3 | GEF R3 | Fid+ R2 | Fid- R2 | GEF R2 | Fid+ R1 | Fid- R1 | GEF R1 | GEA Jacc / micro |
+|--------------------------|---------|---------|--------|---------|---------|--------|---------|---------|--------|------------------|
+| **mutag_graphxai** GNN   |  0.071  |  0.013  |  0.081 |  0.041  |  0.536  |  0.617 |  0.491  |  0.521  |  0.674 | **0.448** / 0.385 |
+| mutag_graphxai PG        | -0.018  |  0.087  |  0.151 |  0.048  |  0.553  |  0.618 |  0.153  |  0.548  |  0.630 | 0.300 / 0.247 |
+| mutag_graphxai SX        |  0.054  |  0.047  |  0.118 |  0.246  |  0.243  |  0.526 |  0.566  |  0.594  |  0.650 | 0.038 / 0.023 |
+| **MUTAG (std)** GNN      |  0.048  | -0.008  |  0.091 |  0.041  |  0.486  |  0.594 |  0.461  |  0.487  |  0.663 | -- |
+| MUTAG (std) PG           |  0.005  |  0.030  |  0.124 |  0.014  |  0.500  |  0.594 |  0.120  |  0.532  |  0.654 | -- |
+| MUTAG (std) SX           | -0.000  |  0.007  |  0.123 |  0.192  |  0.189  |  0.516 |  0.515  |  0.530  |  0.603 | -- |
+| **BBBP** GNN             |  0.025  |  0.076  |  0.097 |  0.063  |  0.095  |  0.175 |  0.100  |  0.105  |  0.212 | -- |
+| BBBP PG                  |  0.002  |  0.119  |  0.147 |  0.053  |  0.033  |  0.102 |  0.008  |  0.080  |  0.198 | -- |
+| BBBP SX                  |  0.057  |  0.074  |  0.097 |  0.146  |  0.027  |  0.137 |  0.139  |  0.082  |  0.210 | -- |
+| **Tox21 SR-p53** GNN     |  0.029  |  0.085  |  0.104 |  0.030  |  0.110  |  0.195 |  0.069  |  0.100  |  0.207 | -- |
+| Tox21 SR-p53 PG          |  0.083  |  0.015  |  0.020 |  0.121  |  0.099  |  0.151 |  0.096  |  0.092  |  0.202 | -- |
+| Tox21 SR-p53 SX          |  0.083  |  0.051  |  0.066 |  0.156  |  0.063  |  0.136 |  0.131  |  0.089  |  0.211 | -- |
+| **B-XAIC (indole)** GNN  |  0.411  |  0.104  |  0.206 |  0.335  |  0.465  |  0.574 |  0.433  |  0.431  |  0.439 | 0.216 / 0.204 |
+| B-XAIC (indole) PG       |  0.061  |  0.149  |  0.244 |  0.370  |  0.276  |  0.354 |  0.432  |  0.434  |  0.440 | **0.536** / 0.514 |
+| B-XAIC (indole) SX       |  0.067  |  0.051  |  0.119 |  0.401  |  0.098  |  0.155 |  0.400  |  0.294  |  0.341 | **0.680** / 0.564 |
 
-mode-fill notables: B-XAIC GNN R3 Fid-/GEF collapse to ~0.005 (keep-only-
-explanation with a pure-carbon fill leaves the indole intact); MUTAG/SX R3-mode
-GEF 0.32 vs 0.12 mean-fill; otherwise mode ~= mean within noise.
+mode-fill notables: B-XAIC GNN R3 Fid-/GEF collapse to ~0.005 (keep-only with a
+pure-carbon fill leaves the indole intact); MUTAG/SX R3-mode GEF 0.32 vs 0.12
+mean-fill; otherwise mode ~= mean within noise.
+
+R1 note: on real small MUTAG-family molecules, E_i (keep top-25%) is almost
+always ~2 ISOLATED atoms, 0 edges; G\E_i shatters into 2-5 components. The
+D-MPNN forward handles both as-is (features-only, no message passing;
+per-component aggregation) -- no zero-fill fallback, no skipped molecules.
+Verified on synthetic 1-node / isolated / disconnected graphs + real small
+molecules (all finite logits).
 
 ### Findings (paired Wilcoxon signed-rank, Holm-Bonferroni within block;
 ### src/analysis/phase3_significance.py)
@@ -173,23 +182,47 @@ F5. R2 DOES separate SubgraphX where R3 could not, on Fid+/Fid-: SubgraphX's
     than GNN/PG on mutag_graphxai, MUTAG, BBBP (GNN-SX, PG-SX p<0.01). On
     B-XAIC, R2 separates ALL THREE on Fid-/GEF (GNN 0.465 > PG 0.276 > SX
     0.098, all pairs sig) -- and there R2-Fidelity AGREES with GEA (SX best,
-    GNN worst). On mutag_graphxai R2-Fidelity DISAGREES with GEA (SX has best
-    Fid- but worst GEA) -- a further faithfulness-gap instance.
+    GNN worst). On mutag_graphxai R2-Fidelity DISAGREES with GEA (SX best Fid-,
+    worst GEA) -- a further faithfulness-gap instance.
 
-### R3 + R2 PHASE COMPLETE
+F6. R1 hard-removal is the MOST artifact-dominated. MUTAG family: Fid+ AND Fid-
+    AND GEF all ~0.5-0.67 for every explainer (removing 25% of a ~18-atom
+    molecule shatters it regardless of which 25%). The R2 Fid-/GEF separation
+    (F5) is WASHED OUT under R1 -- on mutag_graphxai/MUTAG the GNN-SX and PG-SX
+    Fid-/GEF pairs that were *** under R2 become n.s. under R1. BBBP/Tox21: R1
+    ~= R2 in magnitude (mild, ~0.1-0.2), inflation vs R3 now consistently
+    significant (was marginal under R2).
 
-Pipeline runs cleanly on all 5 variants under R3 (mean+mode) and R2 (zero),
-explanations cached and shared across masking references. Headline: the
-explainer ranking is metric- AND masking- AND dataset-dependent -- no single
-"most faithful" explainer. GNNExplainer <-> SubgraphX swap ends of the GEA
-ranking between the two GT datasets (F3); R2 restores discriminative power for
-SubgraphX but on one-hot features only via an OOD artifact (F4, F5).
+F7. Under R1, SubgraphX loses its Fid- advantage. R2 spared SubgraphX's
+    connected E_i (it survived zero-fill); R1 DELETES nodes, so even a
+    connected subgraph gets isolated -- mutag_graphxai SX |Fid-| R3 0.11 -> R2
+    0.31 -> R1 0.63. The one signal R1 keeps: PGExplainer has the LOWEST Fid+
+    on 3/5 datasets (its scattered soft masks, hard-removed, perturb the
+    prediction least) -- GNN-PG and PG-SX Fid+ significant on
+    mutag_graphxai/MUTAG/BBBP.
 
-READY FOR R1 (hard removal -- explanation nodes/edges deleted, topology
-broken). src/metrics/masking.py::mask_r1_hard_removal is still
-NotImplementedError. Build it, add "R1" to run_phase3.py --masking (the harness
-already dispatches by reference). NB: R1 changes edge_index, so
-_reverse_edge_index / the MessagePassing forward must tolerate the reduced
-graph -- verify on a single molecule first. Then re-run the cached-explanation
-sweep. R1 is the aggressive upper-bound reference; expect the largest artifact
-on every dataset.
+F8. CROSS-METRIC RANKING IS ESSENTIALLY NEVER CONSISTENT (block D). On the two
+    GT datasets the explainers are ranked by GEA and by Fid+ under each of R3,
+    R2, R1 -- 4 orderings per dataset:
+      mutag_graphxai  GEA: GNN>PG>SX | R3-Fid+: GNN>SX>PG | R2: SX>PG>GNN | R1: SX>GNN>PG
+      B-XAIC          GEA: SX>PG>GNN | R3-Fid+: GNN>SX>PG | R2: SX>PG>GNN | R1: GNN>PG>SX
+    Only ONE (dataset, masking) cell agrees with GEA: B-XAIC / R2-Fid+. Every
+    other combination gives a different "best explainer".
+
+### MASKING-REFERENCE SWEEP COMPLETE -- R3 + R2 + R1, all 5 variants, 3 explainers, 4 metrics
+
+Pipeline runs cleanly under all three references (explanations computed once
+per dataset, cached, re-scored). BOTTOM LINE for RQ1: there is no
+masking-/metric-invariant "most faithful" explainer.
+- GEA ranking inverts between the two GT datasets (GNN <-> SX swap ends; F3),
+  driven by whether the model's learned rule coincides with the annotated
+  motif.
+- R3 Fidelity is near-vacuous on 4/5 (F1); R2 restores signal but only via a
+  featurisation-dependent OOD artifact on one-hot data (F4-F5); R1
+  over-perturbs and washes even that out (F6-F7).
+- Across GEA + Fid+ x {R3,R2,R1}, the explainer ranking agrees with GEA in
+  exactly 1 of 8 (dataset x masking) cells (F8).
+
+R1 also has R2/R1-style edge cases: none broke (F6 note in table; verified).
+The masking sweep is done; Tox21 SR-p53 -> all 12 endpoints and the B-XAIC
+other tasks remain as scale-out per the datasets line at the top.

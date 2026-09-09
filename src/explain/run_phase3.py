@@ -28,15 +28,15 @@ from ..metrics.fidelity import compute_fidelity
 from ..metrics.gef import compute_gef
 from ..metrics.gea import compute_gea
 from ..metrics.masking import (
-    mask_r2_zero_fill, mask_r3_distribution_aware, training_fill_vector,
+    mask_r1_hard_removal, mask_r2_zero_fill, mask_r3_distribution_aware, training_fill_vector,
 )
 from ..train.dmpnn import DMPNN, DMPNNConfig
 from .common import binarize_mean, to_cpu_data
 
 K_FRAC = 0.25            # explanation sparsity: top 25% of nodes
 R3_FILLS = ("mean", "mode")  # both recorded -- Phase 3 R3 finding
-# per-masking "fill" keys: R3 sweeps mean+mode; R2 (zero-fill) has a single mode.
-FILLS_BY_MASKING = {"R3": R3_FILLS, "R2": ("zero",)}
+# per-masking "fill" keys: R3 sweeps mean+mode; R2 zero-fill / R1 hard-removal each have one.
+FILLS_BY_MASKING = {"R3": R3_FILLS, "R2": ("zero",), "R1": ("hard",)}
 
 
 def load_model(ckpt_path: str, device):
@@ -55,8 +55,11 @@ def _pred_class(model, data, device) -> int:
 
 
 def _masked_pair(cpu_data, node_imp, fill_vec, device, masking):
-    """explanation-only (E) and explanation-removed (G\\E) graphs, under R3 or R2."""
-    if masking == "R2":
+    """explanation-only (E) and explanation-removed (G\\E) graphs, under R3/R2/R1."""
+    if masking == "R1":
+        E = mask_r1_hard_removal(cpu_data, node_imp, keep_top_k=K_FRAC)
+        GmE = mask_r1_hard_removal(cpu_data, -node_imp, keep_top_k=1.0 - K_FRAC)
+    elif masking == "R2":
         E = mask_r2_zero_fill(cpu_data, node_imp, keep_top_k=K_FRAC)
         GmE = mask_r2_zero_fill(cpu_data, -node_imp, keep_top_k=1.0 - K_FRAC)
     else:
@@ -150,10 +153,10 @@ def summarize(rows: list[dict], has_gt: bool) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dataset", default="mutag_graphxai", choices=list(LOADERS))
-    ap.add_argument("--masking", default="both", choices=["both", "R3", "R2"],
-                    help="which masking reference(s) to score the (shared) explanations under. "
-                         "both = R3 (mean+mode fill) AND R2 (zero-fill) in one pass -- explanations "
-                         "computed once. R1 stays NotImplementedError per the locked build order.")
+    ap.add_argument("--masking", default="all", choices=["all", "both", "R3", "R2", "R1"],
+                    help="which masking reference(s) to score the (shared, cached) explanations "
+                         "under. all = R3 mean+mode + R2 zero-fill + R1 hard-removal in one pass; "
+                         "both = R3+R2 only (legacy).")
     ap.add_argument("--ckpt", default=None, help="default: runs/ckpt_<dataset>.pt")
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--gnn-epochs", type=int, default=200)
@@ -186,7 +189,7 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     want = {s.strip() for s in args.explainers.split(",") if s.strip()}
     ckpt_path = args.ckpt or f"runs/ckpt_{args.dataset}.pt"
-    suffix = "" if args.masking in ("both", "R3") else f"_{args.masking}"
+    suffix = "" if args.masking in ("all", "both", "R3") else f"_{args.masking}"
     out_path = args.out or f"runs/phase3_{args.dataset}{suffix}.json"
     rng = np.random.default_rng(args.seed)
     torch.manual_seed(args.seed)          # GNNExplainer / PGExplainer / SubgraphX stochasticity
@@ -304,9 +307,9 @@ def main(argv=None) -> int:
         print(f"  cached explanations -> {cache_path}")
 
     # score the SAME explanations under every requested masking reference
-    maskings = ["R3", "R2"] if args.masking == "both" else [args.masking]
+    maskings = {"all": ["R3", "R2", "R1"], "both": ["R3", "R2"]}.get(args.masking, [args.masking])
     fills_by_m = {m: ({s: training_fill_vector(x_train, s) for s in FILLS_BY_MASKING["R3"]}
-                      if m == "R3" else {"zero": None}) for m in maskings}
+                      if m == "R3" else {FILLS_BY_MASKING[m][0]: None}) for m in maskings}
 
     summary, per_mol = {}, {}
     for m in maskings:

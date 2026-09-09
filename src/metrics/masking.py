@@ -111,10 +111,58 @@ def mask_r2_zero_fill(data: Data, node_importance: torch.Tensor, keep_top_k: flo
 def mask_r1_hard_removal(data: Data, node_importance: torch.Tensor, keep_top_k: float = 0.25) -> Data:
     """
     R1 -- Hard/discrete masking (build third).
-    Explanation nodes/edges removed entirely; breaks topology.
-    Most aggressive perturbation -- treated as the upper-bound reference.
+
+    The masked-out nodes are DELETED (not filled): keep the ``keep_top_k``
+    fraction with the highest importance, drop the rest along with every edge
+    incident to a dropped node, and reindex the survivors to 0..K-1. The most
+    aggressive reference -- topology is genuinely broken, no OOD fill artifact,
+    but the graph the model sees is a different object.
+
+    Edge cases (handled here explicitly; see spec Phase 3 R1 findings):
+
+    * Empty result -- CANNOT happen. ``num_keep = max(1, int(keep_top_k * N))``,
+      so at least one node always survives. For the paired use in the harness
+      (E_i keeps top 25%, G\\E_i keeps bottom 75%), the smallest possible E_i is
+      1 node on a >=4-node graph, or 1 node on a 3-node graph
+      (int(0.75*3)=2 -> keep 2; int(0.25*3)=0 -> max(1,0)=1).
+
+    * 1-node / few isolated nodes / ZERO edges -- returned as-is (x present,
+      edge_index shape [2, 0]). The D-MPNN forward tolerates this: with no
+      edges, ``h0`` is [0, H], the message-passing loop is a no-op, the
+      per-node message aggregate is all-zeros, and the readout is
+      ReLU(W_o[x ; 0]) pooled over the surviving nodes -> a well-defined
+      "features-only, no propagation" prediction. NOT zero-filled, NOT skipped.
+
+    * Disconnected components -- returned as-is. The D-MPNN aggregates messages
+      per node via scatter and pools globally, so message passing simply does
+      not cross component boundaries (correct: the graph really is
+      disconnected) and the graph vector still spans all survivors.
+
+    * Reverse edges -- an undirected bond survives R1 iff BOTH endpoints
+      survive, so both of its directed edges are kept together and
+      ``_reverse_edge_index`` in dmpnn.py stays consistent.
+
+    Returns a new Data with ``x`` [K, F], ``edge_index`` [2, E'] reindexed to
+    the survivors, and ``edge_attr`` [E', *] filtered to the surviving edges.
     """
-    raise NotImplementedError("Build after R2 is validated -- see spec Section 4.")
+    n = data.x.size(0)
+    num_keep = max(1, int(keep_top_k * n))
+    keep_idx = torch.topk(node_importance, num_keep).indices
+    keep_idx, _ = torch.sort(keep_idx)
+
+    remap = torch.full((n,), -1, dtype=torch.long, device=data.edge_index.device)
+    remap[keep_idx.to(remap.device)] = torch.arange(keep_idx.numel(), device=remap.device)
+
+    x = data.x[keep_idx].clone().float()
+
+    ei = data.edge_index
+    edge_keep = (remap[ei[0]] >= 0) & (remap[ei[1]] >= 0)
+    new_ei = remap[ei[:, edge_keep]]
+
+    ea = getattr(data, "edge_attr", None)
+    new_ea = None if ea is None else ea[edge_keep]
+
+    return Data(x=x, edge_index=new_ei.contiguous(), edge_attr=new_ea)
 
 
 MASKING_REFERENCES = {
