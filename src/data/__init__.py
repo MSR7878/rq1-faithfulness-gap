@@ -38,7 +38,11 @@ class DatasetMeta:
     notes: str = ""
 
 
-from .standard import load_mutag, load_bbbp, load_tox21_srp53  # noqa: E402
+from functools import partial  # noqa: E402
+
+from .standard import (  # noqa: E402
+    load_mutag, load_bbbp, load_tox21, load_tox21_srp53, TOX21_TASKS,
+)
 from .graphxai_mutag import load_mutag_graphxai  # noqa: E402
 from .bxaic import load_bxaic, BXAIC_TASKS  # noqa: E402
 
@@ -46,17 +50,24 @@ LOADERS = {
     "mutag": load_mutag,
     "mutag_graphxai": load_mutag_graphxai,
     "bbbp": load_bbbp,
-    "tox21_srp53": load_tox21_srp53,
-    "bxaic": load_bxaic,
+    "tox21_srp53": load_tox21_srp53,   # legacy name (Phase-2/3 ckpt + results)
+    "bxaic": load_bxaic,               # legacy name == bxaic:indole
 }
+# one entry per Tox21 endpoint: tox21_NR-AR ... tox21_SR-p53 (12-endpoint scale-out)
+LOADERS.update({f"tox21_{ep}": partial(load_tox21, ep) for ep in TOX21_TASKS})
+# one entry per B-XAIC task: bxaic_indole / bxaic_PAINS / bxaic_X / ... -- distinct
+# ckpt / cache / result files per task (bare "bxaic" would collide on --bxaic-task).
+LOADERS.update({f"bxaic_{t}": partial(load_bxaic, task=t) for t in BXAIC_TASKS})
 
 __all__ = [
     "DatasetMeta",
     "LOADERS",
     "BXAIC_TASKS",
+    "TOX21_TASKS",
     "load_mutag",
     "load_mutag_graphxai",
     "load_bbbp",
+    "load_tox21",
     "load_tox21_srp53",
     "load_bxaic",
 ]

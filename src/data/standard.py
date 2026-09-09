@@ -107,5 +107,17 @@ def load_bbbp(root: str | None = None) -> tuple[list, DatasetMeta]:
     return _load_moleculenet("BBBP", task_index=None, pretty="bbbp")
 
 
+def load_tox21(endpoint: str = "SR-p53") -> tuple[list, DatasetMeta]:
+    """Tox21 sliced to one of the 12 endpoints (see ``TOX21_TASKS``). Rows whose
+    label for that endpoint is NaN are dropped, as for SR-p53."""
+    if endpoint not in TOX21_TASKS:
+        raise ValueError(f"unknown Tox21 endpoint {endpoint!r}; choose from {TOX21_TASKS}")
+    return _load_moleculenet("Tox21", task_index=TOX21_TASKS.index(endpoint),
+                             pretty=f"tox21_{endpoint}")
+
+
 def load_tox21_srp53(root: str | None = None) -> tuple[list, DatasetMeta]:
+    """Kept under the legacy name ``tox21_srp53`` -- the Phase-2/3 checkpoint and
+    result JSONs reference it. ``load_tox21("SR-p53")`` is the same data with the
+    canonical ``tox21_SR-p53`` name used by the 12-endpoint scale-out."""
     return _load_moleculenet("Tox21", task_index=SRP53_INDEX, pretty="tox21_srp53")
