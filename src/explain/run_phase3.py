@@ -189,6 +189,10 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--refresh-cache", action="store_true",
                     help="recompute explanations even if a matching cache exists")
+    ap.add_argument("--cache", default=None,
+                    help="explanation cache path; default runs/expl_cache_<dataset>.pt. Override "
+                         "when several runs share a --dataset but not a checkpoint (e.g. the F10 "
+                         "multi-seed sweep) so they don't clobber each other's cache.")
     ap.add_argument("--out", default=None, help="default: runs/phase3_<dataset>[_R2].json")
     args = ap.parse_args(argv)
     want = {s.strip() for s in args.explainers.split(",") if s.strip()}
@@ -255,7 +259,7 @@ def main(argv=None) -> int:
     # explanations an R3 run produced -- no re-running SubgraphX MCTS, and the
     # R2-vs-R3 comparison is not contaminated by explainer stochasticity.
     from .common import ExplanationResult
-    cache_path = f"runs/expl_cache_{args.dataset}{suffix.replace('_R2','')}.pt"
+    cache_path = args.cache or f"runs/expl_cache_{args.dataset}{suffix.replace('_R2','')}.pt"
     cache_key = dict(ckpt=ckpt_path, test_idx=test_idx, pg_train_idx=pg_train_idx,
                      gnn_epochs=args.gnn_epochs, pg_epochs=args.pg_epochs,
                      sx_rollout=args.sx_rollout, sx_sample=args.sx_sample, k_frac=K_FRAC)
