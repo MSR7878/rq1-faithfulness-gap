@@ -427,3 +427,22 @@ No masking-, metric-, or dataset-invariant "most faithful" explainer:
 - **Small n on some cells.** B-XAIC PAINS GEA has only n=7 GT-present molecules
   (F9 has nothing significant there). Tox21 per-endpoint metrics use n=30
   stratified test molecules; cross-endpoint tests use n=12.
+- **mutag_graphxai is the 188-graph / 2-toxicophore GraphXAI builder, not the
+  1768-graph one.** GraphXAI ships two: `MUTAG.py` (class MUTAG) over
+  TUDataset('MUTAG') = 188 graphs (Debnath 1991), GT = NO2 + NH2 only, one
+  merged node mask per graph; and `mutagenicity.py` (class Mutagenicity) over
+  TUDataset('Mutagenicity') = 4337 graphs (Kazius 2005) filtered to ~1768,
+  GT over 5 toxicophores {NH2, NO2, aliphatic halide, nitroso, azo-type} and a
+  combinatorial SET of sub-explanations per graph (the target of the paper's
+  Eq. 2 max-over-set GEA). src/data/graphxai_mutag.py ports `MUTAG.py`. Audit
+  (src/analysis/mutag_gt_audit.py): of the 188 graphs, all 188 have a NO2/NH2
+  GT (none empty); 24/188 additionally contain a halide/azo instance our GT
+  leaves unmarked (0 nitroso, 3 azo, 3 true aliphatic-halide, 35 aromatic-ring
+  halide instances) -- a small omission in the Debnath nitroaromatic set, but a
+  real scope limit vs the Mutagenicity benchmark where all 5 types are common.
+  GEA-definition robustness: recomputing mutag_graphxai GEA from the cached
+  explanations under merged / max-over-single-motif / max-over-motif-subset
+  (Eq. 2) moves every mean by <= 0.06 and does NOT change F3 -- GNN > PG > SX,
+  GNN-PG n.s., GNN-SX ***, PG-SX ** under all three. 10/29 test graphs (74/188
+  overall) have >= 2 motifs; our single merged mask matches GraphXAI's own
+  MUTAG.py exactly.
