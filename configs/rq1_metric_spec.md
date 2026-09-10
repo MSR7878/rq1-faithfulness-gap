@@ -270,6 +270,10 @@ F9. GEA ranking by B-XAIC task type, under the full paired-Wilcoxon + Holm
     significant. Precise surviving claim: model-rule / annotation alignment,
     not the explainer, sets the GEA ranking -- SX wins that alignment on 3/4
     B-XAIC tasks at significance.
+    BINARIZATION NOTE (F14): "3/4 tasks" is under mean-threshold GEA; matching
+    the binarization to Fidelity's top-k=0.25 budget drops P to non-significant,
+    so it is 2/4 (indole, X) under the matched metric. indole/X and F3 are
+    binarization-robust.
 
 ### Tox21 -- 12 endpoints, aggregate (mean +/- sd of per-endpoint means, n=12)
 
@@ -372,13 +376,47 @@ F13. Cross-metric agreement (GEA order vs Fid+ order, block D) extends F8.
      faithfulness gap (F8) is the norm; X is the instructive exception that
      shows what full agreement requires, not a counterexample to it.
 
+F14. GEA BINARIZATION SENSITIVITY (src/analysis/gea_binarization.py -- re-score
+     the cached explanations with a top-k=0.25 node mask, the SAME budget
+     Fidelity's E_i uses, instead of GraphXAI's mean-threshold).
+     - F3 is ROBUST. mutag_graphxai GNN>PG>SX (GNN-SX ***, PG-SX **) and B-XAIC
+       indole SX>PG>GNN (all 3 pairs sig under top-k, PG-SX tightens from ns to
+       *) hold under BOTH binarizations. The GEA inversion is not a
+       thresholding artifact.
+     - F9 SPLITS BY GT SIZE. indole (GT ~11 atoms) and X (GT ~2) keep SX
+       significantly top under top-k. P (GT ~1.3 atoms) does NOT: mean-threshold
+       gave SX 0.38 ~= PG 0.36 >> GNN 0.13 with GNN-SX / GNN-PG **, but under a
+       fixed ~10-node top-k budget (>> the 1-atom motif) all three collapse to
+       GEA ~0.15 and nothing is significant. PAINS stays weak either way.
+       So F9's "SX significantly top on 3/4 tasks" is 2/4 under the matched
+       metric.
+     - MECHANISM: mean-threshold GEA rewards COMPACT masks. Predicted |M_pr|
+       (mean-threshold): GNN 6-15 nodes, PG 3-21 (wildly size-unstable), SX
+       3-9 (always compact). On the single-atom tasks SX/PG emit ~3-4 node
+       masks that nail the 1-2 atom motif (GEA 0.4-0.6) while GNN's ~14-node
+       soft mask scores ~0.1; forcing every explainer to int(0.25*N) nodes
+       erases that -- X's SX lead halves (0.55->0.30), P's vanishes. On
+       mutag_graphxai / indole (GT 4 / 11, near the 25% budget) rankings barely
+       move (<= 0.05).
+     - F8 "1 of 8" is UNCHANGED. The GEA ORDERINGS don't change (only the
+       values), so GEA-vs-Fid+ agreement is still exactly 1/8 (B-XAIC / R2-Fid+)
+       whether or not GEA and Fid+ share a binarization -- matching the
+       binarization does not rescue cross-metric agreement.
+     TAKEAWAY: report GEA under both binarizations; on datasets whose GT motif
+     is much smaller than the top-k budget, mean-threshold GEA is partly a
+     mask-size proxy (B-XAIC X, P), and a fixed top-k GEA is partly a
+     forced-over-selection penalty. mutag_graphxai and indole are stable under
+     both, and F3 holds under both.
+
 ### FULL RQ1 PICTURE (5 core variants + 12 Tox21 endpoints + 4 B-XAIC tasks)
 
 No masking-, metric-, or dataset-invariant "most faithful" explainer:
   - GEA ranking is set by model-rule / annotation alignment (F3, F9):
-    SubgraphX wins (significantly) when they coincide -- 3/4 B-XAIC tasks;
-    GNNExplainer when they don't (mutag_graphxai). PAINS (n=7) supports this by
-    point estimate only (F9).
+    SubgraphX wins (significantly) when they coincide -- 3/4 B-XAIC tasks under
+    mean-threshold GEA, 2/4 (indole, X) under a Fidelity-matched top-k GEA
+    (F14); GNNExplainer when they don't (mutag_graphxai). PAINS (n=7) supports
+    this by point estimate only (F9). F3 and the indole/X verdicts are
+    binarization-robust; P is a mask-size artifact (F14).
   - R3 Fidelity/GEF is near-vacuous wherever the decision rule is diffuse
     (F1) -- 4 core datasets + all 12 Tox21 endpoints (noise-domination 12/12,
     F12).
