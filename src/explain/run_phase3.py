@@ -194,6 +194,16 @@ def main(argv=None) -> int:
                          "subsampling. B-XAIC has graphs up to 674 nodes -- SubgraphX MCTS at "
                          "rollout=20 on those runs for hours. Keeps the explained set comparable "
                          "in size to the other four datasets (all <~40 nodes in practice).")
+    ap.add_argument("--explain-pool", default="test", choices=["test", "all"],
+                    help="which molecules are eligible to be explained (before --limit/--stratify-frac "
+                         "subsampling): 'test' (default) = the ckpt's held-out split only; 'all' = the "
+                         "WHOLE dataset (e.g. mutag_graphxai's 188 graphs, not just its 29-molecule test "
+                         "split) -- for maximum GEA n on a tiny GT dataset. Fidelity/GEF then include "
+                         "molecules the model trained on (in-sample), not just held-out ones; flagged in "
+                         "the output JSON's config.explain_pool so it's not silently conflated with the "
+                         "held-out numbers elsewhere. GEA is unaffected by train/test membership -- it "
+                         "only compares the explanation's node selection against the chemical-substructure "
+                         "ground truth, never the model's own correctness.")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--refresh-cache", action="store_true",
                     help="recompute explanations even if a matching cache exists")
@@ -216,7 +226,7 @@ def main(argv=None) -> int:
 
     data_list, meta = LOADERS[args.dataset]()
     has_gt = meta.has_node_gt
-    test_idx = list(ck["split"]["test"])
+    test_idx = list(range(len(data_list))) if args.explain_pool == "all" else list(ck["split"]["test"])
     train_idx = list(ck["split"]["train"])
 
     n_excluded = 0
@@ -370,7 +380,10 @@ def main(argv=None) -> int:
 
     with open(out_path, "w") as f:
         json.dump({"config": {"dataset": args.dataset, "has_ground_truth": has_gt, "k_frac": K_FRAC,
-                              "ckpt": ckpt_path, "n_test": len(test), "n_test_full_split": len(ck["split"]["test"]),
+                              "ckpt": ckpt_path, "n_test": len(test),
+                              "explain_pool": args.explain_pool,
+                              "n_explain_pool_full_split": len(ck["split"]["test"]),
+                              "n_explain_pool_full_all": len(data_list) if args.explain_pool == "all" else None,
                               "n_pg_train": len(pg_train) if "pgexplainer" in want else None,
                               "masking": maskings,
                               "stratify_frac": args.stratify_frac, "max_nodes": args.max_nodes,

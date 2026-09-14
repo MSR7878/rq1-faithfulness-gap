@@ -49,7 +49,9 @@ run_one () {
 
 case "$GROUP" in
   tox21)
-    SWEEP_ARGS=(--limit 30 --pg-train-limit 200 --stratify-frac 0.5)  # all 12 endpoints are <=16% positive
+    SWEEP_ARGS=(--limit 30 --pg-train-limit 200 --stratify-frac 0.5 --max-nodes 60)  # all 12 endpoints
+    # are <=16% positive; --max-nodes 60 excludes <2% per endpoint (see the exclusion-% note in the
+    # spec's Limitations) but keeps a rare 90+-node molecule from dominating SubgraphX wall-clock
     EPS=${ONLY:-NR-AR NR-AR-LBD NR-AhR NR-Aromatase NR-ER NR-ER-LBD NR-PPAR-gamma \
                 SR-ARE SR-ATAD5 SR-HSE SR-MMP SR-p53}
     TOTAL=$(echo $EPS | wc -w)

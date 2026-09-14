@@ -484,3 +484,58 @@ No masking-, metric-, or dataset-invariant "most faithful" explainer:
   GNN-PG n.s., GNN-SX ***, PG-SX ** under all three. 10/29 test graphs (74/188
   overall) have >= 2 motifs; our single merged mask matches GraphXAI's own
   MUTAG.py exactly.
+- **`--max-nodes` sampling exclusion (exact %, per dataset).** SubgraphX
+  MCTS cost is highly non-linear in graph size (one 90-node Tox21 molecule
+  alone cost 985s vs a 5-56s typical case), so every SubgraphX run excludes
+  molecules above a size cap before subsampling -- this silently drops the
+  largest few percent of each dataset from anything SubgraphX-derived (GEA,
+  Fid, GEF for that explainer; GNN/PG rows are unaffected since they don't
+  need the cap). Measured exclusion, `src/analysis/*` timing/stats scripts:
+    B-XAIC, --max-nodes 80 (test split, full 7500):
+      indole 2.4%  PAINS 3.0%  X 3.1%  P 3.0%   (all tasks share the same
+      50k-graph pool + size distribution; exclusion is near-identical)
+    Tox21, --max-nodes 60 (NEW as of the priority sweep below; test splits):
+      NR-AR 1.5%  NR-AR-LBD 0.8%  NR-AhR 1.3%  NR-Aromatase 1.4%  NR-ER 0.4%
+      NR-ER-LBD 1.4%  NR-PPAR-gamma 0.8%  SR-ARE 0.2%  SR-ATAD5 0.8%
+      SR-HSE 0.3%  SR-MMP 1.1%  SR-p53 0.9%   (all <=1.5%)
+    mutag_graphxai: no cap needed -- mean N=17.9, max N=28 across all 188
+    graphs (no large-molecule tail at this dataset's scale).
+  State this in the paper as: SubgraphX numbers are computed on the <=98.5-
+  97.6% of each dataset within the size cap, not the literal full population.
+
+## Priority scale-up sweep (revised scope -- src/explain/run_phase3.py
+## --explain-pool, scripts/priority_sweep.sh, scripts/_run_unit.sh)
+
+Cost-estimate-first (SubgraphX timing + concurrency tests on Ada, see prior
+turn) narrowed the scope to 3 priority-ordered tiers, all at concurrency=4
+(GPU 1 only), `runs/prio/out_<dataset>_s<seed>.json` per unit:
+
+  P1 (headline finding). B-XAIC, 4 tasks (indole/PAINS/X/P) x 5 seeds.
+     N=400 molecules per (task,seed), --stratify-frac 0.9 -> target 360
+     positive + 40 negative (vs the original protocol's 13-15 GT-present
+     molecules) so GEA/F3/F9's paired Wilcoxon gets real power. --max-nodes 80
+     (existing). Estimated ~57h total (measured 4-way SubgraphX rate
+     100.2 s/mol/worker on B-XAIC-sized graphs + GNN/PG/train overhead;
+     derivation: 5 seeds x 4 tasks, ceil-batched over 4 concurrent slots).
+  P2 (cost-confirmation gate, run first despite the P1/P2/P3 priority order
+     purely because it is fast). MUTAG-GraphXAI, 5 seeds, --explain-pool all
+     = the FULL 188 graphs (not the 29-molecule test split) -- all 188 have
+     NO2/NH2 GT, mean N=17.9, max N=28 (no outlier tail; confirmed via a
+     direct 20-molecule Ada timing run: 22.9 s/mol single-process). Estimated
+     ~2.6-3h for all 5 seeds.
+  P3 (cheapest, lowest marginal value -- no GT; F12 already shows R3
+     separates nothing on 12/12 Tox21 endpoints, so this is a seed-robustness
+     check of F1/F4/F10-F12, not a new sample size). Tox21, 12 endpoints x 5
+     seeds, SAME n=30 --stratify-frac 0.5 protocol as the original scale-out,
+     now with --max-nodes 60 (see exclusion table above). Estimated ~2.8h.
+
+Execution order actually run: P2 -> P1 -> P3 (P2 first as the "confirm cost"
+gate; P1 remains the substantive priority and is not meaningfully delayed by
+~3h). `scripts/priority_sweep.sh` is a bash job-queue (`CONCURRENCY=4 bash
+scripts/priority_sweep.sh all`) using `wait -n` to cap concurrent
+`scripts/_run_unit.sh` workers at C=4; each worker trains a fresh ckpt (seed
+drives split+init, same as F10's multi-seed design) then runs the full
+gnnexplainer+pgexplainer+subgraphx sweep under --masking all. Units are
+idempotent (skipped if their out_*.json already exists) so the sweep is
+resumable. Results + exact GT-positive-molecule counts per unit: TODO once
+the sweep completes -- see the next spec update.
