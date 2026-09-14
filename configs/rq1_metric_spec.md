@@ -540,28 +540,32 @@ idempotent (skipped if their out_*.json already exists) so the sweep is
 resumable. Results + exact GT-positive-molecule counts per unit: TODO once
 the sweep completes -- see the next spec update.
 
-### P2 interim check: does --explain-pool all's full-188 GEA differ from held-out-only? (3/5 seeds so far)
+### P2 COMPLETE (5/5 seeds): does --explain-pool all's full-188 GEA differ from held-out-only?
 
 Measured concern before trusting a "full 188" GEA number: 131/188 molecules
 are ones the model TRAINED on, so an explainer could look better there
 (memorised decision boundary -> cleaner node-importance signal) than on the
-29 held-out. `run_phase3.py` now records each explained molecule's ckpt split
+29 held-out. `run_phase3.py` records each explained molecule's ckpt split
 membership (`molecule_index`/`molecule_split` in the output JSON); measured
-directly (src/analysis/mutag_full_split_gea.py) from seeds 0-2 (3/5 complete
-at time of writing; seeds 3-4 still running, will fold in when done):
+directly (src/analysis/mutag_full_split_gea.py), FINAL, all 5 seeds, n=188
+per seed (all 5 explained cleanly -- seed 3's PGExplainer collapsed to a
+degenerate all-0.000 mask on all 188, the same seed-dependent training-noise
+failure mode as F10, included below since it's a real (if uninformative)
+seed replicate, not excluded):
 
-| expl | ALL 188 | TRAIN (n=393) | VAL (n=84) | TEST (n=87) | TRAIN-TEST | Mann-Whitney U |
-|------|---------|---------------|------------|-------------|------------|-----------------|
-| GNN  | 0.349   | 0.352         | 0.352      | 0.332       | +0.020     | p=0.594 ns |
-| PG   | 0.126   | 0.123         | 0.125      | 0.146       | -0.023     | p=0.227 ns |
-| SX   | 0.054   | 0.050         | 0.051      | 0.078       | -0.029     | p=0.315 ns |
+| expl | ALL 188 | TRAIN (n=655) | VAL (n=140) | TEST (n=145) | TRAIN-TEST | Mann-Whitney U |
+|------|---------|---------------|-------------|---------------|------------|-----------------|
+| GNN  | 0.431   | 0.439         | 0.420       | 0.405         | +0.034     | p=0.230 ns |
+| PG   | 0.156   | 0.156         | 0.141       | 0.171         | -0.015     | p=0.347 ns |
+| SX   | 0.065   | 0.062         | 0.067       | 0.076         | -0.014     | p=0.796 ns |
 
-(pooled over the 3 completed seeds; n counts are molecule x seed pairs, 131/28/29
-per seed x 3 seeds = 393/84/87)
+(pooled over all 5 seeds; n = molecule x seed pairs, 131/28/29 per seed x 5 = 655/140/145)
 
-**No significant TRAIN-vs-TEST gap for any explainer** -- if anything TEST is
-numerically (non-significantly) HIGHER for PG and SX. **Verdict: the full-188
-pool is justified, not an in-sample-inflated number** -- report ALL 188 as
-the headline mutag_graphxai GEA (once all 5 seeds land), no train/test split
-caveat needed. (Contrast with F10, where a similar "is this a real effect"
-check on Tox21 DID reveal a seed-noise artifact -- this one measured clean.)
+**No significant TRAIN-vs-TEST gap for any explainer, confirmed at full n.**
+If anything TEST is numerically (non-significantly) HIGHER for PG and SX.
+**Verdict: the full-188 pool is justified, not an in-sample-inflated number.**
+mutag_graphxai's headline GEA is reported as ALL 188 (no train/test split
+caveat needed) once the per-seed significance tables are built. (Contrast
+with F10, where an identical "is this a real effect" check on Tox21 DID
+reveal a seed-noise artifact -- this one measured clean at both 3/5 and 5/5
+seeds.)
