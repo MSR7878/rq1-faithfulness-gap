@@ -21,13 +21,31 @@ EPS=${*:-NR-AR NR-Aromatase NR-ER-LBD SR-ARE NR-ER NR-PPAR-gamma}
 OUT=runs/f10ms
 mkdir -p "$OUT" "$OUT/logs"
 
+# Progress readout for this (endpoint, seed) sweep. bash has no tqdm; this
+# mimics its two behaviours that matter for a `| tee log` inside screen:
+# overwrite in place on a real TTY, one plain line per unit when logged/piped
+# (so redirected output doesn't fill up with '\r'-driven partial lines).
+N_EP=$(echo $EPS | wc -w); N_S=$(echo $SEEDS | wc -w)
+TOTAL=$((N_EP * N_S)); IDX=0; T0=$(date +%s)
+progress() {
+  local now elapsed eta
+  now=$(date +%s); elapsed=$((now - T0))
+  eta=$([[ $IDX -gt 0 ]] && echo $((elapsed * (TOTAL - IDX) / IDX)) || echo "?")
+  if [ -t 1 ]; then
+    printf "\r[%d/%d] %-28s elapsed=%ds eta=%ss   " "$IDX" "$TOTAL" "$1" "$elapsed" "$eta"
+  else
+    printf "[%d/%d] %-28s elapsed=%ds eta=%ss\n" "$IDX" "$TOTAL" "$1" "$elapsed" "$eta"
+  fi
+}
+
 for EP in $EPS; do
   D="tox21_$EP"
   for S in $SEEDS; do
     CK="$OUT/ckpt_${EP}_s${S}.pt"
     JS="$OUT/pg_${EP}_s${S}.json"
+    progress "$EP seed=$S (starting)"
     echo "######## $(date '+%F %T')  $EP  seed=$S  ########"
-    if [[ -f "$JS" ]]; then echo "  $JS exists -- skip"; continue; fi
+    if [[ -f "$JS" ]]; then echo "  $JS exists -- skip"; IDX=$((IDX + 1)); progress "$EP seed=$S (skipped)"; continue; fi
     if [[ ! -f "$CK" ]]; then
       $PY -u -m src.train.train --dataset "$D" --save "$CK" \
           --depth 3 --seed "$S" --device cuda \
@@ -41,7 +59,8 @@ for EP in $EPS; do
         --limit 30 --pg-train-limit 200 --stratify-frac 0.5 \
         --cache "$OUT/cache_${EP}_s${S}.pt" --out "$JS" \
         2>&1 | tee "$OUT/logs/pg_${EP}_s${S}.log"
-    echo
+    IDX=$((IDX + 1)); progress "$EP seed=$S (done)"; echo
   done
 done
+[ -t 1 ] && echo
 echo "F10 MULTISEED DONE: [$EPS] x [$SEEDS]  $(date '+%F %T')"

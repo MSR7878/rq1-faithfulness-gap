@@ -18,10 +18,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 
 import numpy as np
 import torch
+from tqdm import tqdm
+
+# tqdm over a redirected/piped stream (e.g. `... | tee log` inside screen) is
+# not a TTY, so refresh it on a coarse timer rather than every iteration --
+# otherwise a fast loop (GNNExplainer on small graphs) spams the log with a
+# write per molecule. Applies to every progress bar in this file.
+TQDM_KW = dict(file=sys.stderr, mininterval=5.0, dynamic_ncols=True)
 
 from ..data import LOADERS
 from ..metrics.fidelity import compute_fidelity
@@ -302,8 +310,11 @@ def main(argv=None) -> int:
 
         for name, ex in explainers.items():
             t0 = time.time()
-            results_by[name] = [ex.explain(d) for d in test]
-            print(f"  {name}: explained {len(test)} mols in {time.time() - t0:.0f}s")
+            bar = tqdm(test, desc=f"{name} explain", unit="mol", **TQDM_KW)
+            results_by[name] = [ex.explain(d) for d in bar]
+            bar.close()
+            print(f"  {name}: explained {len(test)} mols in {time.time() - t0:.0f}s"
+                  f" ({(time.time() - t0) / max(len(test), 1):.1f}s/mol)")
             health[name] = sanity_check(name, results_by[name], test, has_gt)
 
         merged = dict(cached) if cached else {}
@@ -326,7 +337,8 @@ def main(argv=None) -> int:
         for fill_name, fill_vec in fills_by_m[m].items():
             summary[m][fill_name], per_mol[m][fill_name] = {}, {}
             for name, results in results_by.items():
-                rows = [score_one(model, d, r, fill_vec, device, has_gt, m) for d, r in zip(test, results)]
+                pairs = tqdm(list(zip(test, results)), desc=f"score {m}/{fill_name}/{name}", unit="mol", **TQDM_KW)
+                rows = [score_one(model, d, r, fill_vec, device, has_gt, m) for d, r in pairs]
                 per_mol[m][fill_name][name] = rows
                 summary[m][fill_name][name] = summarize(rows, has_gt)
 

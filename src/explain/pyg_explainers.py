@@ -13,10 +13,13 @@ not label noise.
 
 from __future__ import annotations
 
+import sys
+
 import torch
 from torch_geometric.data import Data
 from torch_geometric.explain import Explainer
 from torch_geometric.explain.algorithm import GNNExplainer, PGExplainer
+from tqdm import tqdm
 
 from .common import ExplanationResult, node_importance_from_edges
 
@@ -84,7 +87,9 @@ class PGExplainerWrapper:
     def train(self, train_data: list[Data]) -> list[float]:
         """Train the edge-mask MLP over a set of graphs (targets = model preds)."""
         losses = []
-        for epoch in range(self.epochs):
+        bar = tqdm(range(self.epochs), desc="PGExplainer train", unit="epoch",
+                   file=sys.stderr, mininterval=5.0, dynamic_ncols=True)
+        for epoch in bar:
             ep_loss = 0.0
             for data in train_data:
                 data = data.to(self.device)
@@ -96,6 +101,8 @@ class PGExplainerWrapper:
                 )
                 ep_loss += float(loss)
             losses.append(ep_loss / max(len(train_data), 1))
+            bar.set_postfix(loss=f"{losses[-1]:.3f}")
+        bar.close()
         self._trained = True
         return losses
 
