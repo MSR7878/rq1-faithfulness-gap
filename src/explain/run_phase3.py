@@ -228,6 +228,11 @@ def main(argv=None) -> int:
     has_gt = meta.has_node_gt
     test_idx = list(range(len(data_list))) if args.explain_pool == "all" else list(ck["split"]["test"])
     train_idx = list(ck["split"]["train"])
+    # dataset-index -> "train"/"val"/"test", per the CKPT's own split (independent of
+    # --explain-pool/--limit/--max-nodes below) -- recorded per explained molecule so
+    # --explain-pool all's Fidelity/GEA can be broken out by split membership rather
+    # than silently mixing in-sample (train) and held-out (test) molecules.
+    split_of = {i: name for name, idxs in ck["split"].items() for i in idxs}
 
     n_excluded = 0
     if args.max_nodes:
@@ -394,6 +399,10 @@ def main(argv=None) -> int:
                    "fills": {m: {k: (None if v is None else v.tolist()) for k, v in fb.items()}
                              for m, fb in fills_by_m.items()},
                    "explainer_health": health,
+                   # parallel arrays, row-aligned with every per_molecule[masking][fill][explainer]
+                   # list -- molecule_index[k] / molecule_split[k] describe the k-th row everywhere.
+                   "molecule_index": test_idx,
+                   "molecule_split": [split_of.get(i, "unknown") for i in test_idx],
                    "summary": summary, "per_molecule": per_mol}, f, indent=2)
     print(f"\nsaved -> {out_path}")
     return 0
