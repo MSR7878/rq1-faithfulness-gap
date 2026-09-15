@@ -166,6 +166,10 @@ F3. GEA ranking (masking-independent) is INVERTED between the two GT datasets,
     indole GT (B-XAIC by design) but != the NO2/NH2 motif (not the
     prediction-preserving scaffold for mutagenicity). GNNExplainer's soft masks
     over-select (20-35 of ~40 nodes) -> poor Jaccard on compact motifs.
+    REVISION at 5-seed pooled n (n=940, see "F3-REVISION" below): the
+    mutag_graphxai "GNN ~= PG" tie and the "PGExplainer stable" claim BOTH
+    change -- GNN-PG flips to significant and PGExplainer turns out to be the
+    least reliable of the three explainers, not the most stable.
 
 F4. R2 zero-fill artifact is FEATURISATION-DEPENDENT, not a clean fix.
     One-hot datasets (MUTAG family): R3->R2 inflates |Fid-| and GEF massively
@@ -569,3 +573,44 @@ caveat needed) once the per-seed significance tables are built. (Contrast
 with F10, where an identical "is this a real effect" check on Tox21 DID
 reveal a seed-noise artifact -- this one measured clean at both 3/5 and 5/5
 seeds.)
+
+### F3-REVISION: 5-seed pooled significance changes the mutag_graphxai ranking
+
+src/analysis/mutag_full_pooled_significance.py, n=940 molecule-seed pairs
+(ALL 188 graphs x 5 seeds), same method as F3 (Wilcoxon signed-rank paired,
+Holm-Bonferroni over the 3 pairs):
+
+  GNN 0.431   PG 0.156   SX 0.065
+  GNN-PG p_Holm=7.8e-94  *** (GNN higher)   [was n.s. at p=0.084 single-seed]
+  GNN-SX p_Holm=8.6e-133 *** (GNN higher)   [unchanged, already ***]
+  PG-SX  p_Holm=5.4e-20  *** (PG higher)    [unchanged, already **]
+
+**F3's "GNN ~= PG >> SX" wording is WRONG at 5-seed pooled n and must change
+to "GNN > PG > SX"** -- a full strict ordering, not a tie at the top. GNN
+barely moved (0.448 single-seed -> 0.431 pooled, within noise); PG's mean
+dropped 0.300 -> 0.156 across the 5 independent model fits, which is what
+flips GNN-PG from n.s. to ***. The single-seed n=29 test did not have the
+power to see this; n=940 does.
+
+PGExplainer's pooled mean is an average over a BIMODAL distribution --
+per-seed GEA: seed0=0.243, seed1=0.066, seed2=0.070, **seed3=0.000
+(COLLAPSED -- all-0.000 mask, F10's exact failure mode)**, seed4=0.400.
+  WITH seed 3 (the honest expectation over a random run): mean=0.156, n=940
+  WITHOUT seed 3 (conditional on PG training succeeding): mean=0.195, n=752
+    -- and even those 4 "successful" seeds range 0.066-0.400, so PG is
+    highly seed-variable even when it doesn't fully collapse.
+Both numbers belong in the paper, not just 0.156 or just 0.195 alone --
+neither one alone tells a reader what to expect from a single PG run.
+
+**"PGExplainer is the stable method" (the B-XAIC-section wording) does NOT
+stand unqualified.** It was a claim about cross-dataset RANKING consistency
+(top-tier GEA on both mutag_graphxai and B-XAIC) and remains true in that
+narrow sense. But PGExplainer is also the ONLY one of the three explainers
+with a documented ~20-30% per-run catastrophic-failure mode (F10, Tox21);
+this run adds a 5th, independent confirmation on a different dataset (1/5 =
+20% collapsed here too). Calling it "stable" without that qualifier reads as
+a much stronger claim than the data supports. Revised wording: PGExplainer
+has the most cross-dataset-consistent RANKING among successful runs, but is
+also the LEAST run-to-run RELIABLE of the three explainers -- its mean
+blends a real ~0.2-0.4 signal with a ~20-30% chance of complete failure, and
+a reader needs both the pooled-mean and the per-seed spread to interpret it.
