@@ -739,3 +739,103 @@ varying quality," it is "one explainer (GNN) with real signal, one
 sometimes real and sometimes not, unpredictably by seed." Random baselines
 for B-XAIC (where GEA orderings look the opposite way, F9) and Tox21 Fidelity
 are a natural next step -- not yet run.
+
+### F16. Random baseline, B-XAIC (partial -- indole only so far, done "as soon as
+### cached explanations allow") -- SX beats random decisively, opposite of mutag_graphxai
+
+src/analysis/bxaic_random_baseline.py, run against whatever P1 units had
+completed at the time (indole seeds 0-3; PAINS/X/P still running under the
+priority sweep -- will extend as they land). Same matched-top-k=0.25
+construction as F15.
+
+| task | seed | GNN | PG | SX | RandN | RandE |
+|------|------|-----|-----|-----|-------|-------|
+| indole | 0 | 0.102 | 0.511 | 0.684 | 0.169 | 0.155 |
+| indole | 1 | 0.257 | 0.537 | 0.679 | 0.166 | 0.145 |
+| indole | 2 | 0.360 | 0.536 | 0.722 | 0.158 | 0.155 |
+| indole | 3 | 0.361 | 0.563 | 0.640 | 0.169 | 0.151 |
+| indole | mean | 0.270 | 0.537 | 0.681 | 0.165 | 0.151 |
+
+**THE ANSWER TO THE SPECIFIC QUESTION: SubgraphX beats random-node decisively
+on B-XAIC indole -- 4/4 completed seeds, per-seed Wilcoxon p~1e-59/1e-60
+(SX 0.640-0.722 vs RandN 0.158-0.169, roughly a 4x margin).** PGExplainer
+also beats its matched random-edge baseline in 4/4 seeds (p~1e-60,
+PG 0.511-0.563 vs RandE 0.145-0.155). GNNExplainer beats random in 3/4
+seeds (loses narrowly in its own weakest seed, 0.102 vs 0.169 -- consistent
+with F3's "GNN over-selects nodes on B-XAIC" mechanism).
+
+**This is the OPPOSITE of mutag_graphxai (F15), where SX failed to beat
+random in 5/5 seeds.** That is the intended, informative contrast: it means
+the GEA inversion between the two GT datasets (F3, F9) is NOT an artifact of
+one dataset having trivially-recoverable ground truth -- SX's success on
+B-XAIC and failure on mutag_graphxai are BOTH real, validated against a
+proper null. This SUPPORTS, not undermines, the "model-rule alignment"
+reading of F3/F9: SubgraphX's prediction-preserving-subgraph objective
+genuinely recovers B-XAIC's indole substructure far better than chance, and
+genuinely fails to recover MUTAG's NO2/NH2 motif better than chance. F3/F9
+do NOT need rewriting on this evidence -- indole strengthens them. (Caveat:
+only 1 of 4 B-XAIC tasks confirmed so far; PAINS/X/P to follow. F9 already
+flagged PAINS as weak/non-significant among the real explainers themselves
+-- worth checking whether PAINS also fails the random-baseline bar once its
+seeds land, which would be a different, narrower caveat than "trivially
+recoverable" for indole/X/P.)
+
+### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
+### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
+### only under R3/R2
+
+src/analysis/tox21_random_baseline.py. Uses the original scale-out caches
+(not the 5-seed P3 re-run, which had not started) -- second, independent
+confirmation of F1 alongside its within-explainer std>>mean signature.
+
+AGGREGATE (mean of 12 per-endpoint means):
+
+| masking | metric | GNN | PG | SX | RandN | RandE |
+|---------|--------|-----|-----|-----|-------|-------|
+| R3 | Fid+ | 0.039 | 0.034 | 0.068 | 0.032 | 0.032 |
+| R3 | Fid- | 0.054 | 0.063 | 0.031 | 0.058 | 0.065 |
+| R3 | GEF  | 0.088 | 0.097 | 0.068 | 0.093 | 0.096 |
+| R2 | Fid+ | 0.068 | 0.049 | 0.165 | 0.054 | 0.049 |
+| R2 | Fid- | 0.096 | 0.113 | 0.055 | 0.105 | 0.109 |
+| R2 | GEF  | 0.162 | 0.184 | 0.124 | 0.178 | 0.174 |
+| R1 | Fid+ | 0.044 | 0.037 | 0.075 | 0.053 | 0.041 |
+| R1 | Fid- | 0.058 | 0.057 | 0.053 | 0.055 | 0.060 |
+| R1 | GEF  | 0.189 | 0.189 | 0.182 | 0.189 | 0.188 |
+
+Significance (Wilcoxon paired by ENDPOINT, n=12 -- the seed-aware lesson
+applied here too: the independent unit is the endpoint, not the molecule;
+Holm over the 3 real-vs-random pairs per cell):
+
+| masking | metric | GNN vs RandN | SX vs RandN | PG vs RandE |
+|---------|--------|--------------|-------------|-------------|
+| R3 | Fid+ | ns | **\*\* (SX)** | ns |
+| R3 | Fid- | ns | **\*\* (random lower = SX beats it)** | ns |
+| R3 | GEF  | ns | **\*\* (SX beats it)** | ns |
+| R2 | Fid+ | ns | **\*\* (SX)** | ns |
+| R2 | Fid- | ns | **\*\* (SX beats it)** | ns |
+| R2 | GEF  | ns | **\* (SX beats it)** | ns |
+| R1 | Fid+ | ns | ns | ns |
+| R1 | Fid- | ns | ns | ns |
+| R1 | GEF  | ns | ns | ns |
+
+**GNNExplainer and PGExplainer NEVER significantly separate from their
+matched random baseline, in ANY of the 9 (masking, metric) cells on Tox21.**
+This is a considerably stronger statement of F1 than "std >> mean within one
+explainer" -- it says the mean itself is statistically indistinguishable
+from chance, for two of the three explainers, everywhere. **SubgraphX DOES
+separate from random -- but only under R3 and R2, significantly, on all 3
+metrics; R1 washes it out to ns too**, an independent confirmation of F6's
+"R1 washout" using a null baseline rather than a same-explainer R3-vs-R1
+comparison. SX's Tox21 signal is real but small (e.g. R3 Fid+ 0.068 vs
+RandN 0.032 -- both still tiny in absolute terms).
+
+**Bottom line combining F15-F17: across all three GT/Fidelity settings
+checked so far, SubgraphX is the only explainer that EVER clears its random
+baseline on Tox21 and B-XAIC -- but it is AT OR BELOW random on
+mutag_graphxai. GNNExplainer clears random on both GT datasets (mutag_graphxai,
+B-XAIC indole) but was never checked against a Fidelity-random baseline on
+its own best dataset. PGExplainer clears random on B-XAIC indole only, not
+Tox21, and not consistently even on its own best dataset (F3-REVISION v2).
+No explainer is uniformly better than chance across every setting -- the
+faithfulness gap now has a proper null to be measured against, not just
+inter-explainer comparisons.**
