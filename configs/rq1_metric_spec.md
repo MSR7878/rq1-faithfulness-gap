@@ -674,3 +674,68 @@ least run-to-run RELIABLE explainer overall.
 means, never a naive pool-then-Wilcoxon across seeds) to P1's B-XAIC
 significance once it lands, and to any other multi-seed significance
 computed going forward.**
+
+### F15. Random baseline (mutag_graphxai) -- the anchor GEA has been missing
+
+src/analysis/mutag_random_baseline.py. GraphXAI itself flags trivially-
+recoverable ground truth as a pitfall, and SX's 0.065 / PG's 0.156 meant
+nothing without a chance-level number. Two matched-top-k=0.25 random
+constructions, 5 seeds (n=188/seed, same seeds as everything else):
+  random-node: uniform k-of-N node subset (baseline for GNN/SX, node-level).
+  random-edge: uniform random per-edge score -> node_importance_from_edges
+    (the SAME fold PGExplainer's real output goes through) -> top-k=0.25 on
+    the folded importance (baseline for PG, edge-level).
+
+|      | seed0 | seed1 | seed2 | seed3 | seed4 | mean  | std   |
+|------|-------|-------|-------|-------|-------|-------|-------|
+| GNN  | 0.433 | 0.122 | 0.492 | 0.496 | 0.612 | 0.431 | 0.165 |
+| PG   | 0.243 | 0.066 | 0.070 | 0.000 | 0.400 | 0.156 | 0.146 |
+| SX   | 0.030 | 0.020 | 0.113 | 0.048 | 0.113 | 0.065 | 0.041 |
+| RandN| 0.149 | 0.145 | 0.141 | 0.140 | 0.132 | 0.141 | 0.005 |
+| RandE| 0.194 | 0.158 | 0.176 | 0.184 | 0.165 | 0.175 | 0.013 |
+
+(the random baselines are themselves extremely stable across seeds, CV
+0.03-0.07 -- as expected, they don't depend on a trained model, only on
+graph structure + the law of large numbers over 188 molecules; this is also
+a sanity check that the implementation is doing what it says.)
+
+**SubgraphX does NOT beat random-node selection on mutag_graphxai --
+SX loses to RandN in 5/5 seeds** (per-seed Wilcoxon *** in 3/5, seed-level
+sign count RandN-higher 5/5, the maximum possible consistency at n=5). In
+seeds 1 and 3, SX (0.020, 0.048) is 3-7x BELOW RandN (0.145, 0.140). This is
+the sharp statement the mean alone couldn't make: on mutag_graphxai, SX's
+"connected prediction-preserving subgraph" objective is not just a poor
+match for the NO2/NH2 motif (F3's mechanism) -- it is, per-seed,
+indistinguishable from or worse than picking nodes at random.
+
+**GNNExplainer robustly beats random-node -- GNN higher in 4/5 seeds**
+(***, large margins, e.g. seed 4: 0.612 vs 0.132), losing only in its own
+weakest seed (seed 1: 0.122 vs 0.145, RandN wins narrowly at **). This is a
+real signal, distinct from SX and PG.
+
+**PGExplainer does NOT consistently beat its own matched random-edge
+baseline -- PG higher in only 2/5 seeds** (the same 2 seeds where PG's
+absolute GEA is highest, 0.243 and 0.400); RandE beats PG in the other 3,
+including the collapse seed but ALSO 2 non-collapsed ones (seed1: PG=0.066 <
+RandE=0.158; seed2: PG=0.070 < RandE=0.176). Same conclusion vs random-node
+(PG higher only 2/5). **PG's positive-looking pooled mean is driven by 2
+lucky seeds, not a consistent above-chance signal** -- a materially weaker
+claim than "PG beats random."
+
+Full cross-battery (seed-level, n=5, Holm over 10 pairs) -- nothing clears
+significance at this n (structural floor, as in F3-REVISION v2), but the
+DIRECTION COUNTS are the finding: GNN beats RandN/RandE 4/5; SX loses to
+RandN/RandE 5/5 (i.e. RandN/RandE beat SX 5/5); PG beats RandN 2/5 and loses
+to RandE 3/5 (RandE beats PG 3/5). RandE > RandN in 5/5 (the edge->node fold
+is itself a mild structural prior, worth noting but not the headline).
+
+**Bottom line for the paper:** on mutag_graphxai, only GNNExplainer clears a
+random baseline with any consistency. SubgraphX is at-or-below chance in
+every seed -- sharper and more damaging than "SX scores low" (F3's original
+framing). PGExplainer's above-chance appearance is seed-dependent, not
+structural. This reframes F3's ranking: it is not "three explainers of
+varying quality," it is "one explainer (GNN) with real signal, one
+(SubgraphX) indistinguishable from noise, and one (PGExplainer) that is
+sometimes real and sometimes not, unpredictably by seed." Random baselines
+for B-XAIC (where GEA orderings look the opposite way, F9) and Tox21 Fidelity
+are a natural next step -- not yet run.
