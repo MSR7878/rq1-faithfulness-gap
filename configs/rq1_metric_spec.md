@@ -774,11 +774,27 @@ reading of F3/F9: SubgraphX's prediction-preserving-subgraph objective
 genuinely recovers B-XAIC's indole substructure far better than chance, and
 genuinely fails to recover MUTAG's NO2/NH2 motif better than chance. F3/F9
 do NOT need rewriting on this evidence -- indole strengthens them. (Caveat:
-only 1 of 4 B-XAIC tasks confirmed so far; PAINS/X/P to follow. F9 already
+only 1 of 4 B-XAIC tasks confirmed so far; PAINS/X/P to follow, same
+per-task/per-seed table + direction counts, via
+src/analysis/bxaic_random_baseline.py which already generalises to whatever
+units have completed -- no code change needed, just a re-run. F9 already
 flagged PAINS as weak/non-significant among the real explainers themselves
 -- worth checking whether PAINS also fails the random-baseline bar once its
 seeds land, which would be a different, narrower caveat than "trivially
-recoverable" for indole/X/P.)
+recoverable" for indole/X/P.
+
+**X IS THE ONE TO WATCH.** X's GT motif is a single halogen atom (mean GT
+size ~2.3 nodes, F14), and at B-XAIC's top-k=0.25 budget on ~28-node graphs
+the random-node mask covers ~7 atoms -- a 7-atom random draw against a
+2-atom target has real odds of hitting it by chance alone (unlike indole's
+~11-atom GT against the same ~7-9-atom budget, where a miss is much more
+likely under random selection, which is exactly why indole's RandN GEA came
+out low, 0.158-0.169). If X's RandNode baseline turns out high AND none of
+GNN/PG/SX clear it, X is trivially recoverable and F13's "X is the one task
+where GEA and Fid+ agree under every masking" needs an explicit caveat --
+that agreement could be agreement-by-chance-coverage rather than the metrics
+genuinely converging on a real signal. Check this specifically once X's
+priority-sweep seeds land, before writing F13 up as a positive result.)
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
@@ -829,13 +845,22 @@ metrics; R1 washes it out to ns too**, an independent confirmation of F6's
 comparison. SX's Tox21 signal is real but small (e.g. R3 Fid+ 0.068 vs
 RandN 0.032 -- both still tiny in absolute terms).
 
-**Bottom line combining F15-F17: across all three GT/Fidelity settings
-checked so far, SubgraphX is the only explainer that EVER clears its random
-baseline on Tox21 and B-XAIC -- but it is AT OR BELOW random on
-mutag_graphxai. GNNExplainer clears random on both GT datasets (mutag_graphxai,
-B-XAIC indole) but was never checked against a Fidelity-random baseline on
-its own best dataset. PGExplainer clears random on B-XAIC indole only, not
-Tox21, and not consistently even on its own best dataset (F3-REVISION v2).
-No explainer is uniformly better than chance across every setting -- the
-faithfulness gap now has a proper null to be measured against, not just
-inter-explainer comparisons.**
+**Bottom line combining F15-F17, CORRECTED (the first version of this
+paragraph wrongly said "SX is the only explainer that ever clears random" --
+that directly contradicts GNN's own row and has been fixed):**
+**GNNExplainer clears random on BOTH GT/GEA datasets** -- mutag_graphxai
+(4/5 seeds) and B-XAIC indole (3/4 seeds) -- **but never separates from
+random on Tox21 Fidelity** (ns in all 9 masking x metric cells, F17).
+**SubgraphX is the most dataset-DEPENDENT of the three**: AT OR BELOW random
+on mutag_graphxai (0/5 seeds beat it), decisively ABOVE random on B-XAIC
+indole (4/4 seeds), and the ONLY explainer with any significant Tox21
+signal at all (R3/R2, washed out under R1) -- SX's GEA-vs-random result
+flips harder between datasets than either other explainer's, which is the
+same inversion F3/F9 already describe, now shown to be real rather than a
+trivial-GT artifact (on indole; PAINS/X/P still pending, see below).
+**PGExplainer clears random reliably only on B-XAIC** (4/4 seeds vs its
+matched random-edge baseline); it is inconsistent on mutag_graphxai (2/5,
+F3-REVISION v2) and never separates on Tox21 (ns, all 9 cells). No explainer
+beats chance in every setting checked -- GNN comes closest (both GT
+datasets, silent on Tox21 Fidelity) -- but the faithfulness gap now has a
+proper null to be measured against, not just inter-explainer comparisons.
