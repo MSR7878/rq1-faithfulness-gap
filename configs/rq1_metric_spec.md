@@ -166,10 +166,16 @@ F3. GEA ranking (masking-independent) is INVERTED between the two GT datasets,
     indole GT (B-XAIC by design) but != the NO2/NH2 motif (not the
     prediction-preserving scaffold for mutagenicity). GNNExplainer's soft masks
     over-select (20-35 of ~40 nodes) -> poor Jaccard on compact motifs.
-    REVISION at 5-seed pooled n (n=940, see "F3-REVISION" below): the
-    mutag_graphxai "GNN ~= PG" tie and the "PGExplainer stable" claim BOTH
-    change -- GNN-PG flips to significant and PGExplainer turns out to be the
-    least reliable of the three explainers, not the most stable.
+    REVISION (5-seed, seed-aware -- see "F3-REVISION v2" below, NOT the
+    pseudo-replicated pooled-n=940 v1): the mutag_graphxai "GNN ~= PG" tie
+    and the "PGExplainer stable" claim BOTH change. GNN significantly beats
+    PG and SX in 5/5 independent seeds (robust). But the exact "PG > SX"
+    2nd-place ordering only reproduces in 3/5 seeds -- report "GNN >> {PG,
+    SX}", not the strict 3-way "GNN > PG > SX". PGExplainer turns out to be
+    the least RELIABLE of the three (worst CV + the only catastrophic-
+    collapse mode), not the most stable -- though seed-to-seed swing itself
+    is NOT PG-specific: GNN's absolute range across seeds is larger than
+    PG's.
 
 F4. R2 zero-fill artifact is FEATURISATION-DEPENDENT, not a clean fix.
     One-hot datasets (MUTAG family): R3->R2 inflates |Fid-| and GEF massively
@@ -574,43 +580,97 @@ with F10, where an identical "is this a real effect" check on Tox21 DID
 reveal a seed-noise artifact -- this one measured clean at both 3/5 and 5/5
 seeds.)
 
-### F3-REVISION: 5-seed pooled significance changes the mutag_graphxai ranking
+### F3-REVISION v1 (SUPERSEDED -- pseudo-replicated, do not cite the p-values below)
 
-src/analysis/mutag_full_pooled_significance.py, n=940 molecule-seed pairs
-(ALL 188 graphs x 5 seeds), same method as F3 (Wilcoxon signed-rank paired,
-Holm-Bonferroni over the 3 pairs):
+~~src/analysis/mutag_full_pooled_significance.py, n=940 molecule-seed pairs~~
+~~GNN-PG p_Holm=7.8e-94 *** ; GNN-SX p_Holm=8.6e-133 *** ; PG-SX p_Holm=5.4e-20 ***~~
+WRONG: the 940 "observations" are 188 molecules x 5 seeds, not 940
+independent draws -- the same molecule recurs 5x, so Wilcoxon's n is
+overstated by ~5x and the p-values are inflated (p~1e-94/1e-133 is itself
+the tell -- real effects on n~200 basically never produce numbers that
+small). Superseded by the seed-aware analysis below. The DESCRIPTIVE means
+(GNN 0.431, PG 0.156, SX 0.065) are fine to keep -- pooling is only invalid
+for the SIGNIFICANCE test, not for reporting a plain average.
 
-  GNN 0.431   PG 0.156   SX 0.065
-  GNN-PG p_Holm=7.8e-94  *** (GNN higher)   [was n.s. at p=0.084 single-seed]
-  GNN-SX p_Holm=8.6e-133 *** (GNN higher)   [unchanged, already ***]
-  PG-SX  p_Holm=5.4e-20  *** (PG higher)    [unchanged, already **]
+### F3-REVISION v2 (seed-aware, correct): per-seed + seed-level tests
 
-**F3's "GNN ~= PG >> SX" wording is WRONG at 5-seed pooled n and must change
-to "GNN > PG > SX"** -- a full strict ordering, not a tie at the top. GNN
-barely moved (0.448 single-seed -> 0.431 pooled, within noise); PG's mean
-dropped 0.300 -> 0.156 across the 5 independent model fits, which is what
-flips GNN-PG from n.s. to ***. The single-seed n=29 test did not have the
-power to see this; n=940 does.
+src/analysis/seed_correct_significance.py. The independent unit is the SEED
+(a fresh model fit), not the (molecule, seed) pair. Two honest tests, both
+reported (they trade power for validity in opposite directions):
 
-PGExplainer's pooled mean is an average over a BIMODAL distribution --
-per-seed GEA: seed0=0.243, seed1=0.066, seed2=0.070, **seed3=0.000
-(COLLAPSED -- all-0.000 mask, F10's exact failure mode)**, seed4=0.400.
-  WITH seed 3 (the honest expectation over a random run): mean=0.156, n=940
-  WITHOUT seed 3 (conditional on PG training succeeding): mean=0.195, n=752
-    -- and even those 4 "successful" seeds range 0.066-0.400, so PG is
-    highly seed-variable even when it doesn't fully collapse.
-Both numbers belong in the paper, not just 0.156 or just 0.195 alone --
-neither one alone tells a reader what to expect from a single PG run.
+**1. Per-seed test** (Wilcoxon+Holm within each seed, n=188/seed -- same
+scope F3 originally used, just repeated 5x):
 
-**"PGExplainer is the stable method" (the B-XAIC-section wording) does NOT
-stand unqualified.** It was a claim about cross-dataset RANKING consistency
-(top-tier GEA on both mutag_graphxai and B-XAIC) and remains true in that
-narrow sense. But PGExplainer is also the ONLY one of the three explainers
-with a documented ~20-30% per-run catastrophic-failure mode (F10, Tox21);
-this run adds a 5th, independent confirmation on a different dataset (1/5 =
-20% collapsed here too). Calling it "stable" without that qualifier reads as
-a much stronger claim than the data supports. Revised wording: PGExplainer
-has the most cross-dataset-consistent RANKING among successful runs, but is
-also the LEAST run-to-run RELIABLE of the three explainers -- its mean
-blends a real ~0.2-0.4 signal with a ~20-30% chance of complete failure, and
-a reader needs both the pooled-mean and the per-seed spread to interpret it.
+| seed | GNN-PG | GNN-SX | PG-SX | order (by mean) | GNN/PG/SX |
+|------|--------|--------|-------|------------------|-----------|
+| 0 | \*\*\* (GNN) | \*\*\* (GNN) | \* (PG) | GNN>PG>SX | 0.433/0.243/0.030 |
+| 1 | \*\*\* (GNN) | \*\*\* (GNN) | \* (tie-ish) | GNN>PG>SX | 0.122/0.066/0.020 |
+| 2 | \*\*\* (GNN) | \*\*\* (GNN) | \* (tie-ish) | **GNN>SX>PG** | 0.492/0.070/0.113 |
+| 3 | \*\*\* (GNN) | \*\*\* (GNN) | \*\*\* (tie-ish) | **GNN>SX>PG** | 0.496/0.000/0.048 |
+| 4 | \*\*\* (GNN) | \*\*\* (GNN) | \*\*\* (PG) | GNN>PG>SX | 0.612/0.400/0.113 |
+
+GNN beats BOTH PG and SX significantly in 5/5 seeds -- that part of F3 is
+robust. But "PG > SX" (the second/third-place ordering) reproduces in only
+**3/5 seeds**; in seeds 2 and 3, SX numerically/significantly beats PG. So
+the exact "GNN > PG > SX" ordering holds in 3/5 seeds, not all 5.
+
+**2. Seed-level test** (paired Wilcoxon on the n=5 per-seed means -- the test
+that actually respects independence; n=5 means the minimum attainable
+two-sided p is 0.0625, so it structurally CANNOT reach p<0.05 even when
+every seed agrees -- read the sign/consistency count, not the p-value):
+
+| pair | direction consistency | p_raw | p_Holm |
+|------|------------------------|-------|--------|
+| GNN-PG | GNN higher in **5/5** seeds | 0.0625 | 0.1875 ns |
+| GNN-SX | GNN higher in **5/5** seeds | 0.0625 | 0.1875 ns |
+| PG-SX | PG higher in only 3/5 seeds | 0.4375 | 0.4375 ns |
+
+Nothing is formally significant at n=5 (expected, by construction), but the
+SIGN is perfectly consistent for GNN>PG and GNN>SX (5/5) and NOT consistent
+for PG>SX (3/5) -- the same qualitative conclusion as the per-seed test,
+now from the test that doesn't overstate n.
+
+**REVISED F3 CLAIM: "GNN significantly beats both PG and SX on
+mutag_graphxai, robustly (5/5 seeds, both tests). PG-vs-SX for 2nd place is
+NOT robust (3/5 seeds) -- report 'GNN >> {PG, SX}' as the honest ordering,
+not the strict 'GNN > PG > SX' from either the single-seed or the
+(pseudo-replicated) pooled test."**
+
+**Is the seed variance PG-specific?** NO. Per-explainer per-seed GEA:
+
+| expl | seed0 | seed1 | seed2 | seed3 | seed4 | abs. range | CV (std/mean) |
+|------|-------|-------|-------|-------|-------|------------|----------------|
+| GNN  | 0.433 | 0.122 | 0.492 | 0.496 | 0.612 | **0.489** (largest) | 0.38 (lowest) |
+| PG   | 0.243 | 0.066 | 0.070 | 0.000 | 0.400 | 0.400 | **0.94 (highest)** |
+| SX   | 0.030 | 0.020 | 0.113 | 0.048 | 0.113 | **0.094 (smallest)** | 0.63 |
+
+GNN has the LARGEST absolute seed-to-seed range (0.489, spanning nearly half
+the [0,1] Jaccard scale) -- MORE than PG's (0.400). Seed variance is a
+general property of this pipeline (small dataset, 5 independent model fits),
+not something unique to PGExplainer. What IS unique to PGExplainer is not
+the magnitude of its variance but its KIND: PG's low end is a literal
+collapse to a degenerate all-0.000 mask (F10's failure mode) -- a
+qualitatively distinct catastrophic mode never seen in GNN or SX, whose
+variability stays "noisy but functioning" across the full range. By relative
+dispersion (CV) PG is still the least stable (0.94, driven by the collapse
+pulling its low end to exactly 0) and GNN is actually the MOST relatively
+stable (0.38, because its mean is high enough to absorb the same absolute
+swing) -- SX sits in between (0.63) despite having the smallest absolute
+range, because its mean is so low that even a small absolute swing is a
+large fraction of it.
+
+**Bottom line for the paper:** (a) GNN's seed-to-seed swing is real and
+larger in absolute terms than PG's -- F3's headline (GNN wins) rests on
+consistent DIRECTION across seeds, not on GNN being some noise-free
+explainer; a good chunk of GNN's apparent margin over PG/SX is itself seed
+luck in magnitude, just never in sign. (b) PG's problem is not "high
+variance" generically -- it's the collapse. (c) "PGExplainer is the stable
+method" (B-XAIC-section wording) still does not stand: PG has the worst CV
+of the three AND the only catastrophic-failure mode. Revised wording stands
+as before: most cross-dataset-consistent RANKING among successful runs,
+least run-to-run RELIABLE explainer overall.
+
+**Apply this SAME correction (per-seed test + seed-level test on per-seed
+means, never a naive pool-then-Wilcoxon across seeds) to P1's B-XAIC
+significance once it lands, and to any other multi-seed significance
+computed going forward.**
