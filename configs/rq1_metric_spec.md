@@ -740,9 +740,10 @@ sometimes real and sometimes not, unpredictably by seed." Random baselines
 for B-XAIC (where GEA orderings look the opposite way, F9) and Tox21 Fidelity
 are a natural next step -- not yet run.
 
-### F16. Random baseline, B-XAIC -- indole/PAINS/X ALL COMPLETE (5/5 each), only
-### P remains -- SX beats random with ZERO exceptions across all 15 seed-task
-### units; PAINS and X each independently reveal a PGExplainer collapse instance
+### F16. Random baseline, B-XAIC -- indole/PAINS/X COMPLETE (5/5 each), P at
+### 3/5 -- SX beats random with ZERO exceptions across all 18 seed-task units
+### so far; PAINS and X each independently reveal a PGExplainer collapse
+### instance; see "F16 WRAP-UP VERDICT" below
 
 src/analysis/bxaic_random_baseline.py, run against whatever P1 units had
 completed at each check (no waiting for the full sweep). indole, PAINS, and
@@ -769,8 +770,10 @@ X are all now complete (5/5 seeds each, 15 of 20 P1 units total); P training
 | X | 3 | 0.061 | 0.313 | 0.336 | 0.056 | 0.069 |
 | X | 4 | 0.064 | **0.030 (near-collapse)** | 0.430 | 0.060 | 0.072 |
 | X | mean | 0.063 | 0.368 | 0.383 | 0.055 | 0.074 |
+| P | 0 | 0.128 | 0.225 | 0.373 | 0.043 | 0.024 |
 | P | 1 | 0.180 | 0.273 | 0.249 | 0.040 | 0.022 |
-| P | ... | -- | -- | -- | -- | -- (seeds 0,2-4 still running; 1/5 so far) |
+| P | 3 | 0.237 | 0.294 | 0.308 | 0.047 | 0.023 |
+| P | mean(3/5) | 0.182 | 0.264 | 0.310 | 0.043 | 0.023 |
 
 **THE ANSWER TO THE SPECIFIC QUESTION: SubgraphX beats random-node decisively
 on every B-XAIC task checked, with ZERO exceptions across all 15 completed
@@ -819,16 +822,52 @@ PAINS has real signal for two of the three explainers, it just doesn't
 distinguish GNN/PG/SX well from each other (and PG's own signal there is
 now further complicated by its 2/5 collapse rate).
 
-**P, first seed in (1/5, not yet enough for a wrap-up verdict -- 3+ needed):**
-seed 1 -- GNN=0.180, PG=0.273, SX=0.249, RandN=0.040, RandE=0.022, all three
-explainers beat their matched random baseline decisively (p<1e-46 each), no
-collapse. P's random baselines are the LOWEST of any B-XAIC task seen so far
-(vs X's ~0.05-0.06), consistent with P having the tiniest GT of the four
-tasks (~1.3 atoms, F9) -- if the X pattern holds, P should be the SECOND
-most "GNN-margin-thin" task, worth watching. Remaining: P seeds 0, 2-4 (0-2
-explaining, 3-4 not started) -- same table + direction-count format,
-appended here as they land; full F16 wrap-up verdict once P reaches 3+
-seeds.
+**P at 3/5 seeds (0, 1, 3), clean sweep -- ALL THREE explainers beat random
+in ALL 3 seeds, no collapse, and (unlike X) GNN's margin is STRONG, not
+thin:** GNN vs RandN p in [4.8e-35, 7.5e-51] all ***; SX vs RandN p in
+[4.4e-59, 1.4e-56] all ***; PG vs RandE p in [1.4e-49, 3.1e-61] all ***. P's
+random baselines are the LOWEST of any B-XAIC task (RandN 0.040-0.047,
+RandE 0.022-0.024 -- even lower than X's), consistent with P having the
+tiniest GT of the four tasks (~1.3 atoms, F9). **The X-specific hypothesis
+("smallest GT -> thinnest GNN margin") does NOT generalise to P, which has
+an even smaller GT than X but a solid, unambiguous GNN signal** -- so
+whatever makes GNN's B-XAIC margin thin on X is task-specific to X (its
+particular halogen-detection rule), not simply "GT size". (2 P seeds
+remain, 2/4 not started; will confirm this holds.)
+
+### F16 WRAP-UP VERDICT (18/20 P1 units; indole/PAINS/X complete, P at 3/5)
+
+1. **SubgraphX beats random-node with ZERO exceptions across all 18
+   completed B-XAIC seed-task units** (indole 5/5, PAINS 5/5, X 5/5, P 3/3)
+   -- the cleanest possible confirmation that SX's B-XAIC success is real
+   and general across task TYPES (ring system, alert-set, halogen presence,
+   phosphorus presence), not a property of any one task. Combined with F15
+   (SX at/below random on mutag_graphxai, 0/5), the GEA inversion between
+   the two GT datasets (F3, F9) is now shown to be a real, structural
+   difference in what SubgraphX's objective can recover, not a
+   trivial-ground-truth artifact on either side.
+2. **PGExplainer collapse/near-collapse is now a FIVE-dataset-spanning
+   phenomenon**, with 3 confirmed instances inside B-XAIC alone: PAINS
+   seeds 3-4 (full collapse) and X seed 4 (near-collapse) -- plus Tox21
+   (F10) and mutag_graphxai seed 3 (F3-REVISION v2). Across all 18 completed
+   B-XAIC (task,seed) units, PG collapsed/near-collapsed in 3 (17%),
+   consistent with F10's ~20-30% estimate. When it doesn't collapse, PG
+   clears random decisively every time.
+3. **GNNExplainer's random-margin varies by TASK, not simply by GT size**:
+   robust on indole (mostly), PAINS, and P; genuinely thin/sometimes-ns only
+   on X. X's own mechanism (a single halogen atom, GNN's soft mask spread
+   thin over ~28 nodes) does not generalise even to P, which has a SMALLER
+   GT (~1.3 vs ~2.3 atoms) but a clean GNN signal -- the thin-margin
+   phenomenon is X-specific, not a "tiny GT" rule.
+4. **F13's "X is where GEA and Fid+ agree" needs no trivial-recoverability
+   caveat** (settled at 5/5 X seeds, F16 above) -- and by the same logic P
+   (even smaller GT, even lower random baseline, real signal for all three
+   explainers) doesn't either.
+
+Once P reaches 5/5 this verdict will be finalised with exact fractions; the
+qualitative picture (SX universal winner vs random, PG's occasional
+collapse, GNN's task-specific not size-specific margin) is unlikely to
+change from 3/5 to 5/5 given the consistency already shown.
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
