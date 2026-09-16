@@ -769,7 +769,8 @@ X are all now complete (5/5 seeds each, 15 of 20 P1 units total); P training
 | X | 3 | 0.061 | 0.313 | 0.336 | 0.056 | 0.069 |
 | X | 4 | 0.064 | **0.030 (near-collapse)** | 0.430 | 0.060 | 0.072 |
 | X | mean | 0.063 | 0.368 | 0.383 | 0.055 | 0.074 |
-| P | -- | -- | -- | -- | -- | -- (training only, no explain output yet) |
+| P | 1 | 0.180 | 0.273 | 0.249 | 0.040 | 0.022 |
+| P | ... | -- | -- | -- | -- | -- (seeds 0,2-4 still running; 1/5 so far) |
 
 **THE ANSWER TO THE SPECIFIC QUESTION: SubgraphX beats random-node decisively
 on every B-XAIC task checked, with ZERO exceptions across all 15 completed
@@ -818,10 +819,16 @@ PAINS has real signal for two of the three explainers, it just doesn't
 distinguish GNN/PG/SX well from each other (and PG's own signal there is
 now further complicated by its 2/5 collapse rate).
 
-Remaining: all of P (training, seeds 0-2 explaining, 3-4 not started) -- same
-table + direction-count format, appended here as it lands. P is the LAST
-B-XAIC task and the last remaining unknown in the full random-baseline
-picture; indole/PAINS/X are done.
+**P, first seed in (1/5, not yet enough for a wrap-up verdict -- 3+ needed):**
+seed 1 -- GNN=0.180, PG=0.273, SX=0.249, RandN=0.040, RandE=0.022, all three
+explainers beat their matched random baseline decisively (p<1e-46 each), no
+collapse. P's random baselines are the LOWEST of any B-XAIC task seen so far
+(vs X's ~0.05-0.06), consistent with P having the tiniest GT of the four
+tasks (~1.3 atoms, F9) -- if the X pattern holds, P should be the SECOND
+most "GNN-margin-thin" task, worth watching. Remaining: P seeds 0, 2-4 (0-2
+explaining, 3-4 not started) -- same table + direction-count format,
+appended here as they land; full F16 wrap-up verdict once P reaches 3+
+seeds.
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
