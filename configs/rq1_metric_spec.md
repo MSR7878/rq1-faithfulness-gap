@@ -740,13 +740,14 @@ sometimes real and sometimes not, unpredictably by seed." Random baselines
 for B-XAIC (where GEA orderings look the opposite way, F9) and Tox21 Fidelity
 are a natural next step -- not yet run.
 
-### F16. Random baseline, B-XAIC (indole 5/5, PAINS 3/5, X 2/5, P pending) --
-### SX beats random on every task checked; X's flagged risk did NOT materialise
+### F16. Random baseline, B-XAIC (indole 5/5, PAINS 5/5 COMPLETE, X 4/5, P
+### training/pending) -- SX beats random on every task checked; X's flagged
+### risk did NOT materialise; PAINS reveals a NEW PGExplainer collapse instance
 
 src/analysis/bxaic_random_baseline.py, run against whatever P1 units had
-completed at each check (no waiting for the full sweep) -- indole is now
-complete (5/5 seeds); PAINS 3/5; X 1/5; P still training. Same
-matched-top-k=0.25 construction as F15.
+completed at each check (no waiting for the full sweep). indole and PAINS
+are now complete (5/5 seeds each); X 4/5; P training (3 ckpts, no explain
+output yet). Same matched-top-k=0.25 construction as F15.
 
 | task | seed | GNN | PG | SX | RandN | RandE |
 |------|------|-----|-----|-----|-------|-------|
@@ -759,57 +760,63 @@ matched-top-k=0.25 construction as F15.
 | PAINS | 0 | 0.331 | 0.361 | 0.465 | 0.162 | 0.161 |
 | PAINS | 1 | 0.322 | 0.442 | 0.475 | 0.167 | 0.154 |
 | PAINS | 2 | 0.252 | 0.277 | 0.501 | 0.169 | 0.163 |
-| PAINS | mean | 0.301 | 0.360 | 0.480 | 0.166 | 0.159 |
+| PAINS | 3 | 0.336 | **0.000 (collapsed)** | 0.520 | 0.165 | 0.165 |
+| PAINS | 4 | 0.278 | **0.000 (collapsed)** | 0.497 | 0.159 | 0.158 |
+| PAINS | mean | 0.304 | 0.216 | 0.492 | 0.165 | 0.160 |
 | X | 0 | 0.066 | 0.435 | 0.329 | 0.053 | 0.080 |
 | X | 1 | 0.062 | 0.535 | 0.382 | 0.056 | 0.076 |
-| X | mean | 0.064 | 0.485 | 0.355 | 0.054 | 0.078 |
-| P | -- | -- | -- | -- | -- | -- (no completed units yet) |
+| X | 2 | 0.061 | 0.525 | 0.438 | 0.053 | 0.073 |
+| X | 3 | 0.061 | 0.313 | 0.336 | 0.056 | 0.069 |
+| X | mean | 0.063 | 0.452 | 0.371 | 0.054 | 0.075 |
+| P | -- | -- | -- | -- | -- | -- (training only, no explain output yet) |
 
 **THE ANSWER TO THE SPECIFIC QUESTION: SubgraphX beats random-node decisively
-on every B-XAIC task checked so far** -- indole 5/5 seeds (p~1e-58 to 1e-60,
-SX 0.567-0.722 vs RandN 0.156-0.169, ~4x margin), PAINS 3/3 (p~1e-45 to
-1e-51, SX 0.465-0.501 vs RandN 0.162-0.169, ~3x), X 2/2 (p=5.1e-41 and
-5.5e-46, SX 0.329/0.382 vs RandN 0.053/0.056, ~6-7x margin). GNN vs RandN on
-X is consistently weaker but still significant both seeds (p=1.0e-03 **,
-3.8e-02 *) -- X is the one task where GNN's margin over random is thin.
-PGExplainer beats its matched random-edge baseline everywhere too -- indole
-5/5, PAINS 3/3, X 2/2, all p<1e-19. GNNExplainer beats random on indole in
-3/5 seeds (loses in 2, including narrowly in seed 4 -- ns), PAINS 3/3, X 2/2
-(weaker margin than SX/PG, p~1e-3/1e-2 vs SX/PG's ~1e-40+).
+on every B-XAIC task checked, with NO exceptions across 14 total seed-task
+units** -- indole 5/5 (p~1e-58 to 1e-60, ~4x margin), PAINS 5/5 (p~1e-45 to
+1e-52, ~3x, UNAFFECTED by PG's collapse in the same seeds), X 4/4 (p~1e-41
+to 1e-51, ~6-8x, the widest margins of any task). **SX vs RandN is 14/14.**
+
+PGExplainer beats its matched random-edge baseline in indole 5/5 and X 4/4,
+but only **3/5 on PAINS** -- seeds 3 and 4 COLLAPSED (all-0.000 mask, RandE
+wins there instead, p<1e-52 in RandE's favour). This is the SAME
+seed-dependent training-failure mode as F10 (Tox21) and F3-REVISION v2
+(mutag_graphxai seed 3) -- now confirmed on a THIRD dataset. 2/5 = 40% here,
+same order of magnitude as F10's ~20-30% Tox21 estimate; small-n, but
+another independent data point that PGExplainer collapse is a general
+property of its training instability, not tied to any one dataset.
+
+GNNExplainer beats random on indole in 3/5 seeds (loses 2, one ns), PAINS
+5/5 (all ***), X 4/4 but only 3/4 SIGNIFICANTLY (seed 3 is ns, p=0.340) --
+**X remains the one task where GNN's margin over random is thin and
+sometimes not even significant**, unlike its solid, consistent wins on
+PAINS and (mostly) indole.
 
 **This is the OPPOSITE of mutag_graphxai (F15), where SX failed to beat
 random in 5/5 seeds.** The inversion is not trivially-recoverable ground
-truth -- SX's B-XAIC wins and mutag_graphxai loss are both real against a
-proper null. Supports, does not undermine, the model-rule-alignment reading
-of F3/F9.
+truth -- SX's B-XAIC wins (now 14/14 seed-task units across 3 tasks) and its
+mutag_graphxai loss are both real against a proper null. Supports, does not
+undermine, the model-rule-alignment reading of F3/F9.
 
-**X's flagged risk (spec, prior entry) did NOT materialise.** The worry was
-that X's tiny GT (~2.3 atoms) against a ~7-atom top-k budget on ~28-node
-graphs would let a random draw cover it by luck, making X's RandN baseline
-high. Measured: **X's RandN GEA is 0.053 -- the LOWEST of any B-XAIC task
-checked** (vs indole's ~0.164, PAINS's ~0.166), not the highest, and holds
-at 2/2 seeds now (0.053, 0.056). All three explainers clear it in both
-seeds, SX and PG by large margins (~6-7x, ~5-7x). **F13's "X is where GEA
-and Fid+ agree under every masking" does NOT need a trivial-recoverability
-caveat -- X is, if anything, the LEAST luck-prone of the checked B-XAIC
-tasks, and the real explainers' separation from chance there is the
-cleanest of the three.** (2/5 seeds so far for X -- confirm this
-holds as seeds 1-4 land, but the margins are wide enough that a flip is
-unlikely.)
+**X's flagged risk did NOT materialise, confirmed at 4/5 seeds.** X's RandN
+GEA sits at 0.053-0.056 across all 4 seeds -- consistently the LOWEST of any
+B-XAIC task (vs indole's ~0.164, PAINS's ~0.166), not the highest as the
+risk framing worried. SX and PG clear it by 5-8x every time. **F13's "X is
+where GEA and Fid+ agree under every masking" does NOT need a
+trivial-recoverability caveat.** (1 seed remains; margins are wide enough
+that a flip is very unlikely.)
 
 **PAINS was flagged by F9 as "weak/non-significant among the real explainers
-themselves" (GNN vs PG vs SX don't separate well from EACH OTHER there,
-n=7 GT-present molecules in the original 1-seed protocol). That is a
-DIFFERENT axis from beating random: at N=400/seed (this priority sweep) all
-three explainers beat random on PAINS decisively (3/3 seeds each). "Doesn't
-differentiate between explainers" and "no signal vs chance" are not the same
-claim -- PAINS has real signal, it just doesn't distinguish GNN/PG/SX from
-each other.
+themselves"** (GNN vs PG vs SX don't separate well from EACH OTHER there,
+n=7 in the original 1-seed protocol) -- **a DIFFERENT axis from beating
+random.** At N=400/seed, GNN and SX beat random on PAINS in 5/5 seeds each;
+PAINS has real signal for two of the three explainers, it just doesn't
+distinguish GNN/PG/SX well from each other (and PG's own signal there is
+now further complicated by its 2/5 collapse rate).
 
-Remaining: PAINS seeds 3-4, X seeds 2-4, and all of P -- same table +
-direction-count format, appended here as they land; P is the last B-XAIC
-task to start training under the priority sweep (not started yet as of this
-check).
+Remaining: X seed 4, and all of P (training, seeds 0-2 in progress, 3-4 not
+started) -- same table + direction-count format, appended here as they
+land. P is the last B-XAIC task and the last remaining unknown in the full
+random-baseline picture.
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
@@ -864,18 +871,21 @@ RandN 0.032 -- both still tiny in absolute terms).
 paragraph wrongly said "SX is the only explainer that ever clears random" --
 that directly contradicts GNN's own row and has been fixed):**
 **GNNExplainer clears random on BOTH GT/GEA datasets** -- mutag_graphxai
-(4/5 seeds) and B-XAIC (indole 3/5, PAINS 3/3, X 2/2) -- **but never
-separates from random on Tox21 Fidelity** (ns in all 9 masking x metric
-cells, F17). **SubgraphX is the most dataset-DEPENDENT of the three**: AT OR
-BELOW random on mutag_graphxai (0/5 seeds beat it), decisively ABOVE random
-on every B-XAIC task checked (indole 5/5, PAINS 3/3, X 2/2, all p<1e-40),
-and the ONLY explainer with any significant Tox21 signal at all (R3/R2,
-washed out under R1) -- SX's GEA-vs-random result flips harder between
-datasets than either other explainer's, which is the same inversion F3/F9
-already describe, now shown to be real rather than a trivial-GT artifact
-across 3 of 4 B-XAIC tasks (P still pending). **PGExplainer clears random
-reliably on B-XAIC** (indole 5/5, PAINS 3/3, X 2/2, vs its matched
-random-edge baseline); it is inconsistent on mutag_graphxai (2/5,
+(4/5 seeds) and B-XAIC (indole 3/5, PAINS 5/5, X 3/4 significantly) -- **but
+never separates from random on Tox21 Fidelity** (ns in all 9 masking x
+metric cells, F17). **SubgraphX is the most dataset-DEPENDENT of the
+three**: AT OR BELOW random on mutag_graphxai (0/5 seeds beat it),
+decisively ABOVE random on EVERY B-XAIC task checked with NO exceptions
+(indole 5/5, PAINS 5/5, X 4/4 -- 14/14 seed-task units, all p<1e-40), and
+the ONLY explainer with any significant Tox21 signal at all (R3/R2, washed
+out under R1) -- SX's GEA-vs-random result flips harder between datasets
+than either other explainer's, which is the same inversion F3/F9 already
+describe, now shown to be real rather than a trivial-GT artifact across 3 of
+4 B-XAIC tasks (P still pending). **PGExplainer clears random reliably on
+B-XAIC when it doesn't collapse** (indole 5/5, X 4/4, PAINS only 3/5 --
+COLLAPSED on 2 PAINS seeds, RandE beats it there instead, a THIRD
+independent confirmation of F10's collapse pattern alongside Tox21 and
+mutag_graphxai seed 3); it is inconsistent on mutag_graphxai (2/5,
 F3-REVISION v2) and never separates on Tox21 (ns, all 9 cells). No explainer
 beats chance in every setting checked -- GNN and PG both clear random on
 every B-XAIC task so far but neither ever separates on Tox21 Fidelity -- but
