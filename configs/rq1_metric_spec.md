@@ -772,8 +772,9 @@ X are all now complete (5/5 seeds each, 15 of 20 P1 units total); P training
 | X | mean | 0.063 | 0.368 | 0.383 | 0.055 | 0.074 |
 | P | 0 | 0.128 | 0.225 | 0.373 | 0.043 | 0.024 |
 | P | 1 | 0.180 | 0.273 | 0.249 | 0.040 | 0.022 |
+| P | 2 | 0.174 | 0.295 | 0.325 | 0.043 | 0.022 |
 | P | 3 | 0.237 | 0.294 | 0.308 | 0.047 | 0.023 |
-| P | mean(3/5) | 0.182 | 0.264 | 0.310 | 0.043 | 0.023 |
+| P | mean(4/5) | 0.180 | 0.272 | 0.314 | 0.043 | 0.023 |
 
 **THE ANSWER TO THE SPECIFIC QUESTION: SubgraphX beats random-node decisively
 on every B-XAIC task checked, with ZERO exceptions across all 15 completed
