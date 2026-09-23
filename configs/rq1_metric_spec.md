@@ -361,6 +361,45 @@ F11. R2/R1 inflation vs R3 (block B) IS statistically detectable on raw-integer
      X / P show LARGE significant R1 GEF inflation (P: 0.00 -> 0.37-0.70, all
      p<0.001) -- deleting the one discriminative atom is catastrophic
      regardless of which explainer chose it: F6 washout in its purest form.
+     URGENT RE-TEST (below, F11-REVISION): unlike the SX Fid-/GEF pooled-n=60
+     issue (F17-REVISION), this claim's ORIGINAL form was NOT cross-seed
+     pooled to begin with (it's a per-endpoint, single-seed count, not one
+     combined p-value) -- but it WAS single-seed, so re-checked independently
+     against all 5 priority-sweep seeds. Verdict: CONFIRMED, not withdrawn.
+
+### F11-REVISION: seed-aware re-test (URGENT, requested after the SX Fid-/GEF
+### pooling artifact) -- CONFIRMED, reproduces in all 5 seeds independently
+
+src/analysis/tox21_f11_seed_check.py. Re-runs F11's EXACT original test (one
+paired Wilcoxon per endpoint, n=30 molecules, R3-mean vs R2-zero and vs
+R1-hard on |Fid-| and GEF) independently for each of the 5 priority-sweep
+seeds -- not one pooled test, 5 separate replications of the original
+per-seed methodology. Counts of endpoints (out of 12) significant:
+
+| expl | metric | R3->R2 per seed [s0..s4] | mean | R3->R1 per seed [s0..s4] | mean |
+|------|--------|--------------------------|------|---------------------------|------|
+| GNN | Fid- | [10,10,7,10,8] | 9.0/12 | [11,10,8,10,10] | 9.8/12 |
+| GNN | GEF  | [10,10,8,10,8] | 9.2/12 | [12,10,9,10,11] | 10.4/12 |
+| PG  | Fid- | [7,10,9,9,7]   | 8.4/12 | [11,10,10,10,8] | 9.8/12 |
+| PG  | GEF  | [7,8,9,9,8]    | 8.2/12 | [11,10,10,10,10]| 10.2/12 |
+| SX  | Fid- | [6,9,8,7,7]    | 7.4/12 | [10,11,9,10,11] | 10.2/12 |
+| SX  | GEF  | [6,10,8,7,7]   | 7.6/12 | [12,11,9,11,11] | 10.8/12 |
+
+**F11 is CONFIRMED across every seed independently -- no collapse to
+near-zero in any seed, for any explainer or metric.** The R3->R2 count never
+drops below 6/12 (SX, seed 0) and never exceeds 10/12; R3->R1 never drops
+below 8/12 and is frequently 10-12/12. This is the OPPOSITE pattern from
+SX's Fid-/GEF-vs-random claim (F17-REVISION), which was 0/5 in every
+individual seed and only "worked" once pooled to n=60 -- here every seed
+independently reproduces a result close to or above F11's original "~8/12"
+estimate. **Why this one survives and SX's didn't**: F11's original test was
+never pooled across a hidden replicate dimension to begin with (12
+independent per-endpoint tests, not one combined test); it was simply run
+on a single seed. Confirming it against 5 MORE independent seeds is exactly
+the right check, and it passes. (Caveat: PG's counts (7-10/12) are computed
+including its collapsed units, which don't obviously bias this specific
+comparison since even a degenerate/uniform mask still gets pushed by the
+R2/R1 perturbation; not separately re-checked with collapsed units excluded.)
 
 F12. Per-endpoint explainer separability (block C) replicates F1 and F5 at
      scale. Under R3, essentially nothing separates on any Tox21 endpoint
