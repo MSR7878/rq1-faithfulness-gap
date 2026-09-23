@@ -285,6 +285,61 @@ F9. GEA ranking by B-XAIC task type, under the full paired-Wilcoxon + Holm
     so it is 2/4 (indole, X) under the matched metric. indole/X and F3 are
     binarization-robust.
 
+### F9-REVISION: seed-aware re-test (src/analysis/bxaic_f9_seed_check.py, all
+### 4 B-XAIC tasks x 5 priority-sweep seeds) -- MAJOR CORRECTION, X and P's
+### rankings do NOT reproduce per seed; only indole is fully robust
+
+F9's original per-task GNN-vs-PG-vs-SX significance was computed from a
+SINGLE seed (the scale-out). Never checked against the other 4
+priority-sweep seeds with the same per-seed + seed-level method F3-REVISION
+v2 applied to mutag_graphxai -- until now.
+
+**indole: FULLY ROBUST.** SX > PG > GNN in 5/5 seeds, and EVERY pairwise
+comparison (GNN-PG, GNN-SX, PG-SX) is significant in EVERY one of the 5
+seeds (n=360/seed). This is the single most reproducible 3-way ranking in
+the whole project.
+
+**PAINS: SX on top is robust; 2nd/3rd place is an artifact of PG's
+collapse, not a ranking property.** SX beats both others in 5/5 seeds. But
+GNN vs PG flips: PG > GNN in seeds 0-2 (PG healthy), GNN > PG in seeds 3-4
+(PG COLLAPSED, GEA=0.000). Seed-level sign consistency for GNN-PG is only
+3/5 -- not a real, seed-independent ordering; it's downstream of whether PG
+happened to collapse that seed.
+
+**X: DOES NOT REPRODUCE -- PG actually beats SX in most non-collapsed
+seeds.** Point-estimate order flips across seeds: **PG > SX > GNN in seeds
+0, 1, 2** (PG=0.44-0.54, actually the HIGHEST of the three when healthy);
+SX > PG > GNN in seed 3 (close, PG-SX ns that seed); SX > GNN > PG in seed 4
+(PG near-collapsed, PG=0.030). Seed-level test: PG-SX direction is
+**"SX higher in only 3/5 seeds"** -- essentially a coin flip, means are
+nearly tied (PG mean=0.368, SX mean=0.383). **F9's original framing of X as
+an "SX top" task is WRONG for the 3-way ranking** -- it only looked that
+way in the one seed sampled, where PG happened to be weaker. (F16's
+separate finding that SX and PG BOTH decisively beat RANDOM on X, every
+seed, is unaffected -- that's a different claim and still holds.)
+
+**P: THE LEAST STABLE RANKING OF ANY B-XAIC TASK.** SX > PG > GNN in seeds
+0, 2, 3; PG > SX > GNN in seed 1 (close); **GNN > PG > SX in seed 4** -- a
+complete reversal, GNN's single best performance anywhere in the B-XAIC
+table (0.327) happens to make it top-ranked on this one seed. Exact
+ordering "SX > PG > GNN" holds in only 3/5 seeds; seed-level sign
+consistency is ns on every pair (GNN-PG "PG higher 4/5", GNN-SX "SX higher
+4/5", PG-SX "SX higher 3/5" -- none reach even the 5/5 threshold).
+
+**Verdict: F9's "SX significantly top-or-tied-top on 3/4 B-XAIC tasks"
+(and F14's binarization-adjusted "2/4") OVERSTATE how often SX is the
+BEST-RANKED explainer.** Only indole is robust. PAINS's ranking is real for
+SX-on-top but its 2nd-place is collapse-contingent. X and P show genuine
+seed-to-seed reordering even setting collapse aside -- on X, PG is
+frequently (3/5 seeds) the actual top scorer; on P, no explainer holds the
+top rank consistently. **This does NOT contradict F16** (SX beats RANDOM on
+every task, every seed, 20/20) -- "beats chance" and "ranks highest among
+the three real explainers" are different claims, and only the first one is
+robust across all 4 tasks. The GEA-inversion story (F3/F9: SX wins on
+B-XAIC, GNN wins on mutag_graphxai) should be read as established for
+INDOLE specifically (and PAINS's top rank), not asserted uniformly across
+all four B-XAIC task types.
+
 ### Tox21 -- 12 endpoints, aggregate (mean +/- sd of per-endpoint means, n=12)
 
 | masking | expl | Fid+            | Fid-            | GEF             |
@@ -414,6 +469,16 @@ F12. Per-endpoint explainer separability (block C) replicates F1 and F5 at
      endpoint level SX is a separate cluster even though within any single
      endpoint per-molecule noise dominates. (Both statements hold; they are at
      different levels of aggregation.)
+     SEED-AWARE RE-TEST (src/analysis/tox21_f12_seed_check.py, all 5
+     priority-sweep seeds, same per-endpoint per-molecule method):
+     CONFIRMED, reproduces every seed -- R2 "SX sig-beats both GNN and PG"
+     count ranges 5-8/12 across the 5 seeds (mean ~6.8/12, if anything
+     slightly stronger than the single-seed "5/12"), never collapsing to
+     near-zero. R3 stays at 0-1/12 in every seed (matches F1). R1 sits at
+     1-4/12 (partial washout, between R3's ~0 and R2's ~7, consistent with
+     F6/F7). Unlike F9's B-XAIC 3-way ranking (F9-REVISION) or SX's
+     Fid-/GEF-vs-random claim (F17-REVISION), this specific claim was never
+     fragile -- it holds up cleanly at 5x the seed count.
 
 F13. Cross-metric agreement (GEA order vs Fid+ order, block D) extends F8.
      Over the 4 B-XAIC tasks x {R3,R2,R1} = 12 cells, GEA order matches Fid+
