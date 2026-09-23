@@ -865,6 +865,32 @@ No masking-, metric-, or dataset-invariant "most faithful" explainer:
   unlikely. Also note D-MPNN training is GPU-nondeterministic on the V100, so
   even a re-run at the SAME seed does not reproduce the scale-out checkpoints
   bit-for-bit (see F10).
+- **Model seed and explainer seed were COUPLED in the completed 5-seed
+  priority sweep (recorded 2026-09, after the seed-aware re-test round that
+  produced F1/F2/F4/F5/F6/F7/F8/F13/F14-REVISION and F9/F11/F12-REVISION).**
+  scripts/priority_sweep.sh + scripts/_run_unit.sh passed the SAME value `$S`
+  to both `src.train.train --seed` (base-model init/training/split RNG) and
+  `src.explain.run_phase3 --seed` (PGExplainer's own MLP init/training RNG,
+  plus GNNExplainer/SubgraphX stochasticity) for every one of the 25 (5
+  B-XAIC/mutag_graphxai units) + 60 (Tox21) = 85 completed units. F10-
+  MECHANISM's dedicated decoupling experiment showed collapse is a
+  model-weights x MLP-init INTERACTION, not either factor alone -- so any
+  "seed 4 collapses" pattern observed in the existing sweep (F9-REVISION,
+  F17-REVISION) reflects THAT SPECIFIC (model, MLP-init) pairing, not a
+  property of "seed 4" in the abstract, and cannot be cleanly attributed to
+  either the model or the explainer alone. This does not invalidate the
+  per-seed robustness checks above (each of the 5 units per dataset is still
+  a fully independent draw), but it means "seed" in every seed-aware-
+  REVISION table above should be read as "one coupled (model-init,
+  explainer-init) draw," not as two independently-randomized factors.
+  FIXED GOING FORWARD (not retroactive): scripts/_run_unit.sh now accepts an
+  `ES` env var for the explainer seed, defaulting to `$S` only for
+  back-compat; scripts/priority_sweep.sh now sets `ES=$((s + 1000))` in
+  add_job, so any NEW sweep units draw the model seed and the explainer seed
+  independently. The 85 already-completed units above were NOT re-run under
+  the decoupled protocol (would require re-explaining, not just re-scoring,
+  every unit -- out of scope for this audit); this bullet is the record that
+  they remain coupled.
 - **Small n on some cells.** B-XAIC PAINS GEA has only n=7 GT-present molecules
   (F9 has nothing significant there). Tox21 per-endpoint metrics use n=30
   stratified test molecules; cross-endpoint tests use n=12.
@@ -1514,21 +1540,21 @@ started.
 
 | # | Finding (one line) | Status | Current headline |
 |---|---|---|---|
-| F1 | R3 noise-dominated, 4 core datasets | Holds (partial re-check) | std>>mean everywhere; MUTAG-std/BBBP never re-seeded |
-| F2 | B-XAIC R3 heavy right tail | Unverified (single-seed) | as originally stated |
+| F1 | R3 noise-dominated, 4 core datasets | **CONFIRMED** (mutag_graphxai) | 9/9 cells noise-dominated, 5/5 seeds; MUTAG-std/BBBP/Tox21 not re-tested here |
+| F2 | B-XAIC R3 heavy right tail | **WITHDRAWN** as stated | reproduces in only 1/5 seeds; 4/5 show the OPPOSITE (left-skew) shape |
 | F3 | mutag_graphxai GEA: GNN~=PG>>SX | **REVISED** | "GNN >> {PG,SX}" robust (5/5 seeds); strict "GNN>PG>SX" only 3/5 |
 | F3-v1 | (pooled n=940 significance) | **WITHDRAWN** | do not cite p~1e-94 etc. |
-| F4 | R2 featurisation-dependent | Confirmed (Tox21 side) | one-hot family side unverified |
-| F5 | R2 separates SX vs GNN/PG | **UNVERIFIED, flagged** | cached data exists for mutag_graphxai + indole, not yet re-run |
-| F6 | R1 most artifact-dominated | Unverified (single-seed) | MUTAG-std/BBBP never re-seeded |
-| F7 | PG lowest Fid+ under R1, 3/5 datasets | Unverified (single-seed, cross-dataset count) | as originally stated |
-| F8 | Cross-metric agreement "1 of 8" | Unverified, same risk as F13 | as originally stated |
+| F4 | R2 featurisation-dependent | **CONFIRMED** (both sides) | one-hot side: R3->R2 inflation sig in 20/20 seed-cells; Tox21 side confirmed via F11-REVISION |
+| F5 | R2 separates SX vs GNN/PG | **CONFIRMED** | SX-vs-GNN/PG Fid+ separation robust across all 5 seeds, mutag_graphxai + indole (+ PAINS/X/P mostly) |
+| F6 | R1 most artifact-dominated (washout) | **DOES NOT REPRODUCE** | pairwise sig persists under R1 nearly as much as R2 on every GT dataset checked; restrict to MUTAG-std/BBBP (unverified) |
+| F7 | PG lowest Fid+ under R1, 3/5 datasets | **RESTATED** | common (mutag/indole/PAINS, 12/15 seed-cells) but flatly contradicted on B-XAIC/X (PG HIGHEST, 5/5 seeds) |
+| F8 | Cross-metric agreement "1 of 8" | **CONFIRMED** (qualitative) | rare agreement (~15-20% cells) holds up; the specific "indole/R2 agrees" cell is NOT itself reproducible (2/5 seeds) |
 | F9 | B-XAIC 3-way GEA ranking per task | **MAJOR REVISION** | only indole robust; X/P rankings do NOT reproduce per seed |
 | F10 | PGExplainer collapse | Confirmed + mechanism found | rate 15-40% depending on dataset; model x MLP-init interaction (F10-MECHANISM) |
 | F11 | Tox21 R2/R1 inflation, ~8/12 endpoints | **CONFIRMED** | reproduces every seed, 6-10/12 (R2), 8-12/12 (R1) |
 | F12 | Tox21 R2 separates SX, 5/12 endpoints | **CONFIRMED** | reproduces every seed, 5-8/12 |
-| F13 | B-XAIC GEA/Fid+ agreement "5 of 12" | **UNVERIFIED, HIGH RISK** | F9-REVISION implies this likely doesn't survive per-seed (X's GEA order itself is unstable) |
-| F14 | GEA binarization (mean-thr vs top-k) | Unverified (single-seed) | as originally stated |
+| F13 | B-XAIC GEA/Fid+ agreement "5 of 12" | **RESTATED** | "X agrees under ALL 3 maskings" holds in only 2/5 seeds; directional claim (X 60% vs others 20-33% cell agreement) survives |
+| F14 | GEA binarization (mean-thr vs top-k) | **MIXED** | indole confirmed robust (5/5); P's instability confirmed+sharpened (0/5); mutag_graphxai/X weaker than framed (3/5, inherited GEA fragility) |
 | F15 | mutag_graphxai vs random | Confirmed (seed-aware by design) | GNN beats random 4/5; SX 0/5; PG inconsistent 2/5 |
 | F16 | B-XAIC vs random, all 4 tasks | Confirmed (seed-aware by design) | SX beats random 20/20, zero exceptions |
 | F17 | Tox21 vs random | **PARTIALLY REVISED** | Fid+ CONFIRMED (SX, 4-5/5 seeds); Fid-/GEF significance was pooling-only, WITHDRAWN as stated |
@@ -1588,5 +1614,10 @@ collapse: 24/60 (40%) on Tox21, model x MLP-init interaction (F10-MECHANISM).
 ### Do-not-cite list (superseded, kept only for provenance)
 
 - mutag_graphxai GEA significance at p~1e-94/1e-133 (F3-REVISION v1) -- pseudo-replicated, withdrawn.
+- F2's "heavy right tail, median~0.001" framing for indole R3 Fid+ -- reproduces in only 1/5 seeds, withdrawn as a general claim (F2-REVISION).
+- F13's "X agrees under ALL of R3/R2/R1" framing -- reproduces in only 2/5 seeds, restated as a directional (not universal) claim (F13-REVISION).
+- F8's "indole/R2 is the one agreeing cell" -- that specific cell is not itself reproducible (2/5 seeds); cite only the qualitative "agreement is rare" claim (F8-REVISION).
+- F6 as a general R1-washout claim beyond MUTAG-standard/BBBP -- does not reproduce on any GT dataset with 5-seed data (F6-REVISION).
+- Every finding above computed from the completed 5-seed priority sweep (F1/F2/F4/F5/F6/F7/F8/F9/F11/F12/F13/F14/F15/F16/F17 and their REVISIONs) used a sweep where the model-training seed and the explainer/PGExplainer-init seed were the SAME value per unit (coupled) -- see the "Limitations" bullet above. Treat "seed" in those tables as one coupled draw, not two independent factors. Only NEW sweep units (post this commit) use the decoupled protocol (scripts/_run_unit.sh ES, scripts/priority_sweep.sh ES=S+1000).
 - Tox21 Fid-/GEF "SX beats random ***" under any masking (F17, original + primary n=60 test) -- does not reproduce per seed (F17-REVISION block C), pooling artifact.
 - F9's "SX significantly top-or-tied-top on 3/4 B-XAIC tasks" as a claim about the 3-way ranking -- only true for indole; PAINS/X/P do not reproduce (F9-REVISION). ("SX beats RANDOM on 4/4 tasks" is a different, still-true claim, F16.)

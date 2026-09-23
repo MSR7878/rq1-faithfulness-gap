@@ -37,7 +37,11 @@ add_job() {  # D  train_args  expl_args
   for s in $SEEDS; do
     local ck="$OUT/ckpt_${d}_s${s}.pt" out="$OUT/out_${d}_s${s}.json"
     local cache="$OUT/cache_${d}_s${s}.pt" log="$OUT/logs/${d}_s${s}.log"
-    echo "D=$d CK=$ck S=$s TRAIN_ARGS='$targs' EXPL_ARGS='$eargs' CACHEF=$cache OUTF=$out LOGF=$log bash scripts/_run_unit.sh" >> "$JOBS"
+    # ES = explainer/PGExplainer-init seed, decoupled from S (model seed) --
+    # a large fixed offset keeps it deterministic/reproducible while never
+    # colliding with the model-seed range. See F10-MECHANISM.
+    local es=$((s + 1000))
+    echo "D=$d CK=$ck S=$s ES=$es TRAIN_ARGS='$targs' EXPL_ARGS='$eargs' CACHEF=$cache OUTF=$out LOGF=$log bash scripts/_run_unit.sh" >> "$JOBS"
   done
 }
 
