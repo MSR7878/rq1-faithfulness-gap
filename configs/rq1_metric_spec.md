@@ -878,7 +878,9 @@ all 5 seeds** (vs PAINS's 2 and X's 1).
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
-### only under R3/R2
+### only under R3/R2. SUPERSEDED/EXTENDED by "F17-REVISION" below (full 5-seed
+### P3 sweep, 60 units) -- see there for the current numbers, especially the
+### PGExplainer collapse rate (revised UP to 40%, not the ~20-30% cited here).
 
 src/analysis/tox21_random_baseline.py. Uses the original scale-out caches
 (not the 5-seed P3 re-run, which had not started) -- second, independent
@@ -925,29 +927,131 @@ metrics; R1 washes it out to ns too**, an independent confirmation of F6's
 comparison. SX's Tox21 signal is real but small (e.g. R3 Fid+ 0.068 vs
 RandN 0.032 -- both still tiny in absolute terms).
 
-**Bottom line combining F15-F17, CORRECTED (the first version of this
-paragraph wrongly said "SX is the only explainer that ever clears random" --
-that directly contradicts GNN's own row and has been fixed):**
+### F17-REVISION: full P3 5-seed sweep (60 units, 12 endpoints x 5 seeds) --
+### seed-aware significance, and PGExplainer collapse revised UP to 40%
+
+src/analysis/tox21_random_baseline_5seed.py -- the F17 entry above used the
+ORIGINAL 1-seed scale-out caches (P3 had not run yet). Now extended to the
+full 5-seed priority-sweep output (60 (endpoint,seed) units), applying the
+SAME seed-aware lesson established for mutag_graphxai/B-XAIC: the
+independent unit is the (endpoint,seed) pair (n=60), not a molecule, and NOT
+simply "pool everything and run one test" -- two tests reported, one
+primary (valid, higher power) and one secondary (lower power, checks
+reproducibility per seed):
+
+**A. AGGREGATE (mean of 60 unit means) -- unchanged shape from the 1-seed
+version:**
+
+| masking | metric | GNN | PG | SX | RandN | RandE |
+|---------|--------|-----|-----|-----|-------|-------|
+| R3 | Fid+ | 0.028 | 0.025 | 0.057 | 0.026 | 0.020 |
+| R3 | Fid- | 0.057 | 0.059 | 0.032 | 0.059 | 0.063 |
+| R3 | GEF  | 0.092 | 0.096 | 0.074 | 0.096 | 0.101 |
+| R2 | Fid+ | 0.072 | 0.070 | 0.172 | 0.061 | 0.061 |
+| R2 | Fid- | 0.114 | 0.118 | 0.060 | 0.122 | 0.123 |
+| R2 | GEF  | 0.179 | 0.185 | 0.135 | 0.186 | 0.183 |
+| R1 | Fid+ | 0.065 | 0.058 | 0.093 | 0.067 | 0.064 |
+| R1 | Fid- | 0.074 | 0.073 | 0.071 | 0.073 | 0.075 |
+| R1 | GEF  | 0.190 | 0.188 | 0.185 | 0.192 | 0.191 |
+
+**B. PRIMARY significance -- paired Wilcoxon on the 60 unit-means** (each
+already an aggregate over its own 30 molecules -- pairing at this level
+respects independence, no pseudo-replication; Holm over the 3 real-vs-random
+pairs per cell):
+
+| masking | metric | GNN vs RandN | SX vs RandN | PG vs RandE |
+|---------|--------|--------------|-------------|-------------|
+| R3 | Fid+ | ns | **\*\*\* (SX)** | ns |
+| R3 | Fid- | ns | **\*\*\* (SX beats it)** | ns |
+| R3 | GEF  | ns | **\*\*\* (SX beats it)** | \* (RandE beats PG) |
+| R2 | Fid+ | ns | **\*\*\* (SX)** | ns |
+| R2 | Fid- | ns | **\*\*\* (SX beats it)** | ns |
+| R2 | GEF  | ns | **\*\*\* (SX beats it)** | ns |
+| R1 | Fid+ | ns | **\*\*\* (SX)** | ns |
+| R1 | Fid- | ns | ns | ns |
+| R1 | GEF  | ns | ns | ns |
+
+**C. SECONDARY -- per-seed test, n=12 endpoints PER seed** (5 independent
+tests, matching F17's original single-seed scope exactly -- does the effect
+reproduce in each individual model fit, not just when pooled to n=60):
+
+| masking | metric | GNN vs RandN | SX vs RandN | PG vs RandE |
+|---------|--------|--------------|-------------|-------------|
+| R3 | Fid+ | 0/5 | **5/5** | 0/5 |
+| R3 | Fid- | 0/5 | 0/5 | 0/5 |
+| R3 | GEF  | 0/5 | 0/5 | 0/5 |
+| R2 | Fid+ | 0/5 | **5/5** | 1/5 |
+| R2 | Fid- | 0/5 | 0/5 | 0/5 |
+| R2 | GEF  | 0/5 | 0/5 | 0/5 |
+| R1 | Fid+ | 0/5 | **4/5** | 0/5 |
+| R1 | Fid- | 0/5 | 0/5 | 0/5 |
+| R1 | GEF  | 0/5 | 0/5 | 0/5 |
+
+**The honest, seed-aware reading: SX's Fid+ advantage over random is the
+ONLY Tox21 finding that reproduces across individual seeds** (5/5 under R3
+and R2, 4/5 under R1) -- a genuinely robust result. **SX's Fid-/GEF
+"significance" in the n=60 pooled test (block B) does NOT reproduce in ANY
+single seed's own n=12 test** (0/5 everywhere) -- that pooled significance
+is a power artifact of aggregating many individually-small, non-significant
+per-seed effects up to n=60, not evidence of a reliable per-fit effect.
+Report Fid+ as SX's real, reproducible signal; do not cite the pooled
+Fid-/GEF *** numbers as if they held up per-seed, because they don't. GNN
+and PG show ZERO seeds significant on ZERO cells, by either test -- F1's
+noise-domination claim is now confirmed at both the pooled (n=60) and the
+per-seed (n=12 x5) level for two of the three explainers, everywhere.
+
+**D. PGExplainer collapse, all 60 units: 24/60 = 40%** (`n_degenerate/n >=
+0.5` per unit, from each unit's own `explainer_health`) -- HIGHER than the
+prior ~20-30% estimate (f10_multiseed.py's 6-endpoint check, 9/30=30%) and
+than B-XAIC's 15% (F16). Every endpoint except SR-HSE collapsed in at least
+one of its 5 seeds. **A striking pattern: 9 of the 12 endpoints collapsed
+specifically at seed 4** (NR-AR, NR-AR-LBD, NR-AhR, NR-Aromatase, NR-ER,
+NR-ER-LBD, SR-ARE, SR-MMP, SR-p53 all collapse at s4; expected count under a
+uniform-across-seeds null would be ~4.8/12, ~2 std below the observed 9) --
+suggestive that collapse correlates with the SEED VALUE itself (likely via
+`torch.manual_seed`'s effect on the edge-mask MLP's specific initialisation
+draw) more than with independent per-(endpoint,seed) chance, though n=12 is
+too small to treat this as settled. Worth a dedicated multi-seed-value check
+if pursued further; flagged here, not resolved.
+
+**Bottom line combining F15-F17, FINAL (all three datasets' random-baseline
+checks complete: mutag_graphxai 5/5 seeds, B-XAIC 20/20 units, Tox21 60/60
+units):**
+
 **GNNExplainer clears random on BOTH GT/GEA datasets** -- mutag_graphxai
-(4/5 seeds) and B-XAIC (indole 3/5, PAINS 5/5, X 5/5 but only 3/5
-significantly) -- **but never separates from random on Tox21 Fidelity** (ns
-in all 9 masking x metric cells, F17). **SubgraphX is the most
-dataset-DEPENDENT of the three**: AT OR BELOW random on mutag_graphxai (0/5
-seeds beat it), decisively ABOVE random on EVERY B-XAIC task checked with
-ZERO exceptions (indole 5/5, PAINS 5/5, X 5/5 -- 15/15 seed-task units
-across all 3 completed B-XAIC tasks, all p<1e-40), and the ONLY explainer
-with any significant Tox21 signal at all (R3/R2, washed out under R1) --
-SX's GEA-vs-random result flips harder between datasets than either other
-explainer's, which is the same inversion F3/F9 already describe, now shown
-to be real rather than a trivial-GT artifact across all 3 completed B-XAIC
-tasks (P still pending). **PGExplainer clears random reliably on B-XAIC when
-it doesn't collapse** (indole 5/5, PAINS 3/5 -- 2 seeds fully COLLAPSED, X
-4/5 -- 1 seed near-collapsed); across mutag_graphxai, Tox21, and B-XAIC that
-is now FOUR independent collapse/near-collapse instances on THREE datasets
-(F10, F3-REVISION v2, this entry); it is inconsistent on mutag_graphxai
-(2/5, F3-REVISION v2) and never separates on Tox21 (ns, all 9 cells). No
-explainer beats chance in every setting checked -- GNN and PG both clear
-random on
-every B-XAIC task so far but neither ever separates on Tox21 Fidelity -- but
-the faithfulness gap now has a
-proper null to be measured against, not just inter-explainer comparisons.
+(4/5 seeds) and B-XAIC (indole 3/5, PAINS 5/5, X 3/5 sig, P 5/5 -- 16/20
+B-XAIC units significantly) -- **but never separates from random on Tox21
+Fidelity, at all, on any of 9 cells, by either the pooled (n=60) or the
+per-seed (n=12 x5) test** (F17-REVISION). GNN's real signal is confined to
+the two datasets with an actual chemical-substructure ground truth; it has
+nothing on Tox21's raw Fidelity/GEF.
+
+**SubgraphX is the most dataset-DEPENDENT of the three**: AT OR BELOW random
+on mutag_graphxai (0/5 seeds beat it), decisively ABOVE random on EVERY
+B-XAIC task with ZERO exceptions (20/20 seed-task units, all 4 task types,
+all p<1e-40), and on Tox21 the ONLY explainer with a signal that survives
+the seed-aware check -- specifically Fid+ (reproducible in 4-5/5 seeds
+individually), while its Fid-/GEF "significance" only appears once molecule
+counts are pooled to n=60 and does not reproduce in any single seed
+(F17-REVISION block C). SX's GEA-vs-random result flips harder between the
+two GT datasets than either other explainer's -- the same inversion F3/F9
+describe, now shown real (not trivial-GT) on the B-XAIC side across all 4
+task types.
+
+**PGExplainer clears random reliably only when it doesn't collapse, and it
+collapses often and unevenly by dataset**: B-XAIC 3/20 (15%), mutag_graphxai
+1/5 (20%), **Tox21 24/60 (40%) -- the highest rate seen, and notably
+clustered at seed 4 across 9 of 12 endpoints** (F17-REVISION block D, a
+pattern possibly tied to `torch.manual_seed`'s effect on the edge-mask
+MLP's init, not resolved). Total across the whole priority sweep: **28 of
+85 completed (dataset,endpoint/task,seed) units where PGExplainer's own
+GEA/Fid numbers are unreliable** -- this is not a rare edge case, it is a
+first-order property of the method that any paper using PGExplainer without
+multi-seed screening needs to disclose.
+
+**No explainer beats chance in every setting checked.** GNN is real only on
+the two GT/GEA datasets. SX is real on B-XAIC (fully) and Tox21 (Fid+ only,
+reproducibly) but actively fails on mutag_graphxai. PG is real wherever it
+successfully trains, which is 60-85% of the time depending on dataset. The
+faithfulness gap now has a proper null to be measured against on every
+dataset in the priority sweep, not just inter-explainer comparisons.
