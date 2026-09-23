@@ -1399,6 +1399,88 @@ same kind of fair null) is confirmed to be a real property of what
 SubgraphX's objective can recover on each dataset's motif -- not an artifact
 of comparing it to an unconstrained random baseline.
 
+### F15/F3/F10 DECOUPLED-PROTOCOL VERIFICATION (mutag_graphxai, 5 units,
+### src/analysis/decoupled_verify.py, runs/decoupled/) -- ALL THREE HOLD
+
+Every completed unit so far (85, across F1-F17) used the SAME value for the
+model-training seed and the explainer-init seed (see the Limitations
+bullet). This re-runs mutag_graphxai's 5 units under the now-decoupled
+protocol (scripts/decoupled_mutag_check.sh): the EXISTING trained
+checkpoints are reused unchanged (runs/prio/ckpt_mutag_graphxai_s{0-4}.pt --
+training is not the factor under test, see the cost-estimate note below),
+but each is now explained with an INDEPENDENT explainer-init seed
+ES = S + 1000 instead of ES = S. Outputs in runs/decoupled/, originals in
+runs/prio/ untouched. This isolates: do F15/F3/F10's findings depend on the
+explainer's own stochastic init numerically coinciding with the model's
+training seed, or do they hold regardless of that pairing?
+
+**1. F15 (SX vs connectivity-matched random null) -- HOLDS, 5/5 seeds:**
+
+| seed | model-seed | explainer-seed | SX | RandConn | p (SX vs RandConn) | SX wins |
+|------|-----------|-----------------|-------|----------|---------------------|---------|
+| 0 | 0 | 1000 | 0.025 | 0.105 | 4e-24 *** | 17/188 |
+| 1 | 1 | 1001 | 0.020 | 0.111 | 6e-28 *** | 16/188 |
+| 2 | 2 | 1002 | 0.120 | 0.108 | 7e-03 ** | 50/188 |
+| 3 | 3 | 1003 | 0.063 | 0.108 | 8e-13 *** | 28/188 |
+| 4 | 4 | 1004 | 0.123 | 0.111 | 2e-02 * | 53/188 |
+
+SX loses to the fair, connectivity-matched null significantly in 5/5 seeds
+-- same as the coupled result (F15-ADDENDUM: 9-51/188 wins there vs
+16-53/188 here, same order of magnitude, same conclusion).
+
+**2. F3-REVISION v2 (GNN >> {PG, SX}) -- HOLDS, 5/5 seeds; PG-vs-SX still
+unstable, same 3/5-vs-2/5 split (different seeds flip, same overall pattern):**
+
+| seed | GNN-PG | GNN-SX | order | means (GNN/PG/SX) |
+|------|--------|--------|-------|---------------------|
+| 0 | \*\*\* (GNN) | \*\*\* (GNN) | GNN>PG>SX | 0.443/0.197/0.025 |
+| 1 | \*\*\* (GNN) | \*\*\* (GNN) | GNN>PG>SX | 0.108/0.051/0.020 |
+| 2 | \*\*\* (GNN) | \*\*\* (GNN) | GNN>PG>SX | 0.495/0.135/0.120 |
+| 3 | \*\*\* (GNN) | \*\*\* (GNN) | GNN>SX>PG | 0.490/0.000/0.063 |
+| 4 | \*\*\* (GNN) | \*\*\* (GNN) | GNN>SX>PG | 0.609/0.039/0.123 |
+
+GNN beats both PG and SX significantly in 5/5 seeds (identical to the
+coupled result). Strict "GNN>PG>SX" holds in 3/5 seeds (0,1,2) here vs 3/5
+seeds (0,1,4) in the coupled run -- the SAME 3-vs-2 split, just seed 2
+(not seed 4) is now the one that stays GNN>PG>SX, and seed 4 (not seed 2)
+now flips. This is itself informative: the specific seed that flips changed
+when the explainer-seed changed, confirming the PG-vs-SX instability is a
+genuine closeness-of-competing-signals effect (sensitive to the explainer's
+own stochasticity), not an artifact tied to one particular coupled seed
+value. Seed-level test: GNN higher in 5/5 for both GNN-PG and GNN-SX
+(same as coupled, ns by construction at n=5); PG higher in 3/5 for PG-SX
+(same 3/5 as coupled).
+
+**3. F10 (PGExplainer collapse rate) -- HOLDS: still exactly 1/5, still
+seed 3, now under explainer-seed 1003 instead of 3:**
+
+| seed | model-seed | explainer-seed | n_degenerate/n | status |
+|------|-----------|-----------------|------------------|--------|
+| 0 | 0 | 1000 | 0/188 | clean |
+| 1 | 1 | 1001 | 0/188 | clean |
+| 2 | 2 | 1002 | 0/188 | clean |
+| 3 | 3 | 1003 | 188/188 | **COLLAPSED** |
+| 4 | 4 | 1004 | 0/188 | clean |
+
+Seed 3 collapses under BOTH its original coupled explainer-seed (3) and its
+new decoupled explainer-seed (1003) -- two different, unrelated explainer
+inits, same model checkpoint, same outcome. Seed 4 -- clean under coupled --
+stays clean under decoupled too. This is direct, model-specific evidence for
+F10-MECHANISM's claim: collapse on this dataset tracks ckpt_mutag_graphxai_s3's
+particular weights, not the numeric coincidence of the shared seed value.
+
+**VERDICT: all three headline claims (F15, F3-REVISION v2, F10's collapse
+rate) reproduce under the decoupled protocol on mutag_graphxai, with numbers
+close enough to the coupled run that the seed-coupling confound does not
+appear to have been driving any of them here.** Cost note: this re-run
+reused the existing checkpoints (training is not the factor under test) and
+still finished in ~5h wall-clock (13:40-18:43, faster than the ~14h
+estimate -- likely lower external node contention at the time), at
+CONCURRENCY=4, GPU-only explain cost. Scope: mutag_graphxai only, per the
+user's explicit request; B-XAIC's decoupled re-run (P1, 20 units, the
+expensive tier) has NOT been run and is a separate decision -- see the
+recommendation in the commit/report accompanying this section.
+
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
 ### only under R3/R2. SUPERSEDED/EXTENDED by "F17-REVISION" below (full 5-seed
@@ -1646,7 +1728,7 @@ started.
 |---|---|---|---|
 | F1 | R3 noise-dominated, 4 core datasets | **CONFIRMED** (mutag_graphxai) | 9/9 cells noise-dominated, 5/5 seeds; MUTAG-std/BBBP/Tox21 not re-tested here |
 | F2 | B-XAIC R3 heavy right tail | **WITHDRAWN** as stated | reproduces in only 1/5 seeds; 4/5 show the OPPOSITE (left-skew) shape |
-| F3 | mutag_graphxai GEA: GNN~=PG>>SX | **REVISED** | "GNN >> {PG,SX}" robust (5/5 seeds); strict "GNN>PG>SX" only 3/5 |
+| F3 | mutag_graphxai GEA: GNN~=PG>>SX | **REVISED, decoupled-verified** | "GNN >> {PG,SX}" robust (5/5 seeds, coupled AND decoupled); strict "GNN>PG>SX" only 3/5 either way |
 | F3-v1 | (pooled n=940 significance) | **WITHDRAWN** | do not cite p~1e-94 etc. |
 | F4 | R2 featurisation-dependent | **CONFIRMED** (both sides) | one-hot side: R3->R2 inflation sig in 20/20 seed-cells; Tox21 side confirmed via F11-REVISION |
 | F5 | R2 separates SX vs GNN/PG | **CONFIRMED** | SX-vs-GNN/PG Fid+ separation robust across all 5 seeds, mutag_graphxai + indole (+ PAINS/X/P mostly) |
@@ -1654,12 +1736,12 @@ started.
 | F7 | PG lowest Fid+ under R1, 3/5 datasets | **RESTATED** | common (mutag/indole/PAINS, 12/15 seed-cells) but flatly contradicted on B-XAIC/X (PG HIGHEST, 5/5 seeds) |
 | F8 | Cross-metric agreement "1 of 8" | **CONFIRMED** (qualitative) | rare agreement (~15-20% cells) holds up; the specific "indole/R2 agrees" cell is NOT itself reproducible (2/5 seeds) |
 | F9 | B-XAIC 3-way GEA ranking per task | **MAJOR REVISION** | only indole robust; X/P rankings do NOT reproduce per seed |
-| F10 | PGExplainer collapse | Confirmed + mechanism found | rate 15-40% depending on dataset; model x MLP-init interaction (F10-MECHANISM) |
+| F10 | PGExplainer collapse | Confirmed + mechanism found + decoupled-verified | rate 15-40% depending on dataset; model x MLP-init interaction (F10-MECHANISM); mutag_graphxai seed 3 collapses under BOTH its coupled and decoupled explainer-seed (same model, different inits) |
 | F11 | Tox21 R2/R1 inflation, ~8/12 endpoints | **CONFIRMED** | reproduces every seed, 6-10/12 (R2), 8-12/12 (R1) |
 | F12 | Tox21 R2 separates SX, 5/12 endpoints | **CONFIRMED** | reproduces every seed, 5-8/12 |
 | F13 | B-XAIC GEA/Fid+ agreement "5 of 12" | **RESTATED** | "X agrees under ALL 3 maskings" holds in only 2/5 seeds; directional claim (X 60% vs others 20-33% cell agreement) survives |
 | F14 | GEA binarization (mean-thr vs top-k) | **MIXED** | indole confirmed robust (5/5); P's instability confirmed+sharpened (0/5); mutag_graphxai/X weaker than framed (3/5, inherited GEA fragility) |
-| F15 | mutag_graphxai vs random | **CONFIRMED, sharpened** | GNN beats random 4/5; SX 0/5 (loses to a connectivity+size-matched fair null too, 5/5, F15-ADDENDUM); PG inconsistent 2/5 |
+| F15 | mutag_graphxai vs random | **CONFIRMED, sharpened, decoupled-verified** | GNN beats random 4/5; SX 0/5 (loses to a connectivity+size-matched fair null too, 5/5 coupled AND 5/5 decoupled); PG inconsistent 2/5 |
 | F16 | B-XAIC vs random, all 4 tasks | **CONFIRMED, sharpened** | SX beats random 20/20; indole also beats a connectivity+size-matched fair null 5/5 (F16-ADDENDUM) |
 | F17 | Tox21 vs random | **PARTIALLY REVISED** | Fid+ CONFIRMED (SX, 4-5/5 seeds); Fid-/GEF significance was pooling-only, WITHDRAWN as stated |
 
