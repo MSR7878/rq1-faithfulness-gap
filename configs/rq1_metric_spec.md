@@ -1159,3 +1159,60 @@ reproducibly) but actively fails on mutag_graphxai. PG is real wherever it
 successfully trains, which is 60-85% of the time depending on dataset. The
 faithfulness gap now has a proper null to be measured against on every
 dataset in the priority sweep, not just inter-explainer comparisons.
+
+## Pooling / single-seed audit, F1-F17 (requested after the SX Fid-/GEF and
+## mutag n=940 pooling bugs surfaced)
+
+Two DIFFERENT concerns get conflated under "pooling," worth separating:
+  (a) TRUE POOLING BUGS -- treating repeated-measures observations (the same
+      or correlated molecules/units recurring across SEEDS) as independent
+      n, inflating a single p-value. Only 2 instances found, both already
+      fixed: mutag_graphxai's original n=940 GEA significance (F3-REVISION
+      v1, WITHDRAWN) and SX's Tox21 Fid-/GEF-vs-random significance
+      (F17-REVISION, corrected from "***" to "not reproducible per seed").
+  (b) SINGLE-SEED FINDINGS never stress-tested against the other 4
+      priority-sweep seeds once they became available. Not a bug in the
+      original test (each was a legitimate n=29/30 test on its one seed's
+      data), but an open question of whether the SPECIFIC claim (a ranking,
+      a "how many of the 12/8/4 cells" count) reproduces. Re-tested where
+      cached data made it cheap; flagged where it wasn't.
+
+| Finding | Pooling bug? | Seed-tested? | Verdict |
+|---------|---------------|---------------|---------|
+| F1 (R3 noise-domination) | No -- within-explainer std>>mean, not cross-unit | Partial (Tox21 via F12-REVISION R3 rows; mutag_graphxai via F15) | Supported by adjacent re-checks; **MUTAG-std and BBBP never re-tested at all (see note below)** |
+| F2 (B-XAIC R3 heavy tail) | No | No | Single-seed (indole s0 only); B-XAIC now has 5-seed data at a different N (400 vs 29) that could check this -- not done |
+| F3 (GEA inversion) | **YES, v1 (n=940) -- WITHDRAWN** | Yes, v2 | **CORRECTED** -- "GNN >> {PG,SX}" robust, strict "GNN>PG>SX" only 3/5 seeds |
+| F4 (R2 featurisation-dependent) | No | Partial (Tox21 side via F11-REVISION) | One-hot (mutag family) side never re-seeded; MUTAG-std/BBBP raw side never re-seeded |
+| F5 (R2 separates SX) | No | **No** | mutag_graphxai's "SX sig. higher Fid+/lower Fid- than GNN/PG under R2" and B-XAIC's "R2 separates all three" were never re-run per-seed even though 5-seed data exists for both -- **flagged, not yet checked, same design as F12-REVISION would apply directly** |
+| F6 (R1 most artifact-dominated) | No | No | MUTAG-std/BBBP never multi-seeded |
+| F7 (PG lowest Fid+ on 3/5 datasets under R1) | No (cross-DATASET count, not cross-seed) | No | Single-seed per dataset |
+| F8 (cross-metric agreement "1 of 8") | No | No | Single-seed (mutag_graphxai + indole); could be re-checked against F9-REVISION's now-known-unstable X/P GEA orderings -- see F13 below, same risk applies |
+| F9 (B-XAIC 3-way GEA ranking) | No | **Yes** | **MAJOR CORRECTION** -- indole robust, PAINS's 2nd place collapse-contingent, X and P DO NOT reproduce (F9-REVISION) |
+| F10 (PGExplainer collapse) | No | Yes (dedicated f10_multiseed.py + F17-REVISION) | Confirmed and STRENGTHENED -- rate revised 20-30% -> 40% on Tox21 |
+| F11 (R2/R1 inflation, Tox21) | No | **Yes** | **CONFIRMED** (F11-REVISION), reproduces every seed |
+| F12 (Tox21 separability) | No | **Yes** | **CONFIRMED** (F12-REVISION), R2 count 5-8/12 every seed |
+| F13 (cross-metric agreement, B-XAIC "5 of 12") | No | **No** | **NOT re-tested, HIGH RISK of not surviving** -- F9-REVISION just showed X and P's GEA 3-way order changes seed-to-seed, so a per-seed re-check of "does GEA order match Fid+ order" is very likely to show the same instability, especially for X (F13's headline "agrees under every masking" example). Flagged, not yet run. |
+| F14 (GEA binarization) | No | No | Single-seed caches (mutag_graphxai + 4 B-XAIC tasks); not re-verified at 5 seeds |
+| F15 (mutag_graphxai random baseline) | No | Yes, by design | Seed-aware from the start |
+| F16 (B-XAIC random baseline) | No | Yes, by design | Seed-aware from the start |
+| F17 (Tox21 random baseline + F11/F12 above) | **YES (Fid-/GEF-vs-random) -- CORRECTED** | Yes | Fid+ confirmed robust; Fid-/GEF pooled-only, now flagged as such |
+
+**Net: 2 confirmed true pooling bugs (both fixed), 3 single-seed findings
+re-tested and CONFIRMED (F11, F12, F17's Fid+), 2 re-tested and REVISED/
+CORRECTED (F3, F9), and a meaningful backlog of single-seed findings never
+stress-tested (F1 partial, F2, F4 partial, F5, F6, F7, F8, F13, F14) --
+of these, F13 is flagged HIGH RISK given F9-REVISION's direct evidence, F5
+is the next-cheapest to check (data already cached, same method as
+F12-REVISION), and F6/F7/F1/F2 rest partly or wholly on MUTAG-std/BBBP,
+which have NEVER been multi-seeded at all.**
+
+**MUTAG-standard and BBBP were never multi-seeded.** Every core-Phase-3
+number for these two datasets (F1, F4, F5, F6, F7, F8's underlying data)
+rests on a SINGLE 70/15/15 split + single model fit + n=29 (MUTAG) or n=30
+(BBBP) explained molecules -- there is no priority-sweep equivalent for
+either (the priority sweep only covered mutag_graphxai, B-XAIC, and Tox21).
+Any claim specific to MUTAG-std or BBBP (as opposed to the parts of F1/F4/
+F6/F7 that also cite mutag_graphxai or Tox21, which DO now have multi-seed
+support) should be read as single-replicate evidence, on the same footing
+Phase-3's original findings were in before this whole multi-seed effort
+started.
