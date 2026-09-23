@@ -152,11 +152,61 @@ F1. R3 Fidelity/GEF is NOISE-DOMINATED on the 4 diffuse-decision datasets
     dilutes rather than deletes categorical identity -- masking even the TRUE
     NO2/NH2 motif shifts p by < 0.1.
 
+### F1-REVISION: seed-aware re-test (src/analysis/gt_datasets_seed_audit.py,
+### section_f1_f2, 5 priority-sweep seeds) -- CONFIRMED on mutag_graphxai
+
+Per-seed count of (explainer, metric) cells with std > |mean| under R3-mean,
+out of 9 possible (3 explainers x {fid_plus, fid_minus, gef}):
+
+| dataset         | s0  | s1  | s2  | s3  | s4  |
+|-----------------|-----|-----|-----|-----|-----|
+| mutag_graphxai  | 9/9 | 9/9 | 9/9 | 9/9 | 9/9 |
+| indole          | 6/9 | 7/9 | 6/9 | 7/9 | 7/9 |
+| PAINS           | 5/9 | 6/9 | 5/9 | 5/9 | 5/9 |
+| X               | 5/9 | 5/9 | 5/9 | 5/9 | 6/9 |
+| P               | 6/9 | 6/9 | 6/9 | 6/9 | 6/9 |
+
+mutag_graphxai: FULLY ROBUST, noise-dominated (std > mean) on all 9 cells in
+all 5/5 seeds -- exactly the pattern F1 describes. The 4 B-XAIC tasks were not
+part of F1's original scope (they are GT-localizable by construction, not
+"diffuse-decision"), but even there a majority (5-7/9) of cells are
+noise-dominated under R3 in every seed -- incidental support that R3's noise
+problem is broader than the 4 originally-named datasets, not narrower.
+MUTAG-standard / BBBP / Tox21 std-vs-mean were not re-tested here (Tox21's
+R3 vs R2/R1 behavior is covered separately by F11-REVISION/F17-REVISION).
+VERDICT: CONFIRMED on mutag_graphxai, the one dataset directly re-testable.
+
 F2. B-XAIC R3 Fidelity has a HEAVY RIGHT TAIL (GNNExplainer Fid+ mean 0.41,
     median 0.001): B-XAIC's model has a LOCALIZABLE rule (exact indole
     detection), so on a minority of molecules GNNExplainer's top-25% lands on
     it and p flips. Still not a reliable discriminator -- GNN vs PG/SX Fid+
     differences n.s. at n=30.
+
+### F2-REVISION: seed-aware re-test (src/analysis/gt_datasets_seed_audit.py,
+### section_f1_f2, 5 priority-sweep seeds) -- WITHDRAWN AS STATED
+
+The specific mean-vs-median ratio for indole R3 GNNExplainer Fid+, per seed:
+
+| seed | mean  | median | ratio (mean/median) | shape |
+|------|-------|--------|----------------------|-------|
+| 0    | 0.780 | 0.964  | 0.8x                 | left-skew (median > mean) |
+| 1    | 0.570 | 0.951  | 0.6x                 | left-skew |
+| 2    | 0.242 | 0.016  | 15.3x                | heavy RIGHT tail (matches original) |
+| 3    | 0.507 | 0.579  | 0.9x                 | left-skew (mild) |
+| 4    | 0.648 | 0.907  | 0.7x                 | left-skew |
+
+Only 1/5 seeds (seed 2) reproduces the claimed "heavy right tail, median near
+0" shape. In the other 4/5 seeds the distribution is the OPPOSITE shape --
+left-skewed, median above the mean, i.e. most molecules get near-perfect Fid+
+and a minority of low outliers drags the mean down. The original numeric
+example (mean 0.41, median 0.001) reads as a single seed/run's extreme case,
+not a stable property of indole R3 Fid+.
+VERDICT: WITHDRAWN as stated. Corrected claim: indole R3 Fid+ for
+GNNExplainer has a seed/run-dependent distributional shape (right-skewed in a
+minority of seeds, left-skewed/ceiling-clustered in most) rather than a
+consistent heavy-right-tail. The "GNN vs PG/SX Fid+ n.s. at n=30" clause was
+not re-tested here (F5-REVISION below covers R2/R1 Fid+ pairwise significance
+per seed, not R3).
 
 F3. GEA ranking (masking-independent) is INVERTED between the two GT datasets,
     and GNNExplainer's inversion is significant:
@@ -191,6 +241,29 @@ F4. R2 zero-fill artifact is FEATURISATION-DEPENDENT, not a clean fix.
     R3->R2 n.s.; a zero vector in the 9-dim mixed feature space is far less
     OOD). R2's severity depends on the featuriser, not the model.
 
+### F4-REVISION: seed-aware re-test, one-hot side (src/analysis/gt_datasets_
+### seed_audit.py, section_f4, mutag_graphxai, 5 priority-sweep seeds) -- CONFIRMED
+
+R3->R2 |Fid-| / GEF, GNN & PG, per seed (all Holm-free single paired tests,
+matching the original method):
+
+| seed | GNN fid_minus        | GNN gef              | PG fid_minus          | PG gef                |
+|------|-----------------------|-----------------------|------------------------|------------------------|
+| 0    | 0.11->0.65 p=3e-25 *** | 0.13->0.66 p=5e-25 *** | 0.15->0.66 p=2e-22 *** | 0.19->0.66 p=1e-21 *** |
+| 1    | 0.10->0.23 p=1e-22 *** | 0.08->0.28 p=1e-24 *** | 0.13->0.39 p=2e-26 *** | 0.12->0.50 p=8e-27 *** |
+| 2    | 0.06->0.09 p=6e-06 *** | 0.04->0.10 p=5e-06 *** | 0.14->0.16 p=4e-02 *   | 0.14->0.21 p=1e-02 *   |
+| 3    | 0.05->0.13 p=4e-13 *** | 0.03->0.17 p=2e-15 *** | 0.14->0.21 p=6e-05 *** | 0.16->0.28 p=2e-07 *** |
+| 4    | 0.05->0.10 p=4e-09 *** | 0.04->0.15 p=2e-12 *** | 0.10->0.20 p=4e-15 *** | 0.09->0.26 p=4e-18 *** |
+
+Direction (R3->R2 inflation) and significance are robust in all 5/5 seeds,
+all 4 cells -- 20/20. Magnitude varies (seed 2 is a visibly weaker effect for
+both explainers, ~2x inflation vs 3-6x elsewhere), but the qualitative claim
+("R3->R2 inflates |Fid-|/GEF massively and significantly on the one-hot
+side") is not seed-fragile. The raw-integer side (Tox21) is separately
+confirmed per-seed by F11-REVISION (R3->R2/R1 inflation on |Fid-|/GEF, same
+mechanism, opposite featurisation).
+VERDICT: CONFIRMED, robust to seed.
+
 F5. R2 DOES separate SubgraphX where R3 could not, on Fid+/Fid-: SubgraphX's
     compact CONNECTED explanation survives zero-fill (its E_i keeps a real
     substructure), so under R2 it has significantly higher Fid+ and lower Fid-
@@ -200,6 +273,22 @@ F5. R2 DOES separate SubgraphX where R3 could not, on Fid+/Fid-: SubgraphX's
     GNN worst). On mutag_graphxai R2-Fidelity DISAGREES with GEA (SX best Fid-,
     worst GEA) -- a further faithfulness-gap instance.
 
+### F5-REVISION: seed-aware re-test, R2 Fid+ pairwise (src/analysis/gt_datasets_
+### seed_audit.py, section_f5_f6_f7, mutag_graphxai + 4 B-XAIC tasks, 5 seeds) -- CONFIRMED
+
+Re-ran the GNN-SX / PG-SX pairwise Holm-corrected test on R2 Fid+, per seed
+(proxy for the original Fid-/Fid+ separation claim -- Fid- is not directly
+re-run here, see F4-REVISION for the |Fid-| side):
+- mutag_graphxai: PG-SX significant (SX higher) in 5/5 seeds; GNN-SX
+  significant (SX higher) in 4/5 seeds (ns only at seed 2).
+- indole: GNN-SX and PG-SX both significant (SX higher) in 5/5 seeds.
+- PAINS/X/P: SX-involving pairs significant in the large majority of seeds
+  (occasional ns, mostly on the PG-SX pair, never enough to flip the
+  direction).
+VERDICT: CONFIRMED. R2's SX-separation on Fid+ is robust to seed on every GT
+dataset checked. (MUTAG-standard / BBBP portions of the original claim remain
+single-seed, unverified -- see the spec limitations note below F7-REVISION.)
+
 F6. R1 hard-removal is the MOST artifact-dominated. MUTAG family: Fid+ AND Fid-
     AND GEF all ~0.5-0.67 for every explainer (removing 25% of a ~18-atom
     molecule shatters it regardless of which 25%). The R2 Fid-/GEF separation
@@ -207,6 +296,29 @@ F6. R1 hard-removal is the MOST artifact-dominated. MUTAG family: Fid+ AND Fid-
     Fid-/GEF pairs that were *** under R2 become n.s. under R1. BBBP/Tox21: R1
     ~= R2 in magnitude (mild, ~0.1-0.2), inflation vs R3 now consistently
     significant (was marginal under R2).
+
+### F6-REVISION: seed-aware re-test, R1 vs R2 pairwise significance (src/
+### analysis/gt_datasets_seed_audit.py, section_f5_f6_f7, mutag_graphxai + 4
+### B-XAIC tasks, 5 seeds) -- DOES NOT REPRODUCE as a general phenomenon
+
+Counted, per dataset, how many of the 15 (3 pairs x 5 seeds) R1 fid_plus/
+fid_minus tests stay significant (the "washout" claim predicts many should
+drop to n.s. relative to R2):
+- mutag_graphxai: 13/15 R1 fid_plus pairs still sig, 11/15 R1 fid_minus --
+  only a handful wash out (mostly GNN-PG or PG-SX, never a clean sweep).
+- indole: ~14/15 sig on both metrics.
+- X: 15/15 sig on both metrics -- ZERO washout.
+- P: 15/15 sig on fid_plus, ~13/15 on fid_minus -- almost no washout.
+- PAINS: the weakest case, 11/15 fid_plus, 12/15 fid_minus -- some genuine
+  washout, but still a minority of pairs.
+On every GT dataset with 5-seed data, pairwise significance under R1 remains
+nearly as high as under R2 -- the "R2's separation is washed out under R1"
+pattern from the original (MUTAG-family) claim does NOT generalize to
+mutag_graphxai or any B-XAIC task.
+VERDICT: DOES NOT REPRODUCE as a general R1 phenomenon on the datasets we can
+check. Restrict F6 to MUTAG-standard/BBBP specifically, where it remains
+single-seed and unverified (see limitations note below F7-REVISION) rather
+than stating it as a general property of R1 masking.
 
 F7. Under R1, SubgraphX loses its Fid- advantage. R2 spared SubgraphX's
     connected E_i (it survived zero-fill); R1 DELETES nodes, so even a
@@ -216,6 +328,34 @@ F7. Under R1, SubgraphX loses its Fid- advantage. R2 spared SubgraphX's
     prediction least) -- GNN-PG and PG-SX Fid+ significant on
     mutag_graphxai/MUTAG/BBBP.
 
+### F7-REVISION: seed-aware re-test, PG-lowest-Fid+ under R1 (src/analysis/
+### gt_datasets_seed_audit.py, section_f5_f6_f7, mutag_graphxai + 4 B-XAIC
+### tasks, 5 seeds) -- DATASET-DEPENDENT, NOT A GENERAL R1 SIGNATURE
+
+Counted, per dataset, how many of 5 seeds have PGExplainer as the strict
+lowest-Fid+ explainer under R1:
+- mutag_graphxai: 4/5 seeds (breaks at seed 3, where GNN is lowest instead).
+- indole: 5/5 seeds -- fully robust.
+- PAINS: 4/5 seeds (breaks at seed 1).
+- P: 2/5 seeds only.
+- X: 0/5 seeds -- FLAT CONTRADICTION. PGExplainer has the HIGHEST R1 Fid+ in
+  all 5/5 seeds on X (PG beats both GNN and SX on every seed).
+VERDICT: RESTATED, not withdrawn outright. "PG has the lowest Fid+ under R1"
+is common (mutag_graphxai, indole, PAINS: 12/15 seed-dataset cells) but not
+universal, and B-XAIC/X is a clean, seed-stable counterexample in the
+opposite direction. The original "3/5 datasets" framing undersold how
+dataset-dependent this is -- report it as a common-but-not-universal pattern
+with a named, robust exception (X), not a general R1 signature.
+
+### Spec limitation (recorded per the 2026-09 seed-audit request): F5, F6 and
+### F7 were originally stated as claims about the MUTAG family (mutag_graphxai
+### AND MUTAG-standard AND BBBP) or about "3/5 datasets" spanning both GT and
+### non-GT sets. MUTAG-standard and BBBP were NEVER multi-seeded (no
+### priority-sweep equivalent exists for them) and so the portions of F5/F6/F7
+### resting on those two datasets remain single-seed (n=29/30) and unverified
+### by this audit. Only the mutag_graphxai and B-XAIC portions above have been
+### re-tested across 5 seeds.
+
 F8. CROSS-METRIC RANKING IS ESSENTIALLY NEVER CONSISTENT (block D). On the two
     GT datasets the explainers are ranked by GEA and by Fid+ under each of R3,
     R2, R1 -- 4 orderings per dataset:
@@ -223,6 +363,34 @@ F8. CROSS-METRIC RANKING IS ESSENTIALLY NEVER CONSISTENT (block D). On the two
       B-XAIC          GEA: SX>PG>GNN | R3-Fid+: GNN>SX>PG | R2: SX>PG>GNN | R1: GNN>PG>SX
     Only ONE (dataset, masking) cell agrees with GEA: B-XAIC / R2-Fid+. Every
     other combination gives a different "best explainer".
+
+### F8-REVISION: seed-aware re-test (src/analysis/gt_datasets_seed_audit.py,
+### section_f13_f8, mutag_graphxai + indole, R3-mean/R2-zero/R1-hard x 5 seeds)
+### -- CONFIRMED (qualitative pattern), specific "agreeing cell" NOT reproducible
+
+Re-ran GEA-order vs Fid+-order agreement per seed (3 maskings x 2 datasets x
+5 seeds = 30 cells; NOTE this only covers R3-mean, not the R3-mode condition
+that contributed 2 of the original "8" cells -- a partial re-test, flagged as
+a gap below):
+- mutag_graphxai: R3 agrees in 2/5 seeds (seeds 2,3), R2 agrees in 0/5, R1
+  agrees in 0/5. 2/15 cells agree.
+- indole: R3 agrees in 1/5 seeds, R2 agrees in 2/5 seeds (seeds 1,4), R1
+  agrees in 0/5. 3/15 cells agree.
+Combined: 5/30 = 17% agreement, close to the original "1/8" = 12.5%.
+Crucially, the ONE cell the original single-seed run flagged as the
+exception -- indole/R2 -- is NOT reliably the agreeing cell either: it only
+agrees in 2/5 seeds. No (dataset, masking) cell agrees with GEA in all 5
+seeds, and no cell is reliably the exception across seeds.
+VERDICT: CONFIRMED as a qualitative pattern (agreement between GEA-order and
+Fid+-order is rare, ~13-20% of cells, regardless of seed) -- this is the
+core, paper-facing claim and it holds. But the SPECIFIC "indole/R2 is the one
+cell that agrees" is not reproducible; it is one fragile instance among many
+equally-fragile non-agreements, not a stable exception. Report F8 as "cross-
+metric agreement is rare and unsystematic" without naming a specific
+agreeing cell. GAP: R3-mode was not re-tested per seed (would need a small
+script extension); given R3-mean and R3-mode gave the same GEA orderings in
+the original single-seed run (F14), this gap is judged low-risk but is not
+formally closed.
 
 ### MASKING-REFERENCE SWEEP COMPLETE -- R3 + R2 + R1, all 5 variants, 3 explainers, 4 metrics
 
@@ -552,6 +720,33 @@ F13. Cross-metric agreement (GEA order vs Fid+ order, block D) extends F8.
      faithfulness gap (F8) is the norm; X is the instructive exception that
      shows what full agreement requires, not a counterexample to it.
 
+### F13-REVISION: seed-aware re-test (src/analysis/gt_datasets_seed_audit.py,
+### section_f13_f8, all 4 B-XAIC tasks x {R3-mean,R2-zero,R1-hard}, 5 seeds)
+### -- RESTATED, headline "X agrees under ALL 3 maskings" does not reproduce
+
+Cross-metric (GEA-order vs Fid+-order) agreement rate per task, out of 15
+cells (3 maskings x 5 seeds):
+- indole: 3/15 (20%)
+- PAINS: 5/15 (33%)
+- P: 5/15 (33%)
+- X: 9/15 (60%) -- clearly the highest of the 4, but full 3-masking
+  agreement (all of R3+R2+R1 in the SAME seed) only happens in 2/5 seeds
+  (seed 1, seed 2); the other 3/5 seeds have at least one masking disagree,
+  and 2/5 seeds (3,4) have the underlying GEA ranking itself flip
+  (PG<->SX swap, matching F9-REVISION's finding that X's GEA ranking is not
+  seed-stable). The original claim was built from a single seed/run in
+  which X happened to land in its highest-agreement state.
+VERDICT: RESTATED, not fully withdrawn. The DIRECTIONAL claim survives --
+X (single discrete halogen-presence rule) shows meaningfully higher
+cross-metric agreement than the ring/diffuse tasks (60% vs 20-33% of cells)
+-- consistent with "agreement is more likely when one feature decisively
+sets the label." But the specific headline "X agrees under ALL of R3/R2/R1"
+is NOT a reliable, reproducible property: it holds in only 2/5 seeds, not
+by default. Report: "cross-metric agreement is elevated but not guaranteed
+on the single-discrete-feature task (X, 60% of cells, full 3-masking
+agreement in 2/5 seeds), versus rare on ring/diffuse tasks (20-33%)" --
+drop the "X agrees under ALL of R3/R2/R1" framing entirely.
+
 F14. GEA BINARIZATION SENSITIVITY (src/analysis/gea_binarization.py -- re-score
      the cached explanations with a top-k=0.25 node mask, the SAME budget
      Fidelity's E_i uses, instead of GraphXAI's mean-threshold).
@@ -583,6 +778,38 @@ F14. GEA BINARIZATION SENSITIVITY (src/analysis/gea_binarization.py -- re-score
      mask-size proxy (B-XAIC X, P), and a fixed top-k GEA is partly a
      forced-over-selection penalty. mutag_graphxai and indole are stable under
      both, and F3 holds under both.
+
+### F14-REVISION: seed-aware re-test (src/analysis/f14_seed_check.py,
+### mutag_graphxai + 4 B-XAIC tasks, mean-threshold vs top-k=0.25, 5 seeds)
+### -- MIXED: indole confirmed, P's instability confirmed and sharpened,
+### mutag_graphxai/X weaker than originally framed
+
+Per-seed count of seeds where the two binarizations give the SAME 3-way GEA
+order:
+- indole: 5/5 -- fully robust, matches the original "F3 is robust under both
+  binarizations" claim exactly.
+- PAINS: 4/5 (differs at seed 0).
+- mutag_graphxai: 3/5 (differs at seeds 1, 3) -- this tracks F3-REVISION v2's
+  own finding that the exact GNN>PG>SX order only reproduces in 3/5 seeds
+  under mean-threshold alone; binarization choice adds no NEW fragility here,
+  it inherits the same fragility already documented.
+- X: 3/5 (differs at seeds 3, 4) -- weaker than the original "X keeps SX
+  significantly top under top-k" framing suggested. Consistent with
+  F9-REVISION/F13-REVISION: X's GEA ranking is independently seed-unstable
+  (PG/SX swap) even before asking whether binarization agrees with itself.
+- P: 0/5 -- ZERO agreement between mean-threshold and top-k order in every
+  single seed. This CONFIRMS and SHARPENS the original claim ("P's SX lead
+  vanishes under top-k") -- it is not a single-seed artifact, P's ranking is
+  binarization-unstable in literally every seed tested.
+VERDICT: indole and the core mechanism claim (mean-threshold rewards compact
+masks; forcing a uniform top-k budget erases GT-size-dependent advantages,
+worst on the smallest-GT task P) are CONFIRMED, P's instability is now on
+firmer footing (0/5, not 1/1). mutag_graphxai and X's binarization-agreement
+counts are lower than the single-seed report implied, but this is inherited
+from GEA-ranking fragility already flagged in F3-REVISION/F9-REVISION/
+F13-REVISION, not a new failure mode. F8's "1 of 8 unchanged under top-k"
+sub-clause was not re-tested per seed here (would require pairing this with
+per-seed Fid+ orderings) -- left as a gap.
 
 ### FULL RQ1 PICTURE (5 core variants + 12 Tox21 endpoints + 4 B-XAIC tasks)
 
