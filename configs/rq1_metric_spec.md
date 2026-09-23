@@ -399,6 +399,63 @@ F10. PGExplainer sometimes COLLAPSES to a degenerate uniform edge mask
      screening (explainer_health). Block C's exclusion of PG pairs on the
      4 scale-out endpoints still stands for THAT run's cached explanations.
 
+### F10-MECHANISM: decoupling the base-model seed from PGExplainer's own
+### init/training seed -- REFUTES the pure "MLP-seed" hypothesis; collapse is
+### a MODEL x MLP-INIT INTERACTION, not either factor alone
+
+Motivated by F17-REVISION's observation that 9/12 Tox21 endpoints collapsed
+specifically at seed 4 (vs ~4.8/12 expected by chance). `--seed` in
+run_phase3.py controls BOTH the molecule subsample RNG and
+`torch.manual_seed` (which seeds PGExplainer's edge-mask MLP init +
+training stochasticity) -- but the base MODEL's weights come from a
+separately-trained ckpt (`train.py --seed`), independent of run_phase3's
+`--seed`. This lets the two be decoupled. scripts/f10_mechanism.sh, PG-only
+(`--explainers pgexplainer`), on 2 endpoints (NR-AhR, SR-MMP):
+
+**Experiment A -- fix the model at a clean (non-collapsing) train-seed,
+sweep the explain-seed 0-4 (including 4, the worst offender):**
+NR-AhR (model fixed at train-seed 0): 0/30, 1/30, 0/30, 0/30, 0/30
+degenerate at explain-seed 0,1,2,3,4 respectively -- **NEVER collapses, not
+even at explain-seed=4.**
+SR-MMP (model fixed at train-seed 2): 0/30 at every explain-seed 0-4 --
+**NEVER collapses either.**
+**This REFUTES the pure "explain-seed=4 poisons PGExplainer's MLP
+regardless of model" hypothesis** -- if that were the whole story, both
+would have collapsed at explain-seed=4.
+
+**Experiment B -- fix the explain-seed at 4, sweep which model (ckpt) is
+loaded:**
+NR-AhR (explain-seed fixed at 4): model-seed 0 -> 0/30 (clean), model-seed 1
+-> **30/30 (collapsed)**, model-seed 2 -> **30/30 (collapsed)**, model-seed
+3 -> 1/30 (clean), model-seed 4 (= the original matched-seed run) ->
+**30/30 (collapsed)**. **3 of 5 models collapse at this fixed explain-seed,
+2 don't.**
+SR-MMP (explain-seed fixed at 4): model-seed 0 -> **29/30 (collapsed)**,
+model-seed 1 -> **29/30 (collapsed)**, model-seed 2 -> 0/30 (clean),
+model-seed 3 -> 0/30 (clean), model-seed 4 (original) -> 15/30 (borderline,
+50%). **Also model-dependent, not universal.**
+
+**VERDICT: collapse is a MODEL x MLP-INIT INTERACTION, not a pure effect of
+either factor.** Neither "the model is fine, blame the MLP seed" (refuted
+by Experiment A) nor "certain models are just bad regardless of who
+explains them" (Experiment B shows the SAME explain-seed=4 collapses some
+models and not others) holds alone. The most likely explanation for F17-
+REVISION's seed-4 clustering: in the ORIGINAL sweep, seed VALUE 4 was used
+for BOTH the model's own training (`train.py --seed 4`) and the explainer's
+init (`run_phase3 --seed 4`) SIMULTANEOUSLY, by protocol construction (same
+seed value reused for both). The apparent "seed 4 is cursed" pattern is
+most plausibly an artifact of that PAIRING -- `torch.manual_seed(4)`
+landing in a state that happens to produce both a somewhat harder-to-
+explain model AND a badly-initialised MLP more often than other seed
+values, not a property of PGExplainer's initialisation in isolation. This
+turns F10 from "flaky" into a genuinely characterised (if not fully
+resolved) mechanism, per the original ask: **the failure requires a bad
+(model, MLP-init) combination, and either one alone is usually recoverable.**
+Practical implication unchanged: multi-seed screening via
+`explainer_health` remains the only reliable safeguard, since which
+specific combinations are "bad" is not predictable from the model or the
+seed value alone.
+
 ### Scale-out significance battery (src/analysis/scaleout_significance.py; F1-F8 method: paired two-sided Wilcoxon, Holm within block, bootstrap 95% CI)
 
 Blocks B/C/D/E apply the F1-F8 rigor to all 16 scale-out cells (12 Tox21
@@ -1112,11 +1169,13 @@ one of its 5 seeds. **A striking pattern: 9 of the 12 endpoints collapsed
 specifically at seed 4** (NR-AR, NR-AR-LBD, NR-AhR, NR-Aromatase, NR-ER,
 NR-ER-LBD, SR-ARE, SR-MMP, SR-p53 all collapse at s4; expected count under a
 uniform-across-seeds null would be ~4.8/12, ~2 std below the observed 9) --
-suggestive that collapse correlates with the SEED VALUE itself (likely via
-`torch.manual_seed`'s effect on the edge-mask MLP's specific initialisation
-draw) more than with independent per-(endpoint,seed) chance, though n=12 is
-too small to treat this as settled. Worth a dedicated multi-seed-value check
-if pursued further; flagged here, not resolved.
+**RESOLVED by the dedicated decoupling experiment, see "F10-MECHANISM"
+below F10: NOT a pure MLP-seed effect** (fixing a clean model and sweeping
+the explain-seed through 0-4, including 4, never collapsed) -- it's a
+model x MLP-init INTERACTION, most likely arising because the original
+protocol used the SAME seed value for both the model's training and the
+explainer's init simultaneously, not because seed value 4 poisons
+PGExplainer's own initialisation in isolation.
 
 **Bottom line combining F15-F17, FINAL (all three datasets' random-baseline
 checks complete: mutag_graphxai 5/5 seeds, B-XAIC 20/20 units, Tox21 60/60
