@@ -1,5 +1,10 @@
 # RQ1 Metric Spec (locked) -- mirrors RQ1_Metric_Spec.docx v5
 
+**>>> Before citing ANY number from this file (esp. in a deck), read the
+"## CONSOLIDATED CURRENT-NUMBERS TABLE" at the very end first. Many figures
+in the body below are SUPERSEDED (F3, F9, F17's Fid-/GEF) -- the body is a
+running log kept for provenance, not a source of current truth on its own. <<<**
+
 Datasets: MUTAG (standard), MUTAG (GraphXAI GT-labeled), BBBP, Tox21 (SR-p53
 phase 1, then all 12 endpoints), B-XAIC (task "indole" for phase 2 -- explicit
 starting choice, mirroring SR-p53 for Tox21; other B-XAIC tasks deferred)
@@ -1275,3 +1280,86 @@ F6/F7 that also cite mutag_graphxai or Tox21, which DO now have multi-seed
 support) should be read as single-replicate evidence, on the same footing
 Phase-3's original findings were in before this whole multi-seed effort
 started.
+
+## CONSOLIDATED CURRENT-NUMBERS TABLE (read this before citing anything above)
+
+### Status ledger, all findings
+
+| # | Finding (one line) | Status | Current headline |
+|---|---|---|---|
+| F1 | R3 noise-dominated, 4 core datasets | Holds (partial re-check) | std>>mean everywhere; MUTAG-std/BBBP never re-seeded |
+| F2 | B-XAIC R3 heavy right tail | Unverified (single-seed) | as originally stated |
+| F3 | mutag_graphxai GEA: GNN~=PG>>SX | **REVISED** | "GNN >> {PG,SX}" robust (5/5 seeds); strict "GNN>PG>SX" only 3/5 |
+| F3-v1 | (pooled n=940 significance) | **WITHDRAWN** | do not cite p~1e-94 etc. |
+| F4 | R2 featurisation-dependent | Confirmed (Tox21 side) | one-hot family side unverified |
+| F5 | R2 separates SX vs GNN/PG | **UNVERIFIED, flagged** | cached data exists for mutag_graphxai + indole, not yet re-run |
+| F6 | R1 most artifact-dominated | Unverified (single-seed) | MUTAG-std/BBBP never re-seeded |
+| F7 | PG lowest Fid+ under R1, 3/5 datasets | Unverified (single-seed, cross-dataset count) | as originally stated |
+| F8 | Cross-metric agreement "1 of 8" | Unverified, same risk as F13 | as originally stated |
+| F9 | B-XAIC 3-way GEA ranking per task | **MAJOR REVISION** | only indole robust; X/P rankings do NOT reproduce per seed |
+| F10 | PGExplainer collapse | Confirmed + mechanism found | rate 15-40% depending on dataset; model x MLP-init interaction (F10-MECHANISM) |
+| F11 | Tox21 R2/R1 inflation, ~8/12 endpoints | **CONFIRMED** | reproduces every seed, 6-10/12 (R2), 8-12/12 (R1) |
+| F12 | Tox21 R2 separates SX, 5/12 endpoints | **CONFIRMED** | reproduces every seed, 5-8/12 |
+| F13 | B-XAIC GEA/Fid+ agreement "5 of 12" | **UNVERIFIED, HIGH RISK** | F9-REVISION implies this likely doesn't survive per-seed (X's GEA order itself is unstable) |
+| F14 | GEA binarization (mean-thr vs top-k) | Unverified (single-seed) | as originally stated |
+| F15 | mutag_graphxai vs random | Confirmed (seed-aware by design) | GNN beats random 4/5; SX 0/5; PG inconsistent 2/5 |
+| F16 | B-XAIC vs random, all 4 tasks | Confirmed (seed-aware by design) | SX beats random 20/20, zero exceptions |
+| F17 | Tox21 vs random | **PARTIALLY REVISED** | Fid+ CONFIRMED (SX, 4-5/5 seeds); Fid-/GEF significance was pooling-only, WITHDRAWN as stated |
+
+### Table A -- GEA, every (dataset, seed): mutag_graphxai + all 4 B-XAIC tasks
+
+matched top-k=0.25 random baselines shown alongside; all numbers verified in
+this session (F15/F16/F3-REVISION v2/F9-REVISION).
+
+| dataset | seed | GNN | PG | SX | RandNode | RandEdge |
+|---|---|---|---|---|---|---|
+| mutag_graphxai | 0 | 0.433 | 0.243 | 0.030 | 0.149 | 0.194 |
+| mutag_graphxai | 1 | 0.122 | 0.066 | 0.020 | 0.145 | 0.158 |
+| mutag_graphxai | 2 | 0.492 | 0.070 | 0.113 | 0.141 | 0.176 |
+| mutag_graphxai | 3 | 0.496 | 0.000 (collapsed) | 0.048 | 0.140 | 0.184 |
+| mutag_graphxai | 4 | 0.612 | 0.400 | 0.113 | 0.132 | 0.165 |
+| indole | 0-4 | 0.246 mean (3/5 sig>rand) | 0.532 mean (5/5 sig>rand) | 0.658 mean (5/5 sig>rand) | 0.164 mean | 0.151 mean |
+| PAINS | 0-4 | 0.304 mean (5/5 sig>rand) | 0.216 mean (3/5, 2 collapsed) | 0.492 mean (5/5 sig>rand) | 0.165 mean | 0.160 mean |
+| X | 0-4 | 0.063 mean (3/5 sig>rand) | 0.368 mean (4/5, 1 near-collapsed) | 0.383 mean (5/5 sig>rand) | 0.055 mean | 0.074 mean |
+| P | 0-4 | 0.209 mean (5/5 sig>rand) | 0.271 mean (5/5, 0 collapsed) | 0.299 mean (5/5 sig>rand) | 0.042 mean | 0.023 mean |
+
+Per-seed detail for the 4 B-XAIC tasks (all 20 rows) is in F16's table; per-
+seed detail for mutag_graphxai is in F3-REVISION v2 / F15 above. **3-way
+ranking (which of GNN/PG/SX scores highest) is SEED-STABLE only for
+mutag_graphxai (GNN always #1) and indole (SX always #1, all pairs always
+significant) -- PAINS/X/P's rankings move around by seed (F9-REVISION);
+"beats random" (this table) is a separate, more robust claim from "ranks
+highest among the three" (F9-REVISION), and the two should not be
+conflated.**
+
+### Table B -- Tox21 aggregate (60 units = 12 endpoints x 5 seeds, F17-REVISION)
+
+| masking | metric | GNN | PG | SX | RandN | RandE | primary sig (n=60) | per-seed sig (n=12 x5) |
+|---|---|---|---|---|---|---|---|---|
+| R3 | Fid+ | 0.028 | 0.025 | 0.057 | 0.026 | 0.020 | SX *** | SX 5/5 |
+| R3 | Fid- | 0.057 | 0.059 | 0.032 | 0.059 | 0.063 | SX *** | **SX 0/5 (pooling-only)** |
+| R3 | GEF | 0.092 | 0.096 | 0.074 | 0.096 | 0.101 | SX *** | **SX 0/5 (pooling-only)** |
+| R2 | Fid+ | 0.072 | 0.070 | 0.172 | 0.061 | 0.061 | SX *** | SX 5/5 |
+| R2 | Fid-/GEF | -- | -- | -- | -- | -- | SX *** | **SX 0/5 (pooling-only)** |
+| R1 | Fid+ | 0.065 | 0.058 | 0.093 | 0.067 | 0.064 | SX *** | SX 4/5 |
+| R1 | Fid-/GEF | -- | -- | -- | -- | -- | ns | ns |
+| all cells | -- | -- | -- | -- | -- | -- | GNN/PG always ns | GNN/PG always 0/5 |
+
+**Only SX's Fid+ advantage is a genuinely reproducible, per-seed-verified
+finding (4-5/5 seeds, every masking). All the *** results for Fid-/GEF are
+n=60-pooling artifacts -- cite the Fid+ result, not those.** PGExplainer
+collapse: 24/60 (40%) on Tox21, model x MLP-init interaction (F10-MECHANISM).
+
+### Table C -- single-seed-only, never re-verified (cite with that caveat)
+
+| dataset | protocol | status |
+|---|---|---|
+| MUTAG (standard) | 70/15/15, n=29, seed 0 | never multi-seeded; F1/F4/F5/F6/F7/F8 numbers for this dataset are single-replicate |
+| BBBP | 70/15/15, n=30, seed 0 | never multi-seeded; same caveat |
+| Tox21 SR-p53 (as its OWN single-dataset core-Phase-3 number, separate from the 12-endpoint aggregate) | 70/15/15, n=30, seed 0 | superseded in aggregate by Table B above (SR-p53 is 1 of the 12 endpoints, now has 5-seed data); the STANDALONE SR-p53-only Phase-3 table entry is not itself re-verified in isolation |
+
+### Do-not-cite list (superseded, kept only for provenance)
+
+- mutag_graphxai GEA significance at p~1e-94/1e-133 (F3-REVISION v1) -- pseudo-replicated, withdrawn.
+- Tox21 Fid-/GEF "SX beats random ***" under any masking (F17, original + primary n=60 test) -- does not reproduce per seed (F17-REVISION block C), pooling artifact.
+- F9's "SX significantly top-or-tied-top on 3/4 B-XAIC tasks" as a claim about the 3-way ranking -- only true for indole; PAINS/X/P do not reproduce (F9-REVISION). ("SX beats RANDOM on 4/4 tasks" is a different, still-true claim, F16.)
