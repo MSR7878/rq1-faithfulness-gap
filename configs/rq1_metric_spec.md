@@ -320,6 +320,42 @@ check. Restrict F6 to MUTAG-standard/BBBP specifically, where it remains
 single-seed and unverified (see limitations note below F7-REVISION) rather
 than stating it as a general property of R1 masking.
 
+### F6-ADDENDUM: reconsidered against a proper NULL (F17-REVISION, Tox21) --
+### RESTATE, do not drop. Washout is real, but only against RANDOM, only for
+### Fid-/GEF, and only on Tox21 -- not a pairwise explainer-vs-explainer effect
+
+The test above asks "does explainer A stay significantly different from
+explainer B under R1?" -- pairwise, no null. F17-REVISION asks a different,
+arguably more principled question: "does SX stay significantly ABOVE RANDOM
+under R1?" -- and that test, already run and seed-verified for a different
+purpose (the F15-17 random-baseline work), reaches F6's original intuition
+independently, with a proper null, on Tox21 (block C, 5-seed per-metric
+counts):
+| masking | Fid+ (SX vs RandN) | Fid- (SX vs RandN) | GEF (SX vs RandN) |
+|---|---|---|---|
+| R3 | 5/5 | 0/5 | 0/5 |
+| R2 | 5/5 | 0/5 | 0/5 |
+| R1 | 4/5 | 0/5 | 0/5 |
+Fid-/GEF's separation from random is essentially ABSENT at every masking
+(0/5 even under R3/R2, so there is nothing for R1 to "wash out" there --
+those two metrics never had a reproducible random-null signal to lose).
+Fid+ is the metric that actually shows the R3->R1 pattern F6 described: it
+stays significant under R3 and R2 (5/5) and MOSTLY survives R1 (4/5, not a
+full washout) -- R1 erodes but does not eliminate it. This is a real,
+seed-verified, properly-nulled signal, but it is (a) Tox21-specific -- GEA
+is masking-independent by construction, so mutag_graphxai/B-XAIC have no
+analogous "R1 vs random" test to run; a vs-random washout check is only
+possible where a masking-dependent metric (Fidelity) exists, i.e. Tox21 --
+and (b) a partial erosion of Fid+, not the "all 3 metrics wash out" claim
+the original single-seed F17 entry stated (that overstatement is itself
+corrected by the 5-seed F17-REVISION).
+VERDICT: RESTATE, don't drop. F6 as "explainer-vs-explainer separation
+washes out under R1" does not reproduce (confirmed above). F6 as "R1
+partially erodes an explainer's separation from a random null" DOES
+reproduce, but only for SX's Fid+ on Tox21 (4/5 seeds, down from 5/5 under
+R2/R3) -- report it in those specific terms, sourced to F17-REVISION block C,
+not as a general R1/masking-sweep claim spanning all datasets and metrics.
+
 F7. Under R1, SubgraphX loses its Fid- advantage. R2 spared SubgraphX's
     connected E_i (it survived zero-fill); R1 DELETES nodes, so even a
     connected subgraph gets isolated -- mutag_graphxai SX |Fid-| R3 0.11 -> R2
@@ -1159,6 +1195,46 @@ sometimes real and sometimes not, unpredictably by seed." Random baselines
 for B-XAIC (where GEA orderings look the opposite way, F9) and Tox21 Fidelity
 are a natural next step -- not yet run.
 
+### F15-ADDENDUM: connectivity-matched random baseline (src/analysis/
+### connectivity_baseline.py, mutag_graphxai, 5 seeds) -- SURVIVES, and IS
+### SHARPENED, not weakened, by the fair null
+
+The objection: SubgraphX only ever proposes CONNECTED subgraphs, so
+comparing it to F15's unconstrained random-node baseline (RandN, fixed
+top-k=0.25 budget) may be unfair on compact motifs -- an unconstrained null
+can freely pick any node subset, which could itself be a disadvantage (or
+advantage) relative to SX's structural constraint. Built two NEW nulls,
+matched per-molecule to SX's own real mask size (mean-threshold, not the
+fixed 0.25 budget): `RandConn` (random CONNECTED node-induced subgraph, same
+size, via random frontier growth) and `RandUnc` (random unconstrained subset,
+same size -- the direct apples-to-apples control for the size change alone,
+separate from F15's fixed-budget RandN). 20 random draws/molecule, averaged,
+n=188 molecules (all of mutag_graphxai, matching P2's --explain-pool all):
+
+| seed | mean\|mask\| | SX | RandConn | RandUnc | SX vs RandConn | SX vs RandUnc |
+|------|------|-------|----------|---------|-----------------|-----------------|
+| 0 | 4.1 | 0.030 | 0.102 | 0.136 | p=7e-19 *** (SX wins 20/188) | p=2e-24 *** (SX wins 17/188) |
+| 1 | 4.4 | 0.020 | 0.109 | 0.144 | p=6e-28 *** (SX wins 17/188) | p=1e-31 *** (SX wins 9/188) |
+| 2 | 4.2 | 0.113 | 0.110 | 0.142 | p=3e-03 ** (SX wins 49/188) | p=7e-06 *** (SX wins 44/188) |
+| 3 | 4.4 | 0.048 | 0.106 | 0.144 | p=4e-18 *** (SX wins 24/188) | p=1e-21 *** (SX wins 19/188) |
+| 4 | 4.4 | 0.113 | 0.111 | 0.141 | p=3e-03 ** (SX wins 51/188) | p=1e-05 *** (SX wins 48/188) |
+
+SX loses to the FAIR (connectivity- AND size-matched) null, significantly,
+in ALL 5/5 seeds -- and loses to it MORE often per-molecule (9-51/188 wins,
+5-27%) than it loses to the unconstrained same-size null in only a slightly
+smaller margin. The gap between RandConn and RandUnc themselves is small and
+in the expected direction (RandConn always a bit lower than RandUnc -- the
+real "cost" of the connectivity constraint on this dataset) but that cost is
+tiny (0.03-0.04 absolute GEA) next to the SX-vs-RandConn gap (0.06-0.08).
+VERDICT: the fairness objection does NOT rescue SX -- if anything it
+sharpens the finding. A random CONNECTED subgraph of the exact size SX
+itself chose still beats SX's actual choice of WHICH connected subgraph in
+188/188 molecules' aggregate and in the large majority of individual
+molecules. This rules out "connectivity was an unfair handicap" as an
+explanation and rules IN "SX is choosing badly among connected subgraphs of
+the right size and shape family," not merely "SX is structurally
+disadvantaged by an unconstrained comparison." F15's headline stands.
+
 ### F16. Random baseline, B-XAIC -- ALL 4 TASKS COMPLETE (20/20 P1 units) --
 ### SX beats random with ZERO exceptions across all 20 seed-task units; PAINS
 ### and X each independently reveal a PGExplainer collapse instance; see
@@ -1294,6 +1370,34 @@ all 5 seeds** (vs PAINS's 2 and X's 1).
    with F15 (mutag_graphxai, 5/5 seeds x full 188 graphs) and F17 (Tox21),
    completes the random-baseline check across every dataset in the priority
    sweep.
+
+### F16-ADDENDUM: connectivity-matched random baseline (src/analysis/
+### connectivity_baseline.py, indole, 5 seeds) -- SURVIVES cleanly
+
+Same construction as F15-ADDENDUM, applied to indole (n=360 GT-present
+molecules/seed -- the priority-sweep's larger N=400/stratify-0.9 sample, not
+the original scale-out's n=13):
+
+| seed | mean\|mask\| | SX | RandConn | RandUnc | SX vs RandConn | SX vs RandUnc |
+|------|------|-------|----------|---------|-----------------|-----------------|
+| 0 | 7.7 | 0.684 | 0.181 | 0.162 | p=2e-60 *** (SX wins 352/360) | p=2e-60 *** (SX wins 352/360) |
+| 1 | 7.7 | 0.679 | 0.182 | 0.161 | p=3e-60 *** (SX wins 352/360) | p=2e-60 *** (SX wins 352/360) |
+| 2 | 7.7 | 0.722 | 0.183 | 0.164 | p=1e-60 *** (SX wins 356/360) | p=1e-60 *** (SX wins 358/360) |
+| 3 | 7.6 | 0.640 | 0.181 | 0.163 | p=4e-60 *** (SX wins 349/360) | p=3e-60 *** (SX wins 349/360) |
+| 4 | 7.5 | 0.567 | 0.169 | 0.151 | p=7e-60 *** (SX wins 349/360) | p=4e-60 *** (SX wins 352/360) |
+
+SX beats the fair, connectivity- and size-matched null overwhelmingly in
+5/5 seeds, winning in 97-99% of individual molecules -- as clean as F16's
+original unconstrained-baseline result. Note the connectivity "cost" here is
+essentially negligible (RandConn ~0.17-0.18 vs RandUnc ~0.15-0.16, a small
+gap in the OPPOSITE direction from a handicap -- being forced connected
+helps the random null slightly on indole's large, contiguous ring motif).
+VERDICT: F16's headline stands, unweakened by the fairness objection.
+Combined with F15-ADDENDUM, the GEA inversion between mutag_graphxai (SX
+loses even to a fair null) and indole (SX wins overwhelmingly against the
+same kind of fair null) is confirmed to be a real property of what
+SubgraphX's objective can recover on each dataset's motif -- not an artifact
+of comparing it to an unconstrained random baseline.
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
@@ -1546,7 +1650,7 @@ started.
 | F3-v1 | (pooled n=940 significance) | **WITHDRAWN** | do not cite p~1e-94 etc. |
 | F4 | R2 featurisation-dependent | **CONFIRMED** (both sides) | one-hot side: R3->R2 inflation sig in 20/20 seed-cells; Tox21 side confirmed via F11-REVISION |
 | F5 | R2 separates SX vs GNN/PG | **CONFIRMED** | SX-vs-GNN/PG Fid+ separation robust across all 5 seeds, mutag_graphxai + indole (+ PAINS/X/P mostly) |
-| F6 | R1 most artifact-dominated (washout) | **DOES NOT REPRODUCE** | pairwise sig persists under R1 nearly as much as R2 on every GT dataset checked; restrict to MUTAG-std/BBBP (unverified) |
+| F6 | R1 most artifact-dominated (washout) | **RESTATED** (pairwise: does not reproduce; vs-random: does, narrowly) | pairwise explainer-vs-explainer washout absent on every GT dataset; SX-vs-random Fid+ washout IS real but partial (Tox21 only, 5/5->4/5 seeds, F6-ADDENDUM) |
 | F7 | PG lowest Fid+ under R1, 3/5 datasets | **RESTATED** | common (mutag/indole/PAINS, 12/15 seed-cells) but flatly contradicted on B-XAIC/X (PG HIGHEST, 5/5 seeds) |
 | F8 | Cross-metric agreement "1 of 8" | **CONFIRMED** (qualitative) | rare agreement (~15-20% cells) holds up; the specific "indole/R2 agrees" cell is NOT itself reproducible (2/5 seeds) |
 | F9 | B-XAIC 3-way GEA ranking per task | **MAJOR REVISION** | only indole robust; X/P rankings do NOT reproduce per seed |
@@ -1555,8 +1659,8 @@ started.
 | F12 | Tox21 R2 separates SX, 5/12 endpoints | **CONFIRMED** | reproduces every seed, 5-8/12 |
 | F13 | B-XAIC GEA/Fid+ agreement "5 of 12" | **RESTATED** | "X agrees under ALL 3 maskings" holds in only 2/5 seeds; directional claim (X 60% vs others 20-33% cell agreement) survives |
 | F14 | GEA binarization (mean-thr vs top-k) | **MIXED** | indole confirmed robust (5/5); P's instability confirmed+sharpened (0/5); mutag_graphxai/X weaker than framed (3/5, inherited GEA fragility) |
-| F15 | mutag_graphxai vs random | Confirmed (seed-aware by design) | GNN beats random 4/5; SX 0/5; PG inconsistent 2/5 |
-| F16 | B-XAIC vs random, all 4 tasks | Confirmed (seed-aware by design) | SX beats random 20/20, zero exceptions |
+| F15 | mutag_graphxai vs random | **CONFIRMED, sharpened** | GNN beats random 4/5; SX 0/5 (loses to a connectivity+size-matched fair null too, 5/5, F15-ADDENDUM); PG inconsistent 2/5 |
+| F16 | B-XAIC vs random, all 4 tasks | **CONFIRMED, sharpened** | SX beats random 20/20; indole also beats a connectivity+size-matched fair null 5/5 (F16-ADDENDUM) |
 | F17 | Tox21 vs random | **PARTIALLY REVISED** | Fid+ CONFIRMED (SX, 4-5/5 seeds); Fid-/GEF significance was pooling-only, WITHDRAWN as stated |
 
 ### Table A -- GEA, every (dataset, seed): mutag_graphxai + all 4 B-XAIC tasks
