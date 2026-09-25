@@ -1443,13 +1443,24 @@ GNN beats both PG and SX significantly in 5/5 seeds (identical to the
 coupled result). Strict "GNN>PG>SX" holds in 3/5 seeds (0,1,2) here vs 3/5
 seeds (0,1,4) in the coupled run -- the SAME 3-vs-2 split, just seed 2
 (not seed 4) is now the one that stays GNN>PG>SX, and seed 4 (not seed 2)
-now flips. This is itself informative: the specific seed that flips changed
-when the explainer-seed changed, confirming the PG-vs-SX instability is a
-genuine closeness-of-competing-signals effect (sensitive to the explainer's
-own stochasticity), not an artifact tied to one particular coupled seed
-value. Seed-level test: GNN higher in 5/5 for both GNN-PG and GNN-SX
-(same as coupled, ns by construction at n=5); PG higher in 3/5 for PG-SX
-(same 3/5 as coupled).
+now flips.
+CORRECTION (this was mischaracterized in an earlier draft of this section as
+a "genuine closeness-of-competing-signals effect" -- that framing is wrong
+and has been struck): per F15/F15-ADDENDUM, SX is AT OR BELOW a fair random
+null on mutag_graphxai in 5/5 seeds, and per the original F15 analysis PG
+beats its own random baseline in only 2/5 (non-collapsed) seeds -- a coin
+flip. Neither explainer has a reliable above-chance signal on this dataset.
+Two near-chance quantities swapping order across seeds -- which specific
+seed "wins" changing when the explainer-seed changes -- is what sampling
+noise around a null looks like, not a real competition between two valid
+signals. The unstable PG-vs-SX middle ranking is a CONSEQUENCE of both
+explainers lacking signal here, not a separate, informative finding in its
+own right. Report it as: "PG-vs-SX ordering on mutag_graphxai is noise,
+consistent with neither explainer clearing a random baseline" -- not as
+evidence of some third phenomenon. Seed-level test: GNN higher in 5/5 for
+both GNN-PG and GNN-SX (same as coupled, ns by construction at n=5); PG
+higher in 3/5 for PG-SX (same 3/5 as coupled) -- itself the expected rate
+for a coin flip between two noise-level quantities.
 
 **3. F10 (PGExplainer collapse rate) -- HOLDS: still exactly 1/5, still
 seed 3, now under explainer-seed 1003 instead of 3:**
@@ -1480,6 +1491,40 @@ CONCURRENCY=4, GPU-only explain cost. Scope: mutag_graphxai only, per the
 user's explicit request; B-XAIC's decoupled re-run (P1, 20 units, the
 expensive tier) has NOT been run and is a separate decision -- see the
 recommendation in the commit/report accompanying this section.
+
+**PAPER PARAGRAPH (drop-in, Methods/Robustness subsection):**
+
+> To rule out a protocol confound, we re-ran the mutag_graphxai evaluation
+> (5 units) with the base model's training seed and the explainer's own
+> initialization seed decoupled, rather than fixed to the same value as in
+> the main sweep. Each unit reused its original trained checkpoint unchanged
+> and was re-explained under a fresh, independent explainer-init seed. All
+> three seed-sensitive claims we report for this dataset reproduced:
+> SubgraphX remained at or below a connectivity- and size-matched random
+> baseline in 5/5 seeds; GNNExplainer significantly outperformed both
+> PGExplainer and SubgraphX in 5/5 seeds; and PGExplainer's collapse rate was
+> unchanged at 1/5. The collapse result is the more informative one: the
+> same checkpoint (seed 3) collapsed to a degenerate, uniform edge mask
+> under two independent, unrelated explainer initializations (its original
+> coupled seed and a newly assigned, unrelated one). Because the only factor
+> these two runs share is the trained model's weights, this is direct
+> evidence that PGExplainer's failure on this checkpoint is a property of
+> the model, not an artifact of the seed value used to initialize the
+> explainer -- ruling out the alternative explanation that our seed-coupled
+> protocol was itself manufacturing the appearance of a stable collapse
+> rate.
+>
+> We did not extend this check to B-XAIC or Tox21, which remain evaluated
+> under the original coupled protocol. This is a judgment call, not only a
+> cost one -- a comparable B-XAIC re-run is roughly an order of magnitude
+> more expensive (20 units at several hours each). The seed-coupling
+> confound's most concerning failure mode is a model-weights x
+> initialization interaction masquerading as seed noise; that is exactly
+> what the collapse mechanism check above tests, directly, and the result
+> was decisive rather than ambiguous. We therefore treat the
+> mutag_graphxai decoupling result as evidence that the mechanism
+> generalizes, and report the coupled seeds on B-XAIC and Tox21 as a
+> disclosed limitation rather than an unresolved threat to validity.
 
 ### F17. Random baseline, Tox21 Fidelity/GEF (all 12 endpoints, existing scale-out
 ### caches, seed 0) -- GNN and PG NEVER separate from random; only SX does, and
