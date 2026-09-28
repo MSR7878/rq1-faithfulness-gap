@@ -167,8 +167,16 @@ def main(save_dir: str | None = OUT) -> int:
             rows = {s: by_task_seed[(t, s)] for s in sorted(units[t])}
             if not rows:
                 continue
-            flat = {"mol_idx": next(iter(rows.values()))["mol_idx"]}  # identical across seeds (GT/data_list fixed)
+            # mol_idx saved PER SEED: B-XAIC draws its own stratified test split
+            # per seed (unlike mutag_graphxai's fixed --explain-pool all), so
+            # test_idx -- and therefore which molecules mol_idx refers to --
+            # differs seed to seed. A single shared mol_idx array here was an
+            # earlier bug (silently mislabeled seeds 1-4 with seed 0's molecule
+            # set; the random_node/random_edge VALUES were always correct, only
+            # the alignment key was wrong).
+            flat = {}
             for s in sorted(rows):
+                flat[f"mol_idx_s{s}"] = rows[s]["mol_idx"]
                 flat[f"random_node_s{s}"] = rows[s]["random_node"]
                 flat[f"random_edge_s{s}"] = rows[s]["random_edge"]
             path = f"{save_dir}/baseline_arrays_bxaic_{t}.npz"

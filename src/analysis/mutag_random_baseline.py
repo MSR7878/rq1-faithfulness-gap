@@ -150,8 +150,14 @@ def main(save_dir: str | None = OUT) -> int:
         print(f"  {SH[a]:<6}-{SH[b]:<6}  {hi:<6} higher {n_hi}/5  p_Holm={adj[(a,b)]:.4f}  {star(adj[(a,b)])}")
 
     if save_dir is not None:
-        flat = {"mol_idx": mol_idx_by_seed[SEEDS[0]]}  # identical across seeds (GT/data_list fixed)
+        # mol_idx saved PER SEED even though mutag_graphxai's --explain-pool
+        # all happens to make it identical across seeds (verified: test_idx ==
+        # range(188) for every seed) -- don't rely on that silently. B-XAIC's
+        # otherwise-identical script had exactly this assumption as a bug
+        # (its test_idx is NOT seed-invariant), so keep the two consistent.
+        flat = {}
         for s in SEEDS:
+            flat[f"mol_idx_s{s}"] = mol_idx_by_seed[s]
             flat[f"random_node_s{s}"] = by_seed[s]["random_node"]
             flat[f"random_edge_s{s}"] = by_seed[s]["random_edge"]
         path = f"{save_dir}/baseline_arrays_mutag_graphxai.npz"
