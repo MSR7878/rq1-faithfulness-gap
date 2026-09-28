@@ -1280,15 +1280,29 @@ seed-task units** -- indole 5/5 (p~1e-58 to 1e-60, ~4x margin), PAINS 5/5
 RandN is 15/15.**
 
 PGExplainer beats its matched random-edge baseline in indole 5/5, but only
-**3/5 on PAINS** (seeds 3-4 fully COLLAPSED, all-0.000 mask) and **4/5 on X**
-(seed 4 near-collapsed, PG=0.030, still significantly BELOW RandE,
-p=3.7e-09). That is FOUR independent collapse/near-collapse instances now,
-across THREE different datasets: Tox21 (F10, ~20-30% estimated rate),
-mutag_graphxai seed 3 (F3-REVISION v2), and B-XAIC PAINS seeds 3-4 + X
-seed 4 (this entry) -- 3 of 25 B-XAIC (task,seed) units collapsed/
-near-collapsed (12%), consistent with F10's estimated failure rate given
-small-n. PGExplainer's training instability is a general property of the
-method, not tied to any one dataset.
+**3/5 on PAINS** (seeds 3-4 fully COLLAPSED, all-0.000 mask, n_degenerate/
+n=400/400 -- meets the formal collapse threshold) and **4/5 on X** (seed 4,
+PG=0.030, still significantly BELOW RandE, p=3.7e-09).
+CORRECTION (reconciled against runs/prio/collapse_table.csv, which parses
+explainer_health mechanically): X seed 4 is NOT a collapse by the project's
+own n_degenerate/n>=0.5 criterion -- its explainer_health shows
+n_degenerate=0/400, n_empty=0, n_whole=0, i.e. a structurally valid,
+non-constant mask. Calling it "near-collapsed" here conflated two different
+things: (1) a literal degenerate/constant mask (PAINS's failure mode, a
+binary training-failure diagnostic) and (2) a valid-but-poor explanation
+that still scores significantly BELOW random (X seed 4's actual failure
+mode, a substantive comparison, not a mask-degeneracy bug). Both are real
+and worth reporting, but only (1) is "collapse" -- restate: PAINS
+seeds 3-4 are B-XAIC's only two formal collapses (2/20 B-XAIC units, 10%,
+not 3/20/15%); X seed 4 is a separate, correctly-reported finding (PG
+produces a valid mask that is nonetheless significantly worse than chance
+on this task/seed) and should not be added to the collapse-rate tally.
+Across THREE different datasets: Tox21 (F10, ~20-30% estimated rate),
+mutag_graphxai seed 3 (F3-REVISION v2), and B-XAIC PAINS seeds 3-4 (this
+entry) -- 2 of 20 B-XAIC (task,seed) units formally collapsed (10%),
+consistent with F10's estimated failure rate given small-n. PGExplainer's
+training instability is a general property of the method, not tied to any
+one dataset.
 
 GNNExplainer beats random on indole in 3/5 seeds (loses 2, one ns), PAINS
 5/5 (all ***), X 5/5 but only 3/5 SIGNIFICANTLY (seeds 3-4 are ns, p=0.340
@@ -1347,12 +1361,17 @@ all 5 seeds** (vs PAINS's 2 and X's 1).
    either side. **Final SX vs RandN tally across both GT datasets: 20/20 on
    B-XAIC, 0/5 on mutag_graphxai -- as clean an inversion as this kind of
    result gets.**
-2. **PGExplainer collapse/near-collapse is a FIVE-dataset-spanning
-   phenomenon**, with 3 confirmed instances inside B-XAIC (out of 20 units,
-   15%): PAINS seeds 3-4 (full collapse) and X seed 4 (near-collapse) -- P
-   and indole show ZERO collapses across their 10 combined seeds -- plus
-   Tox21 (F10) and mutag_graphxai seed 3 (F3-REVISION v2). 15% is consistent
-   with F10's ~20-30% Tox21 estimate (small-n, same order of magnitude).
+2. **PGExplainer collapse is a FIVE-dataset-spanning phenomenon**, with 2
+   formal collapses inside B-XAIC (out of 20 units, 10% -- CORRECTED from an
+   earlier "3/20, 15%" that miscounted X seed 4 as a collapse; its
+   explainer_health is clean, n_degenerate=0/400, see the correction note
+   above under "PGExplainer beats its matched random-edge baseline...";
+   X seed 4 IS still a real, separately-reported finding -- a valid mask
+   that scores significantly below random -- just not a collapse): PAINS
+   seeds 3-4 (full collapse, n_degenerate=400/400 both) -- P and indole show
+   ZERO collapses across their 10 combined seeds -- plus Tox21 (F10) and
+   mutag_graphxai seed 3 (F3-REVISION v2). 10% is consistent with F10's
+   ~20-30% Tox21 estimate (small-n, same order of magnitude).
    When PG doesn't collapse, it clears random decisively every time (17/17
    non-collapsed instances).
 3. **GNNExplainer's random-margin varies by TASK, not by GT size**: robust
@@ -1653,7 +1672,9 @@ per-seed (n=12 x5) level for two of the three explainers, everywhere.
 **D. PGExplainer collapse, all 60 units: 24/60 = 40%** (`n_degenerate/n >=
 0.5` per unit, from each unit's own `explainer_health`) -- HIGHER than the
 prior ~20-30% estimate (f10_multiseed.py's 6-endpoint check, 9/30=30%) and
-than B-XAIC's 15% (F16). Every endpoint except SR-HSE collapsed in at least
+than B-XAIC's 10% (2/20, F16 -- corrected from an earlier "15%"/"3/20" that
+miscounted X seed 4 as a collapse; see the correction note under F16).
+Every endpoint except SR-HSE collapsed in at least
 one of its 5 seeds. **A striking pattern: 9 of the 12 endpoints collapsed
 specifically at seed 4** (NR-AR, NR-AR-LBD, NR-AhR, NR-Aromatase, NR-ER,
 NR-ER-LBD, SR-ARE, SR-MMP, SR-p53 all collapse at s4; expected count under a
@@ -1691,15 +1712,21 @@ describe, now shown real (not trivial-GT) on the B-XAIC side across all 4
 task types.
 
 **PGExplainer clears random reliably only when it doesn't collapse, and it
-collapses often and unevenly by dataset**: B-XAIC 3/20 (15%), mutag_graphxai
+collapses often and unevenly by dataset**: B-XAIC 2/20 (10%), mutag_graphxai
 1/5 (20%), **Tox21 24/60 (40%) -- the highest rate seen, and notably
 clustered at seed 4 across 9 of 12 endpoints** (F17-REVISION block D, a
 pattern possibly tied to `torch.manual_seed`'s effect on the edge-mask
-MLP's init, not resolved). Total across the whole priority sweep: **28 of
+MLP's init, not resolved). Total across the whole priority sweep: **27 of
 85 completed (dataset,endpoint/task,seed) units where PGExplainer's own
-GEA/Fid numbers are unreliable** -- this is not a rare edge case, it is a
-first-order property of the method that any paper using PGExplainer without
-multi-seed screening needs to disclose.
+GEA/Fid numbers are unreliable** (~32%; CORRECTED from an earlier "28/85" --
+see runs/prio/collapse_table.csv, which mechanically applies the SAME
+n_degenerate/n>=0.5 threshold cited above and is the authoritative count;
+B-XAIC/X/seed4 was previously miscounted here as a collapse -- its
+explainer_health is clean (n_degenerate=0/400); it is a real but different
+finding, a valid mask that still scores significantly below random, kept
+and reported as such, not folded into this tally) -- this is not a rare
+edge case, it is a first-order property of the method that any paper using
+PGExplainer without multi-seed screening needs to disclose.
 
 **No explainer beats chance in every setting checked.** GNN is real only on
 the two GT/GEA datasets. SX is real on B-XAIC (fully) and Tox21 (Fid+ only,
@@ -1781,7 +1808,7 @@ started.
 | F7 | PG lowest Fid+ under R1, 3/5 datasets | **RESTATED** | common (mutag/indole/PAINS, 12/15 seed-cells) but flatly contradicted on B-XAIC/X (PG HIGHEST, 5/5 seeds) |
 | F8 | Cross-metric agreement "1 of 8" | **CONFIRMED** (qualitative) | rare agreement (~15-20% cells) holds up; the specific "indole/R2 agrees" cell is NOT itself reproducible (2/5 seeds) |
 | F9 | B-XAIC 3-way GEA ranking per task | **MAJOR REVISION** | only indole robust; X/P rankings do NOT reproduce per seed |
-| F10 | PGExplainer collapse | Confirmed + mechanism found + decoupled-verified | rate 15-40% depending on dataset; model x MLP-init interaction (F10-MECHANISM); mutag_graphxai seed 3 collapses under BOTH its coupled and decoupled explainer-seed (same model, different inits) |
+| F10 | PGExplainer collapse | Confirmed + mechanism found + decoupled-verified | rate 10-40% depending on dataset (B-XAIC corrected 3/20->2/20, see runs/prio/collapse_table.csv); model x MLP-init interaction (F10-MECHANISM); mutag_graphxai seed 3 collapses under BOTH its coupled and decoupled explainer-seed (same model, different inits) |
 | F11 | Tox21 R2/R1 inflation, ~8/12 endpoints | **CONFIRMED** | reproduces every seed, 6-10/12 (R2), 8-12/12 (R1) |
 | F12 | Tox21 R2 separates SX, 5/12 endpoints | **CONFIRMED** | reproduces every seed, 5-8/12 |
 | F13 | B-XAIC GEA/Fid+ agreement "5 of 12" | **RESTATED** | "X agrees under ALL 3 maskings" holds in only 2/5 seeds; directional claim (X 60% vs others 20-33% cell agreement) survives |
@@ -1852,3 +1879,4 @@ collapse: 24/60 (40%) on Tox21, model x MLP-init interaction (F10-MECHANISM).
 - Every finding above computed from the completed 5-seed priority sweep (F1/F2/F4/F5/F6/F7/F8/F9/F11/F12/F13/F14/F15/F16/F17 and their REVISIONs) used a sweep where the model-training seed and the explainer/PGExplainer-init seed were the SAME value per unit (coupled) -- see the "Limitations" bullet above. Treat "seed" in those tables as one coupled draw, not two independent factors. Only NEW sweep units (post this commit) use the decoupled protocol (scripts/_run_unit.sh ES, scripts/priority_sweep.sh ES=S+1000).
 - Tox21 Fid-/GEF "SX beats random ***" under any masking (F17, original + primary n=60 test) -- does not reproduce per seed (F17-REVISION block C), pooling artifact.
 - F9's "SX significantly top-or-tied-top on 3/4 B-XAIC tasks" as a claim about the 3-way ranking -- only true for indole; PAINS/X/P do not reproduce (F9-REVISION). ("SX beats RANDOM on 4/4 tasks" is a different, still-true claim, F16.)
+- "B-XAIC PGExplainer collapse: 3/20 (15%)" and the derived "28/85 (~33%) units unreliable" -- CORRECTED to 2/20 (10%) and 27/85 (~32%). The "3" miscounted B-XAIC/X/seed4 as a collapse; its explainer_health is clean (n_degenerate=0/400, n_empty=0, n_whole=0) -- it does not meet the n_degenerate/n>=0.5 threshold used for every other collapse count in this document. X seed 4 is a real, separately-reported finding (a structurally valid PGExplainer mask that nonetheless scores significantly below its random-edge baseline, p=3.7e-09) -- keep that specific claim, just don't add it to the collapse-rate tally. Reconciled against the mechanically-computed runs/prio/collapse_table.csv, which is authoritative for all collapse counts going forward.
