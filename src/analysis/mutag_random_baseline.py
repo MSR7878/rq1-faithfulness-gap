@@ -23,6 +23,14 @@ sweep, n=188 molecules/seed -- all 188 have GT) so this plugs directly into
 seed_correct_significance.py's per-seed / seed-level tests: GNN and SX vs
 random-node, PG vs random-edge, plus the full cross-battery for completeness.
 
+PERSISTS per-molecule arrays by default (mol_idx, random_node, random_edge
+per seed) to runs/prio/baseline_arrays_mutag_graphxai.npz -- the first
+version of this script only printed seed-level means and threw the
+per-molecule values away. mol_idx is the index into data_list (== LOADERS
+["mutag_graphxai"]()[0]), in the SAME order per_molecule arrays in
+out_mutag_graphxai_s<seed>.json follow (both iterate all-188-have-GT
+molecules in dataset order), so the two can be joined directly by position.
+
     python -m src.analysis.mutag_random_baseline
 """
 
@@ -42,6 +50,7 @@ ALL_E = REAL + ["random_node", "random_edge"]
 SH = {"gnnexplainer": "GNN", "pgexplainer": "PG", "subgraphx": "SX",
       "random_node": "RandN", "random_edge": "RandE"}
 SEEDS = [0, 1, 2, 3, 4]
+OUT = "runs/prio"
 
 
 def topk_mask(imp: torch.Tensor, frac: float = 0.25) -> torch.Tensor:
@@ -53,10 +62,14 @@ def topk_mask(imp: torch.Tensor, frac: float = 0.25) -> torch.Tensor:
 
 
 def random_baselines(seed: int, data_list):
+    """Iterates data_list in its fixed original order (enumerate, no
+    reordering) so the RNG draw sequence -- and therefore every returned
+    value -- is bit-identical to any prior run of this exact loop; only mi
+    (the data_list index) is newly captured alongside each value."""
     rng = np.random.default_rng(seed)
     torch.manual_seed(100000 + seed)  # separate stream from the real explainers' torch seeding
-    rn, re = [], []
-    for d in data_list:
+    mol_idx, rn, re = [], [], []
+    for mi, d in enumerate(data_list):
         gt = d.node_gt_mask.bool()
         if not bool(gt.any()):
             continue
@@ -66,13 +79,14 @@ def random_baselines(seed: int, data_list):
         node_pick = rng.choice(n, size=k, replace=False)
         pred_node = torch.zeros(n, dtype=torch.bool)
         pred_node[node_pick] = True
-        rn.append(jaccard(gt, pred_node))
         # random-edge: uniform random edge scores -> folded node importance -> same top-k
         edge_scores = torch.rand(d.edge_index.shape[1])
         folded = node_importance_from_edges(edge_scores, d.edge_index, n)
         pred_edge = topk_mask(folded, 0.25)
+        mol_idx.append(mi)
+        rn.append(jaccard(gt, pred_node))
         re.append(jaccard(gt, pred_edge))
-    return np.array(rn, float), np.array(re, float)
+    return np.array(mol_idx, int), np.array(rn, float), np.array(re, float)
 
 
 def _wpair(a, b):
@@ -80,16 +94,18 @@ def _wpair(a, b):
     return 1.0 if np.allclose(d, 0) else wilcoxon(a, b, alternative="two-sided", zero_method="wilcox").pvalue
 
 
-def main() -> int:
+def main(save_dir: str | None = OUT) -> int:
     from ..data import LOADERS
     data_list, meta = LOADERS["mutag_graphxai"]()
 
     by_seed_real = build_arrays_mutag_graphxai()
     by_seed = {s: dict(by_seed_real[s]) for s in SEEDS}
+    mol_idx_by_seed = {}
     for s in SEEDS:
-        rn, re = random_baselines(s, data_list)
+        mol_idx, rn, re = random_baselines(s, data_list)
         by_seed[s]["random_node"] = rn
         by_seed[s]["random_edge"] = re
+        mol_idx_by_seed[s] = mol_idx
 
     print("=" * 100)
     print(" mutag_graphxai GEA -- GNN/PG/SX vs random-node / random-edge baselines, matched top-k=0.25 budget")
@@ -132,6 +148,15 @@ def main() -> int:
         hi = SH[a] if d.mean() > 0 else SH[b]
         n_hi = int((d > 0).sum()) if d.mean() > 0 else int((d < 0).sum())
         print(f"  {SH[a]:<6}-{SH[b]:<6}  {hi:<6} higher {n_hi}/5  p_Holm={adj[(a,b)]:.4f}  {star(adj[(a,b)])}")
+
+    if save_dir is not None:
+        flat = {"mol_idx": mol_idx_by_seed[SEEDS[0]]}  # identical across seeds (GT/data_list fixed)
+        for s in SEEDS:
+            flat[f"random_node_s{s}"] = by_seed[s]["random_node"]
+            flat[f"random_edge_s{s}"] = by_seed[s]["random_edge"]
+        path = f"{save_dir}/baseline_arrays_mutag_graphxai.npz"
+        np.savez(path, **flat)
+        print(f"\n  saved per-molecule arrays -> {path}")
     return 0
 
 

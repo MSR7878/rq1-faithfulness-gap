@@ -48,7 +48,7 @@ def main():
     print(" 1. F15 re-check: SX vs connectivity-matched random null, decoupled protocol")
     print("=" * 100)
     run_dataset("mutag_graphxai [DECOUPLED]", "mutag_graphxai",
-                lambda s: f"{DECOUPLED}/cache_mutag_graphxai_s{s}.pt")
+                lambda s: f"{DECOUPLED}/cache_mutag_graphxai_s{s}.pt", save_dir=DECOUPLED)
 
     print("\n" + "=" * 100)
     print(" 2. F3-REVISION v2 re-check: GNN >> {PG, SX}, decoupled protocol")

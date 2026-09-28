@@ -22,6 +22,13 @@ noise, especially for indole (only ~13 GT-present test molecules/seed).
 Datasets: mutag_graphxai (5 seeds) + B-XAIC indole (5 seeds), per item 1's
 scope (not the other 3 B-XAIC tasks).
 
+PERSISTS per-molecule arrays by default (mol_idx, SX, RandConn, RandUnc,
+SX-vs-RandConn / SX-vs-RandUnc win booleans, mean mask size) to
+runs/prio/connectivity_arrays_<dataset>.npz -- the first version of this
+script only printed seed-level aggregates and threw the per-molecule values
+away; do not repeat that mistake, this data is expensive enough (188/400
+molecules x 20 draws x 2 conditions x 5 seeds) to be worth keeping.
+
     python -m src.analysis.connectivity_baseline
 """
 from __future__ import annotations
@@ -94,15 +101,19 @@ def star(p):
     return "***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 5e-2 else "ns"
 
 
-def run_dataset(name: str, loader_key: str, path_fn):
+def run_dataset(name: str, loader_key: str, path_fn, save_dir: str | None = OUT):
+    """Returns {seed: {mol_idx, sx, rand_conn, rand_unc, win_conn, win_unc, mask_size}}
+    (per-molecule arrays) and, unless save_dir is None, persists them to
+    <save_dir>/connectivity_arrays_<name>.npz."""
     data_list, meta = LOADERS[loader_key]()
     print(f"\n{'='*100}\n {name}\n{'='*100}")
+    per_seed = {}
     for s in SEEDS:
         blob = torch.load(path_fn(s), weights_only=False)
         test_idx = list(blob["key"]["test_idx"])
         res = blob["results"]["subgraphx"]
         rng = np.random.default_rng(10_000 + s)  # separate stream, independent of any explain seed
-        sx_vals, conn_vals, unc_vals, sizes = [], [], [], []
+        mol_idx, sx_vals, conn_vals, unc_vals, sizes = [], [], [], [], []
         for k, mi in enumerate(test_idx):
             gt = data_list[mi].node_gt_mask.bool()
             if not bool(gt.any()):
@@ -112,6 +123,7 @@ def run_dataset(name: str, loader_key: str, path_fn):
             imp = torch.as_tensor(res[k]["node_importance"], dtype=torch.float)
             mask = imp > imp.mean()
             ksize = int(mask.sum())
+            mol_idx.append(mi)
             sizes.append(ksize)
             sx_vals.append(jaccard(gt, mask))
             conn_draws = [jaccard(gt, torch.tensor([i in random_connected_subset(adj, n, ksize, rng) for i in range(n)]))
@@ -120,17 +132,31 @@ def run_dataset(name: str, loader_key: str, path_fn):
                          for _ in range(N_DRAWS)]
             conn_vals.append(float(np.mean(conn_draws)))
             unc_vals.append(float(np.mean(unc_draws)))
+        mol_idx_a = np.array(mol_idx, int)
         sx_a, conn_a, unc_a = np.array(sx_vals), np.array(conn_vals), np.array(unc_vals)
+        size_a = np.array(sizes, int)
+        win_conn = sx_a > conn_a
+        win_unc = sx_a > unc_a
         p_conn = _wpair(sx_a, conn_a)
         p_unc = _wpair(sx_a, unc_a)
-        sx_wins_conn = int((sx_a > conn_a).sum()); ties_conn = int((sx_a == conn_a).sum())
-        sx_wins_unc = int((sx_a > unc_a).sum()); ties_unc = int((sx_a == unc_a).sum())
+        sx_wins_conn = int(win_conn.sum()); ties_conn = int((sx_a == conn_a).sum())
+        sx_wins_unc = int(win_unc.sum()); ties_unc = int((sx_a == unc_a).sum())
         n_mol = len(sx_vals)
         print(f"  seed {s}  n={n_mol}  mean|mask|={np.mean(sizes):.1f}  "
               f"SX={sx_a.mean():.3f}  RandConn={conn_a.mean():.3f}  RandUnc={unc_a.mean():.3f}  "
               f"SX-vs-Conn p={p_conn:.2e}{star(p_conn)} (SX>Conn in {sx_wins_conn}/{n_mol}, ties={ties_conn})  "
               f"SX-vs-Unc p={p_unc:.2e}{star(p_unc)} (SX>Unc in {sx_wins_unc}/{n_mol}, ties={ties_unc})")
-    return 0
+        per_seed[s] = {"mol_idx": mol_idx_a, "sx": sx_a, "rand_conn": conn_a, "rand_unc": unc_a,
+                       "win_vs_conn": win_conn, "win_vs_unc": win_unc, "mask_size": size_a}
+    if save_dir is not None:
+        flat = {}
+        for s, d in per_seed.items():
+            for k, v in d.items():
+                flat[f"{k}_s{s}"] = v
+        path = f"{save_dir}/connectivity_arrays_{name.split()[0]}.npz"
+        np.savez(path, **flat)
+        print(f"  saved per-molecule arrays -> {path}")
+    return per_seed
 
 
 def main():

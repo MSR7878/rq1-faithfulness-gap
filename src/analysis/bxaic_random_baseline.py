@@ -13,6 +13,13 @@ either, the more likely explanation is that B-XAIC's substructure GT is
 trivially recoverable (GraphXAI's own flagged pitfall) rather than SX
 uniquely capturing model-rule alignment, and F3/F9 need rewriting.
 
+PERSISTS per-molecule arrays by default (mol_idx, random_node, random_edge
+per task/seed) to runs/prio/baseline_arrays_bxaic_<task>.npz -- the first
+version of this script only printed seed-level means and threw the
+per-molecule values away. mol_idx is the index into that task's data_list
+(== LOADERS[f"bxaic_{task}"]()[0]), matching per_molecule's row order in
+out_bxaic_<task>_s<seed>.json (both iterate test_idx in the same order).
+
     python -m src.analysis.bxaic_random_baseline
 """
 
@@ -77,6 +84,7 @@ def per_unit(task: str, seed: int, data_list):
     rng = np.random.default_rng(seed)
     torch.manual_seed(200000 + seed)
 
+    mol_idx = []
     arr = {e: [] for e in ALL_E}
     for k, mi in enumerate(test_idx):
         d = data_list[mi]
@@ -84,6 +92,7 @@ def per_unit(task: str, seed: int, data_list):
         if not bool(gt.any()):
             continue
         n = d.num_nodes
+        mol_idx.append(mi)
         for e in EXPL:
             imp = torch.as_tensor(res[e][k]["node_importance"], dtype=torch.float)
             arr[e].append(jaccard(gt, imp > imp.mean()))
@@ -96,10 +105,12 @@ def per_unit(task: str, seed: int, data_list):
         edge_scores = torch.rand(d.edge_index.shape[1])
         folded = node_importance_from_edges(edge_scores, d.edge_index, n)
         arr["random_edge"].append(jaccard(gt, topk_mask(folded, 0.25)))
-    return {e: np.array(v, float) for e, v in arr.items()}
+    out = {e: np.array(v, float) for e, v in arr.items()}
+    out["mol_idx"] = np.array(mol_idx, int)
+    return out
 
 
-def main() -> int:
+def main(save_dir: str | None = OUT) -> int:
     from ..data import LOADERS
     units = available_units()
     print("units available (task: seeds):", {t: sorted(s) for t, s in units.items()})
@@ -150,6 +161,19 @@ def main() -> int:
                 print(f"    {SH[real]} vs {SH[rand]}  seed {s}: {SH[real]}={r[real].mean():.3f} "
                       f"{SH[rand]}={r[rand].mean():.3f}  p={p:.2e} {star(p):>3}  ({hi} higher)")
             print(f"    -> {SH[real]} beats {SH[rand]} in {wins}/{len(rows)} completed seeds")
+
+    if save_dir is not None:
+        for t in TASKS:
+            rows = {s: by_task_seed[(t, s)] for s in sorted(units[t])}
+            if not rows:
+                continue
+            flat = {"mol_idx": next(iter(rows.values()))["mol_idx"]}  # identical across seeds (GT/data_list fixed)
+            for s in sorted(rows):
+                flat[f"random_node_s{s}"] = rows[s]["random_node"]
+                flat[f"random_edge_s{s}"] = rows[s]["random_edge"]
+            path = f"{save_dir}/baseline_arrays_bxaic_{t}.npz"
+            np.savez(path, **flat)
+            print(f"\n  saved per-molecule arrays -> {path}")
     return 0
 
 
