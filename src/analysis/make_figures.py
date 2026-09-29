@@ -87,29 +87,51 @@ def fig1_headline():
         "mutag_graphxai": np.load(f"{OUT}/baseline_arrays_mutag_graphxai.npz"),
         "indole": np.load(f"{OUT}/baseline_arrays_bxaic_indole.npz"),
     }
+    conn = {
+        "mutag_graphxai": np.load(f"{OUT}/connectivity_arrays_mutag_graphxai.npz"),
+        "indole": np.load(f"{OUT}/connectivity_arrays_indole.npz"),
+    }
+    collapse = pd.read_csv(f"{OUT}/collapse_table.csv")
     titles = {"mutag_graphxai": "mutag_graphxai", "indole": "B-XAIC / indole"}
     rng = np.random.default_rng(0)
 
     fig, axes = plt.subplots(1, 2, figsize=(6.8, 3.6), sharey=True)
-    band_handle = None
+    band1_handle = band2_handle = mean_handle = None
     for ax, ds in zip(axes, ["mutag_graphxai", "indole"]):
-        g, b = gea[ds], baseline[ds]
+        g, b, c = gea[ds], baseline[ds], conn[ds]
         # pooled-across-seeds per-molecule GEA, one distribution per explainer
         pooled = {e: np.concatenate([g[f"{e}_s{s}"] for s in SEEDS]) for e in EXPL}
-        # random-NULL band: the range of the 5 per-seed MEANS for RandNode and
-        # RandEdge (not raw per-molecule min/max -- random baselines are
-        # extremely stable seed-to-seed, CV 0.03-0.07, see F15; a per-molecule
-        # min/max band is dominated by single-molecule outlier variance and
-        # would misrepresent "chance level" as far wider than it really is)
-        seed_means = [b[f"random_node_s{s}"].mean() for s in SEEDS] + \
-                     [b[f"random_edge_s{s}"].mean() for s in SEEDS]
-        band_lo, band_hi = min(seed_means), max(seed_means)
-        band_handle = ax.axhspan(band_lo, band_hi, color="0.5", alpha=0.35, zorder=0)
+        per_seed_mean = {e: [g[f"{e}_s{s}"].mean() for s in SEEDS] for e in EXPL}
+
+        # band 1: unconstrained random-node/random-edge null, as before (the
+        # range of the 5 per-seed MEANS -- random baselines are stable
+        # seed-to-seed, CV 0.03-0.07, see F15; a per-molecule min/max band
+        # would be dominated by single-molecule outlier variance)
+        seed_means_1 = [b[f"random_node_s{s}"].mean() for s in SEEDS] + \
+                       [b[f"random_edge_s{s}"].mean() for s in SEEDS]
+        band1_handle = ax.axhspan(min(seed_means_1), max(seed_means_1), color="0.5",
+                                  alpha=0.35, zorder=0)
+
+        # band 2: connectivity- AND size-matched null (F15-ADDENDUM/F16-ADDENDUM)
+        # -- the FAIR null for SX, which only ever proposes connected
+        # subgraphs; the stronger comparison, so it belongs in the headline
+        # figure. Same seed-mean-range construction as band 1, distinct
+        # hatch (no fill) so it reads separately even where the two overlap.
+        seed_means_2 = [c[f"rand_conn_s{s}"].mean() for s in SEEDS]
+        band2_handle = ax.axhspan(min(seed_means_2), max(seed_means_2), facecolor="none",
+                                  edgecolor="0.15", hatch="////", linewidth=0, zorder=0.6)
 
         positions = [1, 2, 3]
         _box(ax, positions, [pooled[e] for e in EXPL])
         for x0, e in zip(positions, EXPL):
             _jitter_strip(ax, x0, pooled[e], rng)
+        # per-seed means overlaid on each box -- pooling hides seed-to-seed
+        # spread, which is a core claim; make it visible as 5 distinct points
+        for x0, e in zip(positions, EXPL):
+            xs = x0 + np.linspace(-0.16, 0.16, len(SEEDS))
+            mean_handle = ax.scatter(xs, per_seed_mean[e], marker="D", s=22,
+                                     facecolor="white", edgecolor="black",
+                                     linewidths=0.9, zorder=4)
 
         ax.set_xticks(positions)
         ax.set_xticklabels([ESH[e] for e in EXPL])
@@ -120,9 +142,29 @@ def fig1_headline():
         for spine in ("top", "right"):
             ax.spines[spine].set_visible(False)
 
+        if ds == "mutag_graphxai":
+            # PG's box includes seed 3, which is a formal collapse
+            # (n_degenerate/n=188/188) -- kept in, per instruction; just
+            # labeled so it's not mistaken for a clean 5-seed distribution.
+            n_collapsed = int(collapse[(collapse["dataset"] == "mutag_graphxai")
+                                       & (collapse["protocol"] == "coupled")]["collapsed"].sum())
+            pg_x = positions[EXPL.index("pgexplainer")]
+            pg_top = np.percentile(pooled["pgexplainer"], 75)
+            ax.annotate(f"{n_collapsed} of 5 seeds\ncollapsed (included)",
+                       xy=(pg_x, pg_top), xytext=(pg_x, 0.86),
+                       ha="center", fontsize=6.6, color="0.15",
+                       arrowprops=dict(arrowstyle="-", color="0.3", linewidth=0.6))
+
     axes[0].set_ylabel("GEA (Jaccard vs ground-truth substructure)")
-    axes[0].legend([band_handle], ["random-null range\n(seed-mean RandNode/RandEdge)"],
-                   loc="upper right", frameon=True, framealpha=0.9, edgecolor="0.7", fontsize=7.2)
+    # shared legend OUTSIDE the axes (below the panels) -- an in-panel legend
+    # collided with the PG collapse annotation and with scattered points
+    fig.legend(
+        [band1_handle, band2_handle, mean_handle],
+        ["random-null range (seed-mean RandNode/RandEdge)",
+         "connectivity-matched null (seed-mean RandConn)",
+         "per-seed mean (n=5)"],
+        loc="lower center", ncol=3, frameon=False, fontsize=7.2,
+        bbox_to_anchor=(0.5, -0.06))
     fig.suptitle("Per-molecule GEA (all seeds pooled) vs the random-null range\n"
                  "SX sits BELOW the null on mutag_graphxai, FAR ABOVE it on indole",
                  fontsize=9.5, y=1.0)
