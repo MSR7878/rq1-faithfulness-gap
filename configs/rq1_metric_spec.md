@@ -1949,3 +1949,27 @@ collapse: 24/60 (40%) on Tox21, model x MLP-init interaction (F10-MECHANISM).
 - Tox21 Fid-/GEF "SX beats random ***" under any masking (F17, original + primary n=60 test) -- does not reproduce per seed (F17-REVISION block C), pooling artifact.
 - F9's "SX significantly top-or-tied-top on 3/4 B-XAIC tasks" as a claim about the 3-way ranking -- only true for indole; PAINS/X/P do not reproduce (F9-REVISION). ("SX beats RANDOM on 4/4 tasks" is a different, still-true claim, F16.)
 - "B-XAIC PGExplainer collapse: 3/20 (15%)" and the derived "28/85 (~33%) units unreliable" -- CORRECTED to 2/20 (10%) and 27/85 (~32%). The "3" miscounted B-XAIC/X/seed4 as a collapse; its explainer_health is clean (n_degenerate=0/400) -- it does not meet the n_degenerate/n>=0.5 threshold used for every other collapse count in this document. X seed 4 belongs to a different, now-promoted finding (F18: valid-but-below-random explanations), not the collapse tally. Reconciled against the mechanically-computed runs/prio/collapse_table.csv, which is authoritative for all collapse counts going forward.
+
+## GraphXAI Mutagenicity -- third GT dataset (runs/mutagenicity/, separate from every result above)
+
+### PREDICTIONS -- registered 2026-10-07 15:46 IST, BEFORE Step 3 (no explanation
+### has been scored against ground truth on this dataset at the time of writing;
+### the only runs so far are the Step 1 dataset check and the Step 2 timing run,
+### whose GEA output has not been read)
+
+1. GNNExplainer clears RandNode in at least 4 of 5 seeds.
+2. No firm prediction for SubgraphX. The alignment mechanism says it should do
+   better when the annotated toxicophores are what the model uses, and the
+   dataset's label filter makes that more likely than in MUTAG-188. A SubgraphX
+   win would support the mechanism, not contradict it.
+3. PGExplainer collapse rate: report as observed.
+
+Rule: report the results whichever way they go.
+
+Note recorded with the predictions (a Step 1 fact, not a prediction): GraphXAI's
+filter keeps graphs with has_toxicophore == y, and TUDataset's label map is
+0 = mutagen, 1 = nonmutagen. The 1,768 kept graphs are therefore the 640
+NON-mutagens that contain a toxicophore plus the 1,128 mutagens that contain
+none. Within the kept set the label is still exactly "toxicophore present", so
+prediction 2's premise (the label filter ties the label to the annotated
+toxicophores) holds as a property of the data, with class 1 = "has toxicophore".
