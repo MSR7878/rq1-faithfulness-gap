@@ -1,0 +1,123 @@
+Downloading https://www.chrsmrrs.com/graphkerneldatasets/Mutagenicity.zip
+Processing...
+Done!
+====================================================================================================
+ (a) DATASET
+====================================================================================================
+--- raw/Mutagenicity_label_readme.txt ---
+Node labels:		[chem]
+
+Edge labels:		[valence]
+
+Node labels were converted to integer values using this map:
+
+Component 0:
+	0	C
+	1	O
+	2	Cl
+	3	H
+	4	N
+	5	F
+	6	Br
+	7	S
+	8	P
+	9	I
+	10	Na
+	11	K
+	12	Li
+	13	Ca
+
+
+
+Edge labels were converted to integer values using this map:
+
+Component 0:
+	0	1
+	1	2
+	2	3
+
+
+
+Class labels were converted to integer values using this map:
+
+	0	mutagen
+	1	nonmutagen
+
+
+
+--- end ---
+raw graphs: 4337   raw class counts: {0: 2401, 1: 1936}
+isolated nodes removed: 2401 across 121 graphs
+label x has_toxicophore crosstab (unfiltered): {'y=0,match=0': 1128, 'y=0,match=1': 1273, 'y=1,match=0': 1296, 'y=1,match=1': 640}
+  toxicophore prevalence: y=0 -> 0.530   y=1 -> 0.331
+GraphXAI filter (has_toxicophore == y): keeps 1768
+  [for reference only] opposite polarity (has_toxicophore == 1-y) would keep 2569
+
+after filter: 1768 graphs   class balance: {'y0_no_toxicophore': 1128, 'y1_toxicophore': 640}
+nodes: mean 29.1  median 28  min 4  max 103   undirected edges mean 30.4
+node feature dim 14   edge feature dim 3
+  graphs with > 60 nodes: 58 (3.28%)   among GT-present: 20 (3.12%)
+  graphs with > 80 nodes: 29 (1.64%)   among GT-present: 8 (1.25%)
+  graphs with > 100 nodes: 1 (0.06%)   among GT-present: 0 (0.00%)
+
+====================================================================================================
+ (b) ATOM ENCODING + MATCHER CHECK
+====================================================================================================
+x is strictly one-hot, 14-dim: True  (dim=14)
+ ch GraphXAI atom    count  degree histogram
+  0             C    53634  {1: 150, 2: 462, 3: 38075, 4: 14947}
+  1             O    10576  {1: 5518, 2: 5058}
+  2            Cl     1311  {1: 1308, 4: 3}
+  3             H    56299  {1: 56299}
+  4             N     5939  {1: 165, 2: 1708, 3: 4052, 4: 14}
+  5             F      240  {1: 240}
+  6            Br      299  {1: 299}
+  7             S      647  {1: 57, 2: 342, 3: 7, 4: 241}
+  8             P      119  {3: 6, 4: 113}
+  9             I       23  {1: 22, 4: 1}
+ 10            Na        0  {}
+ 11             K        0  {}
+ 12            Li        0  {}
+ 13            Ca        0  {}
+
+cross-check vs GraphXAI's own matcher code (ISMAGS, networkx 3.4.2), all 4337 graphs [31s]:
+  identical match lists: 4337/4337   identical match SETS: 4337/4337
+  duplicate node-sets emitted by GraphXAI's matchers, per type: {'NH2': 0, 'NO2': 0, 'nitroso': 0, 'azo': 0, 'halide': 0}
+
+motif atom composition (kept graphs):
+  NH2      {('H', 'H', 'N'): 309}
+  NO2      {('N', 'O', 'O'): 128}
+  nitroso  {('N', 'O'): 6}
+  azo      {('N', 'N'): 52}
+  halide   {('F',): 40, ('Cl',): 483, ('I',): 15, ('Br',): 120}
+
+halide rule (GraphXAI, followed exactly): terminal halogens KEPT (neighbour on a cycle-basis ring of length > 4) = 913;  terminal halogens DROPPED (chain / small-ring attached) = 956  [all 4337 graphs]
+
+====================================================================================================
+ (c) GROUND-TRUTH SET (max-over-set GEA)
+====================================================================================================
+motif instances per GT-present graph: mean 1.80  median 1  max 12
+  histogram L -> graphs: {1: 373, 2: 160, 3: 43, 4: 30, 5: 10, 6: 18, 7: 1, 8: 3, 10: 1, 12: 1}
+  GraphXAI set size 2^L-1: median 1  max 2^12-1 = 4095
+enumeration cap: L <= 12 (4095 masks) enumerated exactly
+  graphs over the cap: 0/640  -> exact via Dinkelbach (disjoint motifs): 0   lower-bound only (overlapping motifs): 0
+  graphs whose motif instances overlap at all (any L): 4/640
+  Dinkelbach vs exhaustive enumeration on 1908 (graph, random mask) pairs: max |diff| = 0.00e+00
+  sanity (uniform random top-25% mask, one draw/graph): max-over-set GEA 0.129  merged GEA 0.107
+
+====================================================================================================
+ (d) TOXICOPHORE STATISTICS (kept graphs)
+====================================================================================================
+type       graphs  instances
+NH2           254        309
+NO2           104        128
+nitroso         6          6
+azo            45         52
+halide        296        658
+graphs by number of distinct toxicophore TYPES: {1: 577, 2: 61, 3: 2}
+graphs with 2+ types: 63/640
+GT-present (positives): 640/1768
+merged GT size: mean 3.23 atoms  median 3  max 12   as fraction of molecule: mean 0.152
+top-k=0.25 budget on GT-present graphs: mean 6.37 atoms
+
+saved -> runs/mutagenicity/step1_report.json

@@ -179,8 +179,11 @@ def run_split(data_list, meta, args, device) -> None:
     writes a checkpoint for downstream explanation work (Phase 3)."""
     y = np.array(_labels(data_list))
     idx = np.arange(len(y))
-    tr, tmp = train_test_split(idx, test_size=0.30, random_state=args.seed, stratify=y)
-    va, te = train_test_split(tmp, test_size=0.50, random_state=args.seed, stratify=y[tmp])
+    # defaults (0.15 / 0.15) reproduce the original 70/15/15 split exactly:
+    # 0.15 + 0.15 == 0.30 and 0.15 / 0.30 == 0.50 in floating point.
+    hold = args.val_frac + args.test_frac
+    tr, tmp = train_test_split(idx, test_size=hold, random_state=args.seed, stratify=y)
+    va, te = train_test_split(tmp, test_size=args.test_frac / hold, random_state=args.seed, stratify=y[tmp])
     _set_seed(args.seed)
     t0 = time.time()
     out = train_one(
@@ -189,7 +192,8 @@ def run_split(data_list, meta, args, device) -> None:
     )
     maj = max(y.sum(), len(y) - y.sum()) / len(y)
     print("-" * 64)
-    print(f"{meta.name}: single 70/15/15 split  (train={len(tr)} val={len(va)} test={len(te)})")
+    print(f"{meta.name}: single {round(100 * (1 - hold))}/{round(100 * args.val_frac)}/{round(100 * args.test_frac)}"
+          f" split  (train={len(tr)} val={len(va)} test={len(te)})")
     print(f"  test accuracy = {out['test_acc']:.4f}")
     print(f"  test AUROC    = {out['test_auroc']:.4f}  (val_auroc={out['val_auroc']:.3f}, ep{out['epoch']})")
     print(f"  majority-class baseline acc = {maj:.4f} (AUROC 0.5)   {time.time() - t0:.0f}s")
@@ -253,6 +257,8 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--bxaic-task", default="indole")
     ap.add_argument("--save", default=None, help="path to write a checkpoint (single-split mode only)")
+    ap.add_argument("--val-frac", type=float, default=0.15, help="single-split mode: validation fraction")
+    ap.add_argument("--test-frac", type=float, default=0.15, help="single-split mode: test fraction")
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args(argv)
 

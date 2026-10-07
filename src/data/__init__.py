@@ -45,10 +45,12 @@ from .standard import (  # noqa: E402
 )
 from .graphxai_mutag import load_mutag_graphxai  # noqa: E402
 from .bxaic import load_bxaic, BXAIC_TASKS  # noqa: E402
+from .graphxai_mutagenicity import load_mutagenicity_graphxai  # noqa: E402
 
 LOADERS = {
     "mutag": load_mutag,
     "mutag_graphxai": load_mutag_graphxai,
+    "mutagenicity_graphxai": load_mutagenicity_graphxai,   # GraphXAI Mutagenicity (1,768 graphs, set-valued GT)
     "bbbp": load_bbbp,
     "tox21_srp53": load_tox21_srp53,   # legacy name (Phase-2/3 ckpt + results)
     "bxaic": load_bxaic,               # legacy name == bxaic:indole

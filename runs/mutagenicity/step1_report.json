@@ -1,0 +1,190 @@
+{
+ "networkx": "3.4.2",
+ "torch": "2.6.0+cu118",
+ "load_seconds": 11.5,
+ "tu_readme_file": "Mutagenicity_label_readme.txt",
+ "raw_graphs": 4337,
+ "raw_class_counts": {
+  "0": 2401,
+  "1": 1936
+ },
+ "isolated_nodes_removed": 2401,
+ "graphs_with_isolated_nodes": 121,
+ "label_x_match": {
+  "y=0,match=0": 1128,
+  "y=0,match=1": 1273,
+  "y=1,match=0": 1296,
+  "y=1,match=1": 640
+ },
+ "toxicophore_prevalence_by_label": {
+  "y0": 0.5301957517700958,
+  "y1": 0.3305785123966942
+ },
+ "kept_graphxai_filter": 1768,
+ "kept_if_polarity_inverted": 2569,
+ "graphs_after_filter": 1768,
+ "class_balance": {
+  "y0_no_toxicophore": 1128,
+  "y1_toxicophore": 640
+ },
+ "nodes_mean": 29.149886877828056,
+ "nodes_median": 28.0,
+ "nodes_max": 103,
+ "nodes_min": 4,
+ "edges_mean": 30.415158371040725,
+ "node_feature_dim": 14,
+ "edge_feature_dim": 3,
+ "exclusion_max_nodes_80": {
+  "all": 0.016402714932126698,
+  "gt_present": 0.0125,
+  "n_all": 29,
+  "n_gt_present": 8
+ },
+ "encoding_check": {
+  "C": {
+   "count": 53634,
+   "max_degree": 4
+  },
+  "O": {
+   "count": 10576,
+   "max_degree": 2
+  },
+  "Cl": {
+   "count": 1311,
+   "max_degree": 4
+  },
+  "H": {
+   "count": 56299,
+   "max_degree": 1
+  },
+  "N": {
+   "count": 5939,
+   "max_degree": 4
+  },
+  "F": {
+   "count": 240,
+   "max_degree": 1
+  },
+  "Br": {
+   "count": 299,
+   "max_degree": 1
+  },
+  "S": {
+   "count": 647,
+   "max_degree": 4
+  },
+  "P": {
+   "count": 119,
+   "max_degree": 4
+  },
+  "I": {
+   "count": 23,
+   "max_degree": 4
+  },
+  "Na": {
+   "count": 0,
+   "max_degree": null
+  },
+  "K": {
+   "count": 0,
+   "max_degree": null
+  },
+  "Li": {
+   "count": 0,
+   "max_degree": null
+  },
+  "Ca": {
+   "count": 0,
+   "max_degree": null
+  }
+ },
+ "crosscheck": {
+  "identical_lists": 4337,
+  "identical_sets": 4337,
+  "n": 4337,
+  "graphxai_duplicates": {
+   "NH2": 0,
+   "NO2": 0,
+   "nitroso": 0,
+   "azo": 0,
+   "halide": 0
+  }
+ },
+ "motif_composition": {
+  "NH2": {
+   "H+H+N": 309
+  },
+  "NO2": {
+   "N+O+O": 128
+  },
+  "nitroso": {
+   "N+O": 6
+  },
+  "azo": {
+   "N+N": 52
+  },
+  "halide": {
+   "F": 40,
+   "Cl": 483,
+   "I": 15,
+   "Br": 120
+  }
+ },
+ "halide_rule": {
+  "kept_ring_attached": 913,
+  "dropped_non_ring": 956
+ },
+ "gt_set": {
+  "L_mean": 1.8015625,
+  "L_max": 12,
+  "L_hist": {
+   "1": 373,
+   "2": 160,
+   "3": 43,
+   "4": 30,
+   "5": 10,
+   "6": 18,
+   "7": 1,
+   "8": 3,
+   "10": 1,
+   "12": 1
+  },
+  "enum_cap": 12,
+  "over_cap": 0,
+  "over_cap_exact_dinkelbach": 0,
+  "over_cap_bound_only": 0,
+  "graphs_with_overlapping_motifs": 4,
+  "dinkelbach_vs_enum_max_diff": 0.0,
+  "dinkelbach_vs_enum_n": 1908
+ },
+ "random25_sanity": {
+  "max_over_set": 0.12884316026089923,
+  "merged": 0.10686917684330685
+ },
+ "toxicophores": {
+  "graphs_with_type": {
+   "halide": 296,
+   "NH2": 254,
+   "azo": 45,
+   "NO2": 104,
+   "nitroso": 6
+  },
+  "instances": {
+   "halide": 658,
+   "NH2": 309,
+   "azo": 52,
+   "NO2": 128,
+   "nitroso": 6
+  },
+  "n_types_hist": {
+   "1": 577,
+   "2": 61,
+   "3": 2
+  },
+  "graphs_2plus_types": 63,
+  "gt_present": 640,
+  "gt_size_mean": 3.225,
+  "gt_size_median": 3.0,
+  "gt_frac_mean": 0.1521340106866868
+ }
+}
