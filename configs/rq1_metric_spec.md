@@ -2072,3 +2072,42 @@ toxicophore presence, so it would double the cost without adding a regime.
 - Additions to the report: GEA stratified by toxicophore type (halide-only vs
   NH2/NO2/azo/nitroso graphs) under both binarizations; oracle top-k ceiling
   next to the random floor, also for MUTAG-GT and B-XAIC indole.
+
+### How the predictions will be scored -- fixed 2026-10-07 17:42 IST, while Step 3 is running
+### and before any GEA from this dataset has been read
+
+- GEA variant for the predictions: max-over-set (paper Eq. 2). Merged-mask GEA
+  is reported next to it.
+- Prediction 1 (GNNExplainer vs RandNode): same construction as F15 on MUTAG-GT
+  -- GNNExplainer's mean-threshold mask against a uniform random top-k 0.25
+  node mask. The size-matched top-k vs top-k comparison is reported as well.
+- Prediction 2 (SubgraphX vs RandConn): same construction as F15-ADDENDUM --
+  SubgraphX's mean-threshold mask against random connected subgraphs of the
+  same size on the same molecule. The top-k version is reported as well.
+- A seed counts as "clears"/"beats" when the explainer's per-seed mean GEA is
+  higher AND the paired Wilcoxon test over that seed's GT-present test
+  molecules is significant after Holm correction within the seed. Direction-
+  only counts are reported separately. Nothing is pooled across seeds.
+- Nulls use 20 draws per molecule, averaged (RandNode, RandEdge, RandConn,
+  and a size-matched unconstrained RandUnc). MUTAG-GT/B-XAIC used one draw for
+  RandNode/RandEdge.
+
+### Oracle ceiling for top-k GEA (src/analysis/oracle_ceiling.py; no model)
+
+Best Jaccard any explainer can reach with exactly k = max(1, int(0.25 N))
+atoms: min(g, k) / max(g, k) for a GT of g atoms; for the set-valued GT, the
+max over all unions of motif instances. Mean-threshold GEA has no size budget
+(ceiling 1.0).
+
+| dataset | n | ceiling (mean) | GT atoms | budget k | k > GT | k < GT | random floor |
+|---|---|---|---|---|---|---|---|
+| Mutagenicity, max-over-set | 632 | 0.551 | 3.21 | 6.17 | 75% | 16% | Step 4 |
+| Mutagenicity, merged | 632 | 0.513 | 3.21 | 6.17 | 75% | 16% | Step 4 |
+| -- halide-only, max-over-set | 246 | 0.453 | 2.30 | 5.83 | 81% | 11% | Step 4 |
+| -- NH2/NO2/azo/nitroso, max-over-set | 386 | 0.614 | 3.79 | 6.38 | 72% | 19% | Step 4 |
+| MUTAG-GT | 188 | 0.751 | 4.44 | 4.11 | 37% | 37% | RandNode 0.141, RandEdge 0.175 |
+| B-XAIC indole (5 seeds) | 1,800 | 0.724 | 9.69 | 7.62 | 13% | 78% | RandNode 0.164, RandEdge 0.151 |
+
+On Mutagenicity the top-k budget is about twice the ground truth, so a
+perfect explainer scores about 0.55 under top-k; on indole the budget is
+smaller than the ground truth in 78% of molecules.
