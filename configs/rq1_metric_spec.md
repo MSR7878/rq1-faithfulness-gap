@@ -1973,3 +1973,47 @@ NON-mutagens that contain a toxicophore plus the 1,128 mutagens that contain
 none. Within the kept set the label is still exactly "toxicophore present", so
 prediction 2's premise (the label filter ties the label to the annotated
 toxicophores) holds as a property of the data, with class 1 = "has toxicophore".
+
+### Steps 1-2 (2026-10-07): dataset check and cost estimate. Step 3 NOT run.
+
+Code: src/data/graphxai_mutagenicity.py, src/metrics/gea_set.py,
+src/analysis/mutagenicity_step1.py (report: runs/mutagenicity/step1_report.json).
+
+Dataset (GraphXAI logic followed exactly):
+- TUDataset Mutagenicity: 4,337 graphs (2,401 y=0, 1,936 y=1). 2,401 isolated
+  nodes removed across 121 graphs (this empties the Na/K/Li/Ca channels).
+- Filter has_toxicophore == y keeps 1,768: 1,128 y=0 without a toxicophore,
+  640 y=1 with one. TUDataset's label map is 0 = mutagen, 1 = nonmutagen, so
+  the kept set is mutagens WITHOUT a toxicophore plus non-mutagens WITH one.
+  Toxicophore prevalence is 53.0% in mutagens and 33.1% in non-mutagens; the
+  opposite polarity would keep 2,569 graphs. Not corrected.
+- Nodes: mean 29.1, median 28, max 103. 14-dim atom one-hot, 3-dim bond one-hot.
+- Encoding matches GraphXAI's hard-coded 14-dim order (TU readme + degree
+  histograms: H always degree 1, C <= 4, O <= 2). The port returns identical
+  match lists to GraphXAI's own matcher code on 4,337/4,337 graphs.
+- Motif composition: NH2 = {N,H,H}, NO2 = {N,O,O}, nitroso = {N,O},
+  azo = {N,N}, halide = single F/Cl/Br/I.
+- match_aliphatic_halide keeps a terminal halogen only if its neighbour is on
+  a cycle-basis ring of length > 4: 913 ring-attached halogens kept, 956
+  chain/small-ring halogens dropped (all 4,337 graphs). It also accepts F.
+- Kept-set toxicophores (graphs / instances): NH2 254/309, NO2 104/128,
+  nitroso 6/6, azo 45/52, halide 296/658. 63/640 graphs have 2+ types.
+- GT set: 2^L - 1 masks for L instances; L mean 1.80, median 1, max 12.
+  Enumeration cap 12 instances (4,095 masks) -> affects 0 graphs; every graph
+  is scored exactly. 4/640 graphs have overlapping instances.
+- Merged GT: mean 3.23 atoms (15.2% of the molecule); top-k 0.25 budget is
+  6.37 atoms on GT-present graphs. GT-present = the 640 positives.
+- Split 70/10/20, seeded and stratified (GraphXAI's own split is sequential,
+  unshuffled): train 1,237 / val 177 / test 354 (128 positive). After
+  --max-nodes 80: 345-351 test molecules per seed, 125-127 GT-present.
+  Exclusion: 29/1,768 graphs (1.64%), 8/640 GT-present (1.25%).
+
+Cost (Ada GPU 1, rollout 20, sample_num 30, seed-0 model: test acc 0.986,
+AUROC 0.999):
+- SubgraphX single run: 109.9 s/mol (20 molecules, 3.62 s/node).
+- SubgraphX 4 concurrent: 80 molecules in 3,430 s; 102-171 s/mol per job
+  (mean 4.65 s/node, 1.28x the single-run rate).
+- GNNExplainer 2.0 s/mol. PGExplainer: 539 s to train on the full train
+  split (1,215 graphs), explanation time negligible. Scoring negligible.
+- Test split x 5 seeds (1,740 molecules) and full dataset x 1 seed (1,739
+  molecules) cost the same: 16-21 h wall-clock at 4-way concurrency.

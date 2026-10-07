@@ -1,0 +1,7 @@
+[2026-10-07 15:45:09] A: single SubgraphX run
+[2026-10-07 16:22:01] A done: 2212s
+[2026-10-07 16:22:01] B: 4 concurrent SubgraphX runs
+[2026-10-07 17:19:11] B done: 3430s
+[2026-10-07 17:19:11] C: GNNExplainer + PGExplainer
+[2026-10-07 17:29:05] C done: 594s
+[2026-10-07 17:29:05] ALL DONE
