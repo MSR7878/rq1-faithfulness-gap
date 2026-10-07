@@ -2017,3 +2017,58 @@ AUROC 0.999):
   split (1,215 graphs), explanation time negligible. Scoring negligible.
 - Test split x 5 seeds (1,740 molecules) and full dataset x 1 seed (1,739
   molecules) cost the same: 16-21 h wall-clock at 4-way concurrency.
+
+### PREDICTION 2 REVISED -- registered 2026-10-07 17:38 IST, BEFORE Step 3 (the 5-seed run has
+### not started; the timing logs' GEA tables are still unopened)
+
+Original text of prediction 2 (committed c39397b, 2026-10-07 15:46 IST), unchanged:
+  "No firm prediction for SubgraphX. The alignment mechanism says it should do
+   better when the annotated toxicophores are what the model uses, and the
+   dataset's label filter makes that more likely than in MUTAG-188. A SubgraphX
+   win would support the mechanism, not contradict it."
+Added:
+  "Because the kept set's label is exactly toxicophore presence, the model's
+   rule is aligned with the annotation, so SubgraphX should beat RandConn in at
+   least 4 of 5 seeds. If it does not, that counts against the alignment
+   mechanism."
+Prediction 1 (GNNExplainer clears RandNode in >= 4/5 seeds) and prediction 3
+(PGExplainer collapse rate reported as observed) stand as committed.
+
+### Label meaning in the kept set -- three independent checks (recorded before Step 3)
+
+(a) TUDataset readme (data/TUDataset/Mutagenicity/raw/Mutagenicity_label_readme.txt),
+    verbatim: "Class labels were converted to integer values using this map:
+    0 mutagen / 1 nonmutagen". GraphXAI's repository ships the same file
+    (formal/real_world/data/Mutagenicity/raw/) with the same map.
+(b) Toxicophore prevalence by class, all 4,337 graphs, GraphXAI's matchers:
+    y=0: 1,273/2,401 = 53.0%;  y=1: 640/1,936 = 33.1%. The class with the
+    higher toxicophore rate is y=0, consistent with (a).
+(c) GraphXAI's own material: no source file, docstring, README or test script
+    in the repository (commit a11e65f) states which class index is mutagenic;
+    its verification script only tabulates has_match against y. The paper
+    (arXiv:2208.09339, read via ar5iv) says the graphs are "labeled into two
+    different classes according to their mutagenic properties" and that "the
+    dataset is trimmed from its original 4,337 graphs to 1,768, based on those
+    whose labels directly correspond to the presence or absence of our chosen
+    toxicophores". Neither names the mutagenic class index.
+Result: (a) and (b) agree that y=0 is the mutagen class; (c) is silent.
+How the kept classes are described from here on: label 1 = toxicophore present
+(640 graphs), label 0 = no toxicophore (1,128 graphs). The label is a function
+of toxicophore presence, which is the property the experiment relies on. The
+polarity-corrected 2,569-graph set is not run: its label is also a function of
+toxicophore presence, so it would double the cost without adding a regime.
+
+### Step 3 protocol decisions (recorded before the run)
+- Dataset: GraphXAI's 1,768-graph set exactly as is.
+- 5 seeds, decoupled from the start: model seed s in 0..4, explainer seed 1000+s.
+- Split 70/10/20, test split only, --max-nodes 80.
+- PGExplainer trains on the FULL train split (about 1,215 graphs after the
+  node cap), as on MUTAG-GT. B-XAIC used --pg-train-limit 200.
+- Five seed jobs concurrently on GPU 1 (GPU 0 left free). Fallback, if
+  SubgraphX per-molecule time in the first hour is worse than about 1.5x the
+  4-way measurement (4.65 s/node, 138 s/mol): drop to 4 and shard molecules.
+- D-MPNN: depth 3, hidden 300, 120 epochs, batch 50 (MUTAG-GT settings), input
+  dims from the data (14 node, 3 edge).
+- Additions to the report: GEA stratified by toxicophore type (halide-only vs
+  NH2/NO2/azo/nitroso graphs) under both binarizations; oracle top-k ceiling
+  next to the random floor, also for MUTAG-GT and B-XAIC indole.
