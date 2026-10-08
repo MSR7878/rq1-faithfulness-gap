@@ -1,0 +1,109 @@
+======================================================================================================================================================
+ CHECK 1: null-matching audit -- mask sizes and what a size-matched random mask scores (means over 5 seeds)
+======================================================================================================================================================
+  dataset              N    GT budget k | |M| GNN  |M| PG  |M| SX | RandNode@k | Unc@|GNN|  Unc@|PG|  Unc@|SX| | mean-thr GEA vs OWN-size null: sig above / sig below (of 5 seeds)
+  MUTAG-GT          17.9  4.44     4.11 |    6.31    3.22    4.30 |      0.146 |     0.178     0.113     0.146 | GNN 4/1  PG 2/2  SX 0/5   [vs RandNode@k: GNN 4/1  PG 2/3  SX 0/5]
+  B-XAIC indole     32.0  9.69     7.62 |   14.75   19.08    7.64 |      0.161 |     0.235     0.272     0.164 | GNN 3/2  PG 5/0  SX 5/0   [vs RandNode@k: GNN 3/2  PG 5/0  SX 5/0]
+  B-XAIC PAINS      29.9  9.75     7.10 |   14.85    8.53    6.97 |      0.164 |     0.253     0.137     0.162 | GNN 5/0  PG 3/0  SX 5/0   [vs RandNode@k: GNN 5/0  PG 3/2  SX 5/0]
+  B-XAIC X          30.8  1.80     7.32 |   15.16    4.49    2.78 |      0.054 |     0.058     0.052     0.046 | GNN 1/0  PG 4/1  SX 5/0   [vs RandNode@k: GNN 4/0  PG 4/1  SX 5/0]
+  B-XAIC P          32.0  1.26     7.64 |    9.53    4.59    4.41 |      0.043 |     0.042     0.043     0.042 | GNN 5/0  PG 5/0  SX 5/0   [vs RandNode@k: GNN 5/0  PG 5/0  SX 5/0]
+  Mutagenicity      25.3  3.14     5.94 |    9.23    8.73    4.26 |      0.122 |     0.128     0.130     0.118 | GNN 5/0  PG 2/3  SX 5/0   [vs RandNode@k: GNN 5/0  PG 2/3  SX 5/0]
+
+======================================================================================================================================================
+ CHECK 2: matched budget -- top-k 0.25 GEA vs RandNode at the same budget (20 draws), per-seed Wilcoxon + Holm over 3 explainers
+======================================================================================================================================================
+
+  MUTAG-GT   (per seed: explainer / RandNode, Holm significance)
+    GNN vs RandNode  0.379/0.143***  0.076/0.148***  0.374/0.144***  0.476/0.147***  0.487/0.146***   higher 4/5  sig above 4/5  sig below 1/5
+    PG  vs RandNode  0.297/0.143***  0.086/0.148***  0.096/0.144***  0.179/0.147ns  0.365/0.146***   higher 3/5  sig above 2/5  sig below 2/5
+    SX  vs RandNode  0.045/0.143***  0.027/0.148***  0.108/0.144***  0.050/0.147***  0.110/0.146***   higher 0/5  sig above 0/5  sig below 5/5
+    PG  vs RandEdge  0.297/0.174***  0.086/0.173***  0.096/0.178***  0.179/0.178ns  0.365/0.173***   higher 3/5  sig above 2/5  sig below 2/5   (single test per seed)
+
+  B-XAIC indole   (per seed: explainer / RandNode, Holm significance)
+    GNN vs RandNode  0.088/0.163***  0.213/0.160***  0.242/0.162***  0.320/0.163***  0.135/0.159***   higher 3/5  sig above 3/5  sig below 2/5
+    PG  vs RandNode  0.377/0.163***  0.407/0.160***  0.349/0.162***  0.403/0.163***  0.390/0.159***   higher 5/5  sig above 5/5  sig below 0/5
+    SX  vs RandNode  0.649/0.163***  0.640/0.160***  0.676/0.162***  0.607/0.163***  0.533/0.159***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandEdge  0.377/0.153***  0.407/0.153***  0.349/0.153***  0.403/0.152***  0.390/0.151***   higher 5/5  sig above 5/5  sig below 0/5   (single test per seed)
+
+  B-XAIC PAINS   (per seed: explainer / RandNode, Holm significance)
+    GNN vs RandNode  0.253/0.161***  0.266/0.165***  0.197/0.163***  0.242/0.168***  0.220/0.163***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandNode  0.200/0.161**  0.299/0.165***  0.275/0.163***  0.183/0.168ns  0.163/0.163ns   higher 5/5  sig above 3/5  sig below 0/5
+    SX  vs RandNode  0.447/0.161***  0.458/0.165***  0.476/0.163***  0.494/0.168***  0.466/0.163***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandEdge  0.200/0.156**  0.299/0.157***  0.275/0.160***  0.183/0.162ns  0.163/0.155ns   higher 5/5  sig above 3/5  sig below 0/5   (single test per seed)
+
+  B-XAIC X   (per seed: explainer / RandNode, Holm significance)
+    GNN vs RandNode  0.058/0.052ns  0.062/0.056ns  0.059/0.053ns  0.055/0.054*  0.061/0.054ns   higher 5/5  sig above 1/5  sig below 0/5
+    PG  vs RandNode  0.255/0.052***  0.264/0.056***  0.251/0.053***  0.258/0.054***  0.093/0.054***   higher 5/5  sig above 5/5  sig below 0/5
+    SX  vs RandNode  0.145/0.052***  0.162/0.056***  0.182/0.053***  0.151/0.054***  0.185/0.054***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandEdge  0.255/0.072***  0.264/0.072***  0.251/0.071***  0.258/0.073***  0.093/0.074ns   higher 5/5  sig above 4/5  sig below 0/5   (single test per seed)
+
+  B-XAIC P   (per seed: explainer / RandNode, Holm significance)
+    GNN vs RandNode  0.162/0.041***  0.176/0.043***  0.173/0.041***  0.172/0.045***  0.184/0.042***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandNode  0.123/0.041***  0.158/0.043***  0.152/0.041***  0.168/0.045***  0.169/0.042***   higher 5/5  sig above 5/5  sig below 0/5
+    SX  vs RandNode  0.174/0.041***  0.169/0.043***  0.176/0.041***  0.169/0.045***  0.171/0.042***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandEdge  0.123/0.024***  0.158/0.024***  0.152/0.026***  0.168/0.024***  0.169/0.025***   higher 5/5  sig above 5/5  sig below 0/5   (single test per seed)
+
+  Mutagenicity   (per seed: explainer / RandNode, Holm significance)
+    GNN vs RandNode  0.470/0.121***  0.469/0.117***  0.383/0.127***  0.332/0.130***  0.233/0.116***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandNode  0.037/0.121***  0.016/0.117***  0.049/0.127***  0.256/0.130***  0.233/0.116***   higher 2/5  sig above 2/5  sig below 3/5
+    SX  vs RandNode  0.266/0.121***  0.259/0.117***  0.302/0.127***  0.308/0.130***  0.266/0.116***   higher 5/5  sig above 5/5  sig below 0/5
+    PG  vs RandEdge  0.037/0.139***  0.016/0.144***  0.049/0.145***  0.256/0.151**  0.233/0.140***   higher 2/5  sig above 2/5  sig below 3/5   (single test per seed)
+
+  3x3 summary, seeds (of 5) significantly ABOVE RandNode at the matched top-k budget
+                       GNN    PG    SX
+    MUTAG-GT             4     2     0
+    B-XAIC indole        3     5     5
+    Mutagenicity         5     2     5
+    total /15           12     9    10
+  3x3 summary, seeds (of 5) significantly BELOW RandNode at the matched top-k budget
+    MUTAG-GT             1     2     5
+    B-XAIC indole        2     0     0
+    Mutagenicity         0     3     0
+    total /15            3     5     5
+
+======================================================================================================================================================
+ CHECK 3: edge-level GEA on NATIVE edge masks, top-k 0.25 of directed edges, vs a random-edge null at the same budget
+======================================================================================================================================================
+
+  MUTAG-GT   edges 39.6 (directed), edge GT 8.9, edge budget 9.6
+    PG   edge GEA / RandEdge  0.261/0.135***  0.210/0.135***  0.154/0.135ns  0.118/0.135***  0.294/0.136***   sig above 3/5  sig below 1/5   | node-level top-k GEA: 0.297  0.086  0.096  0.179  0.365
+    GNN  edge GEA / RandEdge  0.221/0.135***  0.098/0.135***  0.309/0.135***  0.210/0.135***  0.245/0.136***   sig above 4/5  sig below 1/5   | node-level top-k GEA: 0.379  0.076  0.374  0.476  0.487
+    PG   inverted edge mask:  0.158  0.147  0.176  0.118  0.148
+
+  B-XAIC indole   edges 71.0 (directed), edge GT 21.6, edge budget 17.5
+    PG   edge GEA / RandEdge  0.321/0.162***  0.349/0.163***  0.312/0.162***  0.347/0.164***  0.334/0.162***   sig above 5/5  sig below 0/5   | node-level top-k GEA: 0.377  0.407  0.349  0.403  0.390
+    GNN  edge GEA / RandEdge  0.182/0.162***  0.094/0.163***  0.125/0.162***  0.207/0.164***  0.168/0.162ns   sig above 2/5  sig below 2/5   | node-level top-k GEA: 0.088  0.213  0.242  0.320  0.135
+    PG   inverted edge mask:  0.023  0.016  0.017  0.008  0.014
+
+  B-XAIC PAINS   edges 65.4 (directed), edge GT 19.7, edge budget 16.1
+    PG   edge GEA / RandEdge  0.196/0.154**  0.273/0.153***  0.185/0.157***  0.167/0.160ns  0.157/0.154ns   sig above 3/5  sig below 0/5   | node-level top-k GEA: 0.200  0.299  0.275  0.183  0.163
+    GNN  edge GEA / RandEdge  0.220/0.154***  0.197/0.153***  0.157/0.157ns  0.186/0.160***  0.196/0.154***   sig above 4/5  sig below 0/5   | node-level top-k GEA: 0.253  0.266  0.197  0.242  0.220
+    PG   inverted edge mask:  0.092  0.060  0.170  0.167  0.157
+
+  B-XAIC X: no edge ground truth -- skipped
+
+  B-XAIC P: no edge ground truth -- skipped
+
+  Mutagenicity   edges 51.4 (directed), edge GT 6.4, edge budget 12.6
+    PG   edge GEA / RandEdge  0.030/0.109***  0.035/0.109***  0.067/0.110***  0.195/0.120***  0.164/0.104***   sig above 2/5  sig below 3/5   | node-level top-k GEA: 0.037  0.016  0.049  0.256  0.233
+    GNN  edge GEA / RandEdge  0.103/0.109ns  0.183/0.109***  0.159/0.110***  0.177/0.120***  0.135/0.104**   sig above 4/5  sig below 0/5   | node-level top-k GEA: 0.470  0.469  0.383  0.332  0.233
+    PG   inverted edge mask:  0.240  0.272  0.132  0.075  0.101
+
+  PGExplainer on Mutagenicity: degree of the atoms it selects (GT-present test molecules; degree-1 = terminal atom)
+    seed deg top-k deg bottom-k deg mean-thr  deg GT deg all | term% top-k term% bot-k term% GT term% all | GNN deg top-k GNN term%
+       0      1.43         1.83         1.61    1.43    2.00 |          77          58       74        51 |          2.01        51
+       1      1.32         1.84         1.66    1.42    2.02 |          83          58       76        51 |          1.76        61
+       2      2.32         1.93         2.52    1.42    2.01 |          35          54       74        51 |          1.95        53
+       3      1.60         2.01         1.80    1.42    2.01 |          71          48       75        50 |          2.04        49
+       4      1.84         1.58         2.13    1.35    2.03 |          60          70       78        49 |          2.05        50
+
+  PGExplainer node-level top-k GEA under three edge->node folding rules (mean = the rule in use)
+    dataset                  s0 mean/sum/max         s1 mean/sum/max         s2 mean/sum/max         s3 mean/sum/max         s4 mean/sum/max
+    MUTAG-GT             0.297/0.295/0.311     0.086/0.079/0.078     0.096/0.094/0.111     0.179/0.088/0.179     0.365/0.328/0.409
+    B-XAIC indole        0.378/0.382/0.265     0.408/0.410/0.291     0.349/0.370/0.258     0.403/0.412/0.299     0.389/0.399/0.273
+    B-XAIC PAINS         0.200/0.273/0.209     0.299/0.326/0.276     0.275/0.284/0.288     0.183/0.249/0.183     0.163/0.243/0.163
+    B-XAIC X             0.255/0.242/0.245     0.264/0.253/0.255     0.251/0.244/0.244     0.258/0.238/0.246     0.093/0.071/0.074
+    B-XAIC P             0.123/0.179/0.163     0.158/0.188/0.186     0.152/0.180/0.178     0.168/0.187/0.182     0.169/0.190/0.184
+    Mutagenicity         0.037/0.029/0.033     0.016/0.013/0.014     0.049/0.042/0.045     0.256/0.215/0.281     0.233/0.162/0.177
+
+saved -> runs/mutagenicity/exploratory/null_audit.json

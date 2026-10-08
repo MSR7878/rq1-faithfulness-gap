@@ -2267,3 +2267,118 @@ RandNode is one draw per molecule there and 20 on Mutagenicity; MUTAG-GT seed
 3's PGExplainer value comes from a constant mask, so its top-k set is
 arbitrary; the ceiling is one number per dataset (per-seed ceilings on
 Mutagenicity range 0.52-0.60).
+
+### EXPLORATORY (2026-10-08, second batch): null matching, matched-budget counts, edge-level GEA
+
+Script: src/analysis/exploratory_null_audit.py (cached explanations only).
+Output: runs/mutagenicity/exploratory/null_audit.{txt,json}. Registered
+predictions untouched.
+
+**E4. What each reported null was matched to.**
+
+| comparison (where reported) | explainer mask | null | null size | draws | matched? |
+|---|---|---|---|---|---|
+| MUTAG-GT GNN/PG/SX vs RandNode, RandEdge (F15) | own mean-threshold mask | uniform nodes / folded random edge scores | top-k budget, int(0.25 N) | 1 | NO -- one null shared by all three explainers |
+| B-XAIC, 4 tasks, same comparisons (F16) | own mean-threshold mask | same | top-k budget | 1 | NO |
+| below-random scan (F18) | own mean-threshold mask | RandNode (GNN, SX), RandEdge (PG) | top-k budget | 1 | NO |
+| SubgraphX vs RandConn / RandUnc, MUTAG-GT and indole (F15/F16-ADDENDUM, decoupled check) | SX mean-threshold mask | random connected / unconstrained | the SubgraphX mask size, per molecule | 20 | YES (SubgraphX only) |
+| Tox21 Fid+/Fid-/GEF vs random (F17) | top-k 0.25 of the importance vector | top-k 0.25 of a random importance vector | top-k budget on both sides | 1 | YES |
+| Mutagenicity, mean-threshold vs RandNode/RandEdge | own mean-threshold mask | as F15 | top-k budget | 20 | NO (kept to mirror F15) |
+| Mutagenicity, mean-threshold vs RandConn/RandUnc | own mean-threshold mask | connected / unconstrained | each explainer's own mask size | 20 | YES |
+| Mutagenicity, top-k comparisons | top-k | RandNode, RandEdge, RandConn | top-k budget | 20 | YES |
+
+Mask sizes (atoms, mean over seeds) and what a random mask of that size scores:
+
+| dataset | GT | budget k | GNN mask | PG mask | SX mask | RandNode at k | random at GNN size | at PG size | at SX size |
+|---|---|---|---|---|---|---|---|---|---|
+| MUTAG-GT | 4.44 | 4.11 | 6.31 | 3.22 | 4.30 | 0.146 | 0.178 | 0.113 | 0.146 |
+| B-XAIC indole | 9.69 | 7.62 | 14.75 | 19.08 | 7.64 | 0.161 | 0.235 | 0.272 | 0.164 |
+| B-XAIC PAINS | 9.75 | 7.10 | 14.85 | 8.53 | 6.97 | 0.164 | 0.253 | 0.137 | 0.162 |
+| B-XAIC X | 1.80 | 7.32 | 15.16 | 4.49 | 2.78 | 0.054 | 0.058 | 0.052 | 0.046 |
+| B-XAIC P | 1.26 | 7.64 | 9.53 | 4.59 | 4.41 | 0.043 | 0.042 | 0.043 | 0.042 |
+| Mutagenicity | 3.14 | 5.94 | 9.23 | 8.73 | 4.26 | 0.122 | 0.128 | 0.130 | 0.118 |
+
+The shared budget-size null understates chance for GNN and PG where the GT
+is large (indole, PAINS: 0.24-0.27 at their own size against 0.16). It makes
+little difference where the GT is 1-3 atoms. Re-testing mean-threshold GEA
+against each explainer's own-size null (seeds significantly above / below,
+of 5) changes two cells: GNN on B-XAIC X drops from 4/0 to 1/0, and PG on
+MUTAG-GT goes from 2/3 to 2/2. Every other cell keeps its count.
+
+**E5. Matched-budget counts: top-k 0.25 GEA vs RandNode at the same budget,
+20 draws, per-seed Wilcoxon + Holm over the three explainers.**
+
+Seeds (of 5) significantly ABOVE / significantly BELOW the null:
+
+| | GNN | PG | SX |
+|---|---|---|---|
+| MUTAG-GT | 4 / 1 | 2 / 2 | 0 / 5 |
+| B-XAIC indole | 3 / 2 | 5 / 0 | 5 / 0 |
+| Mutagenicity | 5 / 0 | 2 / 3 | 5 / 0 |
+| total of 15 | 12 / 3 | 9 / 5 | 10 / 5 |
+
+Other B-XAIC tasks (above / below): PAINS GNN 5/0, PG 3/0, SX 5/0; X GNN 1/0,
+PG 5/0, SX 5/0; P 5/0 for all three. PG vs RandEdge at the same budget:
+MUTAG-GT 2/2, indole 5/0, PAINS 3/0, X 4/0, P 5/0, Mutagenicity 2/3.
+
+Earlier claims against this:
+- "GNN clears random on indole 3/5": unchanged at 3/5. New: it is
+  significantly BELOW random in the other two seeds (0 and 4); seed 4 was
+  n.s. with one draw.
+- "PG clears RandEdge on indole" (4/4 when first written, 5/5 final): holds,
+  5/5 against RandEdge and against RandNode.
+- Tallies 12/15 (GNN), 10/15 (SX), 9/15 (PG), read as MUTAG-GT + indole +
+  Mutagenicity: all three unchanged.
+- Changed: GNN on B-XAIC X is significantly above random in 1/5 seeds at the
+  matched budget (F16 said 3/5).
+- Changed: B-XAIC X seed 4, PGExplainer (the F18 seed case). At the matched
+  top-k budget it scores 0.093, significantly ABOVE RandNode (0.054) and n.s.
+  against RandEdge (0.074). It is below random only under mean-threshold
+  (0.030). That flag is binarization-specific.
+- MUTAG-GT seed 3 (collapsed PG) is n.s. under top-k: the top-k set of a
+  constant mask is arbitrary.
+
+**E6. Edge-level GEA on native edge masks**, top 25% of directed edges, vs
+uniform random edges at the same budget (20 draws). Edge GT exists for
+MUTAG-GT, B-XAIC indole and PAINS, and Mutagenicity (edges incident to a
+motif atom; max-over-set on Mutagenicity). Per seed; the random-edge null is
+about 0.135 (MUTAG-GT), 0.162 (indole), 0.155 (PAINS), 0.110 (Mutagenicity):
+
+| dataset | explainer | s0 | s1 | s2 | s3 | s4 | sig above | sig below |
+|---|---|---|---|---|---|---|---|---|
+| MUTAG-GT | PG | 0.261 | 0.210 | 0.154 ns | 0.118 | 0.294 | 3 | 1 |
+| MUTAG-GT | GNN | 0.221 | 0.098 | 0.309 | 0.210 | 0.245 | 4 | 1 |
+| B-XAIC indole | PG | 0.321 | 0.349 | 0.312 | 0.347 | 0.334 | 5 | 0 |
+| B-XAIC indole | GNN | 0.182 | 0.094 | 0.125 | 0.207 | 0.168 ns | 2 | 2 |
+| B-XAIC PAINS | PG | 0.196 | 0.273 | 0.185 | 0.167 ns | 0.157 ns | 3 | 0 |
+| B-XAIC PAINS | GNN | 0.220 | 0.197 | 0.157 ns | 0.186 | 0.196 | 4 | 0 |
+| Mutagenicity | PG | 0.030 | 0.035 | 0.067 | 0.195 | 0.164 | 2 | 3 |
+| Mutagenicity | GNN | 0.103 ns | 0.183 | 0.159 | 0.177 | 0.135 | 4 | 0 |
+
+- Mutagenicity: the native PGExplainer edge mask shows the same split as its
+  folded node mask (below random in seeds 0-2, above in 3-4). The inverted
+  edge mask scores 0.240 / 0.272 in seeds 0-1 against a null of 0.109. The
+  inversion is in the edge mask itself, not created by folding.
+- MUTAG-GT seed 1: the PGExplainer edge mask is significantly ABOVE random
+  (0.210 vs 0.135) while its folded node mask is significantly below (0.086
+  vs 0.148). Here the node-level verdict does depend on the fold.
+- The GNNExplainer edge mask is much weaker than its node mask on
+  Mutagenicity (0.10-0.18 against 0.23-0.47).
+
+Degree of the atoms PGExplainer selects, Mutagenicity (terminal = degree 1):
+
+| seed | mean degree, top-k | bottom-k | GT atoms | all atoms | terminal %, top-k | bottom-k | GT | all |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 1.43 | 1.83 | 1.43 | 2.00 | 77 | 58 | 74 | 51 |
+| 1 | 1.32 | 1.84 | 1.42 | 2.02 | 83 | 58 | 76 | 51 |
+| 2 | 2.32 | 1.93 | 1.42 | 2.01 | 35 | 54 | 74 | 51 |
+| 3 | 1.60 | 2.01 | 1.42 | 2.01 | 71 | 48 | 75 | 50 |
+| 4 | 1.84 | 1.58 | 1.35 | 2.03 | 60 | 70 | 78 | 49 |
+
+In seeds 0-1 the selected atoms are as terminal as the GT atoms (77-83%
+against 74-76%), so the mask does favour terminal atoms -- but so does the
+working seed 3 (71%), and the GT itself is mostly terminal. The mask picks
+the wrong terminal atoms (hydrogens). Refolding the same edge masks by sum
+or by max instead of mean leaves top-k GEA unchanged in seeds 0-1
+(0.037 / 0.029 / 0.033 and 0.016 / 0.013 / 0.014). The folding rule is not
+what puts these two seeds below random.
