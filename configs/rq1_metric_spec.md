@@ -2190,3 +2190,80 @@ Fid+/Fid-/GEF under R3/R2/R1 per seed: report.txt section 8.
 Persisted: runs/mutagenicity/arrays_s<S>.npz (per-molecule GEA for every
 explainer x binarization x GT variant, all nulls, win/loss vs RandConn, mask
 sizes, split membership, seeds), report.json, seeds_s<S>.json.
+
+### EXPLORATORY (2026-10-08) -- not part of the registered predictions, which stand as scored above
+
+Scripts: src/analysis/exploratory_pg_and_normalised.py,
+src/analysis/exploratory_saturation_scan.py. Output:
+runs/mutagenicity/exploratory/.
+
+**E1. What PGExplainer's below-random masks are.** PGExplainer, GT-present
+test molecules; "range" = max - min node importance within a molecule; "GT
+rank" = mean percentile rank of the GT atoms' importance (1 = highest, 0.5 =
+chance); "inverted" = top-k GEA of the negated importance (merged GT).
+
+| unit | n_empty | n_whole | degenerate | mean-thr mask size (mean / p10-p90) | std median | std min | range median | GT rank | GEA top-k | inverted | selected atoms | GT atoms |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Mutagenicity s0 | 0 | 0 | 0/350 | 8.4 / 2-16 | 0.0009 | 2e-16 | 0.003 | 0.19 | 0.026 | 0.369 | H 70%, C 16% | H 31%, N 28%, Cl 20% |
+| Mutagenicity s1 | 0 | 0 | 0/345 | 9.1 / 3-16 | 0.0015 | 1e-27 | 0.005 | 0.21 | 0.012 | 0.342 | H 71%, C 18% | H 32%, N 27%, Cl 20% |
+| Mutagenicity s2 | 1 | 0 | 1/348 | 6.6 / 2-12 | 0.057 | 0 | 0.234 | 0.28 | 0.032 | 0.246 | C 60%, H 26% | H 29%, N 27%, Cl 27% |
+| Mutagenicity s3 | 0 | 0 | 0/351 | 8.5 / 3-16 | 0.271 | 7e-11 | 0.771 | 0.60 | 0.235 | 0.084 | H 54%, C 26% | H 29%, N 27%, Cl 25% |
+| Mutagenicity s4 | 0 | 0 | 0/346 | 11.1 / 4-22 | 0.221 | 5e-26 | 0.707 | 0.60 | 0.221 | 0.066 | H 41%, C 38% | Cl 29%, H 25%, N 24% |
+| B-XAIC X s0-s3 | 0 | 0 | 0/400 | 3.0-6.0 | 0.069-0.109 | >= 1e-4 | 0.35-0.50 | 0.98-0.99 | 0.25-0.26 | 0.000 | C 44-64%, F 18-31%, Cl 10-20% | F 52-58%, Cl 32-36% |
+| B-XAIC X s4 | 0 | 0 | 0/400 | 6.2 / 4-10 | 0.075 | 0.012 | 0.256 | 0.70 | 0.093 | 0.015 | C 91%, N 5% | F 58%, Cl 33% |
+
+Reading:
+- Mutagenicity seeds 0-1 are near-constant masks (importance varies by about
+  0.003-0.005 within a molecule; seeds 3-4 vary by 0.7-0.8). The strict rule
+  misses them because the spread is tiny but not zero. The residual ordering
+  is not noise: the GT atoms rank at the bottom, and the inverted mask scores
+  0.34-0.37, the level SubgraphX reaches. The mask selects hydrogens.
+- Mutagenicity seed 2 is not near-constant (range 0.23). It is a structurally
+  valid mask that ranks the GT low and selects carbons; inverted GEA 0.246.
+- B-XAIC X seed 4 is not near-constant either: its spread matches X seeds 0-3.
+  It selects carbons (91%) where seeds 0-3 select halogens. Inverting it does
+  not help (0.015). A structurally valid mask on the wrong atoms.
+So the answer is mixed: two of the four units are near-collapses the strict
+rule misses, two are valid masks that select the wrong atoms.
+
+**E2. Can a revised criterion catch the near-collapses? Spread scan over all
+95 units** (85 coupled, 5 decoupled MUTAG-GT, 5 Mutagenicity). PGExplainer's
+median within-molecule range runs continuously from 0 to 1 with one gap,
+between 6e-20 and 6e-8. Two candidate "saturated mask" criteria:
+
+| criterion | all 95 units | 85 coupled | MUTAG-GT coupled | B-XAIC | Tox21 | Mutagenicity |
+|---|---|---|---|---|---|---|
+| strict (std == 0 in >= 50% of molecules) | 28 | 27 | 1/5 | 2/20 | 24/60 | 0/5 |
+| range median < 1e-12 (below the gap) | 39 | 34 | 5/5 | 2/20 | 27/60 | 0/5 |
+| range median < 0.01 | 61 | 54 | 5/5 | 2/20 | 47/60 | 2/5 |
+
+Neither revised criterion is recommended as a replacement for the strict
+rule, for two reasons visible in the scan:
+- Spread does not predict failure. Every MUTAG-GT unit has a range below
+  6e-20, including coupled seeds 0 and 4, where PGExplainer beats its random
+  null. The soft mask is saturated but its ordering still carries signal.
+- No threshold separates the cases. The 1e-12 cut sits in the only gap but
+  does not flag Mutagenicity seeds 0-1 (range 0.005-0.007). The 0.01 cut flags
+  them but has no gap behind it (B-XAIC P s0 at 0.011 and PAINS s2 at 0.012,
+  both working units, sit just above it) and flags 47/60 Tox21 units.
+What does identify all four units is the outcome test of F18: significantly
+below the matched random null. That needs ground truth (or, on Tox21, the
+per-molecule random Fid+ baseline that was deferred). For reference, GNN's
+smallest median range over all units is 0.028 and SubgraphX's is 1.0.
+
+**E3. Normalised top-k GEA, (GEA - RandNode) / (ceiling - RandNode), per seed.**
+Ceilings fixed at 0.551 (Mutagenicity, max-over-set), 0.751 (MUTAG-GT), 0.724
+(B-XAIC indole). 0 = random, 1 = the best the budget allows.
+
+| dataset | GNN mean (std) | PG mean (std) | SX mean (std) | per seed: GNN | per seed: PG | per seed: SX |
+|---|---|---|---|---|---|---|
+| Mutagenicity | 0.595 (0.208) | -0.009 (0.238) | 0.369 (0.039) | 0.81, 0.81, 0.60, 0.48, 0.27 | -0.18, -0.24, -0.19, 0.30, 0.27 | 0.34, 0.33, 0.41, 0.42, 0.34 |
+| MUTAG-GT | 0.355 (0.248) | 0.103 (0.183) | -0.121 (0.064) | 0.38, -0.11, 0.38, 0.55, 0.57 | 0.25, -0.10, -0.07, 0.06, 0.38 | -0.17, -0.20, -0.06, -0.15, -0.04 |
+| B-XAIC indole | 0.064 (0.145) | 0.395 (0.035) | 0.816 (0.086) | -0.15, 0.08, 0.15, 0.27, -0.04 | 0.37, 0.43, 0.34, 0.42, 0.41 | 0.86, 0.85, 0.92, 0.79, 0.66 |
+
+Caveats: top-k GEA for MUTAG-GT and indole is recomputed here from the cached
+explanations (the tables above for those datasets are mean-threshold);
+RandNode is one draw per molecule there and 20 on Mutagenicity; MUTAG-GT seed
+3's PGExplainer value comes from a constant mask, so its top-k set is
+arbitrary; the ceiling is one number per dataset (per-seed ceilings on
+Mutagenicity range 0.52-0.60).

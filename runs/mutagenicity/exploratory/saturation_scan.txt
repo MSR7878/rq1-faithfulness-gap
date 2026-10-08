@@ -1,0 +1,114 @@
+units scanned: 95   TAU = 0.01
+
+PGExplainer median (max - min) node importance, every unit, sorted:
+  mutag_graphxai/s3/decoupled        range_med=0.000e+00  std_med=0.000e+00  degenerate=188/188  strict=Y  saturated=Y
+  bxaic/PAINS/s3/coupled             range_med=0.000e+00  std_med=0.000e+00  degenerate=400/400  strict=Y  saturated=Y
+  bxaic/PAINS/s4/coupled             range_med=0.000e+00  std_med=0.000e+00  degenerate=400/400  strict=Y  saturated=Y
+  mutag_graphxai/s3/coupled          range_med=0.000e+00  std_med=0.000e+00  degenerate=188/188  strict=Y  saturated=Y
+  tox21/NR-AR-LBD/s2/coupled         range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-AR-LBD/s3/coupled         range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-AR-LBD/s4/coupled         range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-AR/s1/coupled             range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-AR/s4/coupled             range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-AhR/s1/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-AhR/s2/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=29/30  strict=Y  saturated=Y
+  tox21/NR-AhR/s4/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-Aromatase/s2/coupled      range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-Aromatase/s4/coupled      range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-ER-LBD/s1/coupled         range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-ER-LBD/s4/coupled         range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-ER/s4/coupled             range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-PPAR-gamma/s2/coupled     range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/NR-PPAR-gamma/s3/coupled     range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-ARE/s1/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-ARE/s2/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-ARE/s4/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-ATAD5/s2/coupled          range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-MMP/s0/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-MMP/s1/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-MMP/s4/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-p53/s0/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-p53/s4/coupled            range_med=0.000e+00  std_med=0.000e+00  degenerate=30/30  strict=Y  saturated=Y
+  tox21/SR-ATAD5/s4/coupled          range_med=1.879e-37  std_med=6.436e-38  degenerate=10/30  strict=-  saturated=Y
+  tox21/SR-HSE/s4/coupled            range_med=3.028e-35  std_med=1.232e-35  degenerate=11/30  strict=-  saturated=Y
+  tox21/SR-HSE/s0/coupled            range_med=7.107e-30  std_med=2.087e-30  degenerate=1/30  strict=-  saturated=Y
+  mutag_graphxai/s1/decoupled        range_med=3.332e-27  std_med=1.063e-27  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s2/decoupled        range_med=1.078e-26  std_med=3.827e-27  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s1/coupled          range_med=1.425e-25  std_med=4.546e-26  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s2/coupled          range_med=7.856e-22  std_med=2.494e-22  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s4/decoupled        range_med=3.426e-21  std_med=1.376e-21  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s4/coupled          range_med=5.843e-21  std_med=1.869e-21  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s0/coupled          range_med=2.316e-20  std_med=8.677e-21  degenerate=0/188  strict=-  saturated=Y
+  mutag_graphxai/s0/decoupled        range_med=5.837e-20  std_med=1.873e-20  degenerate=0/188  strict=-  saturated=Y
+  tox21/NR-AR/s3/coupled             range_med=5.960e-08  std_med=2.728e-08  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-ER/s2/coupled             range_med=6.139e-06  std_med=2.672e-06  degenerate=1/30  strict=-  saturated=Y
+  tox21/NR-Aromatase/s3/coupled      range_med=7.284e-05  std_med=2.260e-05  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-p53/s3/coupled            range_med=1.175e-04  std_med=2.925e-05  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-ER/s0/coupled             range_med=1.482e-04  std_med=3.640e-05  degenerate=2/30  strict=-  saturated=Y
+  tox21/SR-HSE/s2/coupled            range_med=1.544e-04  std_med=4.769e-05  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-ER/s1/coupled             range_med=2.686e-04  std_med=8.292e-05  degenerate=1/30  strict=-  saturated=Y
+  tox21/NR-ER/s3/coupled             range_med=4.205e-04  std_med=1.080e-04  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-PPAR-gamma/s4/coupled     range_med=7.618e-04  std_med=2.263e-04  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-PPAR-gamma/s0/coupled     range_med=9.059e-04  std_med=2.788e-04  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-HSE/s1/coupled            range_med=1.502e-03  std_med=5.056e-04  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-ATAD5/s0/coupled          range_med=1.975e-03  std_med=4.559e-04  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-ATAD5/s3/coupled          range_med=3.357e-03  std_med=7.594e-04  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-Aromatase/s0/coupled      range_med=4.593e-03  std_med=1.487e-03  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-ARE/s3/coupled            range_med=4.623e-03  std_med=1.453e-03  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-AhR/s3/coupled            range_med=4.738e-03  std_med=1.360e-03  degenerate=0/30  strict=-  saturated=Y
+  mutagenicity/s1/decoupled          range_med=5.152e-03  std_med=1.651e-03  degenerate=0/345  strict=-  saturated=Y
+  mutagenicity/s0/decoupled          range_med=6.992e-03  std_med=1.601e-03  degenerate=0/350  strict=-  saturated=Y
+  tox21/SR-ATAD5/s1/coupled          range_med=7.572e-03  std_med=2.506e-03  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-Aromatase/s1/coupled      range_med=8.512e-03  std_med=2.582e-03  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-HSE/s3/coupled            range_med=8.666e-03  std_med=2.626e-03  degenerate=0/30  strict=-  saturated=Y
+  tox21/SR-MMP/s3/coupled            range_med=9.480e-03  std_med=2.552e-03  degenerate=0/30  strict=-  saturated=Y
+  tox21/NR-PPAR-gamma/s1/coupled     range_med=1.067e-02  std_med=3.379e-03  degenerate=0/30  strict=-  saturated=-
+  bxaic/P/s0/coupled                 range_med=1.139e-02  std_med=2.326e-03  degenerate=0/400  strict=-  saturated=-
+  bxaic/PAINS/s2/coupled             range_med=1.223e-02  std_med=3.172e-03  degenerate=0/400  strict=-  saturated=-
+  tox21/SR-MMP/s2/coupled            range_med=1.720e-02  std_med=4.476e-03  degenerate=0/30  strict=-  saturated=-
+  tox21/NR-AhR/s0/coupled            range_med=1.805e-02  std_med=5.236e-03  degenerate=0/30  strict=-  saturated=-
+  tox21/NR-AR-LBD/s1/coupled         range_med=1.983e-02  std_med=5.679e-03  degenerate=0/30  strict=-  saturated=-
+  tox21/SR-ARE/s0/coupled            range_med=2.107e-02  std_med=7.040e-03  degenerate=0/30  strict=-  saturated=-
+  tox21/NR-AR/s0/coupled             range_med=2.135e-02  std_med=5.613e-03  degenerate=0/30  strict=-  saturated=-
+  tox21/NR-ER-LBD/s2/coupled         range_med=3.204e-02  std_med=8.294e-03  degenerate=0/30  strict=-  saturated=-
+  tox21/NR-ER-LBD/s3/coupled         range_med=1.376e-01  std_med=4.497e-02  degenerate=0/30  strict=-  saturated=-
+  tox21/SR-p53/s2/coupled            range_med=1.423e-01  std_med=5.031e-02  degenerate=1/30  strict=-  saturated=-
+  bxaic/P/s1/coupled                 range_med=1.879e-01  std_med=4.961e-02  degenerate=0/400  strict=-  saturated=-
+  bxaic/X/s4/coupled                 range_med=2.499e-01  std_med=7.196e-02  degenerate=0/400  strict=-  saturated=-
+  bxaic/P/s3/coupled                 range_med=2.500e-01  std_med=6.788e-02  degenerate=0/400  strict=-  saturated=-
+  tox21/NR-AR/s2/coupled             range_med=3.341e-01  std_med=7.843e-02  degenerate=3/30  strict=-  saturated=-
+  bxaic/X/s3/coupled                 range_med=3.502e-01  std_med=6.625e-02  degenerate=0/400  strict=-  saturated=-
+  bxaic/P/s4/coupled                 range_med=3.519e-01  std_med=9.095e-02  degenerate=0/400  strict=-  saturated=-
+  bxaic/X/s0/coupled                 range_med=3.746e-01  std_med=7.615e-02  degenerate=0/400  strict=-  saturated=-
+  bxaic/X/s2/coupled                 range_med=4.248e-01  std_med=7.621e-02  degenerate=0/400  strict=-  saturated=-
+  bxaic/P/s2/coupled                 range_med=4.300e-01  std_med=8.291e-02  degenerate=0/400  strict=-  saturated=-
+  mutagenicity/s2/decoupled          range_med=4.593e-01  std_med=1.180e-01  degenerate=1/348  strict=-  saturated=-
+  tox21/NR-AR-LBD/s0/coupled         range_med=4.898e-01  std_med=1.606e-01  degenerate=1/30  strict=-  saturated=-
+  bxaic/X/s1/coupled                 range_med=5.000e-01  std_med=1.039e-01  degenerate=0/400  strict=-  saturated=-
+  mutagenicity/s4/decoupled          range_med=6.187e-01  std_med=2.087e-01  degenerate=0/346  strict=-  saturated=-
+  tox21/SR-p53/s1/coupled            range_med=6.336e-01  std_med=2.188e-01  degenerate=0/30  strict=-  saturated=-
+  tox21/NR-ER-LBD/s0/coupled         range_med=7.559e-01  std_med=2.637e-01  degenerate=0/30  strict=-  saturated=-
+  mutagenicity/s3/decoupled          range_med=8.050e-01  std_med=2.823e-01  degenerate=0/351  strict=-  saturated=-
+  bxaic/PAINS/s1/coupled             range_med=9.593e-01  std_med=2.617e-01  degenerate=0/400  strict=-  saturated=-
+  bxaic/indole/s4/coupled            range_med=9.997e-01  std_med=3.845e-01  degenerate=0/400  strict=-  saturated=-
+  bxaic/indole/s0/coupled            range_med=9.999e-01  std_med=3.617e-01  degenerate=0/400  strict=-  saturated=-
+  bxaic/indole/s2/coupled            range_med=9.999e-01  std_med=3.817e-01  degenerate=0/400  strict=-  saturated=-
+  bxaic/PAINS/s0/coupled             range_med=9.999e-01  std_med=3.196e-01  degenerate=37/400  strict=-  saturated=-
+  bxaic/indole/s1/coupled            range_med=1.000e+00  std_med=3.792e-01  degenerate=1/400  strict=-  saturated=-
+  bxaic/indole/s3/coupled            range_med=1.000e+00  std_med=4.040e-01  degenerate=0/400  strict=-  saturated=-
+
+reference: smallest median range for the other explainers
+  GNN: min 2.841e-02  5th-smallest 3.167e-02  median 3.740e-02
+  SX: min 1.000e+00  5th-smallest 1.000e+00  median 1.000e+00
+
+collapse rate under both criteria
+  group                        units  strict  saturated  either
+  mutag_graphxai coupled           5    1/5        5/5      5/5  
+  mutag_graphxai decoupled         5    1/5        5/5      5/5  
+  bxaic (4 tasks)                 20    2/20       2/20     2/20 
+  tox21 (12 endpoints)            60   24/60      47/60    47/60 
+  mutagenicity                     5    0/5        2/5      2/5  
+  ALL coupled (85)                85   27/85      54/85    54/85 
+  ALL units                       95   28/95      61/95    61/95 
+
+saved -> runs/mutagenicity/exploratory/saturation_scan.csv
