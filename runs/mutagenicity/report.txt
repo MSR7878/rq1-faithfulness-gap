@@ -1,0 +1,175 @@
+======================================================================================================================
+ GraphXAI Mutagenicity -- decoupled protocol (model seed s, explainer seed 1000+s), test split only
+======================================================================================================================
+
+[1] MODEL (D-MPNN)   seed  test_acc  test_auroc  | explained (<=80 nodes)  GT-present
+                        0  0.9661    0.9982      |   350                   127
+                        1  0.9915    1.0000      |   345                   127
+                        2  0.9915    0.9996      |   348                   127
+                        3  0.9944    0.9990      |   351                   126
+                        4  0.9859    0.9990      |   346                   125
+                     mean  0.9859    0.9992   (std 0.0103 / 0.0006)
+
+[2] GEA, mean-threshold, max-over-set -- per-seed means over GT-present test molecules
+  seed       GNN        PG        SX  RandNode  RandEdge  Conn|GNN   Conn|PG   Conn|SX   Unc|GNN    Unc|PG    Unc|SX
+     0     0.419     0.043     0.354     0.117     0.138     0.110     0.111     0.106     0.123     0.126     0.115
+     1     0.408     0.013     0.355     0.119     0.152     0.103     0.101     0.100     0.128     0.130     0.115
+     2     0.341     0.044     0.368     0.127     0.147     0.108     0.110     0.112     0.123     0.129     0.119
+     3     0.303     0.304     0.406     0.132     0.161     0.118     0.113     0.115     0.143     0.141     0.122
+     4     0.217     0.210     0.376     0.117     0.142     0.097     0.094     0.094     0.121     0.129     0.115
+  mean     0.338     0.123     0.372     0.122     0.148     0.107     0.106     0.105     0.128     0.131     0.118
+   std     0.074     0.114     0.019     0.006     0.008     0.007     0.007     0.008     0.008     0.005     0.003
+
+[2] GEA, mean-threshold, merged mask -- per-seed means over GT-present test molecules
+  seed       GNN        PG        SX  RandNode  RandEdge  Conn|GNN   Conn|PG   Conn|SX   Unc|GNN    Unc|PG    Unc|SX
+     0     0.397     0.033     0.323     0.098     0.115     0.091     0.090     0.085     0.109     0.108     0.097
+     1     0.385     0.010     0.329     0.099     0.126     0.087     0.084     0.079     0.112     0.111     0.094
+     2     0.321     0.033     0.335     0.103     0.119     0.085     0.090     0.087     0.104     0.109     0.094
+     3     0.289     0.279     0.358     0.109     0.132     0.099     0.091     0.087     0.127     0.120     0.097
+     4     0.203     0.203     0.337     0.096     0.115     0.082     0.078     0.070     0.108     0.111     0.089
+  mean     0.319     0.112     0.336     0.101     0.121     0.089     0.087     0.082     0.112     0.112     0.094
+   std     0.070     0.109     0.012     0.005     0.007     0.006     0.005     0.007     0.008     0.004     0.003
+
+[2] GEA, top-k 0.25, max-over-set -- per-seed means over GT-present test molecules
+  seed       GNN        PG        SX  RandNode  RandEdge  RandConn   ceiling
+     0     0.470     0.037     0.266     0.117     0.138     0.096     0.542
+     1     0.469     0.016     0.259     0.119     0.152     0.108     0.559
+     2     0.383     0.049     0.302     0.127     0.147     0.103     0.565
+     3     0.332     0.256     0.308     0.132     0.161     0.106     0.597
+     4     0.233     0.233     0.266     0.117     0.142     0.095     0.522
+  mean     0.378     0.118     0.280     0.122     0.148     0.102
+   std     0.089     0.104     0.020     0.006     0.008     0.005
+
+[2] GEA, top-k 0.25, merged mask -- per-seed means over GT-present test molecules
+  seed       GNN        PG        SX  RandNode  RandEdge  RandConn   ceiling
+     0     0.448     0.026     0.240     0.098     0.115     0.076     0.505
+     1     0.435     0.012     0.239     0.099     0.126     0.088     0.524
+     2     0.351     0.032     0.267     0.103     0.119     0.080     0.516
+     3     0.312     0.235     0.270     0.109     0.132     0.082     0.557
+     4     0.213     0.221     0.231     0.096     0.115     0.074     0.496
+  mean     0.352     0.105     0.249     0.101     0.121     0.080
+   std     0.086     0.100     0.016     0.005     0.007     0.005
+
+[3] explainer vs null, mean-threshold, max-over-set: per-seed paired Wilcoxon, Holm within seed (never pooled)
+  comparison                      seed 0                seed 1                seed 2                seed 3                seed 4   higher  clears  sig.below
+  GNN vs RandNode    0.419/0.117  ***  +   0.408/0.119  ***  +   0.341/0.127  ***  +   0.303/0.132  ***  +   0.217/0.117  ***  +   5/5     5/5     0/5
+  GNN vs RandEdge    0.419/0.138  ***  +   0.408/0.152  ***  +   0.341/0.147  ***  +   0.303/0.161  ***  +   0.217/0.142  ***  +   5/5     5/5     0/5
+  GNN vs RandConn    0.419/0.110  ***  +   0.408/0.103  ***  +   0.341/0.108  ***  +   0.303/0.118  ***  +   0.217/0.097  ***  +   5/5     5/5     0/5
+  GNN vs RandUnc     0.419/0.123  ***  +   0.408/0.128  ***  +   0.341/0.123  ***  +   0.303/0.143  ***  +   0.217/0.121  ***  +   5/5     5/5     0/5
+  PG vs RandNode     0.043/0.117  ***  -   0.013/0.119  ***  -   0.044/0.127  ***  -   0.304/0.132  ***  +   0.210/0.117  ***  +   2/5     2/5     3/5
+  PG vs RandEdge     0.043/0.138  ***  -   0.013/0.152  ***  -   0.044/0.147  ***  -   0.304/0.161  ***  +   0.210/0.142   **  +   2/5     2/5     3/5
+  PG vs RandConn     0.043/0.111  ***  -   0.013/0.101  ***  -   0.044/0.110  ***  -   0.304/0.113  ***  +   0.210/0.094  ***  +   2/5     2/5     3/5
+  PG vs RandUnc      0.043/0.126  ***  -   0.013/0.130  ***  -   0.044/0.129  ***  -   0.304/0.141  ***  +   0.210/0.129  ***  +   2/5     2/5     3/5
+  SX vs RandNode     0.354/0.117  ***  +   0.355/0.119  ***  +   0.368/0.127  ***  +   0.406/0.132  ***  +   0.376/0.117  ***  +   5/5     5/5     0/5
+  SX vs RandEdge     0.354/0.138  ***  +   0.355/0.152  ***  +   0.368/0.147  ***  +   0.406/0.161  ***  +   0.376/0.142  ***  +   5/5     5/5     0/5
+  SX vs RandConn     0.354/0.106  ***  +   0.355/0.100  ***  +   0.368/0.112  ***  +   0.406/0.115  ***  +   0.376/0.094  ***  +   5/5     5/5     0/5
+  SX vs RandUnc      0.354/0.115  ***  +   0.355/0.115  ***  +   0.368/0.119  ***  +   0.406/0.122  ***  +   0.376/0.115  ***  +   5/5     5/5     0/5
+
+[3] explainer vs null, mean-threshold, merged mask: per-seed paired Wilcoxon, Holm within seed (never pooled)
+  comparison                      seed 0                seed 1                seed 2                seed 3                seed 4   higher  clears  sig.below
+  GNN vs RandNode    0.397/0.098  ***  +   0.385/0.099  ***  +   0.321/0.103  ***  +   0.289/0.109  ***  +   0.203/0.096  ***  +   5/5     5/5     0/5
+  GNN vs RandEdge    0.397/0.115  ***  +   0.385/0.126  ***  +   0.321/0.119  ***  +   0.289/0.132  ***  +   0.203/0.115  ***  +   5/5     5/5     0/5
+  GNN vs RandConn    0.397/0.091  ***  +   0.385/0.087  ***  +   0.321/0.085  ***  +   0.289/0.099  ***  +   0.203/0.082  ***  +   5/5     5/5     0/5
+  GNN vs RandUnc     0.397/0.109  ***  +   0.385/0.112  ***  +   0.321/0.104  ***  +   0.289/0.127  ***  +   0.203/0.108  ***  +   5/5     5/5     0/5
+  PG vs RandNode     0.033/0.098  ***  -   0.010/0.099  ***  -   0.033/0.103  ***  -   0.279/0.109  ***  +   0.203/0.096  ***  +   2/5     2/5     3/5
+  PG vs RandEdge     0.033/0.115  ***  -   0.010/0.126  ***  -   0.033/0.119  ***  -   0.279/0.132  ***  +   0.203/0.115  ***  +   2/5     2/5     3/5
+  PG vs RandConn     0.033/0.090  ***  -   0.010/0.084  ***  -   0.033/0.090  ***  -   0.279/0.091  ***  +   0.203/0.078  ***  +   2/5     2/5     3/5
+  PG vs RandUnc      0.033/0.108  ***  -   0.010/0.111  ***  -   0.033/0.109  ***  -   0.279/0.120  ***  +   0.203/0.111  ***  +   2/5     2/5     3/5
+  SX vs RandNode     0.323/0.098  ***  +   0.329/0.099  ***  +   0.335/0.103  ***  +   0.358/0.109  ***  +   0.337/0.096  ***  +   5/5     5/5     0/5
+  SX vs RandEdge     0.323/0.115  ***  +   0.329/0.126  ***  +   0.335/0.119  ***  +   0.358/0.132  ***  +   0.337/0.115  ***  +   5/5     5/5     0/5
+  SX vs RandConn     0.323/0.085  ***  +   0.329/0.079  ***  +   0.335/0.087  ***  +   0.358/0.087  ***  +   0.337/0.070  ***  +   5/5     5/5     0/5
+  SX vs RandUnc      0.323/0.097  ***  +   0.329/0.094  ***  +   0.335/0.094  ***  +   0.358/0.097  ***  +   0.337/0.089  ***  +   5/5     5/5     0/5
+
+[3] explainer vs null, top-k 0.25, max-over-set: per-seed paired Wilcoxon, Holm within seed (never pooled)
+  comparison                      seed 0                seed 1                seed 2                seed 3                seed 4   higher  clears  sig.below
+  GNN vs RandNode    0.470/0.117  ***  +   0.469/0.119  ***  +   0.383/0.127  ***  +   0.332/0.132  ***  +   0.233/0.117  ***  +   5/5     5/5     0/5
+  GNN vs RandEdge    0.470/0.138  ***  +   0.469/0.152  ***  +   0.383/0.147  ***  +   0.332/0.161  ***  +   0.233/0.142  ***  +   5/5     5/5     0/5
+  GNN vs RandConn    0.470/0.096  ***  +   0.469/0.108  ***  +   0.383/0.103  ***  +   0.332/0.106  ***  +   0.233/0.095  ***  +   5/5     5/5     0/5
+  PG vs RandNode     0.037/0.117  ***  -   0.016/0.119  ***  -   0.049/0.127  ***  -   0.256/0.132  ***  +   0.233/0.117  ***  +   2/5     2/5     3/5
+  PG vs RandEdge     0.037/0.138  ***  -   0.016/0.152  ***  -   0.049/0.147  ***  -   0.256/0.161   **  +   0.233/0.142   **  +   2/5     2/5     3/5
+  PG vs RandConn     0.037/0.096  ***  -   0.016/0.108  ***  -   0.049/0.103  ***  -   0.256/0.106  ***  +   0.233/0.095  ***  +   2/5     2/5     3/5
+  SX vs RandNode     0.266/0.117  ***  +   0.259/0.119  ***  +   0.302/0.127  ***  +   0.308/0.132  ***  +   0.266/0.117  ***  +   5/5     5/5     0/5
+  SX vs RandEdge     0.266/0.138  ***  +   0.259/0.152  ***  +   0.302/0.147  ***  +   0.308/0.161  ***  +   0.266/0.142  ***  +   5/5     5/5     0/5
+  SX vs RandConn     0.266/0.096  ***  +   0.259/0.108  ***  +   0.302/0.103  ***  +   0.308/0.106  ***  +   0.266/0.095  ***  +   5/5     5/5     0/5
+
+[3] explainer vs null, top-k 0.25, merged mask: per-seed paired Wilcoxon, Holm within seed (never pooled)
+  comparison                      seed 0                seed 1                seed 2                seed 3                seed 4   higher  clears  sig.below
+  GNN vs RandNode    0.448/0.098  ***  +   0.435/0.099  ***  +   0.351/0.103  ***  +   0.312/0.109  ***  +   0.213/0.096  ***  +   5/5     5/5     0/5
+  GNN vs RandEdge    0.448/0.115  ***  +   0.435/0.126  ***  +   0.351/0.119  ***  +   0.312/0.132  ***  +   0.213/0.115  ***  +   5/5     5/5     0/5
+  GNN vs RandConn    0.448/0.076  ***  +   0.435/0.088  ***  +   0.351/0.080  ***  +   0.312/0.082  ***  +   0.213/0.074  ***  +   5/5     5/5     0/5
+  PG vs RandNode     0.026/0.098  ***  -   0.012/0.099  ***  -   0.032/0.103  ***  -   0.235/0.109  ***  +   0.221/0.096  ***  +   2/5     2/5     3/5
+  PG vs RandEdge     0.026/0.115  ***  -   0.012/0.126  ***  -   0.032/0.119  ***  -   0.235/0.132   **  +   0.221/0.115  ***  +   2/5     2/5     3/5
+  PG vs RandConn     0.026/0.076  ***  -   0.012/0.088  ***  -   0.032/0.080  ***  -   0.235/0.082  ***  +   0.221/0.074  ***  +   2/5     2/5     3/5
+  SX vs RandNode     0.240/0.098  ***  +   0.239/0.099  ***  +   0.267/0.103  ***  +   0.270/0.109  ***  +   0.231/0.096  ***  +   5/5     5/5     0/5
+  SX vs RandEdge     0.240/0.115  ***  +   0.239/0.126  ***  +   0.267/0.119  ***  +   0.270/0.132  ***  +   0.231/0.115  ***  +   5/5     5/5     0/5
+  SX vs RandConn     0.240/0.076  ***  +   0.239/0.088  ***  +   0.267/0.080  ***  +   0.270/0.082  ***  +   0.231/0.074  ***  +   5/5     5/5     0/5
+
+[4] PREDICTIONS (scoring rules fixed in the spec before the results were read)
+  P1  GNNExplainer clears RandNode in >= 4/5 seeds:  observed 5/5  -> HOLDS
+  P2  SubgraphX beats RandConn in >= 4/5 seeds:      observed 5/5  -> HOLDS
+
+[5] PGExplainer collapse (strict: n_degenerate/n >= 0.5) and explainer health, per seed
+  seed 0: GNN degenerate 0/350 empty 0 whole 0   PG degenerate 0/350 empty 0 whole 0   SX degenerate 0/350 empty 0 whole 0
+  seed 1: GNN degenerate 0/345 empty 0 whole 0   PG degenerate 0/345 empty 0 whole 0   SX degenerate 0/345 empty 0 whole 0
+  seed 2: GNN degenerate 0/348 empty 0 whole 0   PG degenerate 1/348 empty 1 whole 0   SX degenerate 0/348 empty 0 whole 0
+  seed 3: GNN degenerate 0/351 empty 0 whole 0   PG degenerate 0/351 empty 0 whole 0   SX degenerate 0/351 empty 0 whole 0
+  seed 4: GNN degenerate 0/346 empty 0 whole 0   PG degenerate 0/346 empty 0 whole 0   SX degenerate 0/346 empty 0 whole 0
+  PGExplainer collapsed in 0/5 seeds (P3: reported as observed)
+
+[6] MASK SIZES (GT-present test molecules): mean-threshold mask size vs the top-k budget vs GT size
+  seed       N  GT atoms  motifs  budget k   |M| GNN    |M| PG    |M| SX
+     0    25.1      3.09    1.69      5.87      8.57      8.38      4.51
+     1    24.2      3.02    1.65      5.68      8.07      9.13      3.98
+     2    25.0      3.13    1.81      5.87      8.91      6.56      4.19
+     3    25.1      3.47    1.91      5.90      9.46      8.48      4.46
+     4    27.0      2.99    1.86      6.40     11.14     11.09      4.16
+
+[7] STRATIFIED BY TOXICOPHORE TYPE (max-over-set GEA): halide-only graphs vs graphs with NH2/NO2/azo/nitroso
+  -- mean-threshold, halide-only
+     n per seed [47, 46, 46, 47, 61]   GT size 2.25 atoms
+     GNN vs RandNode  mean 0.301 vs 0.116   per-seed: 0.353/0.103*** 0.296/0.111*** 0.328/0.122*** 0.326/0.134*** 0.204/0.111***   clears 5/5  sig.below 0/5
+     GNN vs RandConn  mean 0.301 vs 0.076   per-seed: 0.353/0.070*** 0.296/0.069*** 0.328/0.073*** 0.326/0.089*** 0.204/0.077***   clears 5/5  sig.below 0/5
+     PG vs RandNode   mean 0.044 vs 0.116   per-seed: 0.053/0.103*** 0.011/0.111*** 0.005/0.122*** 0.085/0.134ns 0.064/0.111**   clears 0/5  sig.below 4/5
+     PG vs RandConn   mean 0.044 vs 0.073   per-seed: 0.053/0.073*** 0.011/0.071*** 0.005/0.066*** 0.085/0.084ns 0.064/0.072*   clears 0/5  sig.below 4/5
+     SX vs RandNode   mean 0.229 vs 0.116   per-seed: 0.204/0.103ns 0.203/0.111ns 0.199/0.122* 0.270/0.134* 0.269/0.111***   clears 3/5  sig.below 0/5
+     SX vs RandConn   mean 0.229 vs 0.069   per-seed: 0.204/0.059** 0.203/0.069ns 0.199/0.070** 0.270/0.079** 0.269/0.070***   clears 4/5  sig.below 0/5
+  -- mean-threshold, NH2/NO2/azo/nitroso
+     n per seed [80, 81, 81, 79, 64]   GT size 3.72 atoms
+     GNN vs RandNode  mean 0.359 vs 0.127   per-seed: 0.457/0.125*** 0.472/0.124*** 0.349/0.130*** 0.289/0.131*** 0.228/0.123***   clears 5/5  sig.below 0/5
+     GNN vs RandConn  mean 0.359 vs 0.127   per-seed: 0.457/0.133*** 0.472/0.123*** 0.349/0.127*** 0.289/0.135*** 0.228/0.116***   clears 5/5  sig.below 0/5
+     PG vs RandNode   mean 0.180 vs 0.127   per-seed: 0.037/0.125*** 0.014/0.124*** 0.065/0.130*** 0.435/0.131*** 0.350/0.123***   clears 2/5  sig.below 3/5
+     PG vs RandConn   mean 0.180 vs 0.126   per-seed: 0.037/0.133*** 0.014/0.118*** 0.065/0.135*** 0.435/0.130*** 0.350/0.116***   clears 2/5  sig.below 3/5
+     SX vs RandNode   mean 0.463 vs 0.127   per-seed: 0.441/0.125*** 0.442/0.124*** 0.464/0.130*** 0.487/0.131*** 0.479/0.123***   clears 5/5  sig.below 0/5
+     SX vs RandConn   mean 0.463 vs 0.128   per-seed: 0.441/0.133*** 0.442/0.118*** 0.464/0.135*** 0.487/0.137*** 0.479/0.116***   clears 5/5  sig.below 0/5
+  -- top-k 0.25, halide-only
+     n per seed [47, 46, 46, 47, 61]   GT size 2.25 atoms   top-k ceiling 0.450
+     GNN vs RandNode  mean 0.342 vs 0.116   per-seed: 0.396/0.103*** 0.340/0.111*** 0.380/0.122*** 0.360/0.134*** 0.233/0.111**   clears 5/5  sig.below 0/5
+     GNN vs RandConn  mean 0.342 vs 0.068   per-seed: 0.396/0.059*** 0.340/0.071*** 0.380/0.067*** 0.360/0.076*** 0.233/0.068***   clears 5/5  sig.below 0/5
+     PG vs RandNode   mean 0.046 vs 0.116   per-seed: 0.043/0.103*** 0.019/0.111*** 0.022/0.122*** 0.071/0.134* 0.075/0.111*   clears 0/5  sig.below 5/5
+     PG vs RandConn   mean 0.046 vs 0.068   per-seed: 0.043/0.059*** 0.019/0.071*** 0.022/0.067*** 0.071/0.076ns 0.075/0.068ns   clears 0/5  sig.below 3/5
+     SX vs RandNode   mean 0.187 vs 0.116   per-seed: 0.156/0.103ns 0.143/0.111ns 0.203/0.122* 0.222/0.134** 0.212/0.111***   clears 3/5  sig.below 0/5
+     SX vs RandConn   mean 0.187 vs 0.068   per-seed: 0.156/0.059* 0.143/0.071ns 0.203/0.067*** 0.222/0.076*** 0.212/0.068***   clears 4/5  sig.below 0/5
+  -- top-k 0.25, NH2/NO2/azo/nitroso
+     n per seed [80, 81, 81, 79, 64]   GT size 3.72 atoms   top-k ceiling 0.624
+     GNN vs RandNode  mean 0.398 vs 0.127   per-seed: 0.513/0.125*** 0.543/0.124*** 0.385/0.130*** 0.315/0.131*** 0.233/0.123***   clears 5/5  sig.below 0/5
+     GNN vs RandConn  mean 0.398 vs 0.123   per-seed: 0.513/0.118*** 0.543/0.129*** 0.385/0.124*** 0.315/0.124*** 0.233/0.121***   clears 5/5  sig.below 0/5
+     PG vs RandNode   mean 0.172 vs 0.127   per-seed: 0.033/0.125*** 0.014/0.124*** 0.065/0.130*** 0.366/0.131*** 0.383/0.123***   clears 2/5  sig.below 3/5
+     PG vs RandConn   mean 0.172 vs 0.123   per-seed: 0.033/0.118*** 0.014/0.129*** 0.065/0.124*** 0.366/0.124*** 0.383/0.121***   clears 2/5  sig.below 3/5
+     SX vs RandNode   mean 0.338 vs 0.127   per-seed: 0.331/0.125*** 0.325/0.124*** 0.358/0.130*** 0.359/0.131*** 0.316/0.123***   clears 5/5  sig.below 0/5
+     SX vs RandConn   mean 0.338 vs 0.123   per-seed: 0.331/0.118*** 0.325/0.129*** 0.358/0.124*** 0.359/0.124*** 0.316/0.121***   clears 5/5  sig.below 0/5
+
+[8] Fid+ / Fid- / GEF on the explained test molecules (per-seed means; from out_s<S>.json)
+  -- R3 (mean)
+     GNN  Fid+ 0.277 0.294 0.295 0.230 0.216  (mean 0.262)   Fid- 0.021 0.030 0.033 0.037 0.090  (mean 0.042)   GEF 0.051 0.051 0.059 0.076 0.130  (mean 0.074)
+     PG   Fid+ 0.010 0.025 0.039 0.102 0.107  (mean 0.057)   Fid- 0.303 0.322 0.325 0.233 0.244  (mean 0.285)   GEF 0.369 0.364 0.370 0.265 0.308  (mean 0.335)
+     SX   Fid+ 0.188 0.227 0.244 0.214 0.209  (mean 0.216)   Fid- 0.103 0.114 0.099 0.077 0.079  (mean 0.095)   GEF 0.161 0.153 0.119 0.118 0.117  (mean 0.134)
+  -- R2 (zero)
+     GNN  Fid+ 0.293 0.346 0.409 0.258 0.486  (mean 0.358)   Fid- 0.396 0.481 0.520 0.455 0.533  (mean 0.477)   GEF 0.514 0.540 0.548 0.526 0.572  (mean 0.540)
+     PG   Fid+ 0.032 0.101 0.324 0.102 0.196  (mean 0.151)   Fid- 0.439 0.480 0.564 0.567 0.582  (mean 0.526)   GEF 0.657 0.653 0.602 0.653 0.619  (mean 0.637)
+     SX   Fid+ 0.275 0.471 0.613 0.426 0.595  (mean 0.476)   Fid- 0.310 0.433 0.508 0.422 0.518  (mean 0.438)   GEF 0.485 0.503 0.537 0.524 0.547  (mean 0.519)
+  -- R1 (hard)
+     GNN  Fid+ 0.416 0.588 0.544 0.544 0.610  (mean 0.540)   Fid- 0.416 0.447 0.331 0.400 0.470  (mean 0.413)   GEF 0.668 0.627 0.548 0.617 0.689  (mean 0.630)
+     PG   Fid+ 0.035 0.033 0.445 0.298 0.249  (mean 0.212)   Fid- 0.586 0.654 0.369 0.589 0.515  (mean 0.543)   GEF 0.746 0.739 0.599 0.723 0.671  (mean 0.696)
+     SX   Fid+ 0.374 0.473 0.515 0.573 0.520  (mean 0.491)   Fid- 0.254 0.247 0.319 0.193 0.279  (mean 0.258)   GEF 0.540 0.495 0.523 0.454 0.512  (mean 0.505)
+
+saved -> runs/mutagenicity/report.json and runs/mutagenicity/arrays_s<S>.npz

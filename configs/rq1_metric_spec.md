@@ -2111,3 +2111,82 @@ max over all unions of motif instances. Mean-threshold GEA has no size budget
 On Mutagenicity the top-k budget is about twice the ground truth, so a
 perfect explainer scores about 0.55 under top-k; on indole the budget is
 smaller than the ground truth in 78% of molecules.
+
+### Steps 3-4 RESULTS (run 2026-10-07 17:39 -> 2026-10-08 09:09 IST, 15.5 h;
+### src/analysis/mutagenicity_report.py; full output runs/mutagenicity/report.txt)
+
+Protocol as registered above: 5 seeds, decoupled (explainer seed = 1000 +
+model seed), test split only, --max-nodes 80, five concurrent jobs on GPU 1.
+SubgraphX ran at 137-154 s/mol, at most 1.11x the 4-way measurement (138
+s/mol), so the 1.5x fallback was not needed. (The first-hour check was not
+made live; the figure is from the completed logs.)
+
+Model: test accuracy 0.966 / 0.992 / 0.992 / 0.994 / 0.986 (mean 0.986),
+AUROC 0.998-1.000 (mean 0.999). Explained 345-351 test molecules per seed,
+125-127 GT-present.
+
+GEA, max-over-set, per seed (GT-present test molecules; nulls = 20 draws):
+
+| seed | GNN mean-thr | PG mean-thr | SX mean-thr | GNN top-k | PG top-k | SX top-k | RandNode | RandEdge | RandConn (top-k) | top-k ceiling |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0.419 | 0.043 | 0.354 | 0.470 | 0.037 | 0.266 | 0.117 | 0.138 | 0.096 | 0.542 |
+| 1 | 0.408 | 0.013 | 0.355 | 0.469 | 0.016 | 0.259 | 0.119 | 0.152 | 0.108 | 0.559 |
+| 2 | 0.341 | 0.044 | 0.368 | 0.383 | 0.049 | 0.302 | 0.127 | 0.147 | 0.103 | 0.565 |
+| 3 | 0.303 | 0.304 | 0.406 | 0.332 | 0.256 | 0.308 | 0.132 | 0.161 | 0.106 | 0.597 |
+| 4 | 0.217 | 0.210 | 0.376 | 0.233 | 0.233 | 0.266 | 0.117 | 0.142 | 0.095 | 0.522 |
+| mean | 0.338 | 0.123 | 0.372 | 0.378 | 0.118 | 0.280 | 0.122 | 0.148 | 0.102 | 0.557 |
+| std | 0.074 | 0.114 | 0.019 | 0.089 | 0.104 | 0.020 | 0.006 | 0.008 | 0.005 | |
+
+Size-matched RandConn under mean-threshold: 0.107 (GNN's size), 0.106 (PG's),
+0.105 (SX's). Merged-mask GEA is 0.02-0.04 lower than max-over-set for every
+explainer and null, and gives the same direction and significance in every
+cell (report.txt section 3).
+
+PREDICTIONS (scored by the rules fixed before the results were read):
+- P1 HOLDS: GNNExplainer clears RandNode in 5/5 seeds (all p_Holm < 0.001).
+- P2 HOLDS: SubgraphX beats its size-matched RandConn in 5/5 seeds (all
+  p_Holm < 0.001; 0.354-0.406 vs 0.094-0.115). Also 5/5 under top-k.
+- P3 (as observed): PGExplainer collapsed in 0/5 seeds by the strict rule
+  (degenerate masks: 0, 0, 1, 0, 0 of ~348). But it scores significantly BELOW
+  every null in 3/5 seeds (0, 1, 2: GEA 0.013-0.044) and significantly above
+  in 2/5 (3, 4: 0.304, 0.210). That is the F18 failure mode -- a valid,
+  non-degenerate mask that is worse than chance -- not collapse.
+
+Other observations:
+- Explainer ranking depends on the binarization. Mean-threshold: SX 0.372 vs
+  GNN 0.338 (SX higher in seeds 2, 3, 4). Top-k: GNN 0.378 vs SX 0.280 (GNN
+  higher in seeds 0-3). SX's mean-threshold mask is 4.0-4.5 atoms, close to
+  the GT (3.0-3.5); the top-k budget forces 5.7-6.4 atoms.
+- SX is the seed-stable explainer here (std 0.019); GNN ranges 0.217-0.419.
+- Mask sizes (mean-threshold, atoms): GNN 8.1-11.1, PG 6.6-11.1, SX 4.0-4.5;
+  top-k budget 5.7-6.4; GT 3.0-3.5.
+- Under top-k, GNN reaches 0.47 against a ceiling of 0.54-0.56 in seeds 0-1.
+
+Stratified by toxicophore type (max-over-set, mean over seeds; "clears" =
+higher and Holm-significant, per seed):
+
+| stratum | binarization | GNN | PG | SX | RandNode | RandConn (SX size / k) | SX clears RandNode | SX clears RandConn | GNN clears RandNode |
+|---|---|---|---|---|---|---|---|---|---|
+| halide-only (46-61/seed, GT 2.25 atoms) | mean-thr | 0.301 | 0.044 | 0.229 | 0.116 | 0.069 | 3/5 | 4/5 | 5/5 |
+| halide-only | top-k (ceiling 0.450) | 0.342 | 0.046 | 0.187 | 0.116 | 0.068 | 3/5 | 4/5 | 5/5 |
+| NH2/NO2/azo/nitroso (64-81/seed, GT 3.72) | mean-thr | 0.359 | 0.180 | 0.463 | 0.127 | 0.128 | 5/5 | 5/5 | 5/5 |
+| NH2/NO2/azo/nitroso | top-k (ceiling 0.624) | 0.398 | 0.172 | 0.338 | 0.127 | 0.123 | 5/5 | 5/5 | 5/5 |
+
+SubgraphX's result is carried by the multi-atom toxicophores; on single-atom
+halide ground truth it is weaker and not significant against RandNode in 2/5
+seeds. PGExplainer is significantly below RandNode on halide-only graphs in
+4/5 (mean-thr) and 5/5 (top-k) seeds.
+
+Across the three GT datasets (per-seed, significant):
+
+| | MUTAG-GT (coupled) | B-XAIC indole (coupled) | Mutagenicity (decoupled) |
+|---|---|---|---|
+| SubgraphX vs connectivity-matched null | below, 5/5 | above, 5/5 | above, 5/5 |
+| GNNExplainer vs RandNode | above, 4/5 | above, 3/5 | above, 5/5 |
+| PGExplainer vs its null | above 2/5 | above 5/5 | above 2/5, below 3/5 |
+| PGExplainer collapse | 1/5 | 0/5 | 0/5 |
+
+Fid+/Fid-/GEF under R3/R2/R1 per seed: report.txt section 8.
+Persisted: runs/mutagenicity/arrays_s<S>.npz (per-molecule GEA for every
+explainer x binarization x GT variant, all nulls, win/loss vs RandConn, mask
+sizes, split membership, seeds), report.json, seeds_s<S>.json.
