@@ -182,8 +182,16 @@ def run_split(data_list, meta, args, device) -> None:
     # defaults (0.15 / 0.15) reproduce the original 70/15/15 split exactly:
     # 0.15 + 0.15 == 0.30 and 0.15 / 0.30 == 0.50 in floating point.
     hold = args.val_frac + args.test_frac
-    tr, tmp = train_test_split(idx, test_size=hold, random_state=args.seed, stratify=y)
-    va, te = train_test_split(tmp, test_size=args.test_frac / hold, random_state=args.seed, stratify=y[tmp])
+    if args.split_json:
+        # externally fixed split (e.g. one cross-validation fold): index lists for train/val/test
+        import json
+        sp = json.load(open(args.split_json))
+        tr, va, te = (np.array(sp[k], dtype=int) for k in ("train", "val", "test"))
+        assert len(set(tr) | set(va) | set(te)) == len(tr) + len(va) + len(te) == len(y), "split must partition the dataset"
+        hold = (len(va) + len(te)) / len(y)
+    else:
+        tr, tmp = train_test_split(idx, test_size=hold, random_state=args.seed, stratify=y)
+        va, te = train_test_split(tmp, test_size=args.test_frac / hold, random_state=args.seed, stratify=y[tmp])
     _set_seed(args.seed)
     t0 = time.time()
     out = train_one(
@@ -192,7 +200,7 @@ def run_split(data_list, meta, args, device) -> None:
     )
     maj = max(y.sum(), len(y) - y.sum()) / len(y)
     print("-" * 64)
-    print(f"{meta.name}: single {round(100 * (1 - hold))}/{round(100 * args.val_frac)}/{round(100 * args.test_frac)}"
+    print(f"{meta.name}: single {round(100 * len(tr) / len(y))}/{round(100 * len(va) / len(y))}/{round(100 * len(te) / len(y))}"
           f" split  (train={len(tr)} val={len(va)} test={len(te)})")
     print(f"  test accuracy = {out['test_acc']:.4f}")
     print(f"  test AUROC    = {out['test_auroc']:.4f}  (val_auroc={out['val_auroc']:.3f}, ep{out['epoch']})")
@@ -257,6 +265,8 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--bxaic-task", default="indole")
     ap.add_argument("--save", default=None, help="path to write a checkpoint (single-split mode only)")
+    ap.add_argument("--split-json", default=None,
+                    help="single-split mode: json with train/val/test index lists (overrides the seeded split)")
     ap.add_argument("--val-frac", type=float, default=0.15, help="single-split mode: validation fraction")
     ap.add_argument("--test-frac", type=float, default=0.15, help="single-split mode: test fraction")
     ap.add_argument("--verbose", action="store_true")
