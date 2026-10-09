@@ -4,8 +4,9 @@ computation, no stats, just loading npz arrays / collapse_table.csv and
 plotting. Reads from runs/prio/*.npz (pulled from Ada) and
 runs/prio/collapse_table.csv. Writes vector PDFs to figures/.
 
-  fig1_headline.pdf       mutag_graphxai + B-XAIC/indole per-molecule GEA
-                          distributions (GNN/PG/SX) vs the random-null band
+  fig1_headline.pdf       MUTAG-GT + B-XAIC indole + Mutagenicity per-molecule
+                          top-k GEA (GNN/PG/SX) vs the random-node and
+                          connectivity-matched null bands
   fig2_sx_win_rate.pdf    SX's per-molecule win rate vs the connectivity-
                           matched null, per seed, both datasets
   fig3_collapse_rate.pdf  PGExplainer collapse rate per dataset, with the
@@ -79,99 +80,85 @@ def _jitter_strip(ax, x0, vals, rng, width=0.32, max_points=250):
 
 
 def fig1_headline():
-    gea = {
-        "mutag_graphxai": np.load(f"{OUT}/figure_gea_mutag_graphxai.npz"),
-        "indole": np.load(f"{OUT}/figure_gea_indole.npz"),
-    }
-    baseline = {
-        "mutag_graphxai": np.load(f"{OUT}/baseline_arrays_mutag_graphxai.npz"),
-        "indole": np.load(f"{OUT}/baseline_arrays_bxaic_indole.npz"),
-    }
-    conn = {
-        "mutag_graphxai": np.load(f"{OUT}/connectivity_arrays_mutag_graphxai.npz"),
-        "indole": np.load(f"{OUT}/connectivity_arrays_indole.npz"),
-    }
+    """Three GT datasets, everything at the top-k 0.25 budget. Per-molecule
+    arrays come from exploratory_null_audit.py (null_audit_arrays/), so the
+    diamonds and the RandNode band are the same numbers as the per-seed
+    top-k tables. Mutagenicity uses max-over-set GEA."""
+    import json
+    AUD = "runs/mutagenicity/exploratory/null_audit_arrays"
+    MUT = "runs/mutagenicity"
+    panels = [("mutag_graphxai", "MUTAG-GT"), ("bxaic_indole", "B-XAIC indole"),
+              ("mutagenicity_graphxai", "Mutagenicity")]
     collapse = pd.read_csv(f"{OUT}/collapse_table.csv")
-    titles = {"mutag_graphxai": "mutag_graphxai", "indole": "B-XAIC / indole"}
+    mut_health = json.load(open(f"{MUT}/report.json"))["health"]
+    n_collapsed = {
+        "mutag_graphxai": int(collapse[(collapse["dataset"] == "mutag_graphxai") & (collapse["protocol"] == "coupled")]["collapsed"].sum()),
+        "bxaic_indole": int(collapse[(collapse["dataset"] == "bxaic") & (collapse["task_or_endpoint"] == "indole")]["collapsed"].sum()),
+        "mutagenicity_graphxai": int(sum(bool(mut_health[str(s)]["pgexplainer"]["collapsed"]) for s in SEEDS)),
+    }
+
+    def rand_conn_seed_means(key):
+        # connectivity-matched null, size matched to SubgraphX's (mean-threshold) mask, 20 draws
+        if key == "mutag_graphxai":
+            z = np.load(f"{OUT}/connectivity_arrays_mutag_graphxai.npz"); return [z[f"rand_conn_s{s}"].mean() for s in SEEDS]
+        if key == "bxaic_indole":
+            z = np.load(f"{OUT}/connectivity_arrays_indole.npz"); return [z[f"rand_conn_s{s}"].mean() for s in SEEDS]
+        return [np.load(f"{MUT}/arrays_s{s}.npz")["rand_conn_mean_subgraphx_set"].mean() for s in SEEDS]
+
     rng = np.random.default_rng(0)
-
-    fig, axes = plt.subplots(1, 2, figsize=(6.8, 3.6), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(9.6, 3.5), sharey=True)
     band1_handle = band2_handle = mean_handle = None
-    for ax, ds in zip(axes, ["mutag_graphxai", "indole"]):
-        g, b, c = gea[ds], baseline[ds], conn[ds]
-        # pooled-across-seeds per-molecule GEA, one distribution per explainer
-        pooled = {e: np.concatenate([g[f"{e}_s{s}"] for s in SEEDS]) for e in EXPL}
-        per_seed_mean = {e: [g[f"{e}_s{s}"].mean() for s in SEEDS] for e in EXPL}
-
-        # band 1: unconstrained random-node/random-edge null, as before (the
-        # range of the 5 per-seed MEANS -- random baselines are stable
-        # seed-to-seed, CV 0.03-0.07, see F15; a per-molecule min/max band
-        # would be dominated by single-molecule outlier variance)
-        seed_means_1 = [b[f"random_node_s{s}"].mean() for s in SEEDS] + \
-                       [b[f"random_edge_s{s}"].mean() for s in SEEDS]
-        band1_handle = ax.axhspan(min(seed_means_1), max(seed_means_1), color="0.5",
-                                  alpha=0.35, zorder=0)
-
-        # band 2: connectivity- AND size-matched null (F15-ADDENDUM/F16-ADDENDUM)
-        # -- the FAIR null for SX, which only ever proposes connected
-        # subgraphs; the stronger comparison, so it belongs in the headline
-        # figure. Same seed-mean-range construction as band 1, distinct
-        # hatch (no fill) so it reads separately even where the two overlap.
-        seed_means_2 = [c[f"rand_conn_s{s}"].mean() for s in SEEDS]
-        band2_handle = ax.axhspan(min(seed_means_2), max(seed_means_2), facecolor="none",
-                                  edgecolor="0.15", hatch="////", linewidth=0, zorder=0.6)
-
+    plotted = {}
+    for ax, (key, title) in zip(axes, panels):
+        z = {s: np.load(f"{AUD}/{key}_s{s}.npz") for s in SEEDS}
+        pooled = {e: np.concatenate([z[s][f"{e}_topk"] for s in SEEDS]) for e in EXPL}
+        per_seed_mean = {e: [float(z[s][f"{e}_topk"].mean()) for s in SEEDS] for e in EXPL}
+        rn = [float(z[s]["rn_k"].mean()) for s in SEEDS]
+        rc = [float(v) for v in rand_conn_seed_means(key)]
+        band1_handle = ax.axhspan(min(rn), max(rn), color="0.5", alpha=0.35, zorder=0)
+        band2_handle = ax.axhspan(min(rc), max(rc), facecolor="none", edgecolor="0.15",
+                                  hatch="////", linewidth=0, zorder=0.6)
         positions = [1, 2, 3]
         _box(ax, positions, [pooled[e] for e in EXPL])
         for x0, e in zip(positions, EXPL):
             _jitter_strip(ax, x0, pooled[e], rng)
-        # per-seed means overlaid on each box -- pooling hides seed-to-seed
-        # spread, which is a core claim; make it visible as 5 distinct points
-        for x0, e in zip(positions, EXPL):
             xs = x0 + np.linspace(-0.16, 0.16, len(SEEDS))
-            mean_handle = ax.scatter(xs, per_seed_mean[e], marker="D", s=22,
-                                     facecolor="white", edgecolor="black",
-                                     linewidths=0.9, zorder=4)
-
+            mean_handle = ax.scatter(xs, per_seed_mean[e], marker="D", s=22, facecolor="white",
+                                     edgecolor="black", linewidths=0.9, zorder=4)
         ax.set_xticks(positions)
-        ax.set_xticklabels([ESH[e] for e in EXPL])
-        ax.set_title(titles[ds])
+        ax.set_xticklabels(["GNNExplainer", "PGExplainer", "SubgraphX"], fontsize=7.6)
+        ax.set_title(title)
         ax.set_ylim(-0.05, 1.05)
         ax.grid(axis="y", zorder=-1)
         ax.set_axisbelow(True)
         for spine in ("top", "right"):
             ax.spines[spine].set_visible(False)
-
-        if ds == "mutag_graphxai":
-            # PG's box includes seed 3, which is a formal collapse
-            # (n_degenerate/n=188/188) -- kept in, per instruction; just
-            # labeled so it's not mistaken for a clean 5-seed distribution.
-            n_collapsed = int(collapse[(collapse["dataset"] == "mutag_graphxai")
-                                       & (collapse["protocol"] == "coupled")]["collapsed"].sum())
-            pg_x = positions[EXPL.index("pgexplainer")]
+        if n_collapsed[key] > 0:
             pg_top = np.percentile(pooled["pgexplainer"], 75)
-            ax.annotate(f"{n_collapsed} of 5 seeds\ncollapsed (included)",
-                       xy=(pg_x, pg_top), xytext=(pg_x, 0.86),
-                       ha="center", fontsize=6.6, color="0.15",
-                       arrowprops=dict(arrowstyle="-", color="0.3", linewidth=0.6))
+            ax.annotate(f"{n_collapsed[key]} of 5 seeds\ncollapsed (included)", xy=(2, pg_top), xytext=(2, 0.94),
+                        ha="center", fontsize=6.6, color="0.15",
+                        arrowprops=dict(arrowstyle="-", color="0.3", linewidth=0.6))
+        plotted[title] = {"per_seed_mean": per_seed_mean, "rand_node_seed_means": rn, "rand_conn_seed_means": rc,
+                          "n_pooled": int(len(pooled["gnnexplainer"])), "pg_collapsed_seeds": n_collapsed[key],
+                          "median": {e: float(np.median(pooled[e])) for e in EXPL}}
 
-    axes[0].set_ylabel("GEA (Jaccard vs ground-truth substructure)")
-    # shared legend OUTSIDE the axes (below the panels) -- an in-panel legend
-    # collided with the PG collapse annotation and with scattered points
+    axes[0].set_ylabel("GEA at top-k = 0.25 (Jaccard vs ground truth)")
     fig.legend(
         [band1_handle, band2_handle, mean_handle],
-        ["random-null range (seed-mean RandNode/RandEdge)",
-         "connectivity-matched null (seed-mean RandConn)",
-         "per-seed mean (n=5)"],
-        loc="lower center", ncol=3, frameon=False, fontsize=7.2,
-        bbox_to_anchor=(0.5, -0.06))
-    fig.suptitle("Per-molecule GEA (all seeds pooled) vs the random-null range\n"
-                 "SX sits BELOW the null on mutag_graphxai, FAR ABOVE it on indole",
-                 fontsize=9.5, y=1.0)
+        ["random-node null at the top-k budget, 20 draws (range of seed means)",
+         "connectivity-matched null, sized to SubgraphX's mask (range of seed means)",
+         "per-seed mean"],
+        loc="lower center", ncol=3, frameon=False, fontsize=7.0, bbox_to_anchor=(0.5, -0.07))
     fig.tight_layout()
     fig.savefig(f"{FIGDIR}/fig1_headline.pdf", bbox_inches="tight")
     plt.close(fig)
+    json.dump(plotted, open(f"{FIGDIR}/fig1_headline_numbers.json", "w"), indent=1)
     print(f"wrote {FIGDIR}/fig1_headline.pdf")
+    for title, p in plotted.items():
+        print(f"  {title}: n pooled {p['n_pooled']}  RandNode band {min(p['rand_node_seed_means']):.3f}-{max(p['rand_node_seed_means']):.3f}"
+              f"  RandConn band {min(p['rand_conn_seed_means']):.3f}-{max(p['rand_conn_seed_means']):.3f}  PG collapsed seeds {p['pg_collapsed_seeds']}")
+        for e in EXPL:
+            print(f"    {ESH[e]:<3} per-seed means " + " ".join(f"{v:.3f}" for v in p["per_seed_mean"][e]) + f"   pooled median {p['median'][e]:.3f}")
 
 
 def fig2_sx_win_rate():

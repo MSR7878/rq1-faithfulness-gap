@@ -119,7 +119,7 @@ def collect(key, cache_tmpl):
         blob = torch.load(cache_tmpl.format(s=s), weights_only=False)
         test_idx = list(blob["key"]["test_idx"]); res = blob["results"]
         rng = np.random.default_rng(30_000 + s)
-        A = {k: [] for k in ["n", "k", "gt", "rn_k", "re_k"]}
+        A = {k: [] for k in ["mol_idx", "n", "k", "gt", "rn_k", "re_k"]}
         for e in EXPL:
             for k in ("mean", "topk", "size", "unc"):
                 A[f"{e}_{k}"] = []
@@ -132,7 +132,7 @@ def collect(key, cache_tmpl):
                 continue
             n = d.num_nodes; k = max(1, int(0.25 * n)); ei = d.edge_index.numpy()
             sc = Scorer(gt, motifs_all[mi] if motifs_all is not None else None)
-            A["n"].append(n); A["k"].append(k); A["gt"].append(int(gt.sum()))
+            A["mol_idx"].append(mi); A["n"].append(n); A["k"].append(k); A["gt"].append(int(gt.sum()))
             A["rn_k"].append(rand_node_mean(sc, n, k, rng)); A["re_k"].append(rand_edge_mean(sc, n, k, ei, rng))
             imps = {}
             for e in EXPL:
@@ -171,6 +171,10 @@ def collect(key, cache_tmpl):
                 D[f"fold_{how}"].append(sc(topk(fold(pe, ei, n, how), k)))
         out[s] = ({k: np.array(v, dtype=float) for k, v in A.items()}, {k: np.array(v, dtype=float) for k, v in E.items()},
                   {k: np.array(v, dtype=float) for k, v in D.items()})
+        # persist the per-molecule arrays (node-level GEA + nulls, edge-level, degree/fold diagnostics)
+        os.makedirs(f"{OUT}/null_audit_arrays", exist_ok=True)
+        np.savez(f"{OUT}/null_audit_arrays/{key}_s{s}.npz", **out[s][0],
+                 **{f"edge_{k}": v for k, v in out[s][1].items()}, **{f"diag_{k}": v for k, v in out[s][2].items()})
     return out
 
 
