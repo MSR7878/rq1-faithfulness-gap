@@ -1,0 +1,7 @@
+loaded mutag_graphxai: 188 graphs, 7 node / 4 edge feats  [device=cuda]
+----------------------------------------------------------------
+mutag_graphxai: single 70/15/15 split  (train=131 val=28 test=29)
+  test accuracy = 0.7931
+  test AUROC    = 0.9053  (val_auroc=0.895, ep71)
+  majority-class baseline acc = 0.6649 (AUROC 0.5)   17s
+  saved checkpoint -> runs/arch_gin/mutag_graphxai/ckpt_s1.pt

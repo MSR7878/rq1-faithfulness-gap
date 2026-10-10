@@ -1,0 +1,20 @@
+[mutag_graphxai] params: GIN(212) 273,058  D-MPNN(300) 276,602  ratio 0.987
+[mutag_graphxai] 1. forward ok (single == batched, edge_attr ignored)
+[mutag_graphxai] 2. edge mask ok (ones == unmasked; random mask moves logits by 0.245)
+[mutag_graphxai] 3. embeddings ok: 3 x (17, 212)
+PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=2.212]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=1.884]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=1.212]PGExplainer train: 100%|██████████| 3/3 [00:00<00:00,  6.80epoch/s, loss=1.212]
+[mutag_graphxai] 4a. PGExplainer trained on 10 graphs (loss 2.212 -> 1.212), edge mask [38] finite
+[mutag_graphxai] 4b. GNNExplainer node mask [17] finite, non-constant
+[mutag_graphxai] 4c. SubgraphX coalition 4 atoms (budget 4, N=17)
+[mutag_graphxai] 4d. R3 masking + Fidelity/GEF ok
+[mutagenicity_graphxai] params: GIN(212) 274,542  D-MPNN(300) 280,502  ratio 0.979
+[mutagenicity_graphxai] 1. forward ok (single == batched, edge_attr ignored)
+[mutagenicity_graphxai] 2. edge mask ok (ones == unmasked; random mask moves logits by 0.19)
+[mutagenicity_graphxai] 3. embeddings ok: 3 x (16, 212)
+PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=2.408]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=2.052]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=1.292]PGExplainer train: 100%|██████████| 3/3 [00:00<00:00,  6.66epoch/s, loss=1.292]
+[mutagenicity_graphxai] 4a. PGExplainer trained on 10 graphs (loss 2.408 -> 1.292), edge mask [32] finite
+[mutagenicity_graphxai] 4b. GNNExplainer node mask [16] finite, non-constant
+[mutagenicity_graphxai] 4c. SubgraphX coalition 4 atoms (budget 4, N=16)
+[mutagenicity_graphxai] 4d. R3 masking + Fidelity/GEF ok
+
+PASS -- plain PyG GIN runs through GNNExplainer, PGExplainer, SubgraphX and R3 scoring unchanged

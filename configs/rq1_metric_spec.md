@@ -2523,3 +2523,53 @@ Persisted: runs/mutagenicity_cv/arrays_s<fold>.npz (per-molecule GEA for every
 explainer x binarization x GT variant, all nulls, win/loss, mask sizes,
 mol_idx, explained_idx, split membership, seeds), report.json, folds.json,
 split_f<fold>.json, seeds_s<fold>.json.
+
+## GIN architecture check (runs/arch_gin/; nothing else in runs/ is written)
+
+### Design, implementation and accuracy results -- 2026-10-10, before any GIN explanation exists
+
+Design: plain PyG GIN (3 x GINConv with a 2-layer MLP, hidden 212, sum
+pooling, the D-MPNN's 2-layer FFN head, no dropout, no BatchNorm; bond
+features ignored) on MUTAG-GT and GraphXAI Mutagenicity, five seeds each.
+Splits are the D-MPNN checkpoints' stored splits, exported to json and passed
+through --split-json (MUTAG-GT 131/28/29 from runs/prio/, Mutagenicity
+1,237/177/354 from runs/mutagenicity/). Training recipe as the D-MPNN: 120
+epochs, batch 50, Adam lr 1e-3, same selection rule. Model seed S, explainer
+seed 1000 + S. Parameters: GIN 273,058 (MUTAG-GT) and 274,542 (Mutagenicity)
+against 276,602 and 280,502 for the D-MPNN.
+
+Code: src/train/baselines.py (GIN, arch switch), --arch in src/train/train.py
+(default dmpnn; D-MPNN behaviour unchanged, checkpoints now also carry an
+"arch" key), src/explain/run_phase3.py load_model (no arch key = D-MPNN),
+src/analysis/arch_gin_splits.py, scripts/arch_gin_sweep.sh,
+src/analysis/arch_gin_report.py. Explainers, masking and metrics unchanged.
+
+Smoke test (src/train/test_gin_explainers.py), passed locally and on Ada
+before training: single == batched forward; bond features ignored; all-ones
+edge mask reproduces the unmasked output and a random mask changes it;
+get_embeddings returns 3 x [N, 212]; PGExplainer trains on 10 graphs;
+GNNExplainer, SubgraphX (DIG stub) and R3 Fidelity/GEF run.
+
+Accuracy bar, fixed in the plan before training: Mutagenicity every seed test
+acc >= 0.95 and AUROC >= 0.98; MUTAG-GT 10-fold CV acc >= 0.83 and AUROC >=
+0.90.
+
+Mutagenicity, test split (354 graphs):
+
+| seed | GIN acc | GIN AUROC | D-MPNN acc | D-MPNN AUROC | bar |
+|---|---|---|---|---|---|
+| 0 | 0.9915 | 0.9994 | 0.9661 | 0.9982 | pass |
+| 1 | 0.9887 | 0.9975 | 0.9915 | 1.0000 | pass |
+| 2 | 0.9802 | 0.9978 | 0.9915 | 0.9996 | pass |
+| 3 | 0.9831 | 0.9709 | 0.9944 | 0.9990 | FAIL (AUROC) |
+| 4 | 0.9831 | 0.9842 | 0.9859 | 0.9990 | pass |
+
+MUTAG-GT, 10-fold CV (seed 0, same protocol as the D-MPNN Phase-2 table):
+GIN acc 0.8143 +/- 0.1193, AUROC 0.8944 +/- 0.0861 (D-MPNN 0.884 +/- 0.057,
+0.943 +/- 0.041) -- FAIL on both. Single-split test accuracy / AUROC of the
+five trained GIN models (29 graphs): 0.8966/0.9579, 0.7931/0.9053,
+0.8621/0.9158, 0.8276/0.8526, 0.7241/0.8789 (D-MPNN: 0.8966/0.9842,
+0.9310/0.9368, 0.8621/0.9684, 0.7586/0.8632, 0.8966/0.9579).
+
+RESULT: both datasets miss the bar as fixed. Nothing was explained or timed;
+the run stopped here. Logs: runs/arch_gin/logs/.

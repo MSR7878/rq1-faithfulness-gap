@@ -1,0 +1,17 @@
+loaded mutag_graphxai: 188 graphs, 7 node / 4 edge feats  [device=cuda]
+  fold  1/10: test_acc=0.8947 test_auroc=0.9231  (val_auroc=0.894, ep53)  10s
+  fold  2/10: test_acc=0.8421 test_auroc=0.9103  (val_auroc=0.924, ep47)  7s
+  fold  3/10: test_acc=0.7368 test_auroc=0.8333  (val_auroc=0.773, ep48)  8s
+  fold  4/10: test_acc=0.9474 test_auroc=1.0000  (val_auroc=0.955, ep117)  7s
+  fold  5/10: test_acc=0.7368 test_auroc=0.8590  (val_auroc=1.000, ep68)  7s
+  fold  6/10: test_acc=0.7895 test_auroc=0.8929  (val_auroc=0.833, ep19)  6s
+  fold  7/10: test_acc=0.5789 test_auroc=0.7619  (val_auroc=0.909, ep16)  7s
+  fold  8/10: test_acc=0.8947 test_auroc=1.0000  (val_auroc=1.000, ep47)  7s
+  fold  9/10: test_acc=1.0000 test_auroc=1.0000  (val_auroc=0.894, ep103)  8s
+  fold 10/10: test_acc=0.7222 test_auroc=0.7639  (val_auroc=0.894, ep67)  7s
+----------------------------------------------------------------
+mutag_graphxai: 10-fold CV
+  test accuracy = 0.8143 +/- 0.1193
+  test AUROC    = 0.8944 +/- 0.0861
+  majority-class baseline acc = 0.6649 (AUROC 0.5)
+  reference: identical to mutag by construction (same graphs + labels)

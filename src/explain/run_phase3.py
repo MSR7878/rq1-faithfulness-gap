@@ -38,7 +38,7 @@ from ..metrics.gea import compute_gea
 from ..metrics.masking import (
     mask_r1_hard_removal, mask_r2_zero_fill, mask_r3_distribution_aware, training_fill_vector,
 )
-from ..train.dmpnn import DMPNN, DMPNNConfig
+from ..train.baselines import build_model
 from .common import binarize_mean, to_cpu_data
 
 K_FRAC = 0.25            # explanation sparsity: top 25% of nodes
@@ -49,7 +49,7 @@ FILLS_BY_MASKING = {"R3": R3_FILLS, "R2": ("zero",), "R1": ("hard",)}
 
 def load_model(ckpt_path: str, device):
     ck = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-    model = DMPNN(DMPNNConfig(**ck["cfg"]))
+    model = build_model(ck.get("arch", "dmpnn"), ck["cfg"])   # no arch key = D-MPNN (older ckpts)
     model.load_state_dict(ck["state_dict"])
     model.to(device).eval()
     return model, ck

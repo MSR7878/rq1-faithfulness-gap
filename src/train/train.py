@@ -27,7 +27,7 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 from torch_geometric.loader import DataLoader
 
 from ..data import LOADERS
-from .dmpnn import DMPNN, DMPNNConfig
+from .baselines import ARCHS, build_model, make_cfg
 
 # Rough published reference ranges for the base graph-classification task
 # (10-fold CV, GNN literature) -- used only to sanity-check the smoke tests.
@@ -84,18 +84,16 @@ def _select_score(acc: float, auroc: float) -> float:
     return 2.0 * acc if np.isnan(auroc) else auroc + acc
 
 
+def _cfg_dict(meta, args) -> dict:
+    return vars(make_cfg(
+        args.arch, node_in=meta.num_node_features, edge_in=meta.num_edge_features,
+        hidden=args.hidden, depth=args.depth, ffn_hidden=args.hidden,
+        dropout=args.dropout, num_classes=2, pool=args.pool,
+    ))
+
+
 def train_one(train_set, val_set, test_set, meta, args, device) -> dict:
-    cfg = DMPNNConfig(
-        node_in=meta.num_node_features,
-        edge_in=meta.num_edge_features,
-        hidden=args.hidden,
-        depth=args.depth,
-        ffn_hidden=args.hidden,
-        dropout=args.dropout,
-        num_classes=2,
-        pool=args.pool,
-    )
-    model = DMPNN(cfg).to(device)
+    model = build_model(args.arch, _cfg_dict(meta, args)).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     sched = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="max", factor=0.7, patience=8)
     lossf = nn.CrossEntropyLoss()
@@ -210,11 +208,8 @@ def run_split(data_list, meta, args, device) -> None:
         ckpt = {
             "dataset": args.dataset,
             "bxaic_task": args.bxaic_task if args.dataset == "bxaic" else None,
-            "cfg": vars(DMPNNConfig(
-                node_in=meta.num_node_features, edge_in=meta.num_edge_features,
-                hidden=args.hidden, depth=args.depth, ffn_hidden=args.hidden,
-                dropout=args.dropout, num_classes=2, pool=args.pool,
-            )),
+            "arch": args.arch,
+            "cfg": _cfg_dict(meta, args),
             "state_dict": out["state"],
             "feature_means": _feature_means([data_list[i] for i in tr]),
             "split": {"train": tr.tolist(), "val": va.tolist(), "test": te.tolist()},
@@ -253,6 +248,8 @@ def main(argv=None) -> int:
     ap.add_argument("--folds", type=int, default=0, help="k for stratified k-fold CV; 0 = single split")
     ap.add_argument("--native-split", action="store_true",
                     help="use the dataset's own train/valid/test split (e.g. B-XAIC) instead of CV")
+    ap.add_argument("--arch", default="dmpnn", choices=list(ARCHS),
+                    help="model architecture; gin = plain PyG GINConv stack (architecture check)")
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--batch-size", type=int, default=50)
     ap.add_argument("--lr", type=float, default=1e-3)
