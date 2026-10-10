@@ -16,6 +16,7 @@ import os
 import re
 
 import numpy as np
+from scipy.stats import rankdata
 
 from ..data import LOADERS
 from . import mutagenicity_report as mr
@@ -37,14 +38,26 @@ EXTRA = [("SX top-k vs RandConn@k", "subgraphx_topk_set", "rand_conn_topk_set"),
          ("SX mean-thr vs RandUnc|SX", "subgraphx_mean_set", "rand_unc_mean_subgraphx_set")]
 
 
+def rank_direction(a, b):
+    """Direction the signed-rank test itself points: +1 if the positive ranks outweigh the negative."""
+    d = np.asarray(a) - np.asarray(b); nz = d[d != 0]
+    if len(nz) == 0:
+        return 0
+    r = rankdata(np.abs(nz)); wp, wm = r[nz > 0].sum(), r[nz < 0].sum()
+    return 1 if wp > wm else -1 if wm > wp else 0
+
+
 def family_tests(A, family):
+    """above/below use the direction of the RANK test, not the mean, so a skewed
+    distribution whose mean and ranks disagree is labelled by what the test measures."""
     raw = {lab: wpair(A[r], A[nl]) for lab, r, nl in family}
     adj = holm(raw); out = {}
     for lab, r, nl in family:
-        a, b = float(A[r].mean()), float(A[nl].mean())
+        a, b = float(A[r].mean()), float(A[nl].mean()); rd = rank_direction(A[r], A[nl])
         out[lab] = {"real": a, "null": b, "p_holm": adj[lab], "n": int(len(A[r])),
                     "wins": int((A[r] > A[nl]).sum()), "losses": int((A[r] < A[nl]).sum()),
-                    "above": bool(a > b and adj[lab] < 0.05), "below": bool(a < b and adj[lab] < 0.05), "higher": bool(a > b)}
+                    "rank_direction": rd, "mean_higher": bool(a > b), "mean_and_rank_agree": bool((a > b) == (rd > 0)),
+                    "above": bool(rd > 0 and adj[lab] < 0.05), "below": bool(rd < 0 and adj[lab] < 0.05), "higher": bool(a > b)}
     return out
 
 
@@ -123,7 +136,11 @@ def main():
     for lab, _, _ in FAMILY:
         t = TP[lab]
         P(f"      {lab:<18} {t['real']:.3f} vs {t['null']:.3f}   p_Holm {t['p_holm']:.2e} {star(t['p_holm'])}   molecule wins {t['wins']} / losses {t['losses']}"
-          f" / ties {t['n'] - t['wins'] - t['losses']}   -> {'ABOVE' if t['above'] else 'BELOW' if t['below'] else 'n.s.'}")
+          f" / ties {t['n'] - t['wins'] - t['losses']}   -> {'ABOVE' if t['above'] else 'BELOW' if t['below'] else 'n.s.'}"
+          + ("" if t["mean_and_rank_agree"] else "   [mean is higher, but the rank test points BELOW: most molecules lose]" if t["mean_higher"]
+             else "   [mean is lower, but the rank test points ABOVE]"))
+    dis = [(f, lab) for f in folds for lab, _, _ in FAMILY if not T[f][lab]["mean_and_rank_agree"]]
+    P(f"    per-fold cells where the mean direction and the rank-test direction disagree: {dis if dis else 'none'}")
     rep["tests"] = {"per_fold": {str(f): T[f] for f in folds}, "per_fold_extra": {str(f): TX[f] for f in folds}, "pooled": TP}
 
     P("\n[3b] REGISTERED PREDICTIONS (rules fixed before the run)")

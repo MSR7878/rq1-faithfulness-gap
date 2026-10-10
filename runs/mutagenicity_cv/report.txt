@@ -1,0 +1,130 @@
+============================================================================================================================
+ GraphXAI Mutagenicity, full set, 5-fold CV -- every graph explained once by a model that never saw it
+============================================================================================================================
+
+[1] MODEL per fold, and what was explained
+  fold  test_acc  test_auroc  fold size  explained (<=80 atoms)  GT-bearing  wall-clock
+     0    0.9972      0.9999        354                     346         127     14.96 h
+     1    0.9944      0.9998        354                     350         127     13.28 h
+     2    0.9915      0.9962        354                     350         127     14.46 h
+     3    0.9688      0.9758        353                     348         124     14.52 h
+     4    0.9943      0.9997        353                     345         127     13.13 h
+  mean    0.9892      0.9943                         total 1739   total 632
+  unique GT-bearing molecules across folds: 632 (each appears once: True)
+
+[2] GEA, top-k 0.25 (primary), max-over-set: per-fold means over GT-bearing molecules
+        fold         GNN          PG          SX    RandNode    RandEdge  RandConn@k   ceiling
+           0       0.462       0.094       0.255       0.145       0.165       0.112     0.606
+           1       0.359       0.061       0.243       0.131       0.154       0.104     0.553
+           2       0.337       0.290       0.246       0.123       0.151       0.101     0.555
+           3       0.395       0.078       0.232       0.117       0.136       0.095     0.530
+           4       0.400       0.196       0.286       0.104       0.123       0.092     0.511
+   fold mean       0.391       0.144       0.252       0.124       0.146       0.101
+    fold std       0.043       0.087       0.018       0.014       0.015       0.007
+      pooled       0.390       0.144       0.252       0.124       0.146       0.101     0.551   (all 632 unique molecules)
+
+[2] GEA, top-k 0.25 (primary), merged mask: per-fold means over GT-bearing molecules
+        fold         GNN          PG          SX    RandNode    RandEdge  RandConn@k   ceiling
+           0       0.418       0.063       0.227       0.112       0.125       0.082     0.548
+           1       0.328       0.036       0.224       0.105       0.123       0.081     0.513
+           2       0.314       0.252       0.224       0.100       0.121       0.079     0.510
+           3       0.377       0.060       0.214       0.100       0.117       0.077     0.506
+           4       0.383       0.182       0.259       0.090       0.106       0.078     0.489
+   fold mean       0.364       0.119       0.230       0.102       0.118       0.079
+    fold std       0.038       0.084       0.016       0.007       0.007       0.002
+      pooled       0.364       0.119       0.230       0.102       0.118       0.079     0.513   (all 632 unique molecules)
+
+[2] GEA, mean-threshold, max-over-set: per-fold means over GT-bearing molecules
+        fold         GNN          PG          SX    RandNode    RandEdge RandConn|SX
+           0       0.364       0.088       0.331       0.145       0.165       0.128
+           1       0.315       0.056       0.366       0.131       0.154       0.108
+           2       0.315       0.268       0.350       0.123       0.151       0.109
+           3       0.336       0.068       0.324       0.117       0.136       0.099
+           4       0.357       0.162       0.439       0.104       0.123       0.090
+   fold mean       0.337       0.129       0.362       0.124       0.146       0.107
+    fold std       0.020       0.079       0.041       0.014       0.015       0.012
+      pooled       0.337       0.129       0.362       0.124       0.146       0.107   (all 632 unique molecules)
+
+[2] GEA, mean-threshold, merged mask: per-fold means over GT-bearing molecules
+        fold         GNN          PG          SX    RandNode    RandEdge RandConn|SX
+           0       0.347       0.059       0.301       0.112       0.125       0.095
+           1       0.300       0.031       0.344       0.105       0.123       0.083
+           2       0.301       0.237       0.323       0.100       0.121       0.083
+           3       0.325       0.058       0.304       0.100       0.117       0.079
+           4       0.349       0.152       0.405       0.090       0.106       0.074
+   fold mean       0.324       0.108       0.336       0.102       0.118       0.083
+    fold std       0.021       0.077       0.038       0.007       0.007       0.007
+      pooled       0.324       0.108       0.336       0.102       0.118       0.083   (all 632 unique molecules)
+
+[3] per-fold paired Wilcoxon, Holm within fold over the four registered comparisons (cells: explainer/null, significance)
+  comparison                                  fold 0                fold 1                fold 2                fold 3                fold 4   higher  sig.above  sig.below
+  GNN vs RandNode                 0.462/0.145  ***      0.359/0.131  ***      0.337/0.123  ***      0.395/0.117  ***      0.400/0.104  ***     5/5      5/5        0/5
+  PG vs RandNode                  0.094/0.145  ***      0.061/0.131  ***      0.290/0.123  ***      0.078/0.117  ***      0.196/0.104   ns     2/5      1/5        3/5
+  SX vs RandNode                  0.255/0.145  ***      0.243/0.131  ***      0.246/0.123  ***      0.232/0.117  ***      0.286/0.104  ***     5/5      5/5        0/5
+  SX vs RandConn                  0.331/0.128  ***      0.366/0.108  ***      0.350/0.109  ***      0.324/0.099  ***      0.439/0.090  ***     5/5      5/5        0/5
+
+    additional comparisons (reported, not part of the registered family; Holm within fold over these five)
+  comparison                                  fold 0                fold 1                fold 2                fold 3                fold 4   higher  sig.above  sig.below
+  SX top-k vs RandConn@k          0.255/0.112  ***      0.243/0.104  ***      0.246/0.101  ***      0.232/0.095  ***      0.286/0.092  ***     5/5      5/5        0/5
+  PG vs RandEdge                  0.094/0.165  ***      0.061/0.154  ***      0.290/0.151  ***      0.078/0.136  ***      0.196/0.123   ns     2/5      1/5        3/5
+  GNN mean-thr vs RandUnc|GNN     0.364/0.154  ***      0.315/0.127  ***      0.315/0.129  ***      0.336/0.121  ***      0.357/0.112  ***     5/5      5/5        0/5
+  PG mean-thr vs RandUnc|PG       0.088/0.152  ***      0.056/0.124  ***      0.268/0.133  ***      0.068/0.119  ***      0.162/0.112   ns     2/5      1/5        3/5
+  SX mean-thr vs RandUnc|SX       0.331/0.142  ***      0.366/0.121  ***      0.350/0.119  ***      0.324/0.113  ***      0.439/0.102  ***     5/5      5/5        0/5
+
+    POOLED test, one per comparison, over all 632 unique molecules (Holm over the four).
+    Each molecule appears once, but the explained model differs by fold, so this is not a single-model test.
+      GNN vs RandNode    0.390 vs 0.124   p_Holm 1.03e-97 ***   molecule wins 585 / losses 47 / ties 0   -> ABOVE
+      PG vs RandNode     0.144 vs 0.124   p_Holm 7.35e-03 **   molecule wins 189 / losses 443 / ties 0   -> BELOW   [mean is higher, but the rank test points BELOW: most molecules lose]
+      SX vs RandNode     0.252 vs 0.124   p_Holm 6.61e-35 ***   molecule wins 410 / losses 221 / ties 1   -> ABOVE
+      SX vs RandConn     0.362 vs 0.107   p_Holm 4.03e-50 ***   molecule wins 416 / losses 200 / ties 16   -> ABOVE
+    per-fold cells where the mean direction and the rank-test direction disagree: none
+
+[3b] REGISTERED PREDICTIONS (rules fixed before the run)
+  (a) GNNExplainer beats RandNode in >= 4/5 folds:            observed 5/5 -> HELD
+  (b) SubgraphX beats its connectivity-matched null >= 4/5:   observed 5/5 -> HELD
+  (c) PGExplainer not reliably above RandNode (< 4/5 folds):  significantly above in 1/5, below in 3/5 -> HELD
+
+[4] explainer health per fold (strict collapse rule: n_degenerate/n >= 0.5)
+  fold 0: GNN degenerate 0/346 empty 0 whole 0   PG degenerate 0/346 empty 0 whole 0   SX degenerate 0/346 empty 0 whole 0
+  fold 1: GNN degenerate 0/350 empty 0 whole 0   PG degenerate 0/350 empty 0 whole 0   SX degenerate 0/350 empty 0 whole 0
+  fold 2: GNN degenerate 0/350 empty 0 whole 0   PG degenerate 1/350 empty 1 whole 0   SX degenerate 0/350 empty 0 whole 0
+  fold 3: GNN degenerate 0/348 empty 0 whole 0   PG degenerate 0/348 empty 0 whole 0   SX degenerate 0/348 empty 0 whole 0
+  fold 4: GNN degenerate 0/345 empty 0 whole 0   PG degenerate 0/345 empty 0 whole 0   SX degenerate 0/345 empty 0 whole 0
+  PGExplainer collapsed in 0/5 folds
+
+[5] EXPLORATORY: GEA by toxicophore type, pooled over all unique GT-bearing molecules (max-over-set).
+    A graph is counted under every type it contains, so the rows overlap.
+  type      graphs GT atoms | top-k:     GNN      PG      SX  RandNode  ceiling | mean-thr:     GNN      PG      SX  RandConn|SX
+  NH2          248     3.90 |          0.425   0.204   0.354     0.131    0.631 |             0.369   0.193   0.505        0.135
+  NO2          104     4.25 |          0.393   0.129   0.251     0.144    0.700 |             0.362   0.113   0.330        0.132
+  halide       295     2.75 |          0.398   0.146   0.171     0.132    0.513 |             0.339   0.129   0.220        0.091
+  nitroso        6     2.00 |          0.184   0.052   0.189     0.069    0.334 |             0.174   0.067   0.444        0.081
+  azo           44     3.20 |          0.239   0.059   0.243     0.084    0.407 |             0.183   0.078   0.431        0.092
+
+[6] against the 5-seed test-split run (runs/mutagenicity/, same four comparisons, same Holm family)
+  comparison           5-seed: above/below    mean real/null   |   5-fold: above/below    mean real/null   same direction?
+  GNN vs RandNode                5/5 , 0/5      0.378/0.122   |             5/5 , 0/5      0.391/0.124   same counts
+  PG vs RandNode                 2/5 , 3/5      0.118/0.122   |             1/5 , 3/5      0.144/0.124   DIFFERS
+  SX vs RandNode                 5/5 , 0/5      0.280/0.122   |             5/5 , 0/5      0.252/0.124   same counts
+  SX vs RandConn                 5/5 , 0/5      0.372/0.105   |             5/5 , 0/5      0.362/0.107   same counts
+  per-unit direction (+ sig above, - sig below, . n.s.):
+    GNN vs RandNode    seeds 0-4: + + + + +    folds 0-4: + + + + +
+    PG vs RandNode     seeds 0-4: - - - + +    folds 0-4: - - + - .
+    SX vs RandNode     seeds 0-4: + + + + +    folds 0-4: + + + + +
+    SX vs RandConn     seeds 0-4: + + + + +    folds 0-4: + + + + +
+
+[7] Fid+ / Fid- / GEF on all explained molecules, per-fold means (R3 mean fill, R2, R1)
+  -- R3 (mean)
+     GNN  Fid+ 0.292 0.262 0.277 0.328 0.315  (mean 0.295)   Fid- 0.008 0.040 0.020 0.043 0.040  (mean 0.030)   GEF 0.025 0.059 0.065 0.056 0.057  (mean 0.052)
+     PG   Fid+ 0.023 0.006 0.107 0.044 0.095  (mean 0.055)   Fid- 0.323 0.333 0.278 0.296 0.257  (mean 0.298)   GEF 0.353 0.368 0.401 0.321 0.286  (mean 0.346)
+     SX   Fid+ 0.200 0.229 0.214 0.209 0.247  (mean 0.220)   Fid- 0.132 0.118 0.121 0.157 0.096  (mean 0.125)   GEF 0.170 0.132 0.165 0.182 0.126  (mean 0.155)
+  -- R2 (zero)
+     GNN  Fid+ 0.380 0.361 0.374 0.475 0.501  (mean 0.418)   Fid- 0.475 0.525 0.516 0.509 0.560  (mean 0.517)   GEF 0.521 0.562 0.569 0.537 0.578  (mean 0.553)
+     PG   Fid+ 0.039 0.178 0.158 0.160 0.403  (mean 0.188)   Fid- 0.587 0.572 0.548 0.552 0.563  (mean 0.564)   GEF 0.666 0.636 0.639 0.628 0.592  (mean 0.632)
+     SX   Fid+ 0.550 0.595 0.467 0.575 0.598  (mean 0.557)   Fid- 0.444 0.499 0.474 0.487 0.534  (mean 0.488)   GEF 0.514 0.541 0.526 0.529 0.555  (mean 0.533)
+  -- R1 (hard)
+     GNN  Fid+ 0.563 0.674 0.516 0.509 0.596  (mean 0.572)   Fid- 0.500 0.378 0.401 0.436 0.484  (mean 0.440)   GEF 0.716 0.671 0.634 0.716 0.683  (mean 0.684)
+     PG   Fid+ 0.049 0.291 0.209 0.098 0.128  (mean 0.155)   Fid- 0.637 0.466 0.651 0.372 0.590  (mean 0.543)   GEF 0.740 0.757 0.735 0.641 0.724  (mean 0.719)
+     SX   Fid+ 0.466 0.456 0.482 0.345 0.427  (mean 0.435)   Fid- 0.244 0.283 0.267 0.293 0.256  (mean 0.269)   GEF 0.460 0.573 0.519 0.558 0.496  (mean 0.521)
+
+saved -> runs/mutagenicity_cv/report.json and runs/mutagenicity_cv/arrays_s<fold>.npz

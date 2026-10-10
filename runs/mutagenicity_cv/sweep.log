@@ -1,0 +1,5 @@
+[2026-10-09 11:13:08] cv sweep start: folds=0 1 2 3 4, GPU 1
+[2026-10-09 11:15:49] folds 1-4 stopped by request (fold 0 only first); their checkpoints are kept, no explanations cached
+[2026-10-09 11:22:43] cv sweep start: folds=1 2 3 4, GPU 1
+[2026-10-10 01:54:10] cv sweep done
+[2026-10-10 02:10:53] cv sweep done

@@ -2414,3 +2414,112 @@ How they will be scored (fixed now):
   RandNode and SubgraphX vs RandConn. The pooled test (one per comparison,
   over all unique molecules, Holm over the same four) is reported separately
   and does not score the predictions; the model differs by fold.
+
+### RESULTS, Mutagenicity 5-fold CV (run 2026-10-09 11:13 -> 2026-10-10 02:10 IST;
+### src/analysis/mutagenicity_cv_report.py; full output runs/mutagenicity_cv/report.txt)
+
+Run as registered: fold seed 0, model seed f, explainer seed 1000 + f, five
+folds concurrently on GPU 1. runs/mutagenicity/ was not modified. Folds 1-4
+were started, stopped after 2.5 minutes at the user's request, and restarted
+7 minutes later from their saved checkpoints; no explanations were lost.
+
+Model and counts:
+
+| fold | test acc | test AUROC | fold size | explained (<= 80 atoms) | GT-bearing | wall-clock |
+|---|---|---|---|---|---|---|
+| 0 | 0.9972 | 0.9999 | 354 | 346 | 127 | 14.96 h |
+| 1 | 0.9944 | 0.9998 | 354 | 350 | 127 | 13.28 h |
+| 2 | 0.9915 | 0.9962 | 354 | 350 | 127 | 14.46 h |
+| 3 | 0.9688 | 0.9758 | 353 | 348 | 124 | 14.52 h |
+| 4 | 0.9943 | 0.9997 | 353 | 345 | 127 | 13.13 h |
+| mean / total | 0.9892 | 0.9943 | 1,768 | 1,739 | 632 | |
+
+Top-k 0.25 GEA, max-over-set (primary), per-fold means over GT-bearing molecules:
+
+| fold | GNN | PG | SX | RandNode | RandEdge | RandConn at k | ceiling |
+|---|---|---|---|---|---|---|---|
+| 0 | 0.462 | 0.094 | 0.255 | 0.145 | 0.165 | 0.112 | 0.606 |
+| 1 | 0.359 | 0.061 | 0.243 | 0.131 | 0.154 | 0.104 | 0.553 |
+| 2 | 0.337 | 0.290 | 0.246 | 0.123 | 0.151 | 0.101 | 0.555 |
+| 3 | 0.395 | 0.078 | 0.232 | 0.117 | 0.136 | 0.095 | 0.530 |
+| 4 | 0.400 | 0.196 | 0.286 | 0.104 | 0.123 | 0.092 | 0.511 |
+| fold mean | 0.391 | 0.144 | 0.252 | 0.124 | 0.146 | 0.101 | |
+| fold std | 0.043 | 0.087 | 0.018 | 0.014 | 0.015 | 0.007 | |
+| pooled, 632 molecules | 0.390 | 0.144 | 0.252 | 0.124 | 0.146 | 0.101 | 0.551 |
+
+Mean-threshold, max-over-set, pooled: GNN 0.337, PG 0.129, SX 0.362; RandConn
+sized to the SubgraphX mask 0.107. Merged-mask values are 0.02-0.03 lower
+throughout (report.txt section 2).
+
+Per-fold paired Wilcoxon, Holm within fold over the four registered
+comparisons (explainer / null; all p_Holm < 0.001 unless marked):
+
+| comparison | f0 | f1 | f2 | f3 | f4 | sig above | sig below |
+|---|---|---|---|---|---|---|---|
+| GNN vs RandNode (top-k) | 0.462/0.145 | 0.359/0.131 | 0.337/0.123 | 0.395/0.117 | 0.400/0.104 | 5/5 | 0/5 |
+| PG vs RandNode (top-k) | 0.094/0.145 | 0.061/0.131 | 0.290/0.123 | 0.078/0.117 | 0.196/0.104 ns | 1/5 | 3/5 |
+| SX vs RandNode (top-k) | 0.255/0.145 | 0.243/0.131 | 0.246/0.123 | 0.232/0.117 | 0.286/0.104 | 5/5 | 0/5 |
+| SX vs RandConn (SX mask size) | 0.331/0.128 | 0.366/0.108 | 0.350/0.109 | 0.324/0.099 | 0.439/0.090 | 5/5 | 0/5 |
+
+Additional, outside the registered family: SX top-k vs RandConn at the budget
+5/5 above; PG vs RandEdge 1/5 above, 3/5 below; mean-threshold vs own-size
+RandUnc: GNN 5/5 above, PG 1/5 above and 3/5 below, SX 5/5 above.
+
+Pooled test, one per comparison, over all 632 unique molecules (Holm over
+the four). Each molecule appears once, but the explained model differs by
+fold, so this is not a single-model test:
+
+| comparison | mean, explainer / null | p_Holm | molecule wins / losses / ties | direction of the rank test |
+|---|---|---|---|---|
+| GNN vs RandNode | 0.390 / 0.124 | 1.0e-97 | 585 / 47 / 0 | above |
+| PG vs RandNode | 0.144 / 0.124 | 7.4e-03 | 189 / 443 / 0 | BELOW |
+| SX vs RandNode | 0.252 / 0.124 | 6.6e-35 | 410 / 221 / 1 | above |
+| SX vs RandConn | 0.362 / 0.107 | 4.0e-50 | 416 / 200 / 16 | above |
+
+For PGExplainer the pooled mean is above the null while the rank test points
+below (median GEA 0.000 against 0.101). "Above"/"below" in this section is
+the direction of the rank test. In every per-fold cell the mean and the rank
+test agree. The first version of the report labelled direction by the mean
+and printed this one cell as "above"; kept as report_v1_mean_direction.txt.
+
+REGISTERED PREDICTIONS:
+- (a) GNNExplainer beats RandNode in at least 4 of 5 folds: 5/5 -- HELD.
+- (b) SubgraphX beats its connectivity-matched null in at least 4 of 5 folds:
+  5/5 -- HELD.
+- (c) PGExplainer is not reliably above RandNode: significantly above in 1/5
+  folds, significantly below in 3/5, n.s. in 1/5 -- HELD.
+
+PGExplainer collapse (strict rule): 0/5 folds. Degenerate masks per fold:
+0/346, 0/350, 1/350, 0/348, 0/345. No empty or whole-graph masks for
+GNNExplainer or SubgraphX.
+
+EXPLORATORY -- GEA by toxicophore type, pooled over the 632 molecules,
+max-over-set (a graph counts under every type it contains):
+
+| type | graphs | GT atoms | top-k GNN | top-k PG | top-k SX | RandNode | ceiling | mean-thr GNN | mean-thr PG | mean-thr SX | RandConn (SX size) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| NH2 | 248 | 3.90 | 0.425 | 0.204 | 0.354 | 0.131 | 0.631 | 0.369 | 0.193 | 0.505 | 0.135 |
+| NO2 | 104 | 4.25 | 0.393 | 0.129 | 0.251 | 0.144 | 0.700 | 0.362 | 0.113 | 0.330 | 0.132 |
+| halide | 295 | 2.75 | 0.398 | 0.146 | 0.171 | 0.132 | 0.513 | 0.339 | 0.129 | 0.220 | 0.091 |
+| nitroso | 6 | 2.00 | 0.184 | 0.052 | 0.189 | 0.069 | 0.334 | 0.174 | 0.067 | 0.444 | 0.081 |
+| azo | 44 | 3.20 | 0.239 | 0.059 | 0.243 | 0.084 | 0.407 | 0.183 | 0.078 | 0.431 | 0.092 |
+
+Against the 5-seed test-split run (same four comparisons, same Holm family;
++ significantly above, - significantly below, . n.s.):
+
+| comparison | seeds 0-4 | folds 0-4 | counts match? |
+|---|---|---|---|
+| GNN vs RandNode | + + + + + | + + + + + | yes (5/5 above) |
+| PG vs RandNode | - - - + + | - - + - . | NO: 2 above / 3 below vs 1 above / 3 below / 1 n.s. |
+| SX vs RandNode | + + + + + | + + + + + | yes (5/5 above) |
+| SX vs RandConn | + + + + + | + + + + + | yes (5/5 above) |
+
+The only cell that differs is PGExplainer vs RandNode. Mean GEA across units:
+GNN 0.378 (seeds) vs 0.391 (folds); PG 0.118 vs 0.144; SX 0.280 vs 0.252;
+RandNode 0.122 vs 0.124.
+
+Fid+/Fid-/GEF under R3 (mean fill), R2 and R1, per fold: report.txt section 7.
+Persisted: runs/mutagenicity_cv/arrays_s<fold>.npz (per-molecule GEA for every
+explainer x binarization x GT variant, all nulls, win/loss, mask sizes,
+mol_idx, explained_idx, split membership, seeds), report.json, folds.json,
+split_f<fold>.json, seeds_s<fold>.json.
