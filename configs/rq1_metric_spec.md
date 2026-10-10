@@ -2615,3 +2615,18 @@ How they will be scored (fixed now; the rules of the Mutagenicity 5-fold CV):
 - Explainer configs, seeds (model S, explainer 1000 + S), masking and the
   three-stage cached driver are those of the D-MPNN 5-seed run. Scoring is by
   src/analysis/arch_gin_report.py, committed with this entry.
+
+### GIN run HELD -- 2026-10-10 15:11 IST (user request)
+
+State at the hold: the five GIN Mutagenicity units were started at 14:34 and
+stopped at 15:11. GNNExplainer and PGExplainer had finished on all five
+seeds (cached in runs/arch_gin/mutagenicity_graphxai/cache_s<S>.pt on Ada;
+run_phase3 also wrote its stage-1 output out_gp_s<S>.json there). SubgraphX
+was 4-11 molecules into each seed and that progress is not saved. The
+SubgraphX timing run (20 molecules, seed-0 model) measured 107.0 s/mol,
+3.52 s/node, single process.
+
+No GIN explanation result has been read, analysed or reported: the report
+script has not been run and the stage-1 output files have not been opened or
+copied off Ada. The amendment and the registered predictions above stand
+unscored. MUTAG-GT was not explained.
