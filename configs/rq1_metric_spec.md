@@ -2573,3 +2573,45 @@ five trained GIN models (29 graphs): 0.8966/0.9579, 0.7931/0.9053,
 
 RESULT: both datasets miss the bar as fixed. Nothing was explained or timed;
 the run stopped here. Logs: runs/arch_gin/logs/.
+
+### AMENDMENT to the GIN accuracy bar -- 2026-10-10, written BEFORE any GIN explanation is timed or scored
+
+Original bar (fixed before training): Mutagenicity every seed test acc >=
+0.95 and AUROC >= 0.98; MUTAG-GT 10-fold CV acc >= 0.83 and AUROC >= 0.90.
+
+Observed: Mutagenicity seed 3 AUROC 0.9709; every other Mutagenicity number
+passes (acc 0.9802-0.9915 on all five seeds, AUROC 0.9842-0.9994 on seeds 0,
+1, 2, 4). MUTAG-GT 10-fold CV acc 0.814, AUROC 0.894: fails both.
+
+Decision (user, after seeing the accuracy numbers and nothing else):
+- Mutagenicity is explained with the bar amended to acc >= 0.95 and AUROC >=
+  0.97 on every seed. All five seeds pass the amended bar.
+- MUTAG-GT is NOT explained for GIN, and prediction (c) (MUTAG-GT: SubgraphX
+  significantly below RandNode in at least 4 of 5 seeds) is dropped.
+- The GIN config is not changed and nothing is retrained.
+- Because the amendment was made after the accuracy was known, every count
+  is also reported with seed 3 excluded.
+
+### Registered predictions, GIN on Mutagenicity -- written 2026-10-10, BEFORE the run
+
+(a) GNNExplainer significantly above RandNode in at least 4 of 5 seeds.
+(b) SubgraphX significantly above its RandConn null in at least 4 of 5 seeds.
+(d) PGExplainer not significantly above RandNode in at least 3 of 5 seeds.
+
+How they will be scored (fixed now; the rules of the Mutagenicity 5-fold CV):
+- Test split of each seed, <= 80 atoms, GT-bearing molecules; GEA is
+  max-over-set; top-k 0.25 is the primary binarization; nulls use 20 draws
+  per molecule.
+- (a), (d): top-k GEA vs RandNode at the same budget. (b): the SubgraphX
+  mean-threshold mask vs RandConn sized to GIN's own SubgraphX mask on that
+  molecule.
+- Per-seed paired two-sided Wilcoxon, Holm within seed over four tests (the
+  three explainers vs RandNode, SubgraphX vs RandConn). "Significantly
+  above/below" = Holm p < 0.05 with the direction of the rank test.
+- (d) counts seeds in which PGExplainer is NOT significantly above RandNode
+  (n.s. or below).
+- The D-MPNN column for the cell-by-cell comparison is the same four tests on
+  runs/mutagenicity/arrays_s<S>.npz (read-only), same molecules per seed.
+- Explainer configs, seeds (model S, explainer 1000 + S), masking and the
+  three-stage cached driver are those of the D-MPNN 5-seed run. Scoring is by
+  src/analysis/arch_gin_report.py, committed with this entry.

@@ -184,62 +184,83 @@ def main():
     rep["mutagenicity_fidelity_R3"] = fidelity(P, per_u)
 
     # ------------------------------------------------------------------ MUTAG-GT
-    dlg, _ = LOADERS[MG]()
+    # GIN missed the MUTAG-GT accuracy bar and was not explained there (amendment of 2026-10-10);
+    # this section only runs if MUTAG-GT outputs exist.
     seeds_g = [s for s in SEEDS if os.path.exists(GIN_MG["out"].format(s=s))]
-    per_g = {s: analyse_mutag_gt(GIN_MG, s, dlg, f"{R}/{MG}/arrays_s{s}.npz") for s in seeds_g}
-    per_d = {s: analyse_mutag_gt(DMPNN_MG, s, dlg, f"{R}/dmpnn_ref/mutag_graphxai_s{s}.npz") for s in seeds_g}
+    per_g, Tg, npg_g = {}, {}, None
+    if seeds_g:
+        dlg, _ = LOADERS[MG]()
+        per_g = {s: analyse_mutag_gt(GIN_MG, s, dlg, f"{R}/{MG}/arrays_s{s}.npz") for s in seeds_g}
+        per_d = {s: analyse_mutag_gt(DMPNN_MG, s, dlg, f"{R}/dmpnn_ref/mutag_graphxai_s{s}.npz") for s in seeds_g}
 
-    P(f"\n[G1] MUTAG-GT -- model (29-graph test split; all 188 graphs explained, 131 of them training graphs)")
-    P(f"  {'seed':>6}{'GIN acc':>10}{'GIN AUROC':>11} |{'D-MPNN acc':>12}{'AUROC':>8} |{'explained':>11}{'GT-bearing':>12}")
-    rep["mutag_gt_model"] = {}
-    for s in seeds_g:
-        A, ck, out = per_g[s]; m = ck["metrics"]; md = per_d[s][1]["metrics"]
-        P(f"  {s:>6}{m['test_acc']:>10.4f}{m['test_auroc']:>11.4f} |{md['test_acc']:>12.4f}{md['test_auroc']:>8.4f} |{out['config']['n_test']:>11}{len(A['mol_idx']):>12}")
-        rep["mutag_gt_model"][s] = {"gin_test_acc": m["test_acc"], "gin_test_auroc": m["test_auroc"], "dmpnn_test_acc": md["test_acc"],
-                                    "dmpnn_test_auroc": md["test_auroc"], "n_explained": out["config"]["n_test"], "n_gt_bearing": int(len(A["mol_idx"]))}
+        P(f"\n[G1] MUTAG-GT -- model (29-graph test split; all 188 graphs explained, 131 of them training graphs)")
+        P(f"  {'seed':>6}{'GIN acc':>10}{'GIN AUROC':>11} |{'D-MPNN acc':>12}{'AUROC':>8} |{'explained':>11}{'GT-bearing':>12}")
+        rep["mutag_gt_model"] = {}
+        for s in seeds_g:
+            A, ck, out = per_g[s]; m = ck["metrics"]; md = per_d[s][1]["metrics"]
+            P(f"  {s:>6}{m['test_acc']:>10.4f}{m['test_auroc']:>11.4f} |{md['test_acc']:>12.4f}{md['test_auroc']:>8.4f} |{out['config']['n_test']:>11}{len(A['mol_idx']):>12}")
+            rep["mutag_gt_model"][s] = {"gin_test_acc": m["test_acc"], "gin_test_auroc": m["test_auroc"], "dmpnn_test_acc": md["test_acc"],
+                                        "dmpnn_test_auroc": md["test_auroc"], "n_explained": out["config"]["n_test"], "n_gt_bearing": int(len(A["mol_idx"]))}
 
-    P("\n[G2] MUTAG-GT -- top-k 0.25 GEA (Jaccard vs the merged GT mask), per-seed means over the 188 graphs")
-    colg = [(f"{e}_topk", SH[e]) for e in EXPL] + [("rand_node_topk", "RandNode"), ("rand_conn_topk", "RandConn@k")]
-    rep["mutag_gt_gea_topk"] = gea_table(P, per_g, colg)
-    P("     D-MPNN, decoupled-protocol caches (runs/decoupled/), same code, same RandNode draws:")
-    rep["mutag_gt_gea_topk_dmpnn"] = gea_table(P, per_d, colg)
-    P("\n     mean-threshold: SubgraphX mask vs RandConn sized to that mask")
-    rep["mutag_gt_gea_mean"] = gea_table(P, per_g, [("subgraphx_mean", "SX mean-thr"), ("rand_conn_mean_subgraphx", "RandConn|SX"),
-                                                   ("subgraphx_mean_size", "|M| SX"), ("budget", "budget k")])
+        P("\n[G2] MUTAG-GT -- top-k 0.25 GEA (Jaccard vs the merged GT mask), per-seed means over the 188 graphs")
+        colg = [(f"{e}_topk", SH[e]) for e in EXPL] + [("rand_node_topk", "RandNode"), ("rand_conn_topk", "RandConn@k")]
+        rep["mutag_gt_gea_topk"] = gea_table(P, per_g, colg)
+        P("     D-MPNN, decoupled-protocol caches (runs/decoupled/), same code, same RandNode draws:")
+        rep["mutag_gt_gea_topk_dmpnn"] = gea_table(P, per_d, colg)
+        P("\n     mean-threshold: SubgraphX mask vs RandConn sized to that mask")
+        rep["mutag_gt_gea_mean"] = gea_table(P, per_g, [("subgraphx_mean", "SX mean-thr"), ("rand_conn_mean_subgraphx", "RandConn|SX"),
+                                                       ("subgraphx_mean_size", "|M| SX"), ("budget", "budget k")])
 
-    P("\n[G3] MUTAG-GT -- per-seed paired Wilcoxon, Holm within seed over the four registered comparisons (cells: explainer/null)")
-    Tg = {s: family_tests(per_g[s][0], FAMILY_M) for s in seeds_g}
-    table(P, seeds_g, Tg, FAMILY_M, "seed")
-    Td = {s: family_tests(per_d[s][0], FAMILY_M) for s in seeds_g}
-    P("\n     D-MPNN (decoupled caches), same tests:")
-    table(P, seeds_g, Td, FAMILY_M, "seed")
-    P("\n     direction per seed (+ sig. above, - sig. below, . n.s.)")
-    rep["mutag_gt_vs_dmpnn"] = compare(P, FAMILY_M, Tg, Td, seeds_g, "MUTAG-GT")
-    rep["mutag_gt_tests"] = {str(s): Tg[s] for s in seeds_g}; rep["mutag_gt_tests_dmpnn"] = {str(s): Td[s] for s in seeds_g}
-    dis = [(s, lab) for s in seeds_g for lab, _, _ in FAMILY_M if not Tg[s][lab]["mean_and_rank_agree"]]
-    P(f"     cells where the mean and the rank test disagree in direction: {dis if dis else 'none'}")
+        P("\n[G3] MUTAG-GT -- per-seed paired Wilcoxon, Holm within seed over the four registered comparisons (cells: explainer/null)")
+        Tg = {s: family_tests(per_g[s][0], FAMILY_M) for s in seeds_g}
+        table(P, seeds_g, Tg, FAMILY_M, "seed")
+        Td = {s: family_tests(per_d[s][0], FAMILY_M) for s in seeds_g}
+        P("\n     D-MPNN (decoupled caches), same tests:")
+        table(P, seeds_g, Td, FAMILY_M, "seed")
+        P("\n     direction per seed (+ sig. above, - sig. below, . n.s.)")
+        rep["mutag_gt_vs_dmpnn"] = compare(P, FAMILY_M, Tg, Td, seeds_g, "MUTAG-GT")
+        rep["mutag_gt_tests"] = {str(s): Tg[s] for s in seeds_g}; rep["mutag_gt_tests_dmpnn"] = {str(s): Td[s] for s in seeds_g}
+        dis = [(s, lab) for s in seeds_g for lab, _, _ in FAMILY_M if not Tg[s][lab]["mean_and_rank_agree"]]
+        P(f"     cells where the mean and the rank test disagree in direction: {dis if dis else 'none'}")
 
-    P("\n[G4] MUTAG-GT -- explainer health")
-    npg_g = health(P, per_g, "mutag_gt_health", rep)
-    P("\n[G5] MUTAG-GT -- Fid+ / Fid- / GEF, R3 (mean fill), per-seed means over all explained molecules")
-    rep["mutag_gt_fidelity_R3"] = fidelity(P, per_g)
+        P("\n[G4] MUTAG-GT -- explainer health")
+        npg_g = health(P, per_g, "mutag_gt_health", rep)
+        P("\n[G5] MUTAG-GT -- Fid+ / Fid- / GEF, R3 (mean fill), per-seed means over all explained molecules")
+        rep["mutag_gt_fidelity_R3"] = fidelity(P, per_g)
+    else:
+        P("\n[G] MUTAG-GT -- not explained for GIN: 10-fold CV acc 0.814 / AUROC 0.894 missed the bar (0.83 / 0.90).")
 
     # ------------------------------------------------------------------ predictions
-    P("\n[P] REGISTERED PREDICTIONS (committed before any GIN explanation was scored)")
-    a = sum(Tu[s]["GNN vs RandNode"]["above"] for s in seeds_u); b = sum(Tu[s]["SX vs RandConn"]["above"] for s in seeds_u)
-    c = sum(Tg[s]["SX vs RandNode"]["below"] for s in seeds_g); d_ = sum(not Tu[s]["PG vs RandNode"]["above"] for s in seeds_u)
-    P(f"  (a) Mutagenicity: GNNExplainer significantly above RandNode in >= 4/5 seeds:        observed {a}/{len(seeds_u)} -> {'HELD' if a >= 4 else 'DID NOT HOLD'}")
-    P(f"  (b) Mutagenicity: SubgraphX significantly above its RandConn null in >= 4/5 seeds: observed {b}/{len(seeds_u)} -> {'HELD' if b >= 4 else 'DID NOT HOLD'}")
-    P(f"  (c) MUTAG-GT: SubgraphX significantly below RandNode in >= 4/5 seeds:              observed {c}/{len(seeds_g)} -> {'HELD' if c >= 4 else 'DID NOT HOLD'}")
-    P(f"  (d) Mutagenicity: PGExplainer NOT significantly above RandNode in >= 3/5 seeds:    observed {d_}/{len(seeds_u)} -> {'HELD' if d_ >= 3 else 'DID NOT HOLD'}")
-    rep["predictions"] = {"a": a, "b": b, "c": c, "d": d_, "a_held": a >= 4, "b_held": b >= 4, "c_held": c >= 4, "d_held": d_ >= 3,
-                          "pg_collapse_mutagenicity": npg_u, "pg_collapse_mutag_gt": npg_g}
+    P("\n[P] REGISTERED PREDICTIONS (committed before any GIN explanation was scored; (c) was dropped with MUTAG-GT)")
+
+    def counts(seeds):
+        return (sum(Tu[s]["GNN vs RandNode"]["above"] for s in seeds), sum(Tu[s]["SX vs RandConn"]["above"] for s in seeds),
+                sum(not Tu[s]["PG vs RandNode"]["above"] for s in seeds))
+
+    a, b, d_ = counts(seeds_u)
+    P(f"  (a) GNNExplainer significantly above RandNode in >= 4/5 seeds:        observed {a}/{len(seeds_u)} -> {'HELD' if a >= 4 else 'DID NOT HOLD'}")
+    P(f"  (b) SubgraphX significantly above its RandConn null in >= 4/5 seeds: observed {b}/{len(seeds_u)} -> {'HELD' if b >= 4 else 'DID NOT HOLD'}")
+    P(f"  (d) PGExplainer NOT significantly above RandNode in >= 3/5 seeds:    observed {d_}/{len(seeds_u)} -> {'HELD' if d_ >= 3 else 'DID NOT HOLD'}")
+    rep["predictions"] = {"a": a, "b": b, "d": d_, "a_held": a >= 4, "b_held": b >= 4, "d_held": d_ >= 3, "pg_collapse_mutagenicity": npg_u}
+
+    P("\n[P'] SAME COUNTS WITH SEED 3 EXCLUDED (the seed whose AUROC, 0.9709, is below the original 0.98 bar)")
+    ex = [s for s in seeds_u if s != 3]
+    P(f"  {'comparison':<18}{'GIN above/below/n.s.':>24}{'D-MPNN above/below/n.s.':>26}   (of {len(ex)} seeds)")
+    rep["excluding_seed_3"] = {"seeds": ex, "counts": {}}
+    for lab, _, _ in FAMILY:
+        g = [sign(Tu[s][lab]) for s in ex]; d = [sign(Tu_dm[s][lab]) for s in ex]
+        P(f"  {lab:<18}{'/'.join(str(g.count(ch)) for ch in '+-.'):>24}{'/'.join(str(d.count(ch)) for ch in '+-.'):>26}")
+        rep["excluding_seed_3"]["counts"][lab] = {"gin": {ch: g.count(ch) for ch in "+-."}, "dmpnn": {ch: d.count(ch) for ch in "+-."}}
+    a3, b3, d3 = counts(ex)
+    P(f"  predictions on {len(ex)} seeds (not registered in this form; reported as counts): (a) {a3}/{len(ex)}  (b) {b3}/{len(ex)}  (d) {d3}/{len(ex)}")
+    P(f"  PGExplainer collapsed in {sum(rep['mutagenicity_health'][s]['pgexplainer']['collapsed'] for s in ex)}/{len(ex)} seeds")
+    rep["excluding_seed_3"].update({"a": a3, "b": b3, "d": d3})
 
     # ------------------------------------------------------------------ budget rounding
     P("\n[Q] BUDGET ROUNDING (not changed): SubgraphX is asked for max(3, round(0.25 N)) atoms (dig_subgraphx.py), while top-k scoring"
       "\n    and R3 masking keep max(1, int(0.25 N)) (masking.py). Where the coalition is larger, top-k drops atoms from a 0/1 vector.")
     rep["budget_rounding"] = {}
-    for name, per in (("Mutagenicity", per_u), ("MUTAG-GT", per_g)):
+    for name, per in [("Mutagenicity", per_u)] + ([("MUTAG-GT", per_g)] if per_g else []):
         if name == "MUTAG-GT":
             coal = np.concatenate([per[s][0]["sx_coalition"] for s in per]); k = np.concatenate([per[s][0]["budget"] for s in per])
         else:
