@@ -1,14 +1,28 @@
 """
 GEF -- Graph Explanation Faithfulness (see configs/rq1_metric_spec.md, Section 3).
 
-Formula VERIFIED against GraphXAI source (graphxai/metrics/metrics_graph.py,
-`graph_exp_faith_graph`), not just the paper text -- the paper/derivative
-citations describe this loosely as "KL divergence"; the actual
-implementation is a bounded transform:
+What was checked against the GraphXAI source, and what was not:
 
-    GEF = 1 - exp( -KL( f(G_i) || f(E_i) ) )
+1. The bounded transform and the zero-fill match
+   graphxai/metrics/metrics_graph.py, `graph_exp_faith_graph` -- the
+   paper/derivative citations describe GEF loosely as "KL divergence"; the
+   implementation is
 
-which keeps GEF in [0, 1), lower = more faithful.
+       GEF = 1 - exp( -KL( f(E_i) || f(G_i) ) )
+
+   which keeps GEF in [0, 1), lower = more faithful.
+
+2. WHICH nodes are hidden follows graphxai/formal/metrics.py,
+   `graph_exp_faith` (explanation kept, the rest zeroed; lines 176-185) and
+   the paper's definition -- NOT metrics_graph.py line 192, which builds
+   `rem_nodes` from the nodes that ARE in the top-k and so zeroes the
+   explanation itself, despite its comments ("Removing the unimportant nodes
+   by masking"). Here `masked_data` is always the explanation-only graph E_i.
+
+3. The KL argument order is that of `F.kl_div(log q, p)`, which computes
+   KL(p || q): with q = f(G_i) and p = f(E_i) this is KL( f(E_i) || f(G_i) ),
+   the same as GraphXAI's code. Earlier text in this file and in the spec
+   wrote KL( f(G_i) || f(E_i) ), which is reversed relative to the code.
 
 GraphXAI's own reference implementation only ever applies ONE masking
 scheme per importance type (zero-fill for node/feature masks, hard edge

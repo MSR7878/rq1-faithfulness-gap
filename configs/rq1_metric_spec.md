@@ -24,11 +24,23 @@ seeds x 3 input configs (src/train/test_mp_equivalence.py), and mutag_graphxai
 10-fold CV re-run agrees (acc 0.884+/-0.061, AUROC 0.952+/-0.035 vs the v4-table
 0.884 / 0.943). BBBP/Tox21/B-XAIC weights stand without retraining.
 
-## Metrics (verified against GraphXAI source, graphxai/metrics/metrics_graph.py)
+## Metrics (checked against GraphXAI source; see the GEF note below for what matches which file)
 
 - Fid+  = (1/N) sum_i [ f(G_i)_yi - f(G_i \ E_i)_yi ]
 - Fid-  = (1/N) sum_i [ f(G_i)_yi - f(E_i)_yi ]
-- GEF   = 1 - exp( -KL( f(G_i) || f(E_i) ) )        # bounded [0,1), lower = more faithful
+- GEF   = 1 - exp( -KL( f(E_i) || f(G_i) ) )        # bounded [0,1), lower = more faithful
+  GEF note (documented 2026-10-12; comments and text only, no code or result changed):
+  (1) The 1 - exp(-KL) transform and the zero-fill match
+      graphxai/metrics/metrics_graph.py, graph_exp_faith_graph.
+  (2) Which nodes are hidden follows graphxai/formal/metrics.py, graph_exp_faith
+      (explanation kept, the rest zeroed; lines 176-185) and the paper's
+      definition -- NOT metrics_graph.py line 192, which builds rem_nodes from the
+      nodes that ARE in the top-k and so zeroes the explanation itself, despite its
+      comments. Our GEF always compares G_i with the explanation-only graph E_i.
+  (3) The KL argument order is that of F.kl_div(log q, p), i.e. KL( f(E_i) || f(G_i) ),
+      the same as GraphXAI's code. This line previously read KL( f(G_i) || f(E_i) ),
+      which was reversed relative to the code (src/metrics/gef.py); the code was
+      never different, only the notation.
 - GEA   = JAC(M_gt, M_pr) = TP / (TP+FP+FN)          # only where ground truth exists
 
 ## Masking references -- build order R3 -> R2 -> R1
