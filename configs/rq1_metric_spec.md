@@ -2750,3 +2750,72 @@ Persisted: runs/arch_gin/mutagenicity_graphxai/arrays_s<S>.npz (per-molecule
 GEA for every explainer x binarization x GT variant, all nulls, win/loss,
 mask sizes, mol_idx, explained_idx, split membership, seeds), report.json,
 report.txt, seeds_s<S>.json, sweep.log, timing and unit-summary logs.
+
+## GINE and GCN architecture checks on Mutagenicity (runs/arch_gine/, runs/arch_gcn/)
+
+### Design, accuracy bar and registered predictions -- written 2026-10-13, BEFORE any GINE or GCN model is trained
+
+Scope: GraphXAI Mutagenicity only (MUTAG-GT is not used). GINE first, then
+GCN. Nothing in existing runs/ directories is modified, and nothing is reused
+from the GIN run (no checkpoints, no explanations).
+
+Models (plain PyG; 3 conv layers, sum pooling, the D-MPNN's 2-layer FFN head,
+no dropout, no BatchNorm):
+- GINE: 3 x GINEConv with a 2-layer MLP, edge_dim = 3 (the bond one-hot),
+  hidden 214 -> 281,468 parameters (D-MPNN 280,502; 213 gives 278,875).
+- GCN: 3 x GCNConv, hidden 300, no bond features -> 276,002 parameters.
+Training recipe as the D-MPNN and GIN: 120 epochs, batch 50, Adam lr 1e-3,
+same selection rule. Splits: the D-MPNN checkpoints' stored splits via
+--split-json (1,237/177/354). Model seed S, explainer seed 1000 + S, S = 0-4.
+Explainer configs, the 80-atom limit, masking and the three-stage cached
+driver are those of the D-MPNN and GIN runs.
+
+Code: GINE and GCN added to src/train/baselines.py behind --arch (default
+still dmpnn); scripts/arch_sweep.sh; src/analysis/arch_report.py;
+src/analysis/arch_gin_splits.py takes an output directory. Explainers,
+masking and metrics are unchanged.
+
+Smoke test (src/train/test_arch_explainers.py), passed locally before this
+entry: single == batched forward; GINE output depends on the bond features
+and GCN ignores them; all-ones edge mask reproduces the unmasked output and a
+random mask changes it (bond features passed; GCN self-loops handled);
+get_embeddings with edge_attr returns 3 x [N, hidden]; GNNExplainer returns
+non-constant node and edge masks for the model's predicted class; PGExplainer
+trains on 10 graphs; the DIG adapter used by SubgraphX returns exactly the
+model's output with the real bond features (single graph, batched, and
+zero-filled); R3 masking keeps edge_attr and Fidelity/GEF run.
+
+ACCURACY BAR, fixed now and not to be amended: every seed test acc >= 0.95
+and AUROC >= 0.97. If any model misses it, it is reported and NOT explained,
+and the run stops.
+
+REGISTERED PREDICTIONS:
+GINE
+(a) GNNExplainer significantly above RandNode in at least 4 of 5 seeds. (This
+    tests whether GIN's drop on this comparison came from the missing bond
+    features.)
+(b) SubgraphX significantly above its RandConn null in at least 4 of 5 seeds.
+(d) PGExplainer not significantly above RandNode in at least 3 of 5 seeds.
+GCN
+(b) SubgraphX significantly above its RandConn null in at least 4 of 5 seeds.
+(d) PGExplainer not significantly above RandNode in at least 3 of 5 seeds.
+No prediction for GNNExplainer on GCN.
+
+How they will be scored (fixed now; identical to the GIN entry of 2026-10-10):
+- Test split of each seed, <= 80 atoms, GT-bearing molecules; GEA is
+  max-over-set; top-k 0.25 is the primary binarization; nulls use 20 draws
+  per molecule.
+- (a), (d): top-k GEA vs RandNode at the same budget. (b): the SubgraphX
+  mean-threshold mask vs RandConn sized to that architecture's own SubgraphX
+  mask on that molecule.
+- Per-seed paired two-sided Wilcoxon, Holm within seed over four tests (the
+  three explainers vs RandNode, SubgraphX vs RandConn). "Significantly
+  above/below" = Holm p < 0.05 with the direction of the rank test.
+- (d) counts seeds in which PGExplainer is NOT significantly above RandNode.
+- PGExplainer collapse uses the strict rule (n_degenerate/n >= 0.5); counts
+  are also reported with collapsed seeds set aside.
+- D-MPNN and GIN columns for the cell-by-cell comparison: the same four tests
+  on runs/mutagenicity/arrays_s<S>.npz and
+  runs/arch_gin/mutagenicity_graphxai/arrays_s<S>.npz (read-only).
+- If the projected SubgraphX time for both architectures exceeds 30 hours,
+  only GINE is run.

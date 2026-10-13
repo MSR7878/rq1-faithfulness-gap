@@ -249,7 +249,7 @@ def main(argv=None) -> int:
     ap.add_argument("--native-split", action="store_true",
                     help="use the dataset's own train/valid/test split (e.g. B-XAIC) instead of CV")
     ap.add_argument("--arch", default="dmpnn", choices=list(ARCHS),
-                    help="model architecture; gin = plain PyG GINConv stack (architecture check)")
+                    help="model architecture; gin / gine / gcn = plain PyG stacks (architecture check)")
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--batch-size", type=int, default=50)
     ap.add_argument("--lr", type=float, default=1e-3)

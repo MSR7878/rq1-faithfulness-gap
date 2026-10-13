@@ -4,21 +4,25 @@ check trains on IDENTICAL train/val/test indices (train.py --split-json).
 Read-only on the D-MPNN checkpoints; writes only under runs/arch_gin/.
 
     python -m src.analysis.arch_gin_splits
+    python -m src.analysis.arch_gin_splits runs/arch_gine mutagenicity_graphxai   # other out dir / datasets
 """
 from __future__ import annotations
 
 import json
 import os
+import sys
 
 import torch
 
-R = "runs/arch_gin"
 SOURCES = {"mutag_graphxai": "runs/prio/ckpt_mutag_graphxai_s{s}.pt",
            "mutagenicity_graphxai": "runs/mutagenicity/ckpt_s{s}.pt"}
 
 
 def main() -> int:
+    R = sys.argv[1] if len(sys.argv) > 1 else "runs/arch_gin"
     for ds, tmpl in SOURCES.items():
+        if len(sys.argv) > 2 and ds not in sys.argv[2:]:
+            continue
         os.makedirs(f"{R}/{ds}", exist_ok=True)
         for s in range(5):
             ck = torch.load(tmpl.format(s=s), map_location="cpu", weights_only=False)
