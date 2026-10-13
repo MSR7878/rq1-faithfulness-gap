@@ -1,0 +1,6 @@
+[2026-10-10 14:34:02] explain start: datasets=mutagenicity_graphxai seeds=0 1 2 3 4 concurrency=5 GPU 1
+[2026-10-10 15:11:33] HELD at user request (15:11): screen quit, all five units stopped during SubgraphX; nothing read or reported
+[2026-10-12 11:17:24] RESUMED: SubgraphX 20-molecule timing rerun started
+[2026-10-12 11:53:44] timing rerun: 107.7 s/mol single process; projection 12-15 h for five concurrent seeds -> launching
+[2026-10-12 11:53:44] explain start: datasets=mutagenicity_graphxai seeds=0 1 2 3 4 concurrency=5 GPU 1
+[2026-10-13 01:27:32] explain done

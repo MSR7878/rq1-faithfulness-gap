@@ -2642,3 +2642,111 @@ No GIN explanation result has been read, analysed or reported: the report
 script has not been run and the stage-1 output files have not been opened or
 copied off Ada. The amendment and the registered predictions above stand
 unscored. MUTAG-GT was not explained.
+
+### RESULTS, GIN on Mutagenicity (run 2026-10-12 11:53 -> 2026-10-13 01:27 IST;
+### src/analysis/arch_gin_report.py; full output runs/arch_gin/report.txt)
+
+Run as registered (amendment and predictions of 2026-10-10, commit 9f2b7f8):
+GIN config unchanged, nothing retrained, MUTAG-GT not explained. The run held
+on 2026-10-10 was resumed on 2026-10-12: GNNExplainer and PGExplainer
+explanations were read from the caches written before the hold; SubgraphX
+restarted from the beginning. SubgraphX timing, 20 molecules, single process:
+107.0 and 107.7 s/mol (two runs). Five units concurrent on GPU 1: 98-139
+s/mol, wall-clock 13.6 / 11.8 / 11.3 / 9.6 / 11.4 h for seeds 0-4. Scored
+once, after all five seeds had finished. The explained and GT-bearing
+molecules are the same as the D-MPNN's in every seed.
+
+Model and counts:
+
+| seed | GIN acc | GIN AUROC | D-MPNN acc | D-MPNN AUROC | explained (<= 80 atoms) | GT-bearing |
+|---|---|---|---|---|---|---|
+| 0 | 0.9915 | 0.9994 | 0.9661 | 0.9982 | 350 | 127 |
+| 1 | 0.9887 | 0.9975 | 0.9915 | 1.0000 | 345 | 127 |
+| 2 | 0.9802 | 0.9978 | 0.9915 | 0.9996 | 348 | 127 |
+| 3 | 0.9831 | 0.9709 | 0.9944 | 0.9990 | 351 | 126 |
+| 4 | 0.9831 | 0.9842 | 0.9859 | 0.9990 | 346 | 125 |
+
+Top-k 0.25 GEA, max-over-set, per-seed means over GT-bearing test molecules:
+
+| seed | GNN | PG | SX | RandNode | RandEdge | RandConn at k | ceiling | D-MPNN GNN | D-MPNN PG | D-MPNN SX |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0.222 | 0.078 | 0.261 | 0.123 | 0.136 | 0.108 | 0.542 | 0.470 | 0.037 | 0.266 |
+| 1 | 0.145 | 0.023 | 0.277 | 0.119 | 0.146 | 0.095 | 0.559 | 0.469 | 0.016 | 0.259 |
+| 2 | 0.110 | 0.038 | 0.146 | 0.127 | 0.148 | 0.113 | 0.565 | 0.383 | 0.049 | 0.302 |
+| 3 | 0.259 | 0.163 | 0.241 | 0.129 | 0.162 | 0.111 | 0.597 | 0.332 | 0.256 | 0.308 |
+| 4 | 0.070 | 0.076 | 0.164 | 0.116 | 0.143 | 0.090 | 0.522 | 0.233 | 0.233 | 0.266 |
+| mean | 0.161 | 0.076 | 0.218 | 0.123 | 0.147 | 0.103 | 0.557 | 0.378 | 0.118 | 0.280 |
+| std | 0.070 | 0.048 | 0.053 | 0.005 | 0.009 | 0.009 | 0.025 | 0.089 | 0.104 | 0.020 |
+
+(The RandNode column is GIN's own 20 draws; the D-MPNN run's RandNode means
+are 0.117-0.132.) SubgraphX mean-threshold mask vs RandConn sized to that
+mask, seeds 0-4: 0.331/0.103, 0.402/0.099, 0.196/0.103, 0.273/0.114,
+0.239/0.093; mean mask size 5.3, 3.6, 3.3, 5.4, 3.5 atoms (budget 5.7-6.4).
+
+Per-seed paired Wilcoxon, Holm within seed over the four registered
+comparisons (explainer / null; direction = rank test):
+
+| comparison | s0 | s1 | s2 | s3 | s4 | sig above | sig below | D-MPNN above / below |
+|---|---|---|---|---|---|---|---|---|
+| GNN vs RandNode (top-k) | 0.222/0.123 *** | 0.145/0.119 ns | 0.110/0.127 * (below) | 0.259/0.129 *** | 0.070/0.116 *** (below) | 2/5 | 2/5 | 5/5 / 0/5 |
+| PG vs RandNode (top-k) | 0.078/0.123 *** (below) | 0.023/0.119 *** (below) | 0.038/0.127 *** (below) | 0.163/0.129 ns | 0.076/0.116 ** (below) | 0/5 | 4/5 | 2/5 / 3/5 |
+| SX vs RandNode (top-k) | 0.261/0.123 *** | 0.277/0.119 *** | 0.146/0.127 ns | 0.241/0.129 *** | 0.164/0.116 ns | 3/5 | 0/5 | 5/5 / 0/5 |
+| SX vs RandConn (SX mask size) | 0.331/0.103 *** | 0.402/0.099 *** | 0.196/0.103 ns | 0.273/0.114 *** | 0.239/0.093 ** | 4/5 | 0/5 | 5/5 / 0/5 |
+
+In one cell the mean and the rank test disagree in direction (seed 2, SX vs
+RandNode: mean higher, rank test lower); it is n.s. either way.
+
+Cells whose direction differs from the D-MPNN 5-seed run (+ significantly
+above, - significantly below, . n.s.):
+
+| comparison | GIN seeds 0-4 | D-MPNN seeds 0-4 | cells that differ |
+|---|---|---|---|
+| GNN vs RandNode | + . - + - | + + + + + | s1 (+ to .), s2 (+ to -), s4 (+ to -) |
+| PG vs RandNode | - - - . - | - - - + + | s3 (+ to .), s4 (+ to -) |
+| SX vs RandNode | + + . + . | + + + + + | s2 (+ to .), s4 (+ to .) |
+| SX vs RandConn | + + . + + | + + + + + | s2 (+ to .) |
+
+REGISTERED PREDICTIONS:
+- (a) GNNExplainer significantly above RandNode in at least 4 of 5 seeds:
+  2/5 (and significantly below in 2/5) -- DID NOT HOLD.
+- (b) SubgraphX significantly above its RandConn null in at least 4 of 5
+  seeds: 4/5 -- HELD.
+- (d) PGExplainer not significantly above RandNode in at least 3 of 5 seeds:
+  5/5 (significantly below in 4/5) -- HELD.
+- (c) was dropped with MUTAG-GT before the run.
+
+PGExplainer collapse (strict rule): 2/5 seeds (seed 0: 209/350 degenerate,
+seed 3: 330/351). Degenerate masks in the other seeds: 7/345, 15/348, 91/346.
+The D-MPNN run had 0/5. Every degenerate GIN mask is an all-zero ("empty")
+mask. No empty or whole-graph masks for GNNExplainer or SubgraphX. Note for
+reading the PG row: on a constant mask the top-k selection is decided by
+tie-breaking, so the PG-vs-RandNode cells of the collapsed seeds (0 and 3)
+do not measure a ranking.
+
+Same counts with seed 3 excluded (its AUROC, 0.9709, is below the original
+0.98 bar), above / below / n.s. of 4 seeds:
+
+| comparison | GIN | D-MPNN |
+|---|---|---|
+| GNN vs RandNode | 1 / 2 / 1 | 4 / 0 / 0 |
+| PG vs RandNode | 0 / 4 / 0 | 1 / 3 / 0 |
+| SX vs RandNode | 2 / 0 / 2 | 4 / 0 / 0 |
+| SX vs RandConn | 3 / 0 / 1 | 4 / 0 / 0 |
+
+On four seeds the prediction counts are (a) 1/4, (b) 3/4, (d) 4/4;
+PGExplainer collapsed in 1/4.
+
+Budget rounding (not changed): SubgraphX is asked for max(3, round(0.25 N))
+atoms (src/explain/dig_subgraphx.py), while top-k scoring and R3 masking keep
+max(1, int(0.25 N)) (src/metrics/masking.py). Over the 632 GT-bearing
+molecule-units the returned coalition is larger than the scoring budget in
+118 (18.7%), equal in 160 and smaller in 354 (mean coalition 4.25 atoms,
+budget 5.94). Where the coalition is not exactly the budget, top-k drops or
+adds atoms from a 0/1 vector by tie-breaking; the mean-threshold SubgraphX
+mask (used for prediction (b)) is the coalition itself and is unaffected.
+
+Fid+/Fid-/GEF under R3 (mean fill), per seed: report.txt section U5.
+Persisted: runs/arch_gin/mutagenicity_graphxai/arrays_s<S>.npz (per-molecule
+GEA for every explainer x binarization x GT variant, all nulls, win/loss,
+mask sizes, mol_idx, explained_idx, split membership, seeds), report.json,
+report.txt, seeds_s<S>.json, sweep.log, timing and unit-summary logs.
