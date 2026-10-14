@@ -1,0 +1,102 @@
+============================================================================================================================
+ GINE architecture check on Mutagenicity -- plain PyG GINE (3 x GINEConv, edge_dim 3, hidden 214, sum pool; bond features used); D-MPNN splits, seeds (S, 1000+S)
+============================================================================================================================
+
+[1] MODEL (test split)   seed  GINE acc   AUROC | D-MPNN acc  AUROC | GIN acc   AUROC | explained (<=80 atoms)  GT-bearing | same molecules as D-MPNN / GIN
+                          0  0.9915   0.9989 |  0.9661    0.9982 | 0.9915   0.9994 |          350               127    | True / True
+                          1  0.9887   0.9989 |  0.9915    1.0000 | 0.9887   0.9975 |          345               127    | True / True
+                          2  0.9887   0.9881 |  0.9915    0.9996 | 0.9802   0.9978 |          348               127    | True / True
+                          3  0.9972   0.9927 |  0.9944    0.9990 | 0.9831   0.9709 |          351               126    | True / True
+                          4  0.9944   0.9853 |  0.9859    0.9990 | 0.9831   0.9842 |          346               125    | True / True
+     parameters: 281,471
+
+[2] top-k 0.25 GEA (max-over-set), per-seed means over GT-bearing test molecules
+    seed          GNN           PG           SX     RandNode     RandEdge   RandConn@k      ceiling
+       0        0.310        0.026        0.285        0.121        0.142        0.106        0.542
+       1        0.264        0.010        0.264        0.123        0.143        0.100        0.559
+       2        0.140        0.021        0.211        0.129        0.147        0.109        0.565
+       3        0.224        0.008        0.266        0.133        0.155        0.114        0.597
+       4        0.080        0.162        0.167        0.115        0.144        0.090        0.522
+    mean        0.203        0.046        0.239        0.124        0.146        0.104        0.557
+     std        0.083        0.059        0.044        0.006        0.005        0.008        0.025
+     D-MPNN, same molecules:
+    seed          GNN           PG           SX     RandNode     RandEdge   RandConn@k      ceiling
+       0        0.470        0.037        0.266        0.117        0.138        0.096        0.542
+       1        0.469        0.016        0.259        0.119        0.152        0.108        0.559
+       2        0.383        0.049        0.302        0.127        0.147        0.103        0.565
+       3        0.332        0.256        0.308        0.132        0.161        0.106        0.597
+       4        0.233        0.233        0.266        0.117        0.142        0.095        0.522
+    mean        0.378        0.118        0.280        0.122        0.148        0.102        0.557
+     std        0.089        0.104        0.020        0.006        0.008        0.005        0.025
+     GIN, same molecules:
+    seed          GNN           PG           SX     RandNode     RandEdge   RandConn@k      ceiling
+       0        0.222        0.078        0.261        0.123        0.136        0.108        0.542
+       1        0.145        0.023        0.277        0.119        0.146        0.095        0.559
+       2        0.110        0.038        0.146        0.127        0.148        0.113        0.565
+       3        0.259        0.163        0.241        0.129        0.162        0.111        0.597
+       4        0.070        0.076        0.164        0.116        0.143        0.090        0.522
+    mean        0.161        0.076        0.218        0.123        0.147        0.103        0.557
+     std        0.070        0.048        0.053        0.005        0.009        0.009        0.025
+
+     mean-threshold: SubgraphX mask vs RandConn sized to that mask
+    seed  SX mean-thr  RandConn|SX       |M| SX     budget k
+       0        0.328        0.113        5.583        5.874
+       1        0.318        0.104        5.465        5.677
+       2        0.211        0.109        5.772        5.874
+       3        0.333        0.113        5.349        5.897
+       4        0.187        0.097        5.816        6.400
+    mean        0.276        0.107        5.597        5.944
+     std        0.063        0.006        0.178        0.241
+
+[3] per-seed paired Wilcoxon, Holm within seed over the four registered comparisons (cells: explainer/null)
+  comparison                                  seed 0                seed 1                seed 2                seed 3                seed 4   higher  sig.above  sig.below
+  GNN vs RandNode                 0.310/0.121  ***      0.264/0.123  ***      0.140/0.129   ns      0.224/0.133  ***      0.080/0.115   **     4/5      3/5        1/5
+  PG vs RandNode                  0.026/0.121  ***      0.010/0.123  ***      0.021/0.129  ***      0.008/0.133  ***      0.162/0.115    *     1/5      1/5        4/5
+  SX vs RandNode                  0.285/0.121  ***      0.264/0.123  ***      0.211/0.129   **      0.266/0.133  ***      0.167/0.115   ns     5/5      4/5        0/5
+  SX vs RandConn                  0.328/0.113  ***      0.318/0.104  ***      0.211/0.109   **      0.333/0.113  ***      0.187/0.097   ns     5/5      4/5        0/5
+     cells where the mean and the rank test disagree in direction: none
+
+[4] direction per seed (+ sig. above, - sig. below, . n.s.) and the cells that differ from the D-MPNN and from GIN
+  comparison             GINE s0-4  ab/be |   D-MPNN s0-4  ab/be |      GIN s0-4  ab/be
+  GNN vs RandNode        + + . + -    3/1 |     + + + + +    5/0 |     + . - + -    2/2 |
+                       differs vs D-MPNN: s2 +->., s4 +->-;  vs GIN: s1 .->+, s2 -->.
+  PG vs RandNode         - - - - +    1/4 |     - - - + +    2/3 |     - - - . -    0/4 |
+                       differs vs D-MPNN: s3 +->-;  vs GIN: s3 .->-, s4 -->+
+  SX vs RandNode         + + + + .    4/0 |     + + + + +    5/0 |     + + . + .    3/0 |
+                       differs vs D-MPNN: s4 +->.;  vs GIN: s2 .->+
+  SX vs RandConn         + + + + .    4/0 |     + + + + +    5/0 |     + + . + +    4/0 |
+                       differs vs D-MPNN: s4 +->.;  vs GIN: s2 .->+, s4 +->.
+
+[5] explainer health
+  seed 0: GNN degenerate 0/350 empty 0 whole 0   PG degenerate 2/350 empty 2 whole 0   SX degenerate 0/350 empty 0 whole 0
+  seed 1: GNN degenerate 0/345 empty 0 whole 0   PG degenerate 2/345 empty 2 whole 0   SX degenerate 0/345 empty 0 whole 0
+  seed 2: GNN degenerate 0/348 empty 0 whole 0   PG degenerate 5/348 empty 5 whole 0   SX degenerate 0/348 empty 0 whole 0
+  seed 3: GNN degenerate 0/351 empty 0 whole 0   PG degenerate 0/351 empty 0 whole 0   SX degenerate 0/351 empty 0 whole 0
+  seed 4: GNN degenerate 0/346 empty 0 whole 0   PG degenerate 342/346 empty 342 whole 0  COLLAPSED   SX degenerate 0/346 empty 0 whole 0
+  PGExplainer collapsed (strict rule, n_degenerate/n >= 0.5) in 1/5 seeds
+
+[6] REGISTERED PREDICTIONS (committed before training; scoring rules fixed in the spec)
+  (a) GNNExplainer significantly above RandNode in >= 4/5 seeds: observed 3/5 -> DID NOT HOLD
+  (b) SubgraphX significantly above its RandConn null in >= 4/5 seeds: observed 4/5 -> HELD
+  (d) PGExplainer NOT significantly above RandNode in >= 3/5 seeds: observed 4/5 -> HELD
+
+[6'] SAME COUNTS WITH COLLAPSED PGExplainer SEEDS NOTED (strict rule): collapsed seeds = [4]
+  comparison            all seeds above/below/n.s.    non-collapsed seeds above/below/n.s.   (of 5 and 4)
+  GNN vs RandNode                            3/1/1                                   3/0/1
+  PG vs RandNode                             1/4/0                                   0/4/0
+  SX vs RandNode                             4/0/1                                   4/0/0
+  SX vs RandConn                             4/0/1                                   4/0/0
+  (on a constant PGExplainer mask the top-k selection is decided by tie-breaking, so the PG cells of collapsed seeds do not measure a ranking)
+  (a) on the 4 non-collapsed seeds (not registered in this form): 3/4
+  (b) on the 4 non-collapsed seeds (not registered in this form): 4/4
+  (d) on the 4 non-collapsed seeds (not registered in this form): 4/4
+
+[7] Fid+ / Fid- / GEF, R3 (mean fill), per-seed means over all explained molecules
+     GNN  Fid+ 0.255 0.247 0.197 0.248 0.220  (mean 0.233)   Fid- 0.230 0.256 0.346 0.287 0.337  (mean 0.291)   GEF 0.252 0.280 0.362 0.298 0.354  (mean 0.309)
+     PG   Fid+ 0.029 0.002 0.010 0.034 0.227  (mean 0.060)   Fid- 0.351 0.331 0.358 0.349 0.332  (mean 0.344)   GEF 0.363 0.350 0.367 0.356 0.340  (mean 0.355)
+     SX   Fid+ 0.308 0.274 0.293 0.271 0.282  (mean 0.286)   Fid- 0.199 0.194 0.225 0.173 0.225  (mean 0.203)   GEF 0.232 0.218 0.254 0.194 0.252  (mean 0.230)
+
+[8] BUDGET ROUNDING (not changed): SubgraphX is asked for max(3, round(0.25 N)) atoms; top-k scoring and R3 masking keep max(1, int(0.25 N)).
+  GT-bearing molecule-units 632: coalition > budget in 204 (32.3%), equal in 261, smaller in 167; mean coalition 5.60 vs budget 5.94
+
+saved -> runs/arch_gine/report.json, runs/arch_gine/mutagenicity_graphxai/arrays_s<S>.npz

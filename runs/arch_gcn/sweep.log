@@ -1,0 +1,8 @@
+[2026-10-13 12:31:03] gcn: SubgraphX 20 molecules in 1453s (incl. load + scoring)
+[2026-10-13 12:32:37] explain start: archs=gine gcn seeds=0 1 2 3 4 concurrency=5 GPU 1
+[2026-10-14 07:46:58] gcn seed 1 finished
+[2026-10-14 09:21:58] gcn seed 0 finished
+[2026-10-14 10:11:16] gcn seed 2 finished
+[2026-10-14 10:28:11] gcn seed 3 finished
+[2026-10-14 16:13:18] gcn seed 4 finished
+[2026-10-14 16:13:18] explain done (all archs: gine gcn)

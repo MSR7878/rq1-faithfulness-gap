@@ -1,0 +1,50 @@
+dataset=mutagenicity_graphxai  masking=all  has_ground_truth=True  stratify_frac=None  max_nodes=80 (excluded 26 graphs from test+train pools)
+model: test_acc=0.989 test_auroc=0.995 | explaining 20/354 test molecules [8pos/12neg]
+subgraphx explain:   0%|          | 0/20 [00:00<?, ?mol/s]subgraphx explain:   5%|▌         | 1/20 [02:32<48:13, 152.31s/mol]subgraphx explain:  10%|█         | 2/20 [04:31<39:49, 132.73s/mol]subgraphx explain:  15%|█▌        | 3/20 [05:42<29:35, 104.43s/mol]subgraphx explain:  20%|██        | 4/20 [07:06<25:45, 96.57s/mol] subgraphx explain:  25%|██▌       | 5/20 [09:09<26:31, 106.07s/mol]subgraphx explain:  30%|███       | 6/20 [10:27<22:29, 96.42s/mol] subgraphx explain:  35%|███▌      | 7/20 [11:54<20:16, 93.56s/mol]subgraphx explain:  40%|████      | 8/20 [12:15<14:02, 70.20s/mol]subgraphx explain:  45%|████▌     | 9/20 [12:25<09:25, 51.43s/mol]subgraphx explain:  50%|█████     | 10/20 [13:43<09:58, 59.81s/mol]subgraphx explain:  55%|█████▌    | 11/20 [15:28<11:03, 73.69s/mol]subgraphx explain:  60%|██████    | 12/20 [17:00<10:32, 79.10s/mol]subgraphx explain:  65%|██████▌   | 13/20 [18:16<09:07, 78.21s/mol]subgraphx explain:  70%|███████   | 14/20 [18:28<05:48, 58.09s/mol]subgraphx explain:  75%|███████▌  | 15/20 [18:47<03:52, 46.54s/mol]subgraphx explain:  80%|████████  | 16/20 [19:00<02:25, 36.34s/mol]subgraphx explain:  85%|████████▌ | 17/20 [21:04<03:08, 62.76s/mol]subgraphx explain:  90%|█████████ | 18/20 [21:55<01:58, 59.15s/mol]subgraphx explain:  95%|█████████▌| 19/20 [22:14<00:47, 47.21s/mol]subgraphx explain: 100%|██████████| 20/20 [23:58<00:00, 64.05s/mol]subgraphx explain: 100%|██████████| 20/20 [23:58<00:00, 71.91s/mol]
+  subgraphx: explained 20 mols in 1438s (71.9s/mol)
+
+--- sanity check: subgraphx ---
+  mol  0  N=38  |expl|(mean-thr)=10  |expl|(top25%)=10  top-k nodes=[6, 7, 10, 11, 12, 13, 14, 15, 17, 18]  GT motif nodes=[11, 12]  (overlap 2/2)
+  mol  1  N=36  |expl|(mean-thr)= 7  |expl|(top25%)= 9  top-k nodes=[0, 3, 5, 8, 12, 15, 24, 26, 30]  GT motif nodes=[]  (overlap 0/0)
+  mol  2  N=29  |expl|(mean-thr)= 7  |expl|(top25%)= 7  top-k nodes=[0, 2, 3, 6, 10, 14, 16]  GT motif nodes=[14, 15, 16]  (overlap 2/3)
+  mol  3  N=33  |expl|(mean-thr)= 6  |expl|(top25%)= 8  top-k nodes=[0, 1, 2, 6, 9, 14, 23, 32]  GT motif nodes=[]  (overlap 0/0)
+  mol  4  N=42  |expl|(mean-thr)=10  |expl|(top25%)=10  top-k nodes=[0, 2, 4, 6, 10, 13, 16, 19, 29, 33]  GT motif nodes=[]  (overlap 0/0)
+  => 0 empty, 0 whole-graph explanations out of 20
+  cached explanations -> runs/arch_gcn/mutagenicity_graphxai/timing/cache_sx20.pt
+score R3/mean/subgraphx:   0%|          | 0/20 [00:00<?, ?mol/s]score R3/mean/subgraphx: 100%|██████████| 20/20 [00:00<00:00, 82.15mol/s]
+score R3/mode/subgraphx:   0%|          | 0/20 [00:00<?, ?mol/s]score R3/mode/subgraphx: 100%|██████████| 20/20 [00:00<00:00, 79.79mol/s]
+score R2/zero/subgraphx:   0%|          | 0/20 [00:00<?, ?mol/s]score R2/zero/subgraphx: 100%|██████████| 20/20 [00:00<00:00, 80.12mol/s]
+score R1/hard/subgraphx:   0%|          | 0/20 [00:00<?, ?mol/s]score R1/hard/subgraphx: 100%|██████████| 20/20 [00:00<00:00, 83.76mol/s]
+
+====================================================================================
+mutagenicity_graphxai | R3 masking, fill='mean' | top-25% node explanations | n=20 (GEA over 8 GT-present mols)
+====================================================================================
+explainer                Fid+           Fid-            GEF     GEA Jaccard   GEA micro
+--------------------------------------------------------------------------------
+subgraphx       0.308±0.444   0.355±0.477   0.373±0.465    0.108±0.111        0.117
+
+====================================================================================
+mutagenicity_graphxai | R3 masking, fill='mode' | top-25% node explanations | n=20 (GEA over 8 GT-present mols)
+====================================================================================
+explainer                Fid+           Fid-            GEF     GEA Jaccard   GEA micro
+--------------------------------------------------------------------------------
+subgraphx       0.760±0.339   0.457±0.479   0.546±0.465    0.108±0.111        0.117
+
+====================================================================================
+mutagenicity_graphxai | R2 masking, fill='zero' | top-25% node explanations | n=20 (GEA over 8 GT-present mols)
+====================================================================================
+explainer                Fid+           Fid-            GEF     GEA Jaccard   GEA micro
+--------------------------------------------------------------------------------
+subgraphx       0.760±0.339   0.457±0.479   0.546±0.465    0.108±0.111        0.117
+
+====================================================================================
+mutagenicity_graphxai | R1 masking, fill='hard' | top-25% node explanations | n=20 (GEA over 8 GT-present mols)
+====================================================================================
+explainer                Fid+           Fid-            GEF     GEA Jaccard   GEA micro
+--------------------------------------------------------------------------------
+subgraphx       0.493±0.485   0.556±0.440   0.655±0.463    0.108±0.111        0.117
+
+Fid+ higher = explanation more necessary | Fid- lower = more sufficient
+GEF lower = more faithful (bounded [0,1)) | GEA higher = better GT overlap (fill/masking-independent)
+
+saved -> runs/arch_gcn/mutagenicity_graphxai/timing/out_sx20.json

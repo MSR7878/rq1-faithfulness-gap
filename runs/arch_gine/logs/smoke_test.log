@@ -1,0 +1,20 @@
+[gine] params: GINE(214) 281,468  D-MPNN(300) 280,502  ratio 1.003
+[gine] 1. forward ok (single == batched; bond features change logits by 0.0806)
+[gine] 2. edge mask ok (ones == unmasked; random mask moves logits by 0.287)
+[gine] 3. embeddings ok: 3 x (16, 214)
+PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=2.375]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=1.401]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=0.796]PGExplainer train: 100%|██████████| 3/3 [00:00<00:00,  6.25epoch/s, loss=0.796]
+[gine] 4a. PGExplainer trained on 10 graphs (loss 2.375 -> 0.796), edge mask [32] finite
+[gine] 4b. GNNExplainer node mask [16] and edge mask [32] finite, non-constant
+[gine] 4c. SubgraphX adapter == model with bond features (single, batched, zero-filled); coalition 4 atoms (budget 4, N=16)
+[gine] 4d. R3 masking keeps edge_attr; Fidelity/GEF ok
+[gcn] params: GCN(300) 276,002  D-MPNN(300) 280,502  ratio 0.984
+[gcn] 1. forward ok (single == batched, edge_attr ignored)
+[gcn] 2. edge mask ok (ones == unmasked; random mask moves logits by 0.0277)
+[gcn] 3. embeddings ok: 3 x (16, 300)
+PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=2.618]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=2.325]PGExplainer train:   0%|          | 0/3 [00:00<?, ?epoch/s, loss=1.655]PGExplainer train: 100%|██████████| 3/3 [00:00<00:00,  5.41epoch/s, loss=1.655]
+[gcn] 4a. PGExplainer trained on 10 graphs (loss 2.618 -> 1.655), edge mask [32] finite
+[gcn] 4b. GNNExplainer node mask [16] and edge mask [32] finite, non-constant
+[gcn] 4c. SubgraphX adapter == model with bond features (single, batched, zero-filled); coalition 4 atoms (budget 4, N=16)
+[gcn] 4d. R3 masking keeps edge_attr; Fidelity/GEF ok
+
+PASS -- GINE, GCN run through GNNExplainer, PGExplainer, SubgraphX and R3 scoring

@@ -1,0 +1,5 @@
+mutagenicity_graphxai seed 0: train/val/test 1237/177/354  D-MPNN test acc 0.9661 AUROC 0.9982  -> runs/arch_gcn/mutagenicity_graphxai/split_s0.json
+mutagenicity_graphxai seed 1: train/val/test 1237/177/354  D-MPNN test acc 0.9915 AUROC 1.0000  -> runs/arch_gcn/mutagenicity_graphxai/split_s1.json
+mutagenicity_graphxai seed 2: train/val/test 1237/177/354  D-MPNN test acc 0.9915 AUROC 0.9996  -> runs/arch_gcn/mutagenicity_graphxai/split_s2.json
+mutagenicity_graphxai seed 3: train/val/test 1237/177/354  D-MPNN test acc 0.9944 AUROC 0.9990  -> runs/arch_gcn/mutagenicity_graphxai/split_s3.json
+mutagenicity_graphxai seed 4: train/val/test 1237/177/354  D-MPNN test acc 0.9859 AUROC 0.9990  -> runs/arch_gcn/mutagenicity_graphxai/split_s4.json

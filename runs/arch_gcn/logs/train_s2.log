@@ -1,0 +1,7 @@
+loaded mutagenicity_graphxai: 1768 graphs, 14 node / 3 edge feats  [device=cuda]
+----------------------------------------------------------------
+mutagenicity_graphxai: single 70/10/20 split  (train=1237 val=177 test=354)
+  test accuracy = 0.9746
+  test AUROC    = 0.9864  (val_auroc=1.000, ep25)
+  majority-class baseline acc = 0.6380 (AUROC 0.5)   62s
+  saved checkpoint -> runs/arch_gcn/mutagenicity_graphxai/ckpt_s2.pt

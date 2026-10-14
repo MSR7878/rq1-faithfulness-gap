@@ -1,0 +1,24 @@
+== gcn
+ s0: degenerate GT-bearing  57  PG top-k GEA 0.103 | first-k-atoms mask GEA 0.063 (top-k == first k atoms in 0/57) | non-degenerate  70  PG GEA 0.610
+ s1: degenerate GT-bearing   2  PG top-k GEA 0.667 | first-k-atoms mask GEA 0.167 (top-k == first k atoms in 0/2) | non-degenerate 125  PG GEA 0.478
+ s2: degenerate GT-bearing   5  PG top-k GEA 0.377 | first-k-atoms mask GEA 0.090 (top-k == first k atoms in 0/5) | non-degenerate 122  PG GEA 0.472
+ s3: degenerate GT-bearing   1  PG top-k GEA 0.500 | first-k-atoms mask GEA 0.000 (top-k == first k atoms in 0/1) | non-degenerate 125  PG GEA 0.516
+ s4: degenerate GT-bearing   1  PG top-k GEA 0.667 | first-k-atoms mask GEA 0.000 (top-k == first k atoms in 0/1) | non-degenerate 124  PG GEA 0.474
+== gine
+ s0: degenerate GT-bearing   2  PG top-k GEA 0.500 | first-k-atoms mask GEA 0.125 (top-k == first k atoms in 0/2) | non-degenerate 125  PG GEA 0.019
+ s1: degenerate GT-bearing   1  PG top-k GEA 0.333 | first-k-atoms mask GEA 0.333 (top-k == first k atoms in 0/1) | non-degenerate 126  PG GEA 0.008
+ s2: degenerate GT-bearing   5  PG top-k GEA 0.533 | first-k-atoms mask GEA 0.157 (top-k == first k atoms in 0/5) | non-degenerate 122  PG GEA 0.000
+ s3: degenerate GT-bearing   0  PG top-k GEA nan | first-k-atoms mask GEA nan (top-k == first k atoms in 0/0) | non-degenerate 126  PG GEA 0.008
+ s4: degenerate GT-bearing 122  PG top-k GEA 0.166 | first-k-atoms mask GEA 0.055 (top-k == first k atoms in 0/122) | non-degenerate   3  PG GEA 0.000
+== gin
+ s0: degenerate GT-bearing  69  PG top-k GEA 0.113 | first-k-atoms mask GEA 0.074 (top-k == first k atoms in 0/69) | non-degenerate  58  PG GEA 0.036
+ s1: degenerate GT-bearing   7  PG top-k GEA 0.333 | first-k-atoms mask GEA 0.095 (top-k == first k atoms in 0/7) | non-degenerate 120  PG GEA 0.005
+ s2: degenerate GT-bearing  15  PG top-k GEA 0.323 | first-k-atoms mask GEA 0.069 (top-k == first k atoms in 0/15) | non-degenerate 112  PG GEA 0.000
+ s3: degenerate GT-bearing 110  PG top-k GEA 0.169 | first-k-atoms mask GEA 0.053 (top-k == first k atoms in 0/110) | non-degenerate  16  PG GEA 0.116
+ s4: degenerate GT-bearing   9  PG top-k GEA 0.222 | first-k-atoms mask GEA 0.082 (top-k == first k atoms in 0/9) | non-degenerate 116  PG GEA 0.065
+== dmpnn
+ s0: degenerate GT-bearing   0  PG top-k GEA nan | first-k-atoms mask GEA nan (top-k == first k atoms in 0/0) | non-degenerate 127  PG GEA 0.037
+ s1: degenerate GT-bearing   0  PG top-k GEA nan | first-k-atoms mask GEA nan (top-k == first k atoms in 0/0) | non-degenerate 127  PG GEA 0.016
+ s2: degenerate GT-bearing   1  PG top-k GEA 0.800 | first-k-atoms mask GEA 0.200 (top-k == first k atoms in 0/1) | non-degenerate 126  PG GEA 0.043
+ s3: degenerate GT-bearing   0  PG top-k GEA nan | first-k-atoms mask GEA nan (top-k == first k atoms in 0/0) | non-degenerate 126  PG GEA 0.256
+ s4: degenerate GT-bearing   0  PG top-k GEA nan | first-k-atoms mask GEA nan (top-k == first k atoms in 0/0) | non-degenerate 125  PG GEA 0.233

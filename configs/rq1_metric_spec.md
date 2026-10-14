@@ -2819,3 +2819,109 @@ How they will be scored (fixed now; identical to the GIN entry of 2026-10-10):
   runs/arch_gin/mutagenicity_graphxai/arrays_s<S>.npz (read-only).
 - If the projected SubgraphX time for both architectures exceeds 30 hours,
   only GINE is run.
+
+### RESULTS, GINE and GCN on Mutagenicity (run 2026-10-13 12:32 -> 2026-10-14 16:13 IST;
+### src/analysis/arch_report.py; full output runs/arch_gine/report.txt, runs/arch_gcn/report.txt)
+
+Run as registered (commit fcd09c2). All ten models passed the accuracy bar
+(GINE acc 0.9887-0.9972, AUROC 0.9853-0.9989; GCN acc 0.9718-0.9887, AUROC
+0.9864-0.9990). Parameters: GINE 281,468 trainable (281,471 in the state
+dict, which also holds three non-trainable GINEConv eps buffers); GCN
+276,002. SubgraphX timing, 20 molecules, single process: GINE 112.3 s/mol,
+GCN 71.9 s/mol. Combined projection 18-24 h (< 30 h), so both were run; the
+queue took 27.7 h (GINE units 8.5-13.7 h; GCN units 9.6-12.4 h, slower than
+projected). Nothing reused from the GIN run. Explained and GT-bearing
+molecules are the same as the D-MPNN's and GIN's in every seed.
+
+Top-k 0.25 GEA, max-over-set, per-seed means over GT-bearing test molecules:
+
+| seed | GINE GNN | GINE PG | GINE SX | GCN GNN | GCN PG | GCN SX | RandNode (GINE / GCN) |
+|---|---|---|---|---|---|---|---|
+| 0 | 0.310 | 0.026 | 0.285 | 0.226 | 0.382 | 0.157 | 0.121 / 0.114 |
+| 1 | 0.264 | 0.010 | 0.264 | 0.143 | 0.481 | 0.163 | 0.123 / 0.117 |
+| 2 | 0.140 | 0.021 | 0.211 | 0.309 | 0.468 | 0.191 | 0.129 / 0.126 |
+| 3 | 0.224 | 0.008 | 0.266 | 0.357 | 0.516 | 0.210 | 0.133 / 0.126 |
+| 4 | 0.080 | 0.162 | 0.167 | 0.266 | 0.475 | 0.152 | 0.115 / 0.116 |
+| mean | 0.203 | 0.046 | 0.239 | 0.260 | 0.464 | 0.175 | 0.124 / 0.120 |
+
+For reference (same molecules): D-MPNN means GNN 0.378, PG 0.118, SX 0.280;
+GIN means GNN 0.161, PG 0.076, SX 0.218; ceiling 0.557.
+
+SubgraphX mean-threshold mask vs RandConn sized to that mask, seeds 0-4:
+GINE 0.328/0.113, 0.318/0.104, 0.211/0.109, 0.333/0.113, 0.187/0.097;
+GCN 0.184/0.106, 0.180/0.101, 0.206/0.112, 0.217/0.114, 0.208/0.095.
+
+Per-seed Wilcoxon + Holm over the four registered comparisons; direction per
+seed (+ significantly above, - significantly below, . n.s.), above/below:
+
+| comparison | GINE | GCN | D-MPNN | GIN |
+|---|---|---|---|---|
+| GNN vs RandNode | + + . + - (3/1) | + . + + + (4/0) | + + + + + (5/0) | + . - + - (2/2) |
+| PG vs RandNode | - - - - + (1/4) | + + + + + (5/0) | - - - + + (2/3) | - - - . - (0/4) |
+| SX vs RandNode | + + + + . (4/0) | . . . + . (1/0) | + + + + + (5/0) | + + . + . (3/0) |
+| SX vs RandConn | + + + + . (4/0) | . . . + + (2/0) | + + + + + (5/0) | + + . + + (4/0) |
+
+Cells that differ:
+- GINE vs D-MPNN: GNN s2 (+ to .), s4 (+ to -); PG s3 (+ to -); SX vs
+  RandNode s4 (+ to .); SX vs RandConn s4 (+ to .).
+- GINE vs GIN: GNN s1 (. to +), s2 (- to .); PG s3 (. to -), s4 (- to +);
+  SX vs RandNode s2 (. to +); SX vs RandConn s2 (. to +), s4 (+ to .).
+- GCN vs D-MPNN: GNN s1 (+ to .); PG s0, s1, s2 (- to +); SX vs RandNode
+  s0, s1, s2, s4 (+ to .); SX vs RandConn s0, s1, s2 (+ to .).
+- GCN vs GIN: GNN s2, s4 (- to +); PG all five (s0-s2, s4 - to +; s3 . to
+  +); SX vs RandNode s0, s1 (+ to .); SX vs RandConn s0, s1 (+ to .).
+In one cell the mean and the rank test disagree (GCN seed 1, GNN vs
+RandNode); it is n.s.
+
+REGISTERED PREDICTIONS:
+GINE
+- (a) GNNExplainer significantly above RandNode in at least 4 of 5 seeds:
+  3/5 (below in 1/5) -- DID NOT HOLD.
+- (b) SubgraphX significantly above its RandConn null in at least 4 of 5:
+  4/5 -- HELD.
+- (d) PGExplainer not significantly above RandNode in at least 3 of 5: 4/5
+  -- HELD.
+GCN
+- (b) SubgraphX significantly above its RandConn null in at least 4 of 5:
+  2/5 -- DID NOT HOLD.
+- (d) PGExplainer not significantly above RandNode in at least 3 of 5: 0/5
+  (significantly ABOVE in 5/5) -- DID NOT HOLD.
+
+PGExplainer collapse (strict rule, over all explained molecules): GINE 1/5
+(seed 4: 342/346 degenerate); GCN 4/5 (seeds 0-3: 280/350, 201/345,
+217/348, 206/351; seed 4: 16/346). D-MPNN 0/5, GIN 2/5. Every degenerate
+mask is all-zero.
+
+Counts with collapsed PGExplainer seeds set aside (above/below/n.s.):
+- GINE, 4 seeds (0-3): GNN 3/0/1, PG 0/4/0, SX vs RandNode 4/0/0, SX vs
+  RandConn 4/0/0; (a) 3/4, (b) 4/4, (d) 4/4. GINE seed 4's PG "above" cell
+  (0.162 vs 0.115) is on a collapsed seed.
+- GCN, 1 seed (4): GNN +, PG +, SX vs RandNode ., SX vs RandConn +.
+
+EXPLORATORY (not registered; src/analysis/arch_pg_tie_check.py, output
+runs/arch_gcn/exploratory_pg_tie_check.txt): PGExplainer top-k GEA on
+GT-bearing molecules, split by degenerate vs valid mask.
+- GCN's collapse falls almost entirely on molecules WITHOUT ground truth:
+  degenerate GT-bearing molecules per seed 57, 2, 5, 1, 1 (of 125-127). On
+  the valid masks GCN's PGExplainer scores 0.610, 0.478, 0.472, 0.516, 0.474
+  -- so GCN's PG-above-RandNode result is carried by valid masks, not by
+  tie-breaking, and the strict collapse flag (computed over all explained
+  molecules) overstates what happens on the GT-bearing subset.
+- On degenerate masks, torch.topk never returned the first k atoms (0 cases
+  in every architecture and seed), and the tie-broken selections score above
+  RandNode (0.10-0.67 per seed). GINE seed 4 (122 degenerate GT-bearing
+  molecules) scores 0.166 on them; GIN seeds 0 and 3, 0.113 and 0.169. The
+  PG cells of collapsed seeds are therefore not a measure of ranking, and
+  where many GT-bearing masks are degenerate they are inflated relative to
+  random, not deflated.
+
+Budget rounding (not changed): the SubgraphX coalition exceeds the top-k
+scoring budget in 204/632 (GINE) and 186/632 (GCN) GT-bearing
+molecule-units, equals it in 261 and 274, and is smaller in 167 and 172.
+
+Fid+/Fid-/GEF under R3 (mean fill), per seed: report.txt section 7.
+Persisted per architecture: runs/arch_<arch>/mutagenicity_graphxai/
+arrays_s<S>.npz (per-molecule GEA for every explainer x binarization x GT
+variant, all nulls, win/loss, mask sizes, mol_idx, explained_idx, split
+membership, seeds), report.json, report.txt, split and seed files, training,
+timing, smoke-test and unit-summary logs, sweep.log.
