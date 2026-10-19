@@ -2925,3 +2925,54 @@ arrays_s<S>.npz (per-molecule GEA for every explainer x binarization x GT
 variant, all nulls, win/loss, mask sizes, mol_idx, explained_idx, split
 membership, seeds), report.json, report.txt, split and seed files, training,
 timing, smoke-test and unit-summary logs, sweep.log.
+
+## RQ1 reliance (Part A) and logit fidelity (Part B): AMENDMENT to the validation rule -- 2026-10-19, written BEFORE the full run
+
+Plan and registered predictions: configs/predictions_reliance_fidelity.md
+(commit 87a413d). Scripts: commit e2254ca. Only the smoke test has run.
+
+Validation rule as planned: before computing anything new, each unit's
+probability-space Fid+/Fid- is recomputed and must match the stored
+per-molecule values of the original run (|dev| <= 1e-4); a mismatch stops
+the run.
+
+Smoke-test finding: the validation holds for every unit tested (MUTAG-GT,
+Tox21, B-XAIC indole and P, Mutagenicity D-MPNN / GIN / GINE / GCN; max |dev|
+8e-7) and for GNNExplainer and PGExplainer on the two single-split runs, but
+NOT for SubgraphX on MUTAG (runs/phase3_mutag.json; 17 of 29 molecules
+differ, up to 0.29) and on BBBP (runs/phase3_bbbp.json; 25 of 30, up to
+0.20).
+
+Cause: SubgraphX importances are 0/1 masks, so the top-k selection (and
+especially the explanation-removed graph, which keeps int(0.75 N) atoms out
+of the N - k tied zeros) is decided by tie order. Tie order in torch.topk on
+equal values is build-dependent. The stored MUTAG and BBBP values were
+written on 2026-09-09 at 10:37-10:38; the torch build on Ada (now 2.6.0) was
+reinstalled at 14:29 the same day. Every later run reproduces exactly.
+
+Decision (user, 2026-10-19): for these two cells only (MUTAG SubgraphX,
+BBBP SubgraphX) the validation is replaced by "recompute with current
+tie-breaking and report next to the stored values". The stored values are
+not overwritten or edited; the recomputed values are saved as new files under
+runs/rq1_reliance_fidelity/. All other units keep the original rule. The
+registered predictions A1, A2 and B1 do not change (B1's BBBP SubgraphX cell
+is computed with current tie-breaking, for logit and probability alike).
+
+Added, exploratory, for these two cells only: the SubgraphX top-k selection
+is recomputed under 5 random tie-break orders (seeded), and the spread of
+Fid+, Fid- (probability and logit, R1/R2/R3) across the orders is reported
+(mean, min, max of the molecule averages; per-molecule range). GEA is
+reported where a ground truth exists for the graph (MUTAG std has none of
+its own; it is computed with the MUTAG-GT mask only if the two datasets'
+graphs are verified identical, otherwise reported as not applicable; BBBP
+has none).
+
+Places in this spec that use the stored MUTAG or BBBP SubgraphX fidelity
+values (paper_results_draft.tex was not found on the laptop or on Ada, so
+it was not checked): the Phase-3 results table rows "MUTAG (std) SX" and
+"BBBP SX"; the mode-fill note "MUTAG/SX R3-mode GEF 0.32 vs 0.12"; F1 (R3
+noise-dominated, includes MUTAG and BBBP); F4 (BBBP PG/SX R3->R2 n.s.); F5
+(SX separates under R2 on MUTAG and BBBP); F6 (MUTAG GNN-SX and PG-SX
+pairs washed out under R1; BBBP R1 ~= R2); F7 (PG-SX Fid+ under R1 on MUTAG
+and BBBP); the seed-coverage / limitations tables that list these findings
+as resting on MUTAG-std and BBBP.
