@@ -1,0 +1,82 @@
+========================================================================================================================
+ PHASE 3 -- PGExplainer collapse diagnosis (descriptive)
+========================================================================================================================
+
+ units with results 42/42; pairs 28 (unpaired collapsed units: [])
+
+ [R] reproduction of the stored PG masks by the re-run: same subsample in 42/42; max |mask dev| median 0.00e+00, max 1.00e+00; degenerate count equal to stored in 39/42
+
+ [U] per unit
+  unit                               coll    deg/n loss 1st    last  mask sd entropy   |emb| node acc node sil graph acc graph sil pos frac
+  coupled_bxaic_PAINS_s0               no   37/400    4.605   2.882 2.91e-01   0.946    5.43    0.668    0.004     0.893    -0.043    0.320
+  coupled_bxaic_PAINS_s3              yes  400/400    3.648   3.231 0.00e+00   1.000    5.34    0.659    0.003     0.899    -0.033    0.329
+  coupled_bxaic_PAINS_s4              yes  400/400    3.964   3.371 0.00e+00   1.000    5.26    0.661   -0.001     0.895    -0.047    0.336
+  coupled_mutag_graphxai_s0            no    0/188    3.986   2.871 4.99e-18   0.308    5.97    0.806    0.101     0.817     0.157    0.552
+  coupled_mutag_graphxai_s3           yes  188/188    3.105   2.104 0.00e+00   1.000    6.65    0.830    0.119     0.933     0.227    0.552
+  coupled_tox21_NR-AR-LBD_s0           no     1/30    6.945   3.348 2.68e-01   0.938   24.37    0.920   -0.025     0.954     0.223    0.025
+  coupled_tox21_NR-AR-LBD_s2          yes    30/30   16.977   2.382 0.00e+00   1.000   22.31    0.833    0.034     0.846     0.270    0.035
+  coupled_tox21_NR-AR-LBD_s3          yes    30/30    3.379   2.425 0.00e+00   1.000   26.28    0.913    0.028     0.944     0.323    0.014
+  coupled_tox21_NR-AR-LBD_s4          yes    30/30    4.823   2.373 0.00e+00   1.000   23.52    0.864   -0.057     0.949     0.146    0.033
+  coupled_tox21_NR-AR_s0               no     0/30    2.157   1.867 9.39e-03   0.657   19.79    0.853   -0.041     0.938     0.168    0.032
+  coupled_tox21_NR-AR_s1              yes    30/30    3.186   2.243 0.00e+00   1.000   19.78    0.900    0.011     0.977     0.114    0.022
+  coupled_tox21_NR-AR_s4              yes    30/30    3.358   2.323 0.00e+00   1.000   25.42    0.874   -0.024     0.913     0.127    0.028
+  coupled_tox21_NR-AhR_s0              no     0/30    1.627   1.268 8.52e-03   0.685   21.62    0.767   -0.022     0.874    -0.010    0.091
+  coupled_tox21_NR-AhR_s1             yes    30/30    2.477   2.078 0.00e+00   1.000   24.41    0.758    0.002     0.849     0.072    0.099
+  coupled_tox21_NR-AhR_s2             yes    29/30    4.914   1.943 0.00e+00   1.000   23.96    0.757    0.027     0.799     0.033    0.067
+  coupled_tox21_NR-AhR_s4             yes    30/30    2.713   2.037 0.00e+00   1.000   28.23    0.717   -0.011     0.807     0.006    0.085
+  coupled_tox21_NR-Aromatase_s0        no     0/30    1.767   1.283 1.78e-03   0.722   24.30    0.727   -0.050     0.644     0.416    0.007
+  coupled_tox21_NR-Aromatase_s2       yes    30/30    3.177   2.344 0.00e+00   1.000   23.15    0.694   -0.044     0.687     0.375    0.025
+  coupled_tox21_NR-Aromatase_s4       yes    30/30    4.144   2.253 0.00e+00   1.000   23.72    0.699   -0.036     0.785     0.203    0.028
+  coupled_tox21_NR-ER-LBD_s0           no     0/30    9.582   7.328 2.54e-01   0.615   20.78    0.748    0.103     0.858     0.216    0.043
+  coupled_tox21_NR-ER-LBD_s1          yes    30/30    3.118   2.127 0.00e+00   1.000   19.85    0.808    0.057     0.838     0.115    0.025
+  coupled_tox21_NR-ER-LBD_s4          yes    30/30    3.859   2.081 0.00e+00   1.000   19.92    0.782    0.016     0.802     0.188    0.020
+  coupled_tox21_NR-ER_s0               no     2/30    0.605   0.477 4.40e-04   0.503   19.93    0.767    0.031     0.882     0.232    0.041
+  coupled_tox21_NR-ER_s4              yes    30/30    2.308   2.176 0.00e+00   1.000   22.98    0.732    0.005     0.789     0.222    0.053
+  coupled_tox21_NR-PPAR-gamma_s0       no     0/30    6.887   5.034 4.23e-04   0.805   24.40    0.725    0.226     0.642     0.561    0.013
+  coupled_tox21_NR-PPAR-gamma_s2      yes    30/30    4.098   2.014 0.00e+00   1.000   27.44    0.738    0.191     0.730     0.294    0.021
+  coupled_tox21_NR-PPAR-gamma_s3      yes    30/30    3.096   2.026 0.00e+00   1.000   25.79    0.725    0.187     0.621     0.320    0.013
+  coupled_tox21_SR-ARE_s0              no     0/30    3.548   3.175 1.17e-02   0.794   20.75    0.648    0.042     0.743     0.173    0.118
+  coupled_tox21_SR-ARE_s1             yes    30/30    2.763   1.914 0.00e+00   1.000   27.04    0.637    0.021     0.711     0.141    0.133
+  coupled_tox21_SR-ARE_s2             yes    30/30    2.321   2.047 0.00e+00   1.000   22.71    0.667    0.030     0.701     0.173    0.079
+  coupled_tox21_SR-ARE_s4             yes    30/30    2.339   2.006 0.00e+00   1.000   22.94    0.629    0.053     0.709     0.188    0.104
+  coupled_tox21_SR-ATAD5_s0            no     0/30    2.537   0.962 1.20e-02   0.397   23.07    0.774    0.124     0.693     0.564    0.007
+  coupled_tox21_SR-ATAD5_s2           yes    30/30    2.830   2.094 0.00e+00   1.000   20.48    0.712   -0.033     0.490     0.326    0.008
+  coupled_tox21_SR-MMP_s0             yes    30/30    4.401   2.063 0.00e+00   1.000   22.69    0.689    0.046     0.841     0.177    0.134
+  coupled_tox21_SR-MMP_s1             yes    30/30    5.177   2.193 0.00e+00   1.000   22.32    0.675    0.042     0.809     0.160    0.139
+  coupled_tox21_SR-MMP_s2              no     0/30    1.720   0.859 1.19e-02   0.486   23.56    0.677    0.054     0.779     0.264    0.100
+  coupled_tox21_SR-MMP_s4             yes    15/30   15.849   2.187 0.00e+00   1.000   22.50    0.714    0.026     0.798     0.101    0.149
+  coupled_tox21_SR-p53_s0             yes    30/30    5.242   2.087 0.00e+00   1.000   22.25    0.662    0.158     0.655     0.340    0.028
+  coupled_tox21_SR-p53_s1              no     0/30   12.347   7.346 2.04e-01   0.549   24.51    0.630    0.031     0.696     0.255    0.041
+  coupled_tox21_SR-p53_s4             yes    30/30    5.791   2.216 0.00e+00   1.000   25.13    0.685    0.110     0.715     0.306    0.045
+  decoupled_mutag_graphxai_s0          no    0/188    4.379   2.871 1.12e-17   0.323    5.97    0.804    0.101     0.817     0.157    0.552
+  decoupled_mutag_graphxai_s3         yes  188/188    2.877   2.104 0.00e+00   1.000    6.65    0.833    0.119     0.933     0.227    0.552
+
+ [D] Tox21 pairs (n = 24): collapsed vs its clean partner -- higher / lower / equal-or-NaN
+    final loss                      12 /  12 /   0
+    loss drop (first - last)        14 /  10 /   0
+    mask std                         0 /  24 /   0
+    mask entropy                    24 /   0 /   0
+    emb norm mean                   12 /  12 /   0
+    emb norm std                    12 /  12 /   0
+    node probe bal. acc             11 /  13 /   0
+    node silhouette                 12 /  12 /   0
+    graph probe bal. acc             8 /  16 /   0
+    graph silhouette                 8 /  16 /   0
+    predicted-positive fraction     13 /  10 /   1
+
+ [D] all pairs (n = 28): collapsed vs its clean partner -- higher / lower / equal-or-NaN
+    final loss                      14 /  14 /   0
+    loss drop (first - last)        14 /  14 /   0
+    mask std                         0 /  28 /   0
+    mask entropy                    28 /   0 /   0
+    emb norm mean                   14 /  14 /   0
+    emb norm std                    14 /  14 /   0
+    node probe bal. acc             13 /  15 /   0
+    node silhouette                 14 /  14 /   0
+    graph probe bal. acc            12 /  16 /   0
+    graph silhouette                11 /  17 /   0
+    predicted-positive fraction     15 /  10 /   3
+
+ [P5] Tox21: node-embedding probe balanced accuracy lower for the collapsed unit in 13/24 pairs -> HELD
+
+saved -> runs/rq1_followups/phase3/report.json

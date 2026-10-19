@@ -1,0 +1,166 @@
+============================================================================================================================
+ PHASE 2b -- tie robustness of stored top-k SubgraphX / PGExplainer results, rule (b): random ties, 20 orders, averaged per molecule
+============================================================================================================================
+
+[1] fraction of GT-bearing molecules with a tie at the top-k boundary (mean over seeds / folds)
+  unit group                             GNN      PG      SX
+  audit_mutag_graphxai                  0.00    0.31    0.46
+  audit_bxaic_indole                    0.00    0.92    0.45
+  audit_bxaic_PAINS                     0.00    0.65    0.47
+  audit_bxaic_X                         0.00    0.09    0.94
+  audit_bxaic_P                         0.00    0.12    0.78
+  audit_mutagenicity_graphxai           0.00    0.23    0.75
+  arch_D-MPNN                           0.00    0.23    0.75
+  arch_GIN                              0.00    0.55    0.75
+  arch_GINE                             0.00    0.45    0.59
+  arch_GCN                              0.00    0.66    0.57
+  cv                                    0.00    0.29    0.75
+
+[2] matched-budget counts, top-k GEA vs RandNode (original rule: Holm over the 3 explainers; above/below of 5 seeds)
+  dataset                 explainer    stored   random ties
+  mutag_graphxai          GNN          4/1           4/1
+  mutag_graphxai          PG           2/2           2/3  <-- changes
+  mutag_graphxai          SX           0/5           0/5
+  mutag_graphxai          SX vs RandConn at the budget (top-k), random ties, one test per seed: 0/5  (no stored top-k version)
+  bxaic_indole            GNN          3/2           3/2
+  bxaic_indole            PG           5/0           5/0
+  bxaic_indole            SX           5/0           5/0
+  bxaic_indole            SX vs RandConn at the budget (top-k), random ties, one test per seed: 5/0  (no stored top-k version)
+  bxaic_PAINS             GNN          5/0           5/0
+  bxaic_PAINS             PG           3/0           3/0
+  bxaic_PAINS             SX           5/0           5/0
+  bxaic_PAINS             SX vs RandConn at the budget (top-k), random ties, one test per seed: 5/0  (no stored top-k version)
+  bxaic_X                 GNN          1/0           1/0
+  bxaic_X                 PG           5/0           5/0
+  bxaic_X                 SX           5/0           5/0
+  bxaic_X                 SX vs RandConn at the budget (top-k), random ties, one test per seed: 5/0  (no stored top-k version)
+  bxaic_P                 GNN          5/0           5/0
+  bxaic_P                 PG           5/0           5/0
+  bxaic_P                 SX           5/0           5/0
+  bxaic_P                 SX vs RandConn at the budget (top-k), random ties, one test per seed: 5/0  (no stored top-k version)
+  mutagenicity_graphxai   GNN          5/0           5/0
+  mutagenicity_graphxai   PG           2/3           2/3
+  mutagenicity_graphxai   SX           5/0           5/0
+  (SX mean-threshold vs size-matched RandConn -- the paper's connectivity check -- has no ties and is unchanged)
+
+[3] architecture table, Mutagenicity (registered 4-test family; above/below of 5 seeds)
+  model   comparison            stored   random ties   per unit stored -> random ties
+  D-MPNN  GNN vs RandNode          5/0           5/0   +++++ -> +++++
+  D-MPNN  PG vs RandNode           2/3           2/3   ---++ -> ---++
+  D-MPNN  SX vs RandNode           5/0           5/0   +++++ -> +++++
+  D-MPNN  SX vs RandConn           5/0           5/0   +++++ -> +++++
+  GIN     GNN vs RandNode          2/2           2/2   +.-+- -> +.-+-
+  GIN     PG vs RandNode           0/4           0/4   ---.- -> ---.-
+  GIN     SX vs RandNode           3/0           3/0   ++.+. -> ++.+.
+  GIN     SX vs RandConn           4/0           4/0   ++.++ -> ++.++
+  GINE    GNN vs RandNode          3/1           3/1   ++.+- -> ++.+-
+  GINE    PG vs RandNode           1/4           0/4   ----+ -> ----.  <-- changes
+  GINE    SX vs RandNode           4/0           4/0   ++++. -> ++++.
+  GINE    SX vs RandConn           4/0           4/0   ++++. -> ++++.
+  GCN     GNN vs RandNode          4/0           4/0   +.+++ -> +.+++
+  GCN     PG vs RandNode           5/0           5/0   +++++ -> +++++
+  GCN     SX vs RandNode           1/0           1/0   ...+. -> ...+.
+  GCN     SX vs RandConn           2/0           2/0   ...++ -> ...++
+
+[4] Mutagenicity 5-fold CV (same family; above/below of 5 folds)
+  model   comparison            stored   random ties   per unit stored -> random ties
+  CV      GNN vs RandNode          5/0           5/0   +++++ -> +++++
+  CV      PG vs RandNode           1/3           1/3   --+-. -> --+-.
+  CV      SX vs RandNode           5/0           5/0   +++++ -> +++++
+  CV      SX vs RandConn           5/0           5/0   +++++ -> +++++
+
+[5] fidelity under random ties: 112 units
+  mean fraction of explained molecules with a tie at the E boundary / the removed-set boundary: PG 0.49 / 0.49   SX 0.62 / 0.62
+  Part B random-corrected (vs random-node) direction cells for PG and SX: 1344; changed under random ties: 116
+    bbbp                        PG  R3 fid_minus  . -> +
+    bxaic_PAINS_s0              PG  R1 fid_plus   - -> .
+    bxaic_PAINS_s0              PG  R2 fid_plus   . -> +
+    bxaic_PAINS_s0              PG  R2 fid_minus  . -> +
+    bxaic_PAINS_s3              PG  R1 fid_plus   - -> .
+    bxaic_PAINS_s3              PG  R1 fid_minus  . -> +
+    bxaic_PAINS_s3              PG  R2 fid_minus  - -> .
+    bxaic_PAINS_s4              PG  R1 fid_plus   - -> .
+    bxaic_PAINS_s4              PG  R1 fid_minus  - -> .
+    bxaic_PAINS_s4              PG  R2 fid_plus   - -> .
+    bxaic_PAINS_s4              PG  R2 fid_minus  - -> .
+    bxaic_indole_s0             PG  R1 fid_plus   - -> +
+    bxaic_indole_s2             PG  R1 fid_plus   - -> .
+    bxaic_indole_s2             PG  R3 fid_minus  . -> +
+    bxaic_indole_s4             PG  R1 fid_plus   - -> .
+    bxaic_indole_s4             PG  R3 fid_minus  . -> +
+    bxaic_indole_s4             SX  R1 fid_plus   . -> +
+    mutag                       SX  R1 fid_minus  . -> +
+    mutag_graphxai_s3           PG  R1 fid_plus   - -> .
+    mutag_graphxai_s3           PG  R1 fid_minus  + -> .
+    mutag_graphxai_s3           PG  R2 fid_plus   - -> .
+    mutag_graphxai_s3           PG  R2 fid_minus  - -> .
+    mutag_graphxai_s3           PG  R3 fid_plus   - -> .
+    mutag_graphxai_s5           PG  R1 fid_plus   - -> .
+    mutag_graphxai_s5           PG  R1 fid_minus  + -> .
+    mutag_graphxai_s5           PG  R3 fid_minus  + -> .
+    mutag_graphxai_s5           SX  R1 fid_plus   . -> +
+    mutagenicity_gcn_s0         PG  R1 fid_minus  + -> -
+    mutagenicity_gcn_s0         PG  R3 fid_minus  . -> -
+    mutagenicity_gcn_s0         SX  R1 fid_plus   + -> .
+    mutagenicity_gcn_s0         SX  R3 fid_minus  . -> -
+    mutagenicity_gcn_s1         PG  R1 fid_minus  + -> -
+    mutagenicity_gcn_s1         SX  R1 fid_plus   + -> .
+    mutagenicity_gcn_s1         SX  R1 fid_minus  + -> -
+    mutagenicity_gcn_s1         SX  R3 fid_minus  + -> -
+    mutagenicity_gcn_s2         PG  R1 fid_minus  + -> -
+    mutagenicity_gcn_s2         SX  R1 fid_plus   + -> .
+    mutagenicity_gcn_s2         SX  R1 fid_minus  . -> -
+    mutagenicity_gcn_s3         PG  R1 fid_minus  + -> .
+    mutagenicity_gcn_s3         SX  R1 fid_minus  . -> -
+    mutagenicity_gin_s0         PG  R1 fid_plus   . -> -
+    mutagenicity_gin_s0         PG  R1 fid_minus  + -> .
+    mutagenicity_gin_s0         PG  R3 fid_minus  - -> +
+    mutagenicity_gin_s0         SX  R3 fid_plus   . -> +
+    mutagenicity_gin_s3         PG  R2 fid_plus   - -> .
+    mutagenicity_gin_s3         PG  R2 fid_minus  - -> .
+    mutagenicity_gin_s3         PG  R3 fid_minus  - -> .
+    mutagenicity_gin_s4         PG  R2 fid_plus   - -> .
+    mutagenicity_gin_s4         PG  R3 fid_minus  - -> .
+    mutagenicity_gine_s2        SX  R1 fid_plus   + -> .
+    mutagenicity_gine_s2        SX  R2 fid_plus   . -> +
+    mutagenicity_gine_s2        SX  R3 fid_plus   . -> +
+    mutagenicity_gine_s4        PG  R1 fid_plus   + -> .
+    mutagenicity_gine_s4        PG  R2 fid_minus  - -> .
+    mutagenicity_gine_s4        PG  R3 fid_minus  - -> .
+    mutagenicity_gine_s4        SX  R2 fid_plus   . -> +
+    tox21_NR-AR-LBD_s1          SX  R2 fid_plus   . -> +
+    tox21_NR-AR-LBD_s1          SX  R2 fid_minus  . -> +
+    tox21_NR-AR-LBD_s2          SX  R3 fid_minus  . -> -
+    tox21_NR-AR-LBD_s3          PG  R1 fid_minus  + -> .
+    tox21_NR-AR-LBD_s3          SX  R1 fid_minus  . -> +
+    tox21_NR-AR_s0              SX  R3 fid_plus   . -> +
+    tox21_NR-AR_s2              PG  R1 fid_minus  . -> +
+    tox21_NR-AR_s2              SX  R2 fid_minus  . -> -
+    tox21_NR-AR_s4              SX  R2 fid_minus  . -> -
+    tox21_NR-AhR_s0             SX  R2 fid_plus   . -> +
+    tox21_NR-AhR_s1             PG  R2 fid_minus  + -> .
+    tox21_NR-AhR_s2             PG  R1 fid_plus   + -> .
+    tox21_NR-AhR_s3             SX  R1 fid_plus   . -> +
+    tox21_NR-Aromatase_s0       SX  R2 fid_minus  . -> -
+    tox21_NR-Aromatase_s3       SX  R1 fid_minus  . -> -
+    tox21_NR-ER-LBD_s0          SX  R1 fid_plus   . -> +
+    tox21_NR-ER-LBD_s0          SX  R3 fid_plus   . -> +
+    tox21_NR-ER-LBD_s2          PG  R3 fid_minus  . -> +
+    tox21_NR-ER-LBD_s2          SX  R3 fid_plus   . -> +
+    tox21_NR-ER-LBD_s2          SX  R3 fid_minus  . -> -
+    tox21_NR-ER-LBD_s3          SX  R3 fid_plus   . -> +
+    tox21_NR-ER-LBD_s4          PG  R1 fid_minus  + -> .
+    tox21_NR-ER-LBD_s4          SX  R2 fid_minus  . -> -
+    tox21_NR-ER-LBD_s4          SX  R3 fid_plus   . -> +
+
+[6] GEA vs random-node-corrected logit Fid+ under R3 (original comparison rule): cells whose direction differs
+  stored: 33 cells differ
+  random_ties: 30 cells differ
+  disagreements that disappear under random ties: 4; new ones: 1
+    gone: ('mutag_graphxai_s3', 'PG', '.', '-')
+    gone: ('mutagenicity_gin_s0', 'SX', '+', '.')
+    gone: ('mutagenicity_gine_s2', 'SX', '+', '.')
+    gone: ('mutagenicity_gine_s4', 'PG', '+', '.')
+    new:  ('mutag_graphxai_s3', 'PG', '-', '.')
+
+saved -> runs/rq1_followups/phase2b/report.json
