@@ -1,0 +1,81 @@
+========================================================================================================================
+ PHASE 2 -- deterministic tie rule (score desc, atom index asc; numpy stable sort)
+========================================================================================================================
+
+[P4] units 107/107; non-tie cells checked 317 (unit x explainer); max |det - stored| 1.00e+00 (bxaic_P_s0, subgraphx)
+     cells over 1e-05: 190
+       bxaic_P_s0                  subgraphx     1.000e+00
+       bxaic_P_s1                  subgraphx     1.000e+00
+       bxaic_P_s2                  subgraphx     1.000e+00
+       bxaic_P_s3                  subgraphx     1.000e+00
+       bxaic_X_s1                  subgraphx     1.000e+00
+       bxaic_X_s2                  subgraphx     1.000e+00
+       bxaic_X_s3                  subgraphx     1.000e+00
+       bxaic_X_s4                  subgraphx     1.000e+00
+       mutagenicity_gcn_s3         pgexplainer   1.000e+00
+       mutagenicity_gcn_s4         pgexplainer   1.000e+00
+       mutagenicity_gcn_s4         subgraphx     1.000e+00
+       mutagenicity_gin_s0         pgexplainer   1.000e+00
+       mutagenicity_gin_s0         subgraphx     1.000e+00
+       mutagenicity_gin_s1         subgraphx     1.000e+00
+       mutagenicity_gin_s2         subgraphx     1.000e+00
+       mutagenicity_gin_s3         pgexplainer   1.000e+00
+       mutagenicity_gin_s4         pgexplainer   1.000e+00
+       mutagenicity_gin_s4         subgraphx     1.000e+00
+       mutagenicity_gine_s4        pgexplainer   1.000e+00
+       mutagenicity_gine_s4        subgraphx     1.000e+00
+       bxaic_X_s0                  subgraphx     1.000e+00
+       mutagenicity_gin_s1         pgexplainer   1.000e+00
+       mutagenicity_gine_s3        subgraphx     1.000e+00
+       bxaic_P_s4                  subgraphx     1.000e+00
+       mutagenicity_gcn_s3         subgraphx     1.000e+00
+       mutagenicity_gcn_s2         pgexplainer   1.000e+00
+       bxaic_PAINS_s0              subgraphx     1.000e+00
+       mutagenicity_gin_s3         subgraphx     1.000e+00
+       mutagenicity_gcn_s1         pgexplainer   1.000e+00
+       bxaic_PAINS_s3              pgexplainer   1.000e+00
+       mutagenicity_gcn_s1         subgraphx     1.000e+00
+       bxaic_PAINS_s0              pgexplainer   1.000e+00
+       mutagenicity_gine_s2        subgraphx     1.000e+00
+       mutagenicity_gin_s2         pgexplainer   1.000e+00
+       bxaic_indole_s1             pgexplainer   1.000e+00
+       bxaic_indole_s4             subgraphx     1.000e+00
+       bxaic_indole_s4             pgexplainer   1.000e+00
+       bxaic_PAINS_s4              pgexplainer   1.000e+00
+       mutagenicity_gcn_s0         subgraphx     1.000e+00
+       mutagenicity_gcn_s2         subgraphx     1.000e+00
+     (P4) all non-tie cells identical to stored within 1e-05: DID NOT HOLD
+
+[T] the four tie cells: mean over ALL molecules of the unit (n = 29 MUTAG, 30 BBBP)
+  cell                metric           stored  torch now  det rule   5 random orders [min, max]   | logit: torch now  det rule
+  mutag subgraphx     R1 Fid+           0.515      0.515     0.512   [0.512, 0.519]                |   10.646    10.154
+  mutag subgraphx     R1 Fid-           0.530      0.563     0.530   [0.534, 0.555]                |    8.902     8.760
+  mutag subgraphx     R2 Fid+           0.192      0.185     0.208   [0.182, 0.203]                |    4.413     4.506
+  mutag subgraphx     R2 Fid-           0.189      0.163     0.189   [0.182, 0.223]                |    2.933     3.198
+  mutag subgraphx     R3 Fid+          -0.000      0.046     0.050   [0.013, 0.041]                |    1.323     1.289
+  mutag subgraphx     R3 Fid-           0.007      0.007     0.007   [0.007, 0.017]                |    0.519     0.386
+  bbbp subgraphx      R1 Fid+           0.139      0.111     0.141   [0.102, 0.156]                |    2.189     2.473
+  bbbp subgraphx      R1 Fid-           0.082      0.079     0.082   [0.070, 0.085]                |    2.252     2.326
+  bbbp subgraphx      R2 Fid+           0.146      0.138     0.156   [0.131, 0.161]                |    2.264     2.238
+  bbbp subgraphx      R2 Fid-           0.027      0.034     0.027   [0.019, 0.029]                |    0.854     0.723
+  bbbp subgraphx      R3 Fid+           0.057      0.047     0.047   [0.046, 0.056]                |    1.092     1.007
+  bbbp subgraphx      R3 Fid-           0.074      0.057     0.074   [0.052, 0.063]                |    1.433     1.569
+  mutag pgexplainer   R1 Fid+           0.120      0.120     0.120   [0.120, 0.120]                |    2.526     2.526
+  mutag pgexplainer   R1 Fid-           0.532      0.532     0.532   [0.532, 0.532]                |    8.044     8.044
+  mutag pgexplainer   R2 Fid+           0.014      0.014     0.014   [0.014, 0.014]                |    0.581     0.582
+  mutag pgexplainer   R2 Fid-           0.500      0.500     0.500   [0.500, 0.500]                |    7.932     7.929
+  mutag pgexplainer   R3 Fid+           0.005      0.005     0.005   [0.005, 0.005]                |    0.686     0.688
+  mutag pgexplainer   R3 Fid-           0.030      0.029     0.030   [0.029, 0.030]                |    0.892     0.900
+  bbbp pgexplainer    R1 Fid+           0.008      0.008     0.030   [0.008, 0.030]                |    1.227     1.534
+  bbbp pgexplainer    R1 Fid-           0.080      0.086     0.080   [0.080, 0.086]                |    2.348     2.317
+  bbbp pgexplainer    R2 Fid+           0.053      0.053     0.053   [0.053, 0.053]                |    0.855     0.720
+  bbbp pgexplainer    R2 Fid-           0.033      0.045     0.033   [0.033, 0.045]                |    1.266     1.207
+  bbbp pgexplainer    R3 Fid+           0.002      0.002     0.002   [0.002, 0.002]                |    0.402     0.316
+  bbbp pgexplainer    R3 Fid-           0.119      0.118     0.119   [0.118, 0.119]                |    1.978     2.019
+
+  MUTAG GEA top-k (MUTAG-GT mask; graphs identical: True), mean over 29 molecules:
+    gnnexplainer  torch now 0.336   det rule 0.336
+    pgexplainer   torch now 0.350   det rule 0.350
+    subgraphx     torch now 0.015   det rule 0.000
+
+saved -> runs/rq1_followups/phase2/report.json

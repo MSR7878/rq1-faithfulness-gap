@@ -1,0 +1,27 @@
+bbbp: 30 molecules, non-tie max dev {"gnnexplainer": 1.7881393432617188e-07}
+bxaic_X_s0: 400 molecules, non-tie max dev {"gnnexplainer": 8.344650268554688e-07, "pgexplainer": 0.2987020015716553, "subgraphx": 0.9999999403953552}
+tox21_NR-AhR_s0: 30 molecules, non-tie max dev {"gnnexplainer": 2.384185791015625e-07, "pgexplainer": 2.384185791015625e-07, "subgraphx": 0.6769725978374481}
+tox21_NR-PPAR-gamma_s0: 30 molecules, non-tie max dev {"gnnexplainer": 1.7881393432617188e-07, "pgexplainer": 1.1920928955078125e-07, "subgraphx": 0.5337045788764954}
+tox21_SR-MMP_s0: 30 molecules, non-tie max dev {"gnnexplainer": 3.8743019104003906e-07, "pgexplainer": 0.8926366567611694, "subgraphx": 0.5945518016815186}
+mutagenicity_gine_s0: 350 molecules, non-tie max dev {"gnnexplainer": 9.5367431640625e-07, "pgexplainer": 0.4886295199394226, "subgraphx": 0.9998829960823059}
+bxaic_PAINS_s1: 400 molecules, non-tie max dev {"gnnexplainer": 5.960464477539062e-07, "pgexplainer": 0.955297589302063, "subgraphx": 0.9862980842590332}
+tox21_NR-AR-LBD_s1: 30 molecules, non-tie max dev {"gnnexplainer": 1.1920928955078125e-07, "pgexplainer": 1.7881393432617188e-07, "subgraphx": 0.3534020185470581}
+tox21_NR-ER-LBD_s1: 30 molecules, non-tie max dev {"gnnexplainer": 2.384185791015625e-07, "pgexplainer": 0.48374319076538086, "subgraphx": 0.2651219069957733}
+tox21_SR-HSE_s1: 30 molecules, non-tie max dev {"gnnexplainer": 1.1920928955078125e-07, "pgexplainer": 1.7881393432617188e-07, "subgraphx": 0.17170733213424683}
+mutagenicity_gin_s1: 345 molecules, non-tie max dev {"gnnexplainer": 5.364418029785156e-07, "pgexplainer": 0.9999999403953552, "subgraphx": 1.0}
+bxaic_indole_s2: 400 molecules, non-tie max dev {"gnnexplainer": 1.1324882507324219e-06, "pgexplainer": 0.9999361038208008, "subgraphx": 0.9980551600456238}
+tox21_NR-AR_s2: 30 molecules, non-tie max dev {"gnnexplainer": 1.1920928955078125e-07, "pgexplainer": 0.3940221965312958, "subgraphx": 0.3286769986152649}
+tox21_NR-ER_s2: 30 molecules, non-tie max dev {"gnnexplainer": 1.7881393432617188e-07, "pgexplainer": 0.019666731357574463, "subgraphx": 0.3260982632637024}
+tox21_SR-ATAD5_s2: 30 molecules, non-tie max dev {"gnnexplainer": 2.086162567138672e-07, "pgexplainer": 0.698392778635025, "subgraphx": 0.3504989743232727}
+mutagenicity_dmpnn_s2: 348 molecules, non-tie max dev {"gnnexplainer": 4.172325134277344e-07, "pgexplainer": 0.7408169507980347, "subgraphx": 0.998530924320221}
+mutag_graphxai_s3: 188 molecules, non-tie max dev {"gnnexplainer": 2.384185791015625e-07, "pgexplainer": 0.9943477511405945, "subgraphx": 0.42499077320098877}
+bxaic_P_s3: 400 molecules, non-tie max dev {"gnnexplainer": 4.76837158203125e-07, "pgexplainer": 0.000540614128112793, "subgraphx": 1.0}
+tox21_NR-Aromatase_s3: 30 molecules, non-tie max dev {"gnnexplainer": 2.384185791015625e-07, "pgexplainer": 3.5762786865234375e-07, "subgraphx": 0.5910825729370117}
+tox21_SR-ARE_s3: 30 molecules, non-tie max dev {"gnnexplainer": 2.980232238769531e-07, "pgexplainer": 0.1481611132621765, "subgraphx": 0.7840962409973145}
+tox21_SR-p53_s3: 30 molecules, non-tie max dev {"gnnexplainer": 1.7881393432617188e-07, "pgexplainer": 2.384185791015625e-07, "subgraphx": 0.3010193109512329}
+mutagenicity_gcn_s3: 351 molecules, non-tie max dev {"gnnexplainer": 8.940696716308594e-07, "pgexplainer": 1.0, "subgraphx": 0.9999998807907104}
+bxaic_X_s4: 400 molecules, non-tie max dev {"gnnexplainer": 2.980232238769531e-07, "pgexplainer": 0.43127548694610596, "subgraphx": 1.0}
+tox21_NR-AhR_s4: 30 molecules, non-tie max dev {"gnnexplainer": 0.3515043556690216, "pgexplainer": 0.9376712441444397, "subgraphx": 0.7562843561172485}
+tox21_NR-PPAR-gamma_s4: 30 molecules, non-tie max dev {"gnnexplainer": 2.384185791015625e-07, "pgexplainer": 7.271766662597656e-06, "subgraphx": 0.9107394218444824}
+tox21_SR-MMP_s4: 30 molecules, non-tie max dev {"gnnexplainer": 3.5762786865234375e-07, "pgexplainer": 0.9145892262458801, "subgraphx": 0.5172139406204224}
+mutagenicity_gine_s4: 346 molecules, non-tie max dev {"gnnexplainer": 7.152557373046875e-07, "pgexplainer": 1.0, "subgraphx": 1.0}

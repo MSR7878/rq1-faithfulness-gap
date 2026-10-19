@@ -1,0 +1,1189 @@
+{
+ "P4": {
+  "held": false,
+  "n_units": 107,
+  "max_dev": 1.0,
+  "over": [
+   [
+    "bxaic_PAINS_s0",
+    "pgexplainer",
+    0.9999973773956299
+   ],
+   [
+    "bxaic_PAINS_s0",
+    "subgraphx",
+    0.9999996423721313
+   ],
+   [
+    "bxaic_PAINS_s1",
+    "pgexplainer",
+    0.955297589302063
+   ],
+   [
+    "bxaic_PAINS_s1",
+    "subgraphx",
+    0.9862980842590332
+   ],
+   [
+    "bxaic_PAINS_s2",
+    "pgexplainer",
+    0.24966776371002197
+   ],
+   [
+    "bxaic_PAINS_s2",
+    "subgraphx",
+    0.9976997971534729
+   ],
+   [
+    "bxaic_PAINS_s3",
+    "pgexplainer",
+    0.9999991059303284
+   ],
+   [
+    "bxaic_PAINS_s3",
+    "subgraphx",
+    0.9670047760009766
+   ],
+   [
+    "bxaic_PAINS_s4",
+    "pgexplainer",
+    0.9999715089797974
+   ],
+   [
+    "bxaic_PAINS_s4",
+    "subgraphx",
+    0.9898583889007568
+   ],
+   [
+    "bxaic_P_s0",
+    "pgexplainer",
+    0.0004112124443054199
+   ],
+   [
+    "bxaic_P_s0",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_P_s1",
+    "pgexplainer",
+    0.5972220301628113
+   ],
+   [
+    "bxaic_P_s1",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_P_s2",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_P_s3",
+    "pgexplainer",
+    0.000540614128112793
+   ],
+   [
+    "bxaic_P_s3",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_P_s4",
+    "pgexplainer",
+    0.023413240909576416
+   ],
+   [
+    "bxaic_P_s4",
+    "subgraphx",
+    0.9999998807907104
+   ],
+   [
+    "bxaic_X_s0",
+    "pgexplainer",
+    0.2987020015716553
+   ],
+   [
+    "bxaic_X_s0",
+    "subgraphx",
+    0.9999999403953552
+   ],
+   [
+    "bxaic_X_s1",
+    "pgexplainer",
+    0.10887342691421509
+   ],
+   [
+    "bxaic_X_s1",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_X_s2",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_X_s3",
+    "pgexplainer",
+    0.015155613422393799
+   ],
+   [
+    "bxaic_X_s3",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_X_s4",
+    "pgexplainer",
+    0.43127548694610596
+   ],
+   [
+    "bxaic_X_s4",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "bxaic_indole_s0",
+    "pgexplainer",
+    0.9998998045921326
+   ],
+   [
+    "bxaic_indole_s0",
+    "subgraphx",
+    0.982934832572937
+   ],
+   [
+    "bxaic_indole_s1",
+    "pgexplainer",
+    0.9999884366989136
+   ],
+   [
+    "bxaic_indole_s1",
+    "subgraphx",
+    0.9997333288192749
+   ],
+   [
+    "bxaic_indole_s2",
+    "pgexplainer",
+    0.9999361038208008
+   ],
+   [
+    "bxaic_indole_s2",
+    "subgraphx",
+    0.9980551600456238
+   ],
+   [
+    "bxaic_indole_s3",
+    "pgexplainer",
+    0.9999409317970276
+   ],
+   [
+    "bxaic_indole_s3",
+    "subgraphx",
+    0.9990149736404419
+   ],
+   [
+    "bxaic_indole_s4",
+    "pgexplainer",
+    0.9999733567237854
+   ],
+   [
+    "bxaic_indole_s4",
+    "subgraphx",
+    0.9999805688858032
+   ],
+   [
+    "mutag_graphxai_s0",
+    "pgexplainer",
+    0.9910033941268921
+   ],
+   [
+    "mutag_graphxai_s0",
+    "subgraphx",
+    0.6749386191368103
+   ],
+   [
+    "mutag_graphxai_s1",
+    "pgexplainer",
+    0.18066608905792236
+   ],
+   [
+    "mutag_graphxai_s1",
+    "subgraphx",
+    0.21341150999069214
+   ],
+   [
+    "mutag_graphxai_s2",
+    "pgexplainer",
+    0.1729140281677246
+   ],
+   [
+    "mutag_graphxai_s2",
+    "subgraphx",
+    0.9882477521896362
+   ],
+   [
+    "mutag_graphxai_s3",
+    "pgexplainer",
+    0.9943477511405945
+   ],
+   [
+    "mutag_graphxai_s3",
+    "subgraphx",
+    0.42499077320098877
+   ],
+   [
+    "mutag_graphxai_s4",
+    "pgexplainer",
+    0.20734435319900513
+   ],
+   [
+    "mutag_graphxai_s4",
+    "subgraphx",
+    0.8149459362030029
+   ],
+   [
+    "mutagenicity_dmpnn_s0",
+    "pgexplainer",
+    0.29690974950790405
+   ],
+   [
+    "mutagenicity_dmpnn_s0",
+    "subgraphx",
+    0.9878153204917908
+   ],
+   [
+    "mutagenicity_dmpnn_s1",
+    "pgexplainer",
+    0.36714982986450195
+   ],
+   [
+    "mutagenicity_dmpnn_s1",
+    "subgraphx",
+    0.9956251382827759
+   ],
+   [
+    "mutagenicity_dmpnn_s2",
+    "pgexplainer",
+    0.7408169507980347
+   ],
+   [
+    "mutagenicity_dmpnn_s2",
+    "subgraphx",
+    0.998530924320221
+   ],
+   [
+    "mutagenicity_dmpnn_s3",
+    "pgexplainer",
+    0.25507599115371704
+   ],
+   [
+    "mutagenicity_dmpnn_s3",
+    "subgraphx",
+    0.9998635053634644
+   ],
+   [
+    "mutagenicity_dmpnn_s4",
+    "pgexplainer",
+    0.16427761316299438
+   ],
+   [
+    "mutagenicity_dmpnn_s4",
+    "subgraphx",
+    0.9947218894958496
+   ],
+   [
+    "mutagenicity_gcn_s0",
+    "pgexplainer",
+    0.9999516010284424
+   ],
+   [
+    "mutagenicity_gcn_s0",
+    "subgraphx",
+    0.9999701380729675
+   ],
+   [
+    "mutagenicity_gcn_s1",
+    "pgexplainer",
+    0.9999992847442627
+   ],
+   [
+    "mutagenicity_gcn_s1",
+    "subgraphx",
+    0.9999990463256836
+   ],
+   [
+    "mutagenicity_gcn_s2",
+    "pgexplainer",
+    0.9999997019767761
+   ],
+   [
+    "mutagenicity_gcn_s2",
+    "subgraphx",
+    0.9999521374702454
+   ],
+   [
+    "mutagenicity_gcn_s3",
+    "pgexplainer",
+    1.0
+   ],
+   [
+    "mutagenicity_gcn_s3",
+    "subgraphx",
+    0.9999998807907104
+   ],
+   [
+    "mutagenicity_gcn_s4",
+    "pgexplainer",
+    1.0
+   ],
+   [
+    "mutagenicity_gcn_s4",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s0",
+    "pgexplainer",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s0",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s1",
+    "pgexplainer",
+    0.9999999403953552
+   ],
+   [
+    "mutagenicity_gin_s1",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s2",
+    "pgexplainer",
+    0.9999885559082031
+   ],
+   [
+    "mutagenicity_gin_s2",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s3",
+    "pgexplainer",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s3",
+    "subgraphx",
+    0.9999996423721313
+   ],
+   [
+    "mutagenicity_gin_s4",
+    "pgexplainer",
+    1.0
+   ],
+   [
+    "mutagenicity_gin_s4",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "mutagenicity_gine_s0",
+    "pgexplainer",
+    0.4886295199394226
+   ],
+   [
+    "mutagenicity_gine_s0",
+    "subgraphx",
+    0.9998829960823059
+   ],
+   [
+    "mutagenicity_gine_s1",
+    "pgexplainer",
+    0.37074530124664307
+   ],
+   [
+    "mutagenicity_gine_s1",
+    "subgraphx",
+    0.9887466430664062
+   ],
+   [
+    "mutagenicity_gine_s2",
+    "pgexplainer",
+    0.999560534954071
+   ],
+   [
+    "mutagenicity_gine_s2",
+    "subgraphx",
+    0.9999955296516418
+   ],
+   [
+    "mutagenicity_gine_s3",
+    "pgexplainer",
+    0.0016214847564697266
+   ],
+   [
+    "mutagenicity_gine_s3",
+    "subgraphx",
+    0.9999999403953552
+   ],
+   [
+    "mutagenicity_gine_s4",
+    "pgexplainer",
+    1.0
+   ],
+   [
+    "mutagenicity_gine_s4",
+    "subgraphx",
+    1.0
+   ],
+   [
+    "tox21_NR-AR-LBD_s0",
+    "pgexplainer",
+    0.24086278676986694
+   ],
+   [
+    "tox21_NR-AR-LBD_s0",
+    "subgraphx",
+    0.24830389022827148
+   ],
+   [
+    "tox21_NR-AR-LBD_s1",
+    "subgraphx",
+    0.3534020185470581
+   ],
+   [
+    "tox21_NR-AR-LBD_s2",
+    "pgexplainer",
+    0.8036249876022339
+   ],
+   [
+    "tox21_NR-AR-LBD_s2",
+    "subgraphx",
+    0.2992684841156006
+   ],
+   [
+    "tox21_NR-AR-LBD_s3",
+    "pgexplainer",
+    0.23719877004623413
+   ],
+   [
+    "tox21_NR-AR-LBD_s3",
+    "subgraphx",
+    0.24612033367156982
+   ],
+   [
+    "tox21_NR-AR-LBD_s4",
+    "pgexplainer",
+    0.6894282698631287
+   ],
+   [
+    "tox21_NR-AR-LBD_s4",
+    "subgraphx",
+    0.19810688495635986
+   ],
+   [
+    "tox21_NR-AR_s0",
+    "pgexplainer",
+    0.0025600790977478027
+   ],
+   [
+    "tox21_NR-AR_s0",
+    "subgraphx",
+    0.6224638819694519
+   ],
+   [
+    "tox21_NR-AR_s1",
+    "pgexplainer",
+    0.45922449231147766
+   ],
+   [
+    "tox21_NR-AR_s1",
+    "subgraphx",
+    0.4656837582588196
+   ],
+   [
+    "tox21_NR-AR_s2",
+    "pgexplainer",
+    0.3940221965312958
+   ],
+   [
+    "tox21_NR-AR_s2",
+    "subgraphx",
+    0.3286769986152649
+   ],
+   [
+    "tox21_NR-AR_s3",
+    "pgexplainer",
+    0.37126731872558594
+   ],
+   [
+    "tox21_NR-AR_s3",
+    "subgraphx",
+    0.37985843420028687
+   ],
+   [
+    "tox21_NR-AR_s4",
+    "pgexplainer",
+    0.7593504190444946
+   ],
+   [
+    "tox21_NR-AR_s4",
+    "subgraphx",
+    0.2020666003227234
+   ],
+   [
+    "tox21_NR-AhR_s0",
+    "subgraphx",
+    0.6769725978374481
+   ],
+   [
+    "tox21_NR-AhR_s1",
+    "pgexplainer",
+    0.9457101821899414
+   ],
+   [
+    "tox21_NR-AhR_s1",
+    "subgraphx",
+    0.8044929802417755
+   ],
+   [
+    "tox21_NR-AhR_s2",
+    "pgexplainer",
+    0.6072571277618408
+   ],
+   [
+    "tox21_NR-AhR_s2",
+    "subgraphx",
+    0.8244463503360748
+   ],
+   [
+    "tox21_NR-AhR_s3",
+    "subgraphx",
+    0.7055072486400604
+   ],
+   [
+    "tox21_NR-AhR_s4",
+    "gnnexplainer",
+    0.3515043556690216
+   ],
+   [
+    "tox21_NR-AhR_s4",
+    "pgexplainer",
+    0.9376712441444397
+   ],
+   [
+    "tox21_NR-AhR_s4",
+    "subgraphx",
+    0.7562843561172485
+   ],
+   [
+    "tox21_NR-Aromatase_s0",
+    "subgraphx",
+    0.17130357027053833
+   ],
+   [
+    "tox21_NR-Aromatase_s1",
+    "subgraphx",
+    0.27626097202301025
+   ],
+   [
+    "tox21_NR-Aromatase_s2",
+    "pgexplainer",
+    0.39627009630203247
+   ],
+   [
+    "tox21_NR-Aromatase_s2",
+    "subgraphx",
+    0.37399160861968994
+   ],
+   [
+    "tox21_NR-Aromatase_s3",
+    "subgraphx",
+    0.5910825729370117
+   ],
+   [
+    "tox21_NR-Aromatase_s4",
+    "pgexplainer",
+    0.6475580632686615
+   ],
+   [
+    "tox21_NR-Aromatase_s4",
+    "subgraphx",
+    0.42334675788879395
+   ],
+   [
+    "tox21_NR-ER-LBD_s0",
+    "pgexplainer",
+    0.2250286340713501
+   ],
+   [
+    "tox21_NR-ER-LBD_s0",
+    "subgraphx",
+    0.9699335694313049
+   ],
+   [
+    "tox21_NR-ER-LBD_s1",
+    "pgexplainer",
+    0.48374319076538086
+   ],
+   [
+    "tox21_NR-ER-LBD_s1",
+    "subgraphx",
+    0.2651219069957733
+   ],
+   [
+    "tox21_NR-ER-LBD_s2",
+    "subgraphx",
+    0.2597079873085022
+   ],
+   [
+    "tox21_NR-ER-LBD_s3",
+    "pgexplainer",
+    0.0002841353416442871
+   ],
+   [
+    "tox21_NR-ER-LBD_s3",
+    "subgraphx",
+    0.20460763573646545
+   ],
+   [
+    "tox21_NR-ER-LBD_s4",
+    "pgexplainer",
+    0.7405989170074463
+   ],
+   [
+    "tox21_NR-ER-LBD_s4",
+    "subgraphx",
+    0.1404712200164795
+   ],
+   [
+    "tox21_NR-ER_s0",
+    "pgexplainer",
+    0.13804346323013306
+   ],
+   [
+    "tox21_NR-ER_s0",
+    "subgraphx",
+    0.3492744565010071
+   ],
+   [
+    "tox21_NR-ER_s1",
+    "pgexplainer",
+    0.025809824466705322
+   ],
+   [
+    "tox21_NR-ER_s1",
+    "subgraphx",
+    0.140475332736969
+   ],
+   [
+    "tox21_NR-ER_s2",
+    "pgexplainer",
+    0.019666731357574463
+   ],
+   [
+    "tox21_NR-ER_s2",
+    "subgraphx",
+    0.3260982632637024
+   ],
+   [
+    "tox21_NR-ER_s3",
+    "subgraphx",
+    0.22747689485549927
+   ],
+   [
+    "tox21_NR-ER_s4",
+    "pgexplainer",
+    0.6710618138313293
+   ],
+   [
+    "tox21_NR-ER_s4",
+    "subgraphx",
+    0.6657939553260803
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s0",
+    "subgraphx",
+    0.5337045788764954
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s1",
+    "subgraphx",
+    0.13824844360351562
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s2",
+    "pgexplainer",
+    0.9605796933174133
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s2",
+    "subgraphx",
+    0.7880164980888367
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s3",
+    "pgexplainer",
+    0.9871111512184143
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s3",
+    "subgraphx",
+    0.2444748878479004
+   ],
+   [
+    "tox21_NR-PPAR-gamma_s4",
+    "subgraphx",
+    0.9107394218444824
+   ],
+   [
+    "tox21_SR-ARE_s0",
+    "subgraphx",
+    0.789465606212616
+   ],
+   [
+    "tox21_SR-ARE_s1",
+    "pgexplainer",
+    0.8741015791893005
+   ],
+   [
+    "tox21_SR-ARE_s1",
+    "subgraphx",
+    0.9982786178588867
+   ],
+   [
+    "tox21_SR-ARE_s2",
+    "pgexplainer",
+    0.8996915221214294
+   ],
+   [
+    "tox21_SR-ARE_s2",
+    "subgraphx",
+    0.7848695516586304
+   ],
+   [
+    "tox21_SR-ARE_s3",
+    "pgexplainer",
+    0.1481611132621765
+   ],
+   [
+    "tox21_SR-ARE_s3",
+    "subgraphx",
+    0.7840962409973145
+   ],
+   [
+    "tox21_SR-ARE_s4",
+    "pgexplainer",
+    0.9690986275672913
+   ],
+   [
+    "tox21_SR-ARE_s4",
+    "subgraphx",
+    0.8057370781898499
+   ],
+   [
+    "tox21_SR-ATAD5_s0",
+    "subgraphx",
+    0.517034649848938
+   ],
+   [
+    "tox21_SR-ATAD5_s1",
+    "subgraphx",
+    0.3574782609939575
+   ],
+   [
+    "tox21_SR-ATAD5_s2",
+    "pgexplainer",
+    0.698392778635025
+   ],
+   [
+    "tox21_SR-ATAD5_s2",
+    "subgraphx",
+    0.3504989743232727
+   ],
+   [
+    "tox21_SR-ATAD5_s3",
+    "pgexplainer",
+    0.04512763023376465
+   ],
+   [
+    "tox21_SR-ATAD5_s3",
+    "subgraphx",
+    0.4349879026412964
+   ],
+   [
+    "tox21_SR-ATAD5_s4",
+    "pgexplainer",
+    0.6081980466842651
+   ],
+   [
+    "tox21_SR-ATAD5_s4",
+    "subgraphx",
+    0.5872286558151245
+   ],
+   [
+    "tox21_SR-HSE_s0",
+    "pgexplainer",
+    0.15324294567108154
+   ],
+   [
+    "tox21_SR-HSE_s0",
+    "subgraphx",
+    0.20742034912109375
+   ],
+   [
+    "tox21_SR-HSE_s1",
+    "subgraphx",
+    0.17170733213424683
+   ],
+   [
+    "tox21_SR-HSE_s2",
+    "subgraphx",
+    0.6023564338684082
+   ],
+   [
+    "tox21_SR-HSE_s3",
+    "pgexplainer",
+    2.872943878173828e-05
+   ],
+   [
+    "tox21_SR-HSE_s3",
+    "subgraphx",
+    0.2620158791542053
+   ],
+   [
+    "tox21_SR-HSE_s4",
+    "pgexplainer",
+    0.804662823677063
+   ],
+   [
+    "tox21_SR-HSE_s4",
+    "subgraphx",
+    0.15790915489196777
+   ],
+   [
+    "tox21_SR-MMP_s0",
+    "pgexplainer",
+    0.8926366567611694
+   ],
+   [
+    "tox21_SR-MMP_s0",
+    "subgraphx",
+    0.5945518016815186
+   ],
+   [
+    "tox21_SR-MMP_s1",
+    "pgexplainer",
+    0.9018964767456055
+   ],
+   [
+    "tox21_SR-MMP_s1",
+    "subgraphx",
+    0.6400487422943115
+   ],
+   [
+    "tox21_SR-MMP_s2",
+    "subgraphx",
+    0.4132784307003021
+   ],
+   [
+    "tox21_SR-MMP_s3",
+    "pgexplainer",
+    0.005513638257980347
+   ],
+   [
+    "tox21_SR-MMP_s3",
+    "subgraphx",
+    0.39025887846946716
+   ],
+   [
+    "tox21_SR-MMP_s4",
+    "pgexplainer",
+    0.9145892262458801
+   ],
+   [
+    "tox21_SR-MMP_s4",
+    "subgraphx",
+    0.5172139406204224
+   ],
+   [
+    "tox21_SR-p53_s0",
+    "pgexplainer",
+    0.640873372554779
+   ],
+   [
+    "tox21_SR-p53_s0",
+    "subgraphx",
+    0.6090210974216461
+   ],
+   [
+    "tox21_SR-p53_s1",
+    "pgexplainer",
+    0.9982218146324158
+   ],
+   [
+    "tox21_SR-p53_s1",
+    "subgraphx",
+    0.33868157863616943
+   ],
+   [
+    "tox21_SR-p53_s2",
+    "subgraphx",
+    0.5480968356132507
+   ],
+   [
+    "tox21_SR-p53_s3",
+    "subgraphx",
+    0.3010193109512329
+   ],
+   [
+    "tox21_SR-p53_s4",
+    "pgexplainer",
+    0.8453139662742615
+   ],
+   [
+    "tox21_SR-p53_s4",
+    "subgraphx",
+    0.7503218650817871
+   ]
+  ]
+ },
+ "tie_cells": {
+  "mutag|subgraphx|R1|fid_plus": {
+   "stored": 0.5153465065462836,
+   "torch_now": 0.5145898461341858,
+   "det": 0.5120079640684456,
+   "orders_min": 0.5119438171386719,
+   "orders_max": 0.5190596580505371,
+   "logit_torch_now": 10.645515441894531,
+   "logit_det": 10.154419948314798
+  },
+  "mutag|subgraphx|R1|fid_minus": {
+   "stored": 0.5301567953208397,
+   "torch_now": 0.5626316666603088,
+   "det": 0.5301567953208397,
+   "orders_min": 0.5344083905220032,
+   "orders_max": 0.5549929141998291,
+   "logit_torch_now": 8.902337074279785,
+   "logit_det": 8.76045180600265
+  },
+  "mutag|subgraphx|R2|fid_plus": {
+   "stored": 0.19169921402273507,
+   "torch_now": 0.18517623841762543,
+   "det": 0.20814873843357481,
+   "orders_min": 0.1819860190153122,
+   "orders_max": 0.2034958451986313,
+   "logit_torch_now": 4.4130096435546875,
+   "logit_det": 4.5063195742409805
+  },
+  "mutag|subgraphx|R2|fid_minus": {
+   "stored": 0.18927860260009766,
+   "torch_now": 0.16335442662239075,
+   "det": 0.18927855532744836,
+   "orders_min": 0.18205034732818604,
+   "orders_max": 0.22318363189697266,
+   "logit_torch_now": 2.9332027435302734,
+   "logit_det": 3.197574763462461
+  },
+  "mutag|subgraphx|R3|fid_plus": {
+   "stored": -0.00036831354272776637,
+   "torch_now": 0.04589274153113365,
+   "det": 0.049605912175671805,
+   "orders_min": 0.012521575205028057,
+   "orders_max": 0.04073590785264969,
+   "logit_torch_now": 1.3230364322662354,
+   "logit_det": 1.2890733223536919
+  },
+  "mutag|subgraphx|R3|fid_minus": {
+   "stored": 0.006849200561128813,
+   "torch_now": 0.006853087339550257,
+   "det": 0.006849208782459128,
+   "orders_min": 0.006891030818223953,
+   "orders_max": 0.017424751073122025,
+   "logit_torch_now": 0.5193091630935669,
+   "logit_det": 0.38587848893527327
+  },
+  "bbbp|subgraphx|R1|fid_plus": {
+   "stored": 0.13883449832598369,
+   "torch_now": 0.11126266419887543,
+   "det": 0.14072511394818624,
+   "orders_min": 0.10220539569854736,
+   "orders_max": 0.1555364429950714,
+   "logit_torch_now": 2.189234733581543,
+   "logit_det": 2.4732776820659637
+  },
+  "bbbp|subgraphx|R1|fid_minus": {
+   "stored": 0.08218866189320882,
+   "torch_now": 0.07915583997964859,
+   "det": 0.08218867381413777,
+   "orders_min": 0.07038836181163788,
+   "orders_max": 0.08466032147407532,
+   "logit_torch_now": 2.252178907394409,
+   "logit_det": 2.3261807521184283
+  },
+  "bbbp|subgraphx|R2|fid_plus": {
+   "stored": 0.14629001319408416,
+   "torch_now": 0.13764363527297974,
+   "det": 0.15575668116410574,
+   "orders_min": 0.131206676363945,
+   "orders_max": 0.1610727310180664,
+   "logit_torch_now": 2.2638323307037354,
+   "logit_det": 2.2382208247979483
+  },
+  "bbbp|subgraphx|R2|fid_minus": {
+   "stored": 0.027259650826454162,
+   "torch_now": 0.034218501299619675,
+   "det": 0.0272596408923467,
+   "orders_min": 0.01897268556058407,
+   "orders_max": 0.028848998248577118,
+   "logit_torch_now": 0.8537808060646057,
+   "logit_det": 0.7233133355776469
+  },
+  "bbbp|subgraphx|R3|fid_plus": {
+   "stored": 0.056861623128255205,
+   "torch_now": 0.04680486395955086,
+   "det": 0.047366213798522946,
+   "orders_min": 0.04583023488521576,
+   "orders_max": 0.056431762874126434,
+   "logit_torch_now": 1.0924876928329468,
+   "logit_det": 1.006530257066091
+  },
+  "bbbp|subgraphx|R3|fid_minus": {
+   "stored": 0.07363879680633545,
+   "torch_now": 0.05729848891496658,
+   "det": 0.07363879879315695,
+   "orders_min": 0.051763031631708145,
+   "orders_max": 0.0631842166185379,
+   "logit_torch_now": 1.4330534934997559,
+   "logit_det": 1.5687462786833446
+  },
+  "mutag|pgexplainer|R1|fid_plus": {
+   "stored": 0.11978235429730909,
+   "torch_now": 0.11990541219711304,
+   "det": 0.1199054533037646,
+   "orders_min": 0.11978230625391006,
+   "orders_max": 0.11990541219711304,
+   "logit_torch_now": 2.5259933471679688,
+   "logit_det": 2.5259933718319596
+  },
+  "mutag|pgexplainer|R1|fid_minus": {
+   "stored": 0.532192285718589,
+   "torch_now": 0.5321922898292542,
+   "det": 0.5321922877739216,
+   "orders_min": 0.5321922898292542,
+   "orders_max": 0.5321922898292542,
+   "logit_torch_now": 8.044246673583984,
+   "logit_det": 8.04424601587756
+  },
+  "mutag|pgexplainer|R2|fid_plus": {
+   "stored": 0.014045271380194303,
+   "torch_now": 0.014045262709259987,
+   "det": 0.014045283712189773,
+   "orders_min": 0.014045258983969688,
+   "orders_max": 0.014045262709259987,
+   "logit_torch_now": 0.5805511474609375,
+   "logit_det": 0.5819015174076475
+  },
+  "mutag|pgexplainer|R2|fid_minus": {
+   "stored": 0.499677666302385,
+   "torch_now": 0.4996892809867859,
+   "det": 0.499677666302385,
+   "orders_min": 0.49967649579048157,
+   "orders_max": 0.49969038367271423,
+   "logit_torch_now": 7.93234395980835,
+   "logit_det": 7.929468648187045
+  },
+  "mutag|pgexplainer|R3|fid_plus": {
+   "stored": 0.004959622333789694,
+   "torch_now": 0.004959618207067251,
+   "det": 0.004959682966100758,
+   "orders_min": 0.004959618207067251,
+   "orders_max": 0.004959622398018837,
+   "logit_torch_now": 0.6859132051467896,
+   "logit_det": 0.6875129588719072
+  },
+  "mutag|pgexplainer|R3|fid_minus": {
+   "stored": 0.029587657287203032,
+   "torch_now": 0.02942335605621338,
+   "det": 0.029587657287203032,
+   "orders_min": 0.029422130435705185,
+   "orders_max": 0.029588863253593445,
+   "logit_torch_now": 0.8924362063407898,
+   "logit_det": 0.9004679096156153
+  },
+  "bbbp|pgexplainer|R1|fid_plus": {
+   "stored": 0.007564218839009603,
+   "torch_now": 0.007564222905784845,
+   "det": 0.029764922459920247,
+   "orders_min": 0.007564222905784845,
+   "orders_max": 0.029764920473098755,
+   "logit_torch_now": 1.2274699211120605,
+   "logit_det": 1.5335215012232462
+  },
+  "bbbp|pgexplainer|R1|fid_minus": {
+   "stored": 0.07954922318458557,
+   "torch_now": 0.08597616106271744,
+   "det": 0.07954923113187154,
+   "orders_min": 0.07954922318458557,
+   "orders_max": 0.08597616106271744,
+   "logit_torch_now": 2.348139524459839,
+   "logit_det": 2.317142840226491
+  },
+  "bbbp|pgexplainer|R2|fid_plus": {
+   "stored": 0.05294454197088878,
+   "torch_now": 0.05294453352689743,
+   "det": 0.052897910277048744,
+   "orders_min": 0.052897896617650986,
+   "orders_max": 0.05294453352689743,
+   "logit_torch_now": 0.8546158075332642,
+   "logit_det": 0.7204750100771586
+  },
+  "bbbp|pgexplainer|R2|fid_minus": {
+   "stored": 0.033331289887428284,
+   "torch_now": 0.04540809616446495,
+   "det": 0.033331289887428284,
+   "orders_min": 0.03333129733800888,
+   "orders_max": 0.04540809616446495,
+   "logit_torch_now": 1.2663275003433228,
+   "logit_det": 1.207489420970281
+  },
+  "bbbp|pgexplainer|R3|fid_plus": {
+   "stored": 0.0018587350845336915,
+   "torch_now": 0.0018587489612400532,
+   "det": 0.0018446048100789387,
+   "orders_min": 0.0018446107860654593,
+   "orders_max": 0.0018587489612400532,
+   "logit_torch_now": 0.4017477333545685,
+   "logit_det": 0.31605765024820964
+  },
+  "bbbp|pgexplainer|R3|fid_minus": {
+   "stored": 0.11938735942045847,
+   "torch_now": 0.1181788370013237,
+   "det": 0.11938736240069071,
+   "orders_min": 0.1181788370013237,
+   "orders_max": 0.11938739567995071,
+   "logit_torch_now": 1.9778696298599243,
+   "logit_det": 2.0186339755853018
+  },
+  "mutag|gnnexplainer|gea": {
+   "torch_now": 0.3363300492610837,
+   "det": 0.3363300492610837
+  },
+  "mutag|pgexplainer|gea": {
+   "torch_now": 0.3500821018062397,
+   "det": 0.3500821018062397
+  },
+  "mutag|subgraphx|gea": {
+   "torch_now": 0.014983579638752053,
+   "det": 0.0
+  }
+ }
+}
