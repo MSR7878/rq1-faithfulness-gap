@@ -195,6 +195,64 @@ def main():
     P(f"  P2 reliance significantly below RandConn in >= 8/10 seeds, R1 and R2: R1 {p2[0]}/10, R2 {p2[1]}/10 -> {'HELD' if min(p2) >= 8 else 'DID NOT HOLD'}")
     P(f"  P3 GNN significantly above RandNode on top-k GEA in >= 7/10 seeds: {p3}/10 -> {'HELD' if p3 >= 7 else 'DID NOT HOLD'}")
     rep["P1"], rep["P2"], rep["P3"] = {"n": p1, "held": p1 >= 8}, {"R1": p2[0], "R2": p2[1], "held": min(p2) >= 8}, {"n": p3, "held": p3 >= 7}
+    # ---------------------------------------------------------------- addendum: scoring ways (a) / (b) / (c)
+    from ..data import LOADERS
+    from .connectivity_baseline import build_adj, random_connected_subset
+    from .ties_random import N_ORDERS, boundary_tie, random_tie_gea
+    dl, _ = LOADERS["mutag_graphxai"]()
+    Bt, ties = {}, {}
+    for s in SEEDS:
+        blob = torch.load(paths(s)["cache"], weights_only=False); res = blob["results"]
+        g = gea[s][0]; rngc = np.random.default_rng(40000 + s)
+        arr = {f"{e}_topk_b": [] for e in EXPL}; arr["rand_conn_k"] = []; mol = []; tc = {e: 0 for e in EXPL}
+        for pos, mi in enumerate(blob["key"]["test_idx"]):
+            d = dl[mi]; gt = d.node_gt_mask.numpy().astype(bool)
+            if not gt.any():
+                continue
+            n = d.num_nodes; k = max(1, int(0.25 * n)); sc = na.Scorer(gt); mol.append(mi)
+            for e in EXPL:
+                v, tied = random_tie_gea(res[e][pos]["node_importance"], k, sc, f"mutag_graphxai_s{s}|{e}", pos)
+                arr[f"{e}_topk_b"].append(v); tc[e] += int(tied)
+            adj = build_adj(d.edge_index, n)
+            arr["rand_conn_k"].append(np.mean([sc(np.isin(np.arange(n), list(random_connected_subset(adj, n, k, rngc)))) for _ in range(N_ORDERS)]))
+        if not np.array_equal(np.array(mol), g["mol_idx"].astype(int)):
+            stop(f"seed {s}: molecule order of the tie scoring differs from the GEA arrays")
+        Bt[s] = {k_: np.array(v) for k_, v in arr.items()}; ties[s] = tc
+        np.savez(f"{R}/null_audit_arrays/mutag_graphxai_s{s}_random_ties.npz", mol_idx=np.array(mol), **Bt[s])
+
+    def fam3(real, null):
+        raw = {e: wpair(real[e], null[e]) for e in EXPL}; adj = holm(raw)
+        return {e: sign(adj[e], rank_direction(real[e], null[e])) for e in EXPL}
+    W = {}
+    for s in SEEDS:
+        g = gea[s][0]
+        W[s] = {"a": fam3({e: g[f"{e}_topk"] for e in EXPL}, {e: g["rn_k"] for e in EXPL}),
+                "b": fam3({e: Bt[s][f"{e}_topk_b"] for e in EXPL}, {e: g["rn_k"] for e in EXPL}),
+                "c": fam3({e: g[f"{e}_mean"] for e in EXPL}, {e: g[f"{e}_unc"] for e in EXPL})}
+        p = wpair(Bt[s]["subgraphx_topk_b"], Bt[s]["rand_conn_k"]); W[s]["b_conn"] = sign(p, rank_direction(Bt[s]["subgraphx_topk_b"], Bt[s]["rand_conn_k"]))
+        W[s]["ac_conn"] = T[s]["GEA SX vs RandConn (SX size)"][0]
+    P("\n[W] ADDENDUM -- GEA scored three ways: (a) current torch order, (b) PRIMARY random ties (20 orders, averaged per molecule),"
+      "\n    (c) mean-threshold vs size-matched nulls. Molecules with a tie at the top-k boundary, per seed (of GT-bearing):")
+    P("     " + "   ".join(f"s{s}: GNN {ties[s]['gnnexplainer']} PG {ties[s]['pgexplainer']} SX {ties[s]['subgraphx']}" for s in SEEDS))
+    P(f"  {'comparison':<40}{'way':>5}{'seeds 0-4':>12}{'seeds 5-9':>12}{'all 10':>10}   per seed")
+    rep["three_ways"] = {}
+    rows = [(f"{SH[e]} vs RandNode (top-k)" if w != "c" else f"{SH[e]} mean-thr vs RandUnc (size-matched)", w, lambda s, e=e, w=w: W[s][w][e])
+            for e in EXPL for w in ("a", "b", "c")]
+    rows += [("SX mean-thr vs RandConn (SX size) [P1 as registered]", "a=c", lambda s: W[s]["ac_conn"]),
+             ("SX top-k vs RandConn at the budget", "b", lambda s: W[s]["b_conn"])]
+    for lab, w, f in rows:
+        sg = [f(s) for s in SEEDS]
+        P(f"  {lab:<40}{w:>5}{counts(sg[:5]):>12}{counts(sg[5:]):>12}{counts(sg):>10}   {' '.join(sg)}")
+        rep["three_ways"][f"{lab}|{w}"] = {"old": counts(sg[:5]), "new": counts(sg[5:]), "all": counts(sg), "signs": sg}
+    p1 = {"a": sum(W[s]["ac_conn"] == "-" for s in SEEDS), "b": sum(W[s]["b_conn"] == "-" for s in SEEDS)}; p1["c"] = p1["a"]
+    p3 = {w: sum(W[s][w]["gnnexplainer"] == "+" for s in SEEDS) for w in ("a", "b", "c")}
+    P("\n[P'] PREDICTIONS under each way ((b) primary)")
+    for w in ("b", "a", "c"):
+        P(f"  ({w})  P1 {p1[w]}/10 -> {'HELD' if p1[w] >= 8 else 'DID NOT HOLD'}   P2 R1 {p2[0]}/10, R2 {p2[1]}/10 -> "
+          f"{'HELD' if min(p2) >= 8 else 'DID NOT HOLD'} (no explainer; same under every way)   P3 {p3[w]}/10 -> {'HELD' if p3[w] >= 7 else 'DID NOT HOLD'}")
+    rep["predictions_three_ways"] = {w: {"P1": p1[w], "P1_held": p1[w] >= 8, "P2": p2, "P2_held": min(p2) >= 8, "P3": p3[w], "P3_held": p3[w] >= 7}
+                                     for w in ("a", "b", "c")}
+    rep["boundary_ties"] = ties
     rep["per_seed"] = {s: {k: list(v) for k, v in T[s].items()} for s in SEEDS}
     json.dump(rep, open(f"{R}/report.json", "w"), indent=1, default=lambda o: o.item() if hasattr(o, "item") else str(o))
     P(f"\nsaved -> {R}/report.json, {R}/null_audit_arrays/, {R}/connectivity_arrays_mutag_graphxai.npz, {R}/partA/, {R}/partB/")
