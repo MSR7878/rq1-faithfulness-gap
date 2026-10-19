@@ -2976,3 +2976,51 @@ noise-dominated, includes MUTAG and BBBP); F4 (BBBP PG/SX R3->R2 n.s.); F5
 pairs washed out under R1; BBBP R1 ~= R2); F7 (PG-SX Fid+ under R1 on MUTAG
 and BBBP); the seed-coverage / limitations tables that list these findings
 as resting on MUTAG-std and BBBP.
+
+## RQ1 reliance / logit fidelity: ADDENDUM -- general tie rule for the validation, 2026-10-19, written BEFORE the Part B rerun
+
+What happened since the amendment above (commit 05fa0b5): the full run
+(started 11:56) completed Part A (45/45 units; not scored) and stopped in
+Part B on MUTAG and BBBP because PGExplainer -- not covered by the
+SubgraphX-only amendment -- also failed the validation: MUTAG 1 molecule per
+masking (positions 15 / 19 / 18 for R1 / R2 / R3, max |dev| 0.005), BBBP
+position 13 under all three maskings (max |dev| 0.36). Each of these has tied
+importance values at the selection boundary (MUTAG: near-constant masks, std
+~1e-25; BBBP position 13: the constant 4-atom mask already noted in the
+Phase-3 table). GNNExplainer reproduces on every molecule (max |dev| 2e-7).
+The smoke test had only checked the first 5-10 molecules per unit. The run was
+stopped by hand before any report was produced; only 3 Part B units had been
+written, and they are discarded (moved aside, not used).
+
+Decision (user, 2026-10-19): the SubgraphX-only amendment is SUPERSEDED by one
+rule for ALL units, explainers and maskings:
+- Tolerance 1e-5 (was 1e-4) on |recomputed - stored| probability-space Fid+
+  and Fid-.
+- A molecule's stored value may differ from the recomputed one ONLY if a tie
+  in its importance values is verified AT the relevant selection boundary:
+  for Fid- (explanation-only graph E) the top-k boundary (the k-th and
+  (k+1)-th largest importance are equal); for Fid+ (explanation-removed graph
+  G\E) the boundary of the kept set (the int(0.75 N)-th and next smallest
+  importance are equal).
+- Every accepted mismatch is logged with unit, explainer, molecule position,
+  masking, metric, stored value, recomputed value, the tied score value, and
+  the number of atoms tied inside and outside the boundary.
+- Any mismatch without a verified boundary tie stops the run.
+- Accepted mismatches are recomputed with the current tie-breaking and
+  reported next to the stored values. Stored values are never overwritten or
+  edited.
+
+Order of work: (1) a validation-only pass over ALL molecules of ALL Part B
+units (probability-space recompute vs stored, no new metrics) writes the full
+mismatch table; (2) only if every mismatch is a verified boundary tie does the
+Part B compute start; it applies the same rule again per molecule. Part A is
+kept as computed (it does not use stored fidelity values). Part B is rerun
+from scratch.
+
+Exploratory tie-order check: kept (5 seeded random tie orders, SubgraphX on
+MUTAG and BBBP, all molecules) and extended to every accepted-mismatch
+molecule of any other explainer (here PGExplainer). Tie orders are applied as
+random ranks within exact ties only, so the order between distinct values is
+never changed.
+
+Registered predictions A1, A2 and B1 are unchanged.
