@@ -137,3 +137,59 @@ Direction counts collapsed vs clean per quantity over the pairs.
   4 workers; embeddings and probes are quick).
 - Total of the phases: about 5-6.5 h; with Phases 2-3 overlapping Phase 1's
   SubgraphX, about 4-5 h wall-clock. Under the 8-hour limit.
+
+## RESULT RECORD -- P4 (2026-10-19): FAILED
+
+P4 (unchanged above) did not hold. Under the deterministic rule (score
+descending, atom index ascending) 190 of 317 non-tie unit x explainer cells
+differ from the stored values by more than 1e-5 (up to 1.0 on single
+molecules): every SubgraphX cell, most PGExplainer cells, and one Tox21
+GNNExplainer molecule. Phase 2 stopped as instructed (commit 48202e7). The
+count "103" in P4 should have been 105 (noted above before the run).
+
+## ADDENDUM (2026-10-19, user decision after P4 failed; written BEFORE any of this is scored)
+
+Phases 1 and 3 continue as planned. The atom-index rule is not used as a
+primary rule (atom order follows the input file, so it is not neutral).
+
+### Phase 1: SubgraphX and PGExplainer scored three ways
+
+(a) current torch order (as planned);
+(b) PRIMARY -- random tie-break: per molecule, 20 seeded random tie orders
+    (random rank within exact ties only; distinct scores keep their order;
+    numpy default_rng([62000, crc32(unit), molecule position])); GEA scored
+    per order and averaged per molecule before the per-seed test;
+(c) mean-threshold cut (imp > mean; no ties), against size-matched nulls:
+    random-node of the same size (RandUnc, the stored "_unc" arrays) and, for
+    SubgraphX, random connected sets of the same size.
+P1-P3 are reported under each:
+- P1 as registered uses the SubgraphX mean-threshold mask vs size-matched
+  RandConn, which has no ties; so P1 under (a) and (c) is the same test.
+  Under (b): SubgraphX top-k (random ties) vs RandConn at the top-k size
+  (20 draws, default_rng(40000 + seed)), one test per seed.
+- P2 (reliance) does not use any explainer; identical under (a), (b), (c).
+- P3 (GNNExplainer): GNNExplainer masks are continuous; under (a)/(b) it is
+  the planned test (ties checked and reported); under (c) GNN mean-threshold
+  vs RandUnc (Holm over the 3 explainers).
+Thresholds for "held" are as registered. GNNExplainer is not re-scored with
+random ties unless it has boundary ties (counted and reported).
+
+### Phase 2b (after Phase 1): tie robustness of all stored top-k results, rule (b)
+
+- For every unit: fraction of molecules with a tie at the top-k boundary
+  (k-th and (k+1)-th largest importance equal), per explainer.
+- Recompute, under (b), top-k GEA (MUTAG-GT, B-XAIC x4, Mutagenicity D-MPNN /
+  GIN / GINE / GCN, Mutagenicity 5-fold CV) and fidelity Fid+/Fid- under
+  R1, R2, R3 (all 107 Part B units and MUTAG-GT seeds 5-9) for SubgraphX and
+  PGExplainer. Molecules with no tie at the relevant boundary keep their
+  current value (all 20 orders are identical there). Nulls are unchanged.
+- Redo the direction counts with each table's ORIGINAL test code, stored
+  vs random-tie side by side, marking every cell whose direction changes:
+  main count table (MUTAG-GT, indole, Mutagenicity) and all B-XAIC tasks
+  (exploratory_null_audit rule: Holm over 3 explainers vs RandNode at top-k;
+  SubgraphX top-k vs RandConn at the budget added); architecture table and
+  5-fold CV (the registered 4-test family, Holm within seed); Part A/B
+  GEA-vs-fidelity comparison (reliance_fidelity_report rule).
+- GNNExplainer: boundary-tie fraction reported to confirm it is unaffected.
+Estimate: about 1.5-2.5 h of compute (SubgraphX ties on most molecules;
+about 240 masked graphs per tied molecule), under the 6-hour limit.
