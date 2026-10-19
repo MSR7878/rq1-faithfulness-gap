@@ -38,11 +38,10 @@ FILL_KEY = {"R1": "hard", "R2": "zero", "R3": "mean"}
 N_DRAWS = 20
 BXAIC = ["indole", "PAINS", "X", "P"]
 ARCH_DIRS = {"dmpnn": "runs/mutagenicity", **{a: f"runs/arch_{a}/mutagenicity_graphxai" for a in ("gin", "gine", "gcn")}}
-VALIDATE_TOL = 1e-4
-# Amendment of 2026-10-19 (spec): the stored SubgraphX values of these two single-split runs predate the
-# 2026-09-09 torch reinstall and depend on top-k tie order; for these cells the stop-on-mismatch validation is
-# replaced by "recompute with current tie-breaking and report next to the stored values" (stored values kept).
-VALIDATE_EXEMPT = {("mutag", "subgraphx"), ("bbbp", "subgraphx")}
+# Addendum of 2026-10-19 (spec; supersedes the SubgraphX-only amendment): a recomputed probability value may differ
+# from the stored one by more than VALIDATE_TOL only if a tie in importance is verified at the relevant selection
+# boundary; such mismatches are logged and accepted, anything else stops the run. Stored values are never modified.
+VALIDATE_TOL = 1e-5
 
 
 # ----------------------------------------------------------------------------- units
@@ -212,6 +211,64 @@ def run_part_a(name, spec, device, limit=None):
     return {k: np.array(v) for k, v in R.items()}, ck
 
 
+# ----------------------------------------------------------------------------- validation (addendum of 2026-10-19)
+def boundary_tie(imp: torch.Tensor, metric: str) -> dict:
+    """Tie at the selection boundary that decides the graph behind `metric`:
+    Fid- uses E (top-k by importance, k = max(1, int(K_FRAC N)));
+    Fid+ uses G minus E (keeps the max(1, int((1-K_FRAC) N)) LOWEST importances)."""
+    v = imp.double(); n = v.numel()
+    if metric == "fid_minus":
+        k = max(1, int(K_FRAC * n)); s = torch.sort(v, descending=True).values
+    else:
+        k = max(1, int((1.0 - K_FRAC) * n)); s = torch.sort(v).values
+    if k >= n:
+        return {"tie": False, "value": float(s[-1]), "n_inside": 0, "n_outside": 0}
+    tie = bool(s[k - 1] == s[k]); val = float(s[k - 1])
+    return {"tie": tie, "value": val, "n_inside": int((s[:k] == s[k - 1]).sum()), "n_outside": int((s[k:] == s[k - 1]).sum())}
+
+
+def check_molecule(name, e, pos, mk, imp, recomputed: dict, stored: dict, log: list):
+    """Addendum rule: |recomputed - stored| <= VALIDATE_TOL, or a verified tie at the metric's boundary
+    (then logged and accepted). Anything else raises."""
+    for met in ("fid_plus", "fid_minus"):
+        dev = abs(recomputed[met] - stored[met])
+        if dev <= VALIDATE_TOL:
+            continue
+        bt = boundary_tie(imp, met)
+        row = {"unit": name, "explainer": e, "position": pos, "masking": mk, "metric": met, "stored": float(stored[met]),
+               "recomputed": float(recomputed[met]), "abs_dev": float(dev), "tie_at_boundary": bt["tie"], "tied_value": bt["value"],
+               "n_tied_inside": bt["n_inside"], "n_tied_outside": bt["n_outside"]}
+        log.append(row)
+        if not bt["tie"]:
+            raise RuntimeError(f"UNVERIFIED MISMATCH (no boundary tie): {row}")
+
+
+def validate_unit(name, spec, device):
+    """Validation-only pass: recompute probability Fid+/Fid- for every molecule, explainer and masking and compare
+    with the stored values. Returns (n_checked, mismatch rows). Raises only via check_molecule's rule."""
+    model, ck, blob, out, dl, meta = load_unit(name, spec, device)
+    test_idx = list(blob["key"]["test_idx"]); res = blob["results"]; pm = out["per_molecule"]
+    fill = torch.tensor(out["fills"]["R3"]["mean"], dtype=torch.float)
+    if "molecule_index" in out:
+        assert list(out["molecule_index"]) == test_idx, f"{name}: out json rows are not the cache's test_idx"
+    log, checked = [], 0
+    for pos, mi in enumerate(test_idx):
+        G = to_cpu_data(dl[mi]); graphs, idx = [G], {}
+        for mk in MASKINGS:
+            for e in EXPL:
+                imp = torch.as_tensor(res[e][pos]["node_importance"], dtype=torch.float)
+                E, GmE = masked_pair(G, imp, fill, mk); idx[(e, mk)] = len(graphs); graphs += [GmE, E]
+        lg = logits_of(model, graphs, device)
+        for mk in MASKINGS:
+            for e in EXPL:
+                tgt = int(res[e][pos]["target"]); p = prob(lg, tgt); i = idx[(e, mk)]
+                imp = torch.as_tensor(res[e][pos]["node_importance"], dtype=torch.float)
+                check_molecule(name, e, pos, mk, imp, {"fid_plus": p[0] - p[i], "fid_minus": p[0] - p[i + 1]},
+                               pm[mk][FILL_KEY[mk]][e][pos], log)
+                checked += 2
+    return checked, log
+
+
 # ----------------------------------------------------------------------------- Part B
 def run_part_b(name, spec, device, limit=None):
     model, ck, blob, out, dl, meta = load_unit(name, spec, device)
@@ -225,17 +282,13 @@ def run_part_b(name, spec, device, limit=None):
     for e in EXPL:
         for mk in MASKINGS:
             for met in ("fid_plus", "fid_minus"):
-                keys += [f"{e}_{mk}_{met}_logit", f"{e}_{mk}_{met}_prob"]
+                keys += [f"{e}_{mk}_{met}_logit", f"{e}_{mk}_{met}_prob", f"{e}_{mk}_{met}_prob_stored", f"{e}_{mk}_{met}_mismatch_accepted"]
     for mk in MASKINGS:
         for met in ("fid_plus", "fid_minus"):
             for ref in ("node", "conn"):
                 keys += [f"rand_{ref}_{mk}_{met}_logit", f"rand_{ref}_{mk}_{met}_prob"]
-    exempt = [e for e in EXPL if (name, e) in VALIDATE_EXEMPT]
-    for e in exempt:
-        for mk in MASKINGS:
-            keys += [f"{e}_{mk}_fid_plus_prob_stored", f"{e}_{mk}_fid_minus_prob_stored"]
     R = {k: [] for k in keys}
-    max_dev, max_dev_exempt = 0.0, 0.0
+    log, max_dev_ok = [], 0.0
     n_use = len(test_idx) if limit is None else min(limit, len(test_idx))
     for pos in range(n_use):
         mi = test_idx[pos]; d = dl[mi]
@@ -268,13 +321,15 @@ def run_part_b(name, spec, device, limit=None):
                 fp_l, fm_l, fp_p, fm_p = m[0] - m[i], m[0] - m[i + 1], p[0] - p[i], p[0] - p[i + 1]
                 R[f"{e}_{mk}_fid_plus_logit"].append(fp_l); R[f"{e}_{mk}_fid_minus_logit"].append(fm_l)
                 R[f"{e}_{mk}_fid_plus_prob"].append(fp_p); R[f"{e}_{mk}_fid_minus_prob"].append(fm_p)
-                st = pm[mk][FILL_KEY[mk]][e][pos]       # stored probability-space values of the original run
-                dev = max(abs(fp_p - st["fid_plus"]), abs(fm_p - st["fid_minus"]))
-                if e in exempt:
-                    max_dev_exempt = max(max_dev_exempt, dev)
-                    R[f"{e}_{mk}_fid_plus_prob_stored"].append(st["fid_plus"]); R[f"{e}_{mk}_fid_minus_prob_stored"].append(st["fid_minus"])
-                else:
-                    max_dev = max(max_dev, dev)
+                st = pm[mk][FILL_KEY[mk]][e][pos]       # stored probability-space values of the original run (never modified)
+                n_before = len(log)
+                check_molecule(name, e, pos, mk, torch.as_tensor(res[e][pos]["node_importance"], dtype=torch.float),
+                               {"fid_plus": fp_p, "fid_minus": fm_p}, st, log)
+                acc = {r["metric"] for r in log[n_before:]}
+                for met, val in (("fid_plus", fp_p), ("fid_minus", fm_p)):
+                    R[f"{e}_{mk}_{met}_prob_stored"].append(st[met]); R[f"{e}_{mk}_{met}_mismatch_accepted"].append(met in acc)
+                    if met not in acc:
+                        max_dev_ok = max(max_dev_ok, abs(val - st[met]))
             for ref in ("node", "conn"):
                 i = idx[(ref, mk)]
                 gm, ee = np.arange(i, i + 2 * N_DRAWS, 2), np.arange(i + 1, i + 2 * N_DRAWS, 2)
@@ -282,20 +337,16 @@ def run_part_b(name, spec, device, limit=None):
                 R[f"rand_{ref}_{mk}_fid_minus_logit"].append(float(np.mean(m[0] - m[ee])))
                 R[f"rand_{ref}_{mk}_fid_plus_prob"].append(float(np.mean(p[0] - p[gm])))
                 R[f"rand_{ref}_{mk}_fid_minus_prob"].append(float(np.mean(p[0] - p[ee])))
-    if max_dev > VALIDATE_TOL:
-        raise RuntimeError(f"{name}: recomputed probability fidelity deviates from the stored values by {max_dev:.2e} "
-                           f"(> {VALIDATE_TOL}) -- stopping, nothing written for this unit")
     A = {k: np.array(v) for k, v in R.items()}
-    A["validation_max_abs_dev"] = np.array(max_dev)
-    A["validation_exempt"] = np.array(exempt)
-    A["validation_exempt_max_abs_dev"] = np.array(max_dev_exempt)
+    A["validation_max_abs_dev"] = np.array(max_dev_ok)          # over all non-accepted cells (all within VALIDATE_TOL)
+    A["validation_accepted_mismatches"] = np.array(json.dumps(log))
     return A, ck
 
 
 # ----------------------------------------------------------------------------- driver
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["list", "run"])
+    ap.add_argument("cmd", choices=["list", "run", "validate"])
     ap.add_argument("--part", choices=["A", "B"])
     ap.add_argument("--units", nargs="*", default=[])
     ap.add_argument("--all", action="store_true")
@@ -308,9 +359,22 @@ def main(argv=None) -> int:
         for n, v in U.items():
             print(n, v["parts"], all(os.path.exists(v[f]) for f in ("ckpt", "cache", "out")))
         return 0
+    device = torch.device(args.device)
+    if args.cmd == "validate":                  # validation-only pass; one json per unit (rows = every mismatch found)
+        names = [n for n in U if "B" in U[n]["parts"]] if args.all else args.units
+        os.makedirs(f"{args.out}/validation", exist_ok=True)
+        for name in names:
+            t0 = time.time()
+            try:
+                checked, log = validate_unit(name, U[name], device); status = "ok"
+            except RuntimeError as ex:
+                checked, log, status = -1, [], f"STOP: {ex}"
+            json.dump({"unit": name, "checked_values": checked, "mismatches": log, "status": status},
+                      open(f"{args.out}/validation/{name}.json", "w"), indent=1)
+            print(f"{name}: validation {status}, {checked} values, {len(log)} accepted mismatches, {time.time() - t0:.1f}s", flush=True)
+        return 0
     names = [n for n in U if args.part in U[n]["parts"]] if args.all else args.units
     os.makedirs(f"{args.out}/part{args.part}", exist_ok=True)
-    device = torch.device(args.device)
     for name in names:
         spec = U[name]
         dst = f"{args.out}/part{args.part}/{name}.npz"
@@ -320,7 +384,8 @@ def main(argv=None) -> int:
         A, ck = (run_part_a if args.part == "A" else run_part_b)(name, spec, device, args.limit)
         np.savez(dst, unit=name, seed=spec["seed"], ckpt=spec["ckpt"], cache=spec["cache"], dataset=ck["dataset"],
                  arch=ck.get("arch", "dmpnn"), n_draws=N_DRAWS, **A)
-        extra = f"  validation max|dev| {float(A['validation_max_abs_dev']):.1e}" if args.part == "B" else ""
+        extra = (f"  validation max|dev| (non-accepted) {float(A['validation_max_abs_dev']):.1e},"
+                 f" accepted tie mismatches {len(json.loads(str(A['validation_accepted_mismatches'])))}") if args.part == "B" else ""
         print(f"{name}: part {args.part}, {len(A['mol_idx'])} molecules, {time.time() - t0:.1f}s{extra}", flush=True)
     return 0
 
