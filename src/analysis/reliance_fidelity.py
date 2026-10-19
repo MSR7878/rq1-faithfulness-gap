@@ -39,6 +39,10 @@ N_DRAWS = 20
 BXAIC = ["indole", "PAINS", "X", "P"]
 ARCH_DIRS = {"dmpnn": "runs/mutagenicity", **{a: f"runs/arch_{a}/mutagenicity_graphxai" for a in ("gin", "gine", "gcn")}}
 VALIDATE_TOL = 1e-4
+# Amendment of 2026-10-19 (spec): the stored SubgraphX values of these two single-split runs predate the
+# 2026-09-09 torch reinstall and depend on top-k tie order; for these cells the stop-on-mismatch validation is
+# replaced by "recompute with current tie-breaking and report next to the stored values" (stored values kept).
+VALIDATE_EXEMPT = {("mutag", "subgraphx"), ("bbbp", "subgraphx")}
 
 
 # ----------------------------------------------------------------------------- units
@@ -226,8 +230,12 @@ def run_part_b(name, spec, device, limit=None):
         for met in ("fid_plus", "fid_minus"):
             for ref in ("node", "conn"):
                 keys += [f"rand_{ref}_{mk}_{met}_logit", f"rand_{ref}_{mk}_{met}_prob"]
+    exempt = [e for e in EXPL if (name, e) in VALIDATE_EXEMPT]
+    for e in exempt:
+        for mk in MASKINGS:
+            keys += [f"{e}_{mk}_fid_plus_prob_stored", f"{e}_{mk}_fid_minus_prob_stored"]
     R = {k: [] for k in keys}
-    max_dev = 0.0
+    max_dev, max_dev_exempt = 0.0, 0.0
     n_use = len(test_idx) if limit is None else min(limit, len(test_idx))
     for pos in range(n_use):
         mi = test_idx[pos]; d = dl[mi]
@@ -261,7 +269,12 @@ def run_part_b(name, spec, device, limit=None):
                 R[f"{e}_{mk}_fid_plus_logit"].append(fp_l); R[f"{e}_{mk}_fid_minus_logit"].append(fm_l)
                 R[f"{e}_{mk}_fid_plus_prob"].append(fp_p); R[f"{e}_{mk}_fid_minus_prob"].append(fm_p)
                 st = pm[mk][FILL_KEY[mk]][e][pos]       # stored probability-space values of the original run
-                max_dev = max(max_dev, abs(fp_p - st["fid_plus"]), abs(fm_p - st["fid_minus"]))
+                dev = max(abs(fp_p - st["fid_plus"]), abs(fm_p - st["fid_minus"]))
+                if e in exempt:
+                    max_dev_exempt = max(max_dev_exempt, dev)
+                    R[f"{e}_{mk}_fid_plus_prob_stored"].append(st["fid_plus"]); R[f"{e}_{mk}_fid_minus_prob_stored"].append(st["fid_minus"])
+                else:
+                    max_dev = max(max_dev, dev)
             for ref in ("node", "conn"):
                 i = idx[(ref, mk)]
                 gm, ee = np.arange(i, i + 2 * N_DRAWS, 2), np.arange(i + 1, i + 2 * N_DRAWS, 2)
@@ -274,6 +287,8 @@ def run_part_b(name, spec, device, limit=None):
                            f"(> {VALIDATE_TOL}) -- stopping, nothing written for this unit")
     A = {k: np.array(v) for k, v in R.items()}
     A["validation_max_abs_dev"] = np.array(max_dev)
+    A["validation_exempt"] = np.array(exempt)
+    A["validation_exempt_max_abs_dev"] = np.array(max_dev_exempt)
     return A, ck
 
 

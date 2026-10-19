@@ -145,7 +145,7 @@ def part_b(rep):
             U[u] = load("B", u)
     missing = [u for u, v in U.items() if v is None]
     P(f"\n  units loaded {len(U) - len(missing)}/{len(U)}" + (f"   MISSING: {missing}" if missing else ""))
-    devs = [float(v["validation_max_abs_dev"]) for v in U.values() if v is not None]
+    devs = [float(v["validation_max_abs_dev"]) for v in U.values() if v is not None]   # exempt cells (amendment) reported in the tie section
     mism = sum(int((~v["pred_matches_target"].astype(bool)).sum()) for v in U.values() if v is not None)
     P(f"  validation: recomputed probability Fid+/Fid- vs stored per-molecule values, max |dev| over all units {max(devs):.1e};"
       f" molecules whose prediction differs from the cached target: {mism}")
@@ -236,11 +236,47 @@ def gea_compare(rep, U):
     rep["GEA_vs_Fid_differ"] = diffs
 
 
+# ============================================================================ tie-break findings
+def tie_findings(rep, U):
+    P("\n" + "=" * 130); P(" TIE-BREAK FINDINGS -- SubgraphX on the two single-split runs (amendment of 2026-10-19; exploratory)"); P("=" * 130)
+    rep["ties"] = {}
+    for name in ("mutag", "bbbp"):
+        a, f = U.get(name), f"{OUT}/ties/{name}_subgraphx_ties.npz"
+        if a is None or not os.path.exists(f):
+            P(f"  {name}: MISSING"); continue
+        z = dict(np.load(f, allow_pickle=True)); n = len(z["mol_idx"])
+        P(f"\n  -- {name.upper()}  (n = {n}; SubgraphX coalition != top-k budget in {int((z['coalition_size'] != z['budget']).sum())} molecules;"
+          f" recomputation max |dev| from stored {float(a['validation_exempt_max_abs_dev']):.3f})")
+        P(f"  {'':<14}{'stored (Sept)':>14}{'recomputed now':>16}{'mols differing':>16} | 5 random tie orders: mean of molecule averages [min, max];  mean per-molecule range")
+        r = {}
+        for mk in MASKINGS:
+            for met in ("fid_plus", "fid_minus"):
+                st, cur = a[f"subgraphx_{mk}_{met}_prob_stored"], a[f"subgraphx_{mk}_{met}_prob"]
+                lab = f"{mk} {met.replace('fid_', 'Fid').replace('plus', '+').replace('minus', '-')}"
+                for sp in ("prob", "logit"):
+                    o = z[f"{mk}_{met}_{sp}"]; avg = o.mean(0); rng_ = (o.max(1) - o.min(1)).mean()
+                    left = (f"{float(st.mean()):>14.3f}{float(cur.mean()):>16.3f}{int((np.abs(st - cur) > 1e-4).sum()):>16}" if sp == "prob" else f"{'':>46}")
+                    P(f"  {lab + ' ' + sp:<14}{left} | {avg.mean():>8.3f} [{avg.min():.3f}, {avg.max():.3f}];  {rng_:.3f}")
+                    r[f"{mk}|{met}|{sp}"] = {"orders_mean": float(avg.mean()), "orders_min": float(avg.min()), "orders_max": float(avg.max()),
+                                             "mean_per_molecule_range": float(rng_)}
+                r[f"{mk}|{met}|stored_vs_current"] = {"stored_mean": float(st.mean()), "current_mean": float(cur.mean()),
+                                                      "n_differing": int((np.abs(st - cur) > 1e-4).sum())}
+        if bool(z["gt_from_mutag_graphxai"]):
+            g = z["gea_topk"]; avg = g.mean(0)
+            P(f"  GEA top-k (MUTAG-GT mask; graphs verified identical): current order {np.nanmean(z['gea_topk_current']):.3f};"
+              f" 5 orders {avg.mean():.3f} [{avg.min():.3f}, {avg.max():.3f}]; mean per-molecule range {(g.max(1) - g.min(1)).mean():.3f}")
+            r["gea"] = {"current": float(np.nanmean(z["gea_topk_current"])), "orders_mean": float(avg.mean()), "orders_min": float(avg.min()), "orders_max": float(avg.max())}
+        else:
+            P("  GEA: not applicable (no ground truth" + (" for BBBP)" if name == "bbbp" else "; MUTAG graphs not identical to MUTAG-GT's)"))
+        rep["ties"][name] = r
+
+
 def main():
     rep = {}
     part_a(rep)
     U = part_b(rep)
     gea_compare(rep, U)
+    tie_findings(rep, U)
     json.dump(rep, open(f"{OUT}/report.json", "w"), indent=1, default=lambda o: o.item() if hasattr(o, "item") else str(o))
     P(f"\nsaved -> {OUT}/report.json")
     return 0
