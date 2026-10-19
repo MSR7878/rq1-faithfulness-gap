@@ -28,6 +28,7 @@ echo "[$(stamp)] part A: $(ls $R/partA/*.npz | wc -l)/$(wc -l < $R/units_A.txt) 
 
 # validation pass over all Part B units
 $PY -m src.analysis.reliance_fidelity list | awk '$2 ~ /B/ {print $1}' > $R/units_B.txt
+cp $R/units_B.txt $R/units_V.txt          # the validation pass covers exactly the Part B units
 fanout V $PY -u -m src.analysis.reliance_fidelity validate
 $PY - <<'EOF' >> $R/run.log
 import csv, glob, json, sys
