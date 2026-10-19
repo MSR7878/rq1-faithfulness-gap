@@ -1,0 +1,6 @@
+mutag: graphs identical to MUTAG-GT for all 29 explained molecules: True
+mutag subgraphx: 29 molecules
+bbbp subgraphx: 30 molecules
+bbbp pgexplainer: 1 molecules
+mutag: graphs identical to MUTAG-GT for all 29 explained molecules: True
+mutag pgexplainer: 3 molecules
