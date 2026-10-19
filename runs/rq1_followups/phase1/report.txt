@@ -1,0 +1,94 @@
+========================================================================================================================
+ PHASE 1 -- MUTAG-GT, 10 seeds (0-4 stored priority-sweep runs; 5-9 new, same protocol)
+========================================================================================================================
+
+[0] seeds 0-4 stored files unchanged (SHA-256 vs PLAN.md): yes
+
+[M] model, 29-graph test split          seed   test acc   test AUROC
+                                           0   0.8966     0.9842
+                                           1   0.9310     0.9368
+                                           2   0.8621     0.9684
+                                           3   0.7586     0.8632
+                                           4   0.8966     0.9579
+                                           5   0.8276     0.9053   (new)
+                                           6   0.9310     0.9789   (new)
+                                           7   0.8276     0.9263   (new)
+                                           8   0.6897     0.8842   (new)
+                                           9   0.6897     0.8474   (new)
+
+====================================================================================================
+ mutag_graphxai
+====================================================================================================
+  seed 0  n=188  mean|mask|=4.1  SX=0.030  RandConn=0.102  RandUnc=0.136  SX-vs-Conn p=7.12e-19*** (SX>Conn in 20/188, ties=0)  SX-vs-Unc p=2.11e-24*** (SX>Unc in 17/188, ties=0)
+  seed 1  n=188  mean|mask|=4.4  SX=0.020  RandConn=0.109  RandUnc=0.144  SX-vs-Conn p=5.54e-28*** (SX>Conn in 17/188, ties=0)  SX-vs-Unc p=1.12e-31*** (SX>Unc in 9/188, ties=0)
+  seed 2  n=188  mean|mask|=4.2  SX=0.113  RandConn=0.110  RandUnc=0.142  SX-vs-Conn p=2.70e-03** (SX>Conn in 49/188, ties=0)  SX-vs-Unc p=7.03e-06*** (SX>Unc in 44/188, ties=0)
+  seed 3  n=188  mean|mask|=4.4  SX=0.048  RandConn=0.106  RandUnc=0.144  SX-vs-Conn p=4.49e-18*** (SX>Conn in 24/188, ties=0)  SX-vs-Unc p=1.08e-21*** (SX>Unc in 19/188, ties=0)
+  seed 4  n=188  mean|mask|=4.4  SX=0.113  RandConn=0.111  RandUnc=0.141  SX-vs-Conn p=2.86e-03** (SX>Conn in 51/188, ties=0)  SX-vs-Unc p=1.17e-05*** (SX>Unc in 48/188, ties=0)
+  seed 5  n=188  mean|mask|=4.2  SX=0.063  RandConn=0.105  RandUnc=0.135  SX-vs-Conn p=2.19e-12*** (SX>Conn in 36/188, ties=0)  SX-vs-Unc p=1.90e-17*** (SX>Unc in 28/188, ties=0)
+  seed 6  n=188  mean|mask|=4.4  SX=0.120  RandConn=0.111  RandUnc=0.143  SX-vs-Conn p=6.35e-03** (SX>Conn in 52/188, ties=0)  SX-vs-Unc p=6.60e-05*** (SX>Unc in 49/188, ties=0)
+  seed 7  n=188  mean|mask|=4.3  SX=0.087  RandConn=0.111  RandUnc=0.140  SX-vs-Conn p=1.94e-04*** (SX>Conn in 44/188, ties=0)  SX-vs-Unc p=4.84e-08*** (SX>Unc in 43/188, ties=0)
+  seed 8  n=188  mean|mask|=4.3  SX=0.008  RandConn=0.107  RandUnc=0.135  SX-vs-Conn p=3.38e-31*** (SX>Conn in 5/188, ties=0)  SX-vs-Unc p=2.15e-32*** (SX>Unc in 5/188, ties=0)
+  seed 9  n=188  mean|mask|=4.2  SX=0.021  RandConn=0.106  RandUnc=0.136  SX-vs-Conn p=2.97e-25*** (SX>Conn in 10/188, ties=0)  SX-vs-Unc p=4.14e-27*** (SX>Unc in 12/188, ties=0)
+  saved per-molecule arrays -> runs/rq1_followups/phase1/connectivity_arrays_mutag_graphxai.npz
+
+[a] seeds 0-4 GEA and connectivity arrays recomputed: identical to the stored ones
+[b] Part A for seeds 0-4 recomputed: identical to the stored arrays (atol 1e-5)
+
+[T] per-seed results: mean real / mean null and direction (+ above, - below, . n.s.)
+  comparison                                     s0             s1             s2             s3             s4             s5             s6             s7             s8             s9
+  GEA GNN vs RandNode                  0.379/0.143+   0.076/0.148-   0.374/0.144+   0.476/0.147+   0.487/0.146+   0.462/0.143+   0.482/0.142+   0.476/0.145+   0.286/0.143+   0.088/0.144-
+  GEA PG vs RandNode                   0.297/0.143+   0.086/0.148-   0.096/0.144-   0.179/0.147.   0.365/0.146+   0.179/0.143.   0.201/0.142.   0.233/0.145+   0.205/0.143.   0.327/0.144+
+  GEA SX vs RandNode                   0.045/0.143-   0.027/0.148-   0.108/0.144-   0.050/0.147-   0.110/0.146-   0.073/0.143-   0.113/0.142-   0.092/0.145-   0.018/0.143-   0.038/0.144-
+  GEA SX vs RandConn (SX size)         0.030/0.102-   0.020/0.109-   0.113/0.110-   0.048/0.106-   0.113/0.111-   0.063/0.105-   0.120/0.111-   0.087/0.111-   0.008/0.107-   0.021/0.106-
+  reliance R1 vs RandConn              0.404/5.575-   0.337/2.829-   0.655/4.529-   0.475/3.793-   0.481/3.895-   0.548/3.810-   0.462/2.643-   0.566/5.711-   0.136/2.331-  -0.076/1.034-
+  reliance R2 vs RandConn              0.241/1.541-   0.231/0.558-   0.362/0.570-   0.374/0.788-   0.182/0.892-   0.405/1.027-   0.345/0.382.   0.122/1.006-   0.254/0.662-  -0.006/0.296-
+  R3 Fid+ GNN - RandNode                    +1.174+        +0.029.        +2.774+        +1.515+        +0.773+        +2.915+        +1.349+        +1.181+        -0.010.        +0.054+
+  R3 Fid- GNN - RandNode                    -1.658-        -0.125-        -2.101-        -1.288-        -0.900-        -2.463-        -1.225-        -1.314-        -0.038.        -0.038-
+  R3 Fid+ PG - RandNode                     +0.334+        -0.061.        -0.141.        -0.141-        +0.147.        -0.184.        +0.431+        -0.148.        -0.065-        -0.151-
+  R3 Fid- PG - RandNode                     -0.788-        +0.091+        -0.065.        +0.068.        -0.367-        +0.279+        -0.410-        -0.343-        -0.047.        +0.109+
+  R3 Fid+ SX - RandNode                     +0.976+        +0.517+        +0.790+        +0.485+        +0.913+        +0.710+        +0.518+        +0.998+        +0.333+        +0.241+
+  R3 Fid- SX - RandNode                     -1.202-        -0.527-        -0.675-        -0.512-        -0.965-        -0.553-        -0.470-        -1.086-        -0.429-        -0.285-
+  PG degenerate / n (collapsed)               0/188          0/188          0/188       188/188*          0/188       188/188*          0/188          0/188          0/188          0/188
+
+[C] direction counts above/below/n.s.           seeds 0-4     seeds 5-9      all 10    | exploratory sign test over 10 seeds (rank direction): +/-, p
+  GEA GNN vs RandNode                              4/1/0       4/1/0       8/2/0    | 8/2, p = 0.1094
+  GEA PG vs RandNode                               2/2/1       2/0/3       4/2/4    | 8/2, p = 0.1094
+  GEA SX vs RandNode                               0/5/0       0/5/0      0/10/0    | 0/10, p = 0.0020
+  GEA SX vs RandConn (SX size)                     0/5/0       0/5/0      0/10/0    | 0/10, p = 0.0020
+  reliance R1 vs RandConn                          0/5/0       0/5/0      0/10/0    | 0/10, p = 0.0020
+  reliance R2 vs RandConn                          0/5/0       0/4/1       0/9/1    | 0/10, p = 0.0020
+  R3 Fid+ GNN - RandNode                           4/0/1       4/0/1       8/0/2
+  R3 Fid- GNN - RandNode                           0/5/0       0/4/1       0/9/1
+  R3 Fid+ PG - RandNode                            1/1/3       1/2/2       2/3/5
+  R3 Fid- PG - RandNode                            1/2/2       2/2/1       3/4/3
+  R3 Fid+ SX - RandNode                            5/0/0       5/0/0      10/0/0
+  R3 Fid- SX - RandNode                            0/5/0       0/5/0      0/10/0
+  PGExplainer collapsed (strict rule)                  1           1           2
+
+[P] PREDICTIONS (PLAN.md)
+  P1 SX significantly below its size-matched RandConn on GEA in >= 8/10 seeds: 10/10 -> HELD
+  P2 reliance significantly below RandConn in >= 8/10 seeds, R1 and R2: R1 10/10, R2 9/10 -> HELD
+  P3 GNN significantly above RandNode on top-k GEA in >= 7/10 seeds: 8/10 -> HELD
+
+[W] ADDENDUM -- GEA scored three ways: (a) current torch order, (b) PRIMARY random ties (20 orders, averaged per molecule),
+    (c) mean-threshold vs size-matched nulls. Molecules with a tie at the top-k boundary, per seed (of GT-bearing):
+     s0: GNN 0 PG 28 SX 104   s1: GNN 0 PG 26 SX 83   s2: GNN 0 PG 31 SX 89   s3: GNN 0 PG 188 SX 84   s4: GNN 0 PG 21 SX 77   s5: GNN 0 PG 188 SX 93   s6: GNN 0 PG 36 SX 91   s7: GNN 0 PG 41 SX 90   s8: GNN 0 PG 31 SX 90   s9: GNN 0 PG 27 SX 87
+  comparison                                way   seeds 0-4   seeds 5-9    all 10   per seed
+  GNN vs RandNode (top-k)                     a       4/1/0       4/1/0     8/2/0   + - + + + + + + + -
+  GNN vs RandNode (top-k)                     b       4/1/0       4/1/0     8/2/0   + - + + + + + + + -
+  GNN mean-thr vs RandUnc (size-matched)      c       4/1/0       4/1/0     8/2/0   + - + + + + + + + -
+  PG vs RandNode (top-k)                      a       2/2/1       2/0/3     4/2/4   + - - . + . . + . +
+  PG vs RandNode (top-k)                      b       2/2/1       2/0/3     4/2/4   + - - . + . . + . +
+  PG mean-thr vs RandUnc (size-matched)       c       2/2/1       1/1/3     3/3/4   + - - . + . . - . +
+  SX vs RandNode (top-k)                      a       0/5/0       0/5/0    0/10/0   - - - - - - - - - -
+  SX vs RandNode (top-k)                      b       0/5/0       0/5/0    0/10/0   - - - - - - - - - -
+  SX mean-thr vs RandUnc (size-matched)       c       0/5/0       0/5/0    0/10/0   - - - - - - - - - -
+  SX mean-thr vs RandConn (SX size) [P1 as registered]  a=c       0/5/0       0/5/0    0/10/0   - - - - - - - - - -
+  SX top-k vs RandConn at the budget          b       0/5/0       0/5/0    0/10/0   - - - - - - - - - -
+
+[P'] PREDICTIONS under each way ((b) primary)
+  (b)  P1 10/10 -> HELD   P2 R1 10/10, R2 9/10 -> HELD (no explainer; same under every way)   P3 8/10 -> HELD
+  (a)  P1 10/10 -> HELD   P2 R1 10/10, R2 9/10 -> HELD (no explainer; same under every way)   P3 8/10 -> HELD
+  (c)  P1 10/10 -> HELD   P2 R1 10/10, R2 9/10 -> HELD (no explainer; same under every way)   P3 8/10 -> HELD
+
+saved -> runs/rq1_followups/phase1/report.json, runs/rq1_followups/phase1/null_audit_arrays/, runs/rq1_followups/phase1/connectivity_arrays_mutag_graphxai.npz, runs/rq1_followups/phase1/partA/, runs/rq1_followups/phase1/partB/
