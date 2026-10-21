@@ -1,0 +1,24 @@
+PART 1 -- MUTAG-GT PGExplainer vs random-node, seeds 0-4, top-k 0.25, random ties: Phase 1 (0ed92f6) vs Phase 2b (66783db)
+Same in both: molecules (188 per seed), random-node null arrays (stored rn_k, 20 draws), Holm family (the 3 explainers vs random-node,
+per seed), GEA code path (Jaccard vs the merged GT mask), 20 tie orders. Different: the tie-order random stream
+(Phase 1 tag 'mutag_graphxai_s<seed>|<explainer>', Phase 2b tag 'audit_mutag_graphxai_s<seed>|<explainer>') and the direction rule
+(Phase 1: rank test; Phase 2b: higher mean, the main-table rule). Both rules give the same sign in every cell below.
+seed run       PG mean    null      raw p     Holm p  sign (main-table rule)  sign (rank rule)  PG tie molecules
+   0 phase1     0.2970  0.1431   1.82e-10   1.82e-10            +                    +          28/188
+   0 phase2b    0.2970  0.1431   1.82e-10   1.82e-10            +                    +          28/188
+   1 phase1     0.0864  0.1483    5.5e-12    5.5e-12            -                    -          26/188
+   1 phase2b    0.0864  0.1483    5.5e-12    5.5e-12            -                    -          26/188
+   2 phase1     0.0960  0.1437   1.01e-07   2.02e-07            -                    -          31/188
+   2 phase2b    0.0960  0.1437   1.01e-07   2.02e-07            -                    -          31/188
+   3 phase1     0.1454  0.1471      0.635      0.635            .                    .          188/188
+   3 phase2b    0.1408  0.1471     0.0214     0.0214            -                    -          188/188
+   4 phase1     0.3652  0.1463   3.83e-14   7.66e-14            +                    +          21/188
+   4 phase2b    0.3652  0.1463   3.83e-14   7.66e-14            +                    +          21/188
+
+Seed 3 (collapsed: all 188 PG masks constant, so each top-k pick is a pure tie-order draw) under 50 further tie streams:
+  above 0, below 1, n.s. 49; PG mean 0.1394-0.1492 vs null 0.1471; Holm p median 0.345, min 0.034
+Cause: seed 3 only. Its PG 'explanation' is a random k-set, so PG vs random-node compares two random draws; the Phase 2b stream
+happened to give p = 0.021 (a chance result; 2 of 52 streams in total are significant). Holm family, nulls, molecules and code are not the cause.
+Protocol of the main count table (exploratory_null_audit.sig_counts): per-seed paired two-sided Wilcoxon of top-k GEA vs the 20-draw
+random-node null; Holm over the 3 explainers within the seed; direction = higher mean with Holm p < 0.05. Both runs follow it.
+Correct count (seed 3 = n.s., as in 49 of 50 extra streams and in Phase 1): 2 above / 2 below / 1 n.s. -- unchanged from the stored 2/2/1.

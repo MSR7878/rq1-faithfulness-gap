@@ -1,0 +1,7 @@
+seed 5: PG ties 188, SX ties 93, GNN ties 0
+seed 6: PG ties 36, SX ties 91, GNN ties 0
+seed 7: PG ties 41, SX ties 90, GNN ties 0
+seed 8: PG ties 31, SX ties 90, GNN ties 0
+seed 9: PG ties 27, SX ties 87, GNN ties 0
+seed 3, 50 extra tie streams: {'n': 50, 'plus': 0, 'minus': 1, 'ns': 49, 'pg_mean_min': 0.13935221113627716, 'pg_mean_max': 0.14919312711259675, 'null_mean': 0.1471450693523206, 'holm_p_min': 0.03386364841897464, 'holm_p_median': 0.34489181936758523}
+mean-threshold: max |recomputed - stored| over all units: 0.2666666666666666
