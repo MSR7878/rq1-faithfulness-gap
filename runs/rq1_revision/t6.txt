@@ -1,0 +1,26 @@
+T6 -- negative null drop under R1 (drop = m(G) - m(G with the set removed); negative = margin goes UP)
+
+  -- D-MPNN: 632 molecules (5 seeds); identity keep_nodes(G, all) vs G: max |logit diff| 7.6e-06
+    mean drop R1          +1.717   share of molecules with a negative drop 0.16   pred class 0: +0.513 (n 16)   pred class 1: +1.748 (n 616)
+    mean drop edges_only  +0.769   share of molecules with a negative drop 0.41   pred class 0: +1.227 (n 16)   pred class 1: +0.757 (n 616)
+    mean drop R2          +1.004   share of molecules with a negative drop 0.20   pred class 0: +0.412 (n 16)   pred class 1: +1.019 (n 616)
+    pooled-embedding norm: G 15.83  after R1 removal 13.88  (ratio 0.873)
+
+  -- GIN: 632 molecules (5 seeds); identity keep_nodes(G, all) vs G: max |logit diff| 3.8e-06
+    mean drop R1          +3.041   share of molecules with a negative drop 0.13   pred class 0: +1.034 (n 17)   pred class 1: +3.096 (n 615)
+    mean drop edges_only  +2.639   share of molecules with a negative drop 0.16   pred class 0: +1.768 (n 17)   pred class 1: +2.663 (n 615)
+    mean drop R2          +1.330   share of molecules with a negative drop 0.27   pred class 0: +2.563 (n 17)   pred class 1: +1.296 (n 615)
+    pooled-embedding norm: G 100.85  after R1 removal 87.63  (ratio 0.893)
+
+  -- GINE: 632 molecules (5 seeds); identity keep_nodes(G, all) vs G: max |logit diff| 3.8e-06
+    mean drop R1          +1.574   share of molecules with a negative drop 0.19   pred class 0: +2.455 (n 11)   pred class 1: +1.558 (n 621)
+    mean drop edges_only  +0.675   share of molecules with a negative drop 0.43   pred class 0: +3.860 (n 11)   pred class 1: +0.619 (n 621)
+    mean drop R2          +2.116   share of molecules with a negative drop 0.10   pred class 0: +0.607 (n 11)   pred class 1: +2.143 (n 621)
+    pooled-embedding norm: G 64.07  after R1 removal 57.63  (ratio 0.929)
+
+  -- GCN: 632 molecules (5 seeds); identity keep_nodes(G, all) vs G: max |logit diff| 1.9e-06
+    mean drop R1          -1.277   share of molecules with a negative drop 0.66   pred class 0: +4.429 (n 20)   pred class 1: -1.463 (n 612)
+    mean drop edges_only  -4.159   share of molecules with a negative drop 0.82   pred class 0: +7.598 (n 20)   pred class 1: -4.543 (n 612)
+    mean drop R2          +1.616   share of molecules with a negative drop 0.21   pred class 0: +1.538 (n 20)   pred class 1: +1.618 (n 612)
+    pooled-embedding norm: G 9.60  after R1 removal 10.00  (ratio 1.078)
+    Spearman(remaining atoms, R1 drop) = -0.300 (p 1.3e-14)

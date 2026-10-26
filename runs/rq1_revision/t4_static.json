@@ -1,0 +1,2347 @@
+{
+ "recount": {
+  "Tox21 (priority sweep)": {
+   "units": 60,
+   "collapsed_old": 24,
+   "collapsed_new": 28,
+   "changed": [
+    "cache_tox21_NR-AR_s3.pt (0->30/30)",
+    "cache_tox21_SR-ATAD5_s4.pt (10->30/30)",
+    "cache_tox21_SR-HSE_s0.pt (1->30/30)",
+    "cache_tox21_SR-HSE_s4.pt (11->30/30)"
+   ]
+  },
+  "B-XAIC (priority sweep)": {
+   "units": 20,
+   "collapsed_old": 2,
+   "collapsed_new": 2,
+   "changed": []
+  },
+  "MUTAG-GT seeds 0-4 (priority sweep)": {
+   "units": 5,
+   "collapsed_old": 1,
+   "collapsed_new": 5,
+   "changed": [
+    "cache_mutag_graphxai_s0.pt (0->188/188)",
+    "cache_mutag_graphxai_s1.pt (0->188/188)",
+    "cache_mutag_graphxai_s2.pt (0->188/188)",
+    "cache_mutag_graphxai_s4.pt (0->188/188)"
+   ]
+  },
+  "MUTAG-GT seeds 5-9": {
+   "units": 5,
+   "collapsed_old": 1,
+   "collapsed_new": 5,
+   "changed": [
+    "cache_mutag_graphxai_s6.pt (0->188/188)",
+    "cache_mutag_graphxai_s7.pt (0->188/188)",
+    "cache_mutag_graphxai_s8.pt (0->188/188)",
+    "cache_mutag_graphxai_s9.pt (0->188/188)"
+   ]
+  },
+  "MUTAG-GT decoupled": {
+   "units": 5,
+   "collapsed_old": 1,
+   "collapsed_new": 5,
+   "changed": [
+    "cache_mutag_graphxai_s0.pt (0->188/188)",
+    "cache_mutag_graphxai_s1.pt (0->188/188)",
+    "cache_mutag_graphxai_s2.pt (0->188/188)",
+    "cache_mutag_graphxai_s4.pt (0->188/188)"
+   ]
+  },
+  "Mutagenicity D-MPNN 5-seed": {
+   "units": 5,
+   "collapsed_old": 0,
+   "collapsed_new": 0,
+   "changed": []
+  },
+  "Mutagenicity 5-fold CV": {
+   "units": 5,
+   "collapsed_old": 0,
+   "collapsed_new": 0,
+   "changed": []
+  },
+  "Mutagenicity GIN": {
+   "units": 5,
+   "collapsed_old": 2,
+   "collapsed_new": 3,
+   "changed": [
+    "cache_s4.pt (91->346/346)"
+   ]
+  },
+  "Mutagenicity GINE": {
+   "units": 5,
+   "collapsed_old": 1,
+   "collapsed_new": 2,
+   "changed": [
+    "cache_s0.pt (2->350/350)"
+   ]
+  },
+  "Mutagenicity GCN": {
+   "units": 5,
+   "collapsed_old": 4,
+   "collapsed_new": 4,
+   "changed": []
+  },
+  "F10 mechanism (Tox21)": {
+   "units": 0,
+   "collapsed_old": 0,
+   "collapsed_new": 0,
+   "changed": []
+  },
+  "MUTAG single split": {
+   "units": 1,
+   "collapsed_old": 0,
+   "collapsed_new": 1,
+   "changed": [
+    "expl_cache_mutag.pt (0->29/29)"
+   ]
+  },
+  "BBBP single split": {
+   "units": 1,
+   "collapsed_old": 0,
+   "collapsed_new": 1,
+   "changed": [
+    "expl_cache_bbbp.pt (1->30/30)"
+   ]
+  }
+ },
+ "per_unit": {
+  "runs/prio/cache_tox21_NR-AR_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 24
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 6
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 3,
+   "deg_new": 13,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 19,
+     "degenerate_new": 10
+    },
+    "1": {
+     "n": 11,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 30,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 22
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 8
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 22
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 8
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR-LBD_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 1,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 1
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR-LBD_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 2
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR-LBD_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 23,
+     "degenerate_new": 23
+    },
+    "1": {
+     "n": 7,
+     "degenerate_new": 7
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR-LBD_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 27
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AR-LBD_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 19,
+     "degenerate_new": 19
+    },
+    "1": {
+     "n": 11,
+     "degenerate_new": 11
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AhR_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 25,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 5,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AhR_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 23,
+     "degenerate_new": 23
+    },
+    "1": {
+     "n": 7,
+     "degenerate_new": 7
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AhR_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 29,
+   "deg_new": 29,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 27
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 2
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AhR_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-AhR_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 22
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 8
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-Aromatase_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-Aromatase_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-Aromatase_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 27
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-Aromatase_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 26,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 4,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-Aromatase_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 27
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 2,
+   "deg_new": 5,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 5
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 1,
+   "deg_new": 6,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 6
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 1,
+   "deg_new": 13,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 13
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 2
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 25,
+     "degenerate_new": 25
+    },
+    "1": {
+     "n": 5,
+     "degenerate_new": 5
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER-LBD_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 4,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 21,
+     "degenerate_new": 3
+    },
+    "1": {
+     "n": 9,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER-LBD_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 24
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 6
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER-LBD_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 2
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER-LBD_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 25,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 5,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-ER-LBD_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 27
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-PPAR-gamma_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-PPAR-gamma_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 25,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 5,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-PPAR-gamma_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 24
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 6
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-PPAR-gamma_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 27
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_tox21_NR-PPAR-gamma_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ARE_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 20,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 10,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ARE_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 22
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 8
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ARE_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 24
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 6
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ARE_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 23,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 7,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ARE_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 24
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 6
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ATAD5_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 2
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ATAD5_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ATAD5_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 29
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ATAD5_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 25,
+     "degenerate_new": 1
+    },
+    "1": {
+     "n": 5,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-ATAD5_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 10,
+   "deg_new": 30,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 26,
+     "degenerate_new": 26
+    },
+    "1": {
+     "n": 4,
+     "degenerate_new": 4
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-HSE_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 1,
+   "deg_new": 30,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 29
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-HSE_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 30,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-HSE_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 27,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 3,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-HSE_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 30,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-HSE_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 11,
+   "deg_new": 30,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 29
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-MMP_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 19,
+     "degenerate_new": 19
+    },
+    "1": {
+     "n": 11,
+     "degenerate_new": 11
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-MMP_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 21,
+     "degenerate_new": 21
+    },
+    "1": {
+     "n": 9,
+     "degenerate_new": 9
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-MMP_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 23,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 7,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-MMP_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 22,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 8,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-MMP_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 15,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 20,
+     "degenerate_new": 20
+    },
+    "1": {
+     "n": 10,
+     "degenerate_new": 10
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-p53_s0.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 29,
+     "degenerate_new": 29
+    },
+    "1": {
+     "n": 1,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-p53_s1.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 24,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 6,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-p53_s2.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 1,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 2
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-p53_s3.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 28,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 2,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_tox21_SR-p53_s4.pt": {
+   "set": "Tox21 (priority sweep)",
+   "n": 30,
+   "deg_old": 30,
+   "deg_new": 30,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 26,
+     "degenerate_new": 26
+    },
+    "1": {
+     "n": 4,
+     "degenerate_new": 4
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_indole_s0.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_indole_s1.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 1,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_indole_s2.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_indole_s3.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_indole_s4.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_PAINS_s0.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 37,
+   "deg_new": 47,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 56,
+     "degenerate_new": 4
+    },
+    "1": {
+     "n": 344,
+     "degenerate_new": 43
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_PAINS_s1.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 52,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 348,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_PAINS_s2.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 0,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 55,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 345,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_PAINS_s3.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 400,
+   "deg_new": 400,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 50,
+     "degenerate_new": 50
+    },
+    "1": {
+     "n": 350,
+     "degenerate_new": 350
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_PAINS_s4.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 400,
+   "deg_new": 400,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 46,
+     "degenerate_new": 46
+    },
+    "1": {
+     "n": 354,
+     "degenerate_new": 354
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_X_s0.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 12,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 12
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_X_s1.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 40,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 40
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_X_s2.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 40,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 40
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_X_s3.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 26,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 26
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_X_s4.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 36,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 36
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 0
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_P_s0.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 2
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_P_s1.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 25,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 21
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 4
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_P_s2.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 35,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 30
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 5
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_P_s3.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 15,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 13
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 2
+    }
+   }
+  },
+  "runs/prio/cache_bxaic_P_s4.pt": {
+   "set": "B-XAIC (priority sweep)",
+   "n": 400,
+   "deg_old": 0,
+   "deg_new": 36,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 40,
+     "degenerate_new": 33
+    },
+    "1": {
+     "n": 360,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/prio/cache_mutag_graphxai_s0.pt": {
+   "set": "MUTAG-GT seeds 0-4 (priority sweep)",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 69,
+     "degenerate_new": 69
+    },
+    "1": {
+     "n": 119,
+     "degenerate_new": 119
+    }
+   }
+  },
+  "runs/prio/cache_mutag_graphxai_s1.pt": {
+   "set": "MUTAG-GT seeds 0-4 (priority sweep)",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 73,
+     "degenerate_new": 73
+    },
+    "1": {
+     "n": 115,
+     "degenerate_new": 115
+    }
+   }
+  },
+  "runs/prio/cache_mutag_graphxai_s2.pt": {
+   "set": "MUTAG-GT seeds 0-4 (priority sweep)",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 57,
+     "degenerate_new": 57
+    },
+    "1": {
+     "n": 131,
+     "degenerate_new": 131
+    }
+   }
+  },
+  "runs/prio/cache_mutag_graphxai_s3.pt": {
+   "set": "MUTAG-GT seeds 0-4 (priority sweep)",
+   "n": 188,
+   "deg_old": 188,
+   "deg_new": 188,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 58,
+     "degenerate_new": 58
+    },
+    "1": {
+     "n": 130,
+     "degenerate_new": 130
+    }
+   }
+  },
+  "runs/prio/cache_mutag_graphxai_s4.pt": {
+   "set": "MUTAG-GT seeds 0-4 (priority sweep)",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 70,
+     "degenerate_new": 70
+    },
+    "1": {
+     "n": 118,
+     "degenerate_new": 118
+    }
+   }
+  },
+  "runs/rq1_followups/phase1/cache_mutag_graphxai_s5.pt": {
+   "set": "MUTAG-GT seeds 5-9",
+   "n": 188,
+   "deg_old": 188,
+   "deg_new": 188,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 61,
+     "degenerate_new": 61
+    },
+    "1": {
+     "n": 127,
+     "degenerate_new": 127
+    }
+   }
+  },
+  "runs/rq1_followups/phase1/cache_mutag_graphxai_s6.pt": {
+   "set": "MUTAG-GT seeds 5-9",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 67,
+     "degenerate_new": 67
+    },
+    "1": {
+     "n": 121,
+     "degenerate_new": 121
+    }
+   }
+  },
+  "runs/rq1_followups/phase1/cache_mutag_graphxai_s7.pt": {
+   "set": "MUTAG-GT seeds 5-9",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 54,
+     "degenerate_new": 54
+    },
+    "1": {
+     "n": 134,
+     "degenerate_new": 134
+    }
+   }
+  },
+  "runs/rq1_followups/phase1/cache_mutag_graphxai_s8.pt": {
+   "set": "MUTAG-GT seeds 5-9",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 51,
+     "degenerate_new": 51
+    },
+    "1": {
+     "n": 137,
+     "degenerate_new": 137
+    }
+   }
+  },
+  "runs/rq1_followups/phase1/cache_mutag_graphxai_s9.pt": {
+   "set": "MUTAG-GT seeds 5-9",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 49,
+     "degenerate_new": 49
+    },
+    "1": {
+     "n": 139,
+     "degenerate_new": 139
+    }
+   }
+  },
+  "runs/decoupled/cache_mutag_graphxai_s0.pt": {
+   "set": "MUTAG-GT decoupled",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 69,
+     "degenerate_new": 69
+    },
+    "1": {
+     "n": 119,
+     "degenerate_new": 119
+    }
+   }
+  },
+  "runs/decoupled/cache_mutag_graphxai_s1.pt": {
+   "set": "MUTAG-GT decoupled",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 73,
+     "degenerate_new": 73
+    },
+    "1": {
+     "n": 115,
+     "degenerate_new": 115
+    }
+   }
+  },
+  "runs/decoupled/cache_mutag_graphxai_s2.pt": {
+   "set": "MUTAG-GT decoupled",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 57,
+     "degenerate_new": 57
+    },
+    "1": {
+     "n": 131,
+     "degenerate_new": 131
+    }
+   }
+  },
+  "runs/decoupled/cache_mutag_graphxai_s3.pt": {
+   "set": "MUTAG-GT decoupled",
+   "n": 188,
+   "deg_old": 188,
+   "deg_new": 188,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 58,
+     "degenerate_new": 58
+    },
+    "1": {
+     "n": 130,
+     "degenerate_new": 130
+    }
+   }
+  },
+  "runs/decoupled/cache_mutag_graphxai_s4.pt": {
+   "set": "MUTAG-GT decoupled",
+   "n": 188,
+   "deg_old": 0,
+   "deg_new": 188,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 70,
+     "degenerate_new": 70
+    },
+    "1": {
+     "n": 118,
+     "degenerate_new": 118
+    }
+   }
+  },
+  "runs/mutagenicity/cache_s0.pt": {
+   "set": "Mutagenicity D-MPNN 5-seed",
+   "n": 350,
+   "deg_old": 0,
+   "deg_new": 13,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 233,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 117,
+     "degenerate_new": 13
+    }
+   }
+  },
+  "runs/mutagenicity/cache_s1.pt": {
+   "set": "Mutagenicity D-MPNN 5-seed",
+   "n": 345,
+   "deg_old": 0,
+   "deg_new": 11,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 215,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 130,
+     "degenerate_new": 11
+    }
+   }
+  },
+  "runs/mutagenicity/cache_s2.pt": {
+   "set": "Mutagenicity D-MPNN 5-seed",
+   "n": 348,
+   "deg_old": 1,
+   "deg_new": 7,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 220,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 128,
+     "degenerate_new": 7
+    }
+   }
+  },
+  "runs/mutagenicity/cache_s3.pt": {
+   "set": "Mutagenicity D-MPNN 5-seed",
+   "n": 351,
+   "deg_old": 0,
+   "deg_new": 4,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 227,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 124,
+     "degenerate_new": 4
+    }
+   }
+  },
+  "runs/mutagenicity/cache_s4.pt": {
+   "set": "Mutagenicity D-MPNN 5-seed",
+   "n": 346,
+   "deg_old": 0,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 220,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 126,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/mutagenicity_cv/cache_s0.pt": {
+   "set": "Mutagenicity 5-fold CV",
+   "n": 346,
+   "deg_old": 0,
+   "deg_new": 9,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 218,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 128,
+     "degenerate_new": 9
+    }
+   }
+  },
+  "runs/mutagenicity_cv/cache_s1.pt": {
+   "set": "Mutagenicity 5-fold CV",
+   "n": 350,
+   "deg_old": 0,
+   "deg_new": 2,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 221,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 129,
+     "degenerate_new": 2
+    }
+   }
+  },
+  "runs/mutagenicity_cv/cache_s2.pt": {
+   "set": "Mutagenicity 5-fold CV",
+   "n": 350,
+   "deg_old": 1,
+   "deg_new": 8,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 226,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 124,
+     "degenerate_new": 8
+    }
+   }
+  },
+  "runs/mutagenicity_cv/cache_s3.pt": {
+   "set": "Mutagenicity 5-fold CV",
+   "n": 348,
+   "deg_old": 0,
+   "deg_new": 1,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 223,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 125,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/mutagenicity_cv/cache_s4.pt": {
+   "set": "Mutagenicity 5-fold CV",
+   "n": 345,
+   "deg_old": 0,
+   "deg_new": 5,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 216,
+     "degenerate_new": 1
+    },
+    "1": {
+     "n": 129,
+     "degenerate_new": 4
+    }
+   }
+  },
+  "runs/arch_gin/mutagenicity_graphxai/cache_s0.pt": {
+   "set": "Mutagenicity GIN",
+   "n": 350,
+   "deg_old": 209,
+   "deg_new": 350,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 224,
+     "degenerate_new": 224
+    },
+    "1": {
+     "n": 126,
+     "degenerate_new": 126
+    }
+   }
+  },
+  "runs/arch_gin/mutagenicity_graphxai/cache_s1.pt": {
+   "set": "Mutagenicity GIN",
+   "n": 345,
+   "deg_old": 7,
+   "deg_new": 21,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 220,
+     "degenerate_new": 3
+    },
+    "1": {
+     "n": 125,
+     "degenerate_new": 18
+    }
+   }
+  },
+  "runs/arch_gin/mutagenicity_graphxai/cache_s2.pt": {
+   "set": "Mutagenicity GIN",
+   "n": 348,
+   "deg_old": 15,
+   "deg_new": 28,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 220,
+     "degenerate_new": 8
+    },
+    "1": {
+     "n": 128,
+     "degenerate_new": 20
+    }
+   }
+  },
+  "runs/arch_gin/mutagenicity_graphxai/cache_s3.pt": {
+   "set": "Mutagenicity GIN",
+   "n": 351,
+   "deg_old": 330,
+   "deg_new": 351,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 229,
+     "degenerate_new": 229
+    },
+    "1": {
+     "n": 122,
+     "degenerate_new": 122
+    }
+   }
+  },
+  "runs/arch_gin/mutagenicity_graphxai/cache_s4.pt": {
+   "set": "Mutagenicity GIN",
+   "n": 346,
+   "deg_old": 91,
+   "deg_new": 346,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 223,
+     "degenerate_new": 223
+    },
+    "1": {
+     "n": 123,
+     "degenerate_new": 123
+    }
+   }
+  },
+  "runs/arch_gine/mutagenicity_graphxai/cache_s0.pt": {
+   "set": "Mutagenicity GINE",
+   "n": 350,
+   "deg_old": 2,
+   "deg_new": 350,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 226,
+     "degenerate_new": 226
+    },
+    "1": {
+     "n": 124,
+     "degenerate_new": 124
+    }
+   }
+  },
+  "runs/arch_gine/mutagenicity_graphxai/cache_s1.pt": {
+   "set": "Mutagenicity GINE",
+   "n": 345,
+   "deg_old": 2,
+   "deg_new": 4,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 220,
+     "degenerate_new": 1
+    },
+    "1": {
+     "n": 125,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/arch_gine/mutagenicity_graphxai/cache_s2.pt": {
+   "set": "Mutagenicity GINE",
+   "n": 348,
+   "deg_old": 5,
+   "deg_new": 7,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 221,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 127,
+     "degenerate_new": 7
+    }
+   }
+  },
+  "runs/arch_gine/mutagenicity_graphxai/cache_s3.pt": {
+   "set": "Mutagenicity GINE",
+   "n": 351,
+   "deg_old": 0,
+   "deg_new": 3,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 226,
+     "degenerate_new": 0
+    },
+    "1": {
+     "n": 125,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/arch_gine/mutagenicity_graphxai/cache_s4.pt": {
+   "set": "Mutagenicity GINE",
+   "n": 346,
+   "deg_old": 342,
+   "deg_new": 346,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 223,
+     "degenerate_new": 223
+    },
+    "1": {
+     "n": 123,
+     "degenerate_new": 123
+    }
+   }
+  },
+  "runs/arch_gcn/mutagenicity_graphxai/cache_s0.pt": {
+   "set": "Mutagenicity GCN",
+   "n": 350,
+   "deg_old": 280,
+   "deg_new": 282,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 222,
+     "degenerate_new": 222
+    },
+    "1": {
+     "n": 128,
+     "degenerate_new": 60
+    }
+   }
+  },
+  "runs/arch_gcn/mutagenicity_graphxai/cache_s1.pt": {
+   "set": "Mutagenicity GCN",
+   "n": 345,
+   "deg_old": 201,
+   "deg_new": 211,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 213,
+     "degenerate_new": 208
+    },
+    "1": {
+     "n": 132,
+     "degenerate_new": 3
+    }
+   }
+  },
+  "runs/arch_gcn/mutagenicity_graphxai/cache_s2.pt": {
+   "set": "Mutagenicity GCN",
+   "n": 348,
+   "deg_old": 217,
+   "deg_new": 225,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 224,
+     "degenerate_new": 219
+    },
+    "1": {
+     "n": 124,
+     "degenerate_new": 6
+    }
+   }
+  },
+  "runs/arch_gcn/mutagenicity_graphxai/cache_s3.pt": {
+   "set": "Mutagenicity GCN",
+   "n": 351,
+   "deg_old": 206,
+   "deg_new": 215,
+   "collapsed_old": true,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 228,
+     "degenerate_new": 214
+    },
+    "1": {
+     "n": 123,
+     "degenerate_new": 1
+    }
+   }
+  },
+  "runs/arch_gcn/mutagenicity_graphxai/cache_s4.pt": {
+   "set": "Mutagenicity GCN",
+   "n": 346,
+   "deg_old": 16,
+   "deg_new": 44,
+   "collapsed_old": false,
+   "collapsed_new": false,
+   "by_class": {
+    "0": {
+     "n": 227,
+     "degenerate_new": 42
+    },
+    "1": {
+     "n": 119,
+     "degenerate_new": 2
+    }
+   }
+  },
+  "runs/expl_cache_mutag.pt": {
+   "set": "MUTAG single split",
+   "n": 29,
+   "deg_old": 0,
+   "deg_new": 29,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 13,
+     "degenerate_new": 13
+    },
+    "1": {
+     "n": 16,
+     "degenerate_new": 16
+    }
+   }
+  },
+  "runs/expl_cache_bbbp.pt": {
+   "set": "BBBP single split",
+   "n": 30,
+   "deg_old": 1,
+   "deg_new": 30,
+   "collapsed_old": false,
+   "collapsed_new": true,
+   "by_class": {
+    "0": {
+     "n": 2,
+     "degenerate_new": 2
+    },
+    "1": {
+     "n": 28,
+     "degenerate_new": 28
+    }
+   }
+  }
+ },
+ "dig": {
+  "has_get_emb": false,
+  "dig_mask_changes_output": false,
+  "max_abs_change": 0.0
+ },
+ "embeddings": {
+  "D-MPNN": {
+   "n_mp_modules": 1,
+   "n_embeddings": 3,
+   "shape": [
+    16,
+    300
+   ],
+   "is": "output of the last call of _EdgeToNodeAggr (sum of incoming directed-edge states), before W_o and ReLU",
+   "verified": true
+  },
+  "GIN": {
+   "n_mp_modules": 3,
+   "n_embeddings": 3,
+   "shape": [
+    16,
+    212
+   ],
+   "is": "output of the last GINConv, before the outer ReLU",
+   "verified": true
+  },
+  "GINE": {
+   "n_mp_modules": 3,
+   "n_embeddings": 3,
+   "shape": [
+    16,
+    214
+   ],
+   "is": "output of the last GINEConv, before the outer ReLU",
+   "verified": true
+  },
+  "GCN": {
+   "n_mp_modules": 3,
+   "n_embeddings": 3,
+   "shape": [
+    16,
+    300
+   ],
+   "is": "output of the last GCNConv, before the outer ReLU",
+   "verified": true
+  }
+ }
+}

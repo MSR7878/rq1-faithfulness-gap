@@ -1,0 +1,83 @@
+[1] PGExplainer collapse: old rule (float32 std == 0) vs new rule (float64 std < 1e-6); collapsed if >= 50% degenerate
+  unit set                               units  old collapsed  new collapsed   units that change
+  Tox21 (priority sweep)                    60             24             28   cache_tox21_NR-AR_s3.pt (0->30/30), cache_tox21_SR-ATAD5_s4.pt (10->30/30), cache_tox21_SR-HSE_s0.pt (1->30/30), cache_tox21_SR-HSE_s4.pt (11->30/30)
+  B-XAIC (priority sweep)                   20              2              2   none
+  MUTAG-GT seeds 0-4 (priority sweep)        5              1              5   cache_mutag_graphxai_s0.pt (0->188/188), cache_mutag_graphxai_s1.pt (0->188/188), cache_mutag_graphxai_s2.pt (0->188/188), cache_mutag_graphxai_s4.pt (0->188/188)
+  MUTAG-GT seeds 5-9                         5              1              5   cache_mutag_graphxai_s6.pt (0->188/188), cache_mutag_graphxai_s7.pt (0->188/188), cache_mutag_graphxai_s8.pt (0->188/188), cache_mutag_graphxai_s9.pt (0->188/188)
+  MUTAG-GT decoupled                         5              1              5   cache_mutag_graphxai_s0.pt (0->188/188), cache_mutag_graphxai_s1.pt (0->188/188), cache_mutag_graphxai_s2.pt (0->188/188), cache_mutag_graphxai_s4.pt (0->188/188)
+  Mutagenicity D-MPNN 5-seed                 5              0              0   none
+  Mutagenicity 5-fold CV                     5              0              0   none
+  Mutagenicity GIN                           5              2              3   cache_s4.pt (91->346/346)
+  Mutagenicity GINE                          5              1              2   cache_s0.pt (2->350/350)
+  Mutagenicity GCN                           5              4              4   none
+  F10 mechanism (Tox21)                      0              0              0   none
+  MUTAG single split                         1              0              1   expl_cache_mutag.pt (0->29/29)
+  BBBP single split                          1              0              1   expl_cache_bbbp.pt (1->30/30)
+
+[2] collapse by predicted (explained) class, every unit collapsed under the new rule: degenerate / molecules per class
+  runs/prio/cache_tox21_NR-AR_s1.pt                          class 0: 24/24   class 1: 6/6
+  runs/prio/cache_tox21_NR-AR_s3.pt                          class 0: 22/22   class 1: 8/8
+  runs/prio/cache_tox21_NR-AR_s4.pt                          class 0: 22/22   class 1: 8/8
+  runs/prio/cache_tox21_NR-AR-LBD_s2.pt                      class 0: 23/23   class 1: 7/7
+  runs/prio/cache_tox21_NR-AR-LBD_s3.pt                      class 0: 27/27   class 1: 3/3
+  runs/prio/cache_tox21_NR-AR-LBD_s4.pt                      class 0: 19/19   class 1: 11/11
+  runs/prio/cache_tox21_NR-AhR_s1.pt                         class 0: 23/23   class 1: 7/7
+  runs/prio/cache_tox21_NR-AhR_s2.pt                         class 0: 27/28   class 1: 2/2
+  runs/prio/cache_tox21_NR-AhR_s4.pt                         class 0: 22/22   class 1: 8/8
+  runs/prio/cache_tox21_NR-Aromatase_s2.pt                   class 0: 27/27   class 1: 3/3
+  runs/prio/cache_tox21_NR-Aromatase_s4.pt                   class 0: 27/27   class 1: 3/3
+  runs/prio/cache_tox21_NR-ER_s4.pt                          class 0: 25/25   class 1: 5/5
+  runs/prio/cache_tox21_NR-ER-LBD_s1.pt                      class 0: 24/24   class 1: 6/6
+  runs/prio/cache_tox21_NR-ER-LBD_s4.pt                      class 0: 27/27   class 1: 3/3
+  runs/prio/cache_tox21_NR-PPAR-gamma_s2.pt                  class 0: 24/24   class 1: 6/6
+  runs/prio/cache_tox21_NR-PPAR-gamma_s3.pt                  class 0: 27/27   class 1: 3/3
+  runs/prio/cache_tox21_SR-ARE_s1.pt                         class 0: 22/22   class 1: 8/8
+  runs/prio/cache_tox21_SR-ARE_s2.pt                         class 0: 24/24   class 1: 6/6
+  runs/prio/cache_tox21_SR-ARE_s4.pt                         class 0: 24/24   class 1: 6/6
+  runs/prio/cache_tox21_SR-ATAD5_s2.pt                       class 0: 29/29   class 1: 1/1
+  runs/prio/cache_tox21_SR-ATAD5_s4.pt                       class 0: 26/26   class 1: 4/4
+  runs/prio/cache_tox21_SR-HSE_s0.pt                         class 0: 29/29   class 1: 1/1
+  runs/prio/cache_tox21_SR-HSE_s4.pt                         class 0: 29/29   class 1: 1/1
+  runs/prio/cache_tox21_SR-MMP_s0.pt                         class 0: 19/19   class 1: 11/11
+  runs/prio/cache_tox21_SR-MMP_s1.pt                         class 0: 21/21   class 1: 9/9
+  runs/prio/cache_tox21_SR-MMP_s4.pt                         class 0: 20/20   class 1: 10/10
+  runs/prio/cache_tox21_SR-p53_s0.pt                         class 0: 29/29   class 1: 1/1
+  runs/prio/cache_tox21_SR-p53_s4.pt                         class 0: 26/26   class 1: 4/4
+  runs/prio/cache_bxaic_PAINS_s3.pt                          class 0: 50/50   class 1: 350/350
+  runs/prio/cache_bxaic_PAINS_s4.pt                          class 0: 46/46   class 1: 354/354
+  runs/prio/cache_mutag_graphxai_s0.pt                       class 0: 69/69   class 1: 119/119
+  runs/prio/cache_mutag_graphxai_s1.pt                       class 0: 73/73   class 1: 115/115
+  runs/prio/cache_mutag_graphxai_s2.pt                       class 0: 57/57   class 1: 131/131
+  runs/prio/cache_mutag_graphxai_s3.pt                       class 0: 58/58   class 1: 130/130
+  runs/prio/cache_mutag_graphxai_s4.pt                       class 0: 70/70   class 1: 118/118
+  runs/rq1_followups/phase1/cache_mutag_graphxai_s5.pt       class 0: 61/61   class 1: 127/127
+  runs/rq1_followups/phase1/cache_mutag_graphxai_s6.pt       class 0: 67/67   class 1: 121/121
+  runs/rq1_followups/phase1/cache_mutag_graphxai_s7.pt       class 0: 54/54   class 1: 134/134
+  runs/rq1_followups/phase1/cache_mutag_graphxai_s8.pt       class 0: 51/51   class 1: 137/137
+  runs/rq1_followups/phase1/cache_mutag_graphxai_s9.pt       class 0: 49/49   class 1: 139/139
+  runs/decoupled/cache_mutag_graphxai_s0.pt                  class 0: 69/69   class 1: 119/119
+  runs/decoupled/cache_mutag_graphxai_s1.pt                  class 0: 73/73   class 1: 115/115
+  runs/decoupled/cache_mutag_graphxai_s2.pt                  class 0: 57/57   class 1: 131/131
+  runs/decoupled/cache_mutag_graphxai_s3.pt                  class 0: 58/58   class 1: 130/130
+  runs/decoupled/cache_mutag_graphxai_s4.pt                  class 0: 70/70   class 1: 118/118
+  runs/arch_gin/mutagenicity_graphxai/cache_s0.pt            class 0: 224/224   class 1: 126/126
+  runs/arch_gin/mutagenicity_graphxai/cache_s3.pt            class 0: 229/229   class 1: 122/122
+  runs/arch_gin/mutagenicity_graphxai/cache_s4.pt            class 0: 223/223   class 1: 123/123
+  runs/arch_gine/mutagenicity_graphxai/cache_s0.pt           class 0: 226/226   class 1: 124/124
+  runs/arch_gine/mutagenicity_graphxai/cache_s4.pt           class 0: 223/223   class 1: 123/123
+  runs/arch_gcn/mutagenicity_graphxai/cache_s0.pt            class 0: 222/222   class 1: 60/128
+  runs/arch_gcn/mutagenicity_graphxai/cache_s1.pt            class 0: 208/213   class 1: 3/132
+  runs/arch_gcn/mutagenicity_graphxai/cache_s2.pt            class 0: 219/224   class 1: 6/124
+  runs/arch_gcn/mutagenicity_graphxai/cache_s3.pt            class 0: 214/228   class 1: 1/123
+  runs/expl_cache_mutag.pt                                   class 0: 13/13   class 1: 16/16
+  runs/expl_cache_bbbp.pt                                    class 0: 2/2   class 1: 28/28
+
+[3] DIG PGExplainer feasibility
+  model has get_emb (DIG calls model.get_emb): False
+  DIG-style mask (module._explain = True, module.__edge_mask__ = -100 on every edge) changes the D-MPNN output: False (max |change| 0.00e+00)
+
+[4] edge embeddings used by PyG's PGExplainer: z = get_embeddings(model, x, edge_index, edge_attr=...)[-1]; edge input = cat(z[src], z[dst])
+  D-MPNN  MessagePassing modules 1; get_embeddings returns 3 tensors; [-1] shape (16, 300); = output of the last call of _EdgeToNodeAggr (sum of incoming directed-edge states), before W_o and ReLU: True
+  GIN     MessagePassing modules 3; get_embeddings returns 3 tensors; [-1] shape (16, 212); = output of the last GINConv, before the outer ReLU: True
+  GINE    MessagePassing modules 3; get_embeddings returns 3 tensors; [-1] shape (16, 214); = output of the last GINEConv, before the outer ReLU: True
+  GCN     MessagePassing modules 3; get_embeddings returns 3 tensors; [-1] shape (16, 300); = output of the last GCNConv, before the outer ReLU: True
