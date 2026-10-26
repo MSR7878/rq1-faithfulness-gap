@@ -1,0 +1,131 @@
+T1 -- ORACLE TEST: the ground-truth mask vs size-matched random masks under R1, R2, R3
+  '+' = GT mask better than the null (Fid+ higher, Fid- lower, GEF lower), '-' = worse, '.' = n.s.
+  Holm family per (dataset, seed): probability space 3 metrics x 3 rules x 2 nulls = 18 tests; logit space Fid+/Fid- = 12 tests.
+
+  [prob space] counts better/worse/n.s. over seeds, and mean gap GT - null (mean over seeds)
+  dataset               metricnull                      R1                    R2                    R3
+  Mutagenicity D-MPNN   fidp  node         5/0/0    +0.421       5/0/0    +0.442       5/0/0    +0.451
+  Mutagenicity D-MPNN   fidp  conn         5/0/0    +0.430       5/0/0    +0.421       5/0/0    +0.436
+  Mutagenicity D-MPNN   fidm  node         5/0/0    -0.142       5/0/0    -0.122       5/0/0    -0.745
+  Mutagenicity D-MPNN   fidm  conn         5/0/0    -0.311       5/0/0    -0.111       5/0/0    -0.721
+  Mutagenicity D-MPNN   gef   node         5/0/0    -0.381       5/0/0    -0.238       5/0/0    -0.732
+  Mutagenicity D-MPNN   gef   conn         5/0/0    -0.406       5/0/0    -0.220       5/0/0    -0.701
+  B-XAIC indole         fidp  node         5/0/0    +0.023       5/0/0    +0.309       3/1/1    +0.140
+  B-XAIC indole         fidp  conn         5/0/0    +0.369       5/0/0    +0.397       4/1/0    +0.138
+  B-XAIC indole         fidm  node         5/0/0    -0.992       5/0/0    -0.861       5/0/0    -0.265
+  B-XAIC indole         fidm  conn         5/0/0    -0.872       5/0/0    -0.632       5/0/0    -0.177
+  B-XAIC indole         gef   node         5/0/0    -0.979       5/0/0    -0.926       5/0/0    -0.434
+  B-XAIC indole         gef   conn         5/0/0    -0.903       5/0/0    -0.716       5/0/0    -0.278
+  B-XAIC PAINS          fidp  node         5/0/0    +0.164       5/0/0    +0.295       5/0/0    +0.430
+  B-XAIC PAINS          fidp  conn         5/0/0    +0.331       5/0/0    +0.373       5/0/0    +0.424
+  B-XAIC PAINS          fidm  node         5/0/0    -0.725       5/0/0    -0.670       5/0/0    -0.527
+  B-XAIC PAINS          fidm  conn         5/0/0    -0.588       5/0/0    -0.516       5/0/0    -0.508
+  B-XAIC PAINS          gef   node         5/0/0    -0.757       5/0/0    -0.646       5/0/0    -0.619
+  B-XAIC PAINS          gef   conn         5/0/0    -0.645       5/0/0    -0.517       5/0/0    -0.584
+  B-XAIC X              fidp  node         5/0/0    +0.527       5/0/0    +0.552       5/0/0    +0.552
+  B-XAIC X              fidp  conn         5/0/0    +0.527       5/0/0    +0.552       5/0/0    +0.552
+  B-XAIC X              fidm  node         5/0/0    -0.126       5/0/0    -0.004       5/0/0    -0.937
+  B-XAIC X              fidm  conn         5/0/0    -0.126       5/0/0    -0.004       5/0/0    -0.937
+  B-XAIC X              gef   node         5/0/0    -0.000       5/0/0    -0.020       5/0/0    -0.938
+  B-XAIC X              gef   conn         5/0/0    -0.000       5/0/0    -0.020       5/0/0    -0.938
+  B-XAIC P              fidp  node         5/0/0    +0.761       5/0/0    +0.623       5/0/0    +0.690
+  B-XAIC P              fidp  conn         5/0/0    +0.761       5/0/0    +0.623       5/0/0    +0.690
+  B-XAIC P              fidm  node         5/0/0    -0.095       5/0/0    -0.456       5/0/0    -0.946
+  B-XAIC P              fidm  conn         5/0/0    -0.095       5/0/0    -0.457       5/0/0    -0.946
+  B-XAIC P              gef   node         4/0/1    -0.000       5/0/0    -0.661       5/0/0    -0.955
+  B-XAIC P              gef   conn         4/0/1    -0.000       5/0/0    -0.662       5/0/0    -0.955
+  MUTAG-GT (10 seeds)   fidp  node        0/10/0    -0.384       0/9/1    -0.023       2/3/5    +0.011
+  MUTAG-GT (10 seeds)   fidp  conn        0/10/0    -0.239       0/9/1    -0.023       2/1/7    +0.012
+  MUTAG-GT (10 seeds)   fidm  node         3/2/5    -0.043       0/3/7    +0.014       3/1/6    -0.006
+  MUTAG-GT (10 seeds)   fidm  conn         9/1/0    -0.103       0/4/6    +0.022       3/1/6    -0.006
+  MUTAG-GT (10 seeds)   gef   node         2/1/7    +0.010       3/1/6    +0.008       8/1/1    -0.033
+  MUTAG-GT (10 seeds)   gef   conn         3/0/7    +0.009       2/2/6    +0.019       8/1/1    -0.033
+
+  [logit space] counts better/worse/n.s. over seeds, and mean gap GT - null (mean over seeds)
+  dataset               metricnull                      R1                    R2                    R3
+  Mutagenicity D-MPNN   fidp  node         5/0/0    +6.476       5/0/0    +6.964       5/0/0    +7.190
+  Mutagenicity D-MPNN   fidp  conn         5/0/0    +7.218       5/0/0    +7.095       5/0/0    +7.321
+  Mutagenicity D-MPNN   fidm  node         5/0/0    -3.685       5/0/0    -6.416       5/0/0    -8.935
+  Mutagenicity D-MPNN   fidm  conn         5/0/0    -4.199       5/0/0    -5.942       5/0/0    -8.602
+  B-XAIC indole         fidp  node         0/3/2    -1.486       5/0/0    +4.152       4/0/1    +2.963
+  B-XAIC indole         fidp  conn         5/0/0    +6.486       5/0/0    +6.967       5/0/0    +3.635
+  B-XAIC indole         fidm  node         5/0/0   -14.723       5/0/0   -17.623       5/0/0    -7.880
+  B-XAIC indole         fidm  conn         5/0/0   -10.228       5/0/0   -13.752       5/0/0    -5.879
+  B-XAIC PAINS          fidp  node         4/0/1    +2.281       5/0/0    +4.543       5/0/0    +5.809
+  B-XAIC PAINS          fidp  conn         5/0/0    +4.969       5/0/0    +5.892       5/0/0    +6.163
+  B-XAIC PAINS          fidm  node         5/0/0    -8.614       5/0/0   -11.021       5/0/0    -7.617
+  B-XAIC PAINS          fidm  conn         5/0/0    -6.669       5/0/0    -8.332       5/0/0    -7.319
+  B-XAIC X              fidp  node         5/0/0   +33.571       5/0/0   +36.701       5/0/0   +36.972
+  B-XAIC X              fidp  conn         5/0/0   +33.594       5/0/0   +36.734       5/0/0   +37.000
+  B-XAIC X              fidm  node         5/0/0    -0.506       5/0/0   -36.996       5/0/0   -38.160
+  B-XAIC X              fidm  conn         5/0/0    -0.506       5/0/0   -37.032       5/0/0   -38.185
+  B-XAIC P              fidp  node         5/0/0   +91.511       5/0/0   +89.034       5/0/0   +89.789
+  B-XAIC P              fidp  conn         5/0/0   +91.423       5/0/0   +89.104       5/0/0   +89.860
+  B-XAIC P              fidm  node         5/0/0    -0.384       5/0/0   -95.741       5/0/0   -78.715
+  B-XAIC P              fidm  conn         5/0/0    -0.383       5/0/0   -95.861       5/0/0   -78.785
+  MUTAG-GT (10 seeds)   fidp  node        0/10/0    -4.850       0/9/1    -0.566       2/3/5    +0.082
+  MUTAG-GT (10 seeds)   fidp  conn        0/10/0    -3.209       0/9/1    -0.527       2/2/6    +0.123
+  MUTAG-GT (10 seeds)   fidm  node         4/2/4    -0.203       0/4/6    +0.105       4/1/5    -0.241
+  MUTAG-GT (10 seeds)   fidm  conn         9/1/0    -0.652       0/5/5    +0.255       4/1/5    -0.237
+
+  P-T1a: GT Fid+ (probability) significantly above random-connected in >= 4/5 seeds under R1 AND R2, every dataset
+    Mutagenicity D-MPNN    R1 5/5  R2 5/5  R3 5/5 -> meets
+    B-XAIC indole          R1 5/5  R2 5/5  R3 4/5 -> meets
+    B-XAIC PAINS           R1 5/5  R2 5/5  R3 5/5 -> meets
+    B-XAIC X               R1 5/5  R2 5/5  R3 5/5 -> meets
+    B-XAIC P               R1 5/5  R2 5/5  R3 5/5 -> meets
+  P-T1a HELD
+  P-T1b: seeds with GT Fid+ significantly above random-connected, summed over the 5 datasets: R2 25/25, R3 24/25 -> HELD
+
+  R3 RELIANCE (group removal vs random sets, logit margin drop = Fid+ logit). Holm family per (model, seed): 3 rules x 2 nulls = 6.
+  model                            R1 conn       R1 node       R2 conn       R2 node       R3 conn       R3 node
+  Mutagenicity D-MPNN                5/0/0         5/0/0         5/0/0         5/0/0         5/0/0         5/0/0
+  B-XAIC indole                      5/0/0         0/3/2         5/0/0         5/0/0         5/0/0         4/0/1
+  B-XAIC PAINS                       5/0/0         4/0/1         5/0/0         5/0/0         5/0/0         5/0/0
+  B-XAIC X                           5/0/0         5/0/0         5/0/0         5/0/0         5/0/0         5/0/0
+  B-XAIC P                           5/0/0         5/0/0         5/0/0         5/0/0         5/0/0         5/0/0
+  MUTAG-GT (10 seeds)               0/10/0        0/10/0         0/9/1         0/9/1         3/3/4         3/3/4
+  Mutagenicity GIN                   5/0/0         5/0/0         5/0/0         5/0/0         5/0/0         5/0/0
+  Mutagenicity GINE                  5/0/0         5/0/0         5/0/0         5/0/0         5/0/0         5/0/0
+  Mutagenicity GCN                   5/0/0         5/0/0         5/0/0         5/0/0         5/0/0         5/0/0
+
+  INFLATION CHECK (P-T1c): d = (explainer R2 - R3) - (random-node R2 - R3), probability space; random-node at the explainer's top-k size.
+  Holm family per (dataset, seed) = 3 explainers x 2 metrics (Fid+, GEF). '+' = explainer inflates more than random.
+  dataset               explainermetric mean expl R2-R3 mean rand R2-R3    counts   cell
+  Mutagenicity D-MPNN   GNN   Fid+             0.096           0.120     1/3/1   
+  Mutagenicity D-MPNN   GNN   GEF              0.467           0.335     5/0/0   LARGER
+  Mutagenicity D-MPNN   PG    Fid+             0.094           0.120     0/2/3   
+  Mutagenicity D-MPNN   PG    GEF              0.301           0.335     1/2/2   
+  Mutagenicity D-MPNN   SX    Fid+             0.258           0.120     5/0/0   LARGER
+  Mutagenicity D-MPNN   SX    GEF              0.386           0.335     3/1/1   LARGER
+  B-XAIC indole         GNN   Fid+             0.084           0.263     1/3/1   
+  B-XAIC indole         GNN   GEF              0.466           0.488     2/3/0   
+  B-XAIC indole         PG    Fid+             0.447           0.263     5/0/0   LARGER
+  B-XAIC indole         PG    GEF              0.446           0.488     1/4/0   
+  B-XAIC indole         SX    Fid+             0.424           0.263     3/1/1   LARGER
+  B-XAIC indole         SX    GEF              0.139           0.488     0/5/0   
+  B-XAIC PAINS          GNN   Fid+             0.177           0.194     0/3/2   
+  B-XAIC PAINS          GNN   GEF              0.295           0.118     3/0/2   LARGER
+  B-XAIC PAINS          PG    Fid+             0.179           0.194     0/2/3   
+  B-XAIC PAINS          PG    GEF              0.197           0.118     2/0/3   
+  B-XAIC PAINS          SX    Fid+             0.239           0.194     1/1/3   
+  B-XAIC PAINS          SX    GEF              0.187           0.118     3/1/1   LARGER
+  B-XAIC X              GNN   Fid+             0.011          -0.003     5/0/0   LARGER
+  B-XAIC X              GNN   GEF             -0.352          -0.349     1/1/3   
+  B-XAIC X              PG    Fid+            -0.213          -0.003     0/5/0   
+  B-XAIC X              PG    GEF              0.014          -0.349     5/0/0   LARGER
+  B-XAIC X              SX    Fid+             0.009          -0.003     0/5/0   
+  B-XAIC X              SX    GEF             -0.002          -0.349     5/0/0   LARGER
+  B-XAIC P              GNN   Fid+            -0.223          -0.036     0/5/0   
+  B-XAIC P              GNN   GEF              0.037          -0.134     5/0/0   LARGER
+  B-XAIC P              PG    Fid+            -0.020          -0.036     5/0/0   LARGER
+  B-XAIC P              PG    GEF              0.013          -0.134     5/0/0   LARGER
+  B-XAIC P              SX    Fid+            -0.023          -0.036     5/0/0   LARGER
+  B-XAIC P              SX    GEF              0.019          -0.134     5/0/0   LARGER
+  MUTAG-GT (10 seeds)   GNN   Fid+             0.002           0.040     2/8/0   
+  MUTAG-GT (10 seeds)   GNN   GEF              0.239           0.231     3/4/3   
+  MUTAG-GT (10 seeds)   PG    Fid+             0.020           0.040     1/6/3   
+  MUTAG-GT (10 seeds)   PG    GEF              0.267           0.231     4/0/6   
+  MUTAG-GT (10 seeds)   SX    Fid+             0.115           0.040    10/0/0   LARGER
+  MUTAG-GT (10 seeds)   SX    GEF              0.129           0.231     0/9/1   
+  P-T1c: cells where the explainer's inflation is larger than random: 16/36 -> HELD (held if <= 17)
