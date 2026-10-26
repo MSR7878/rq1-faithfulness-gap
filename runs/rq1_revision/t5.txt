@@ -1,0 +1,19 @@
+T5 -- SUFFICIENCY: keep only S, hide the rest; m(kept S) vs mean m(kept random connected set of |S|) (logit margin)
+  Equivalent to comparing Fid- (m(G) - m(kept)), since m(G) cancels. '+' = keeping S preserves the prediction better.
+  Holm family per (model, seed) = R1, R2, R3 (3 tests). Primary rule R1.
+  model                               R1          R2          R3   mean m(kept S) - m(kept conn) per rule
+  Mutagenicity D-MPNN              5/0/0       5/0/0       5/0/0   +4.199  +5.942  +8.602
+  B-XAIC indole                    5/0/0       5/0/0       5/0/0   +10.228  +13.752  +5.879
+  B-XAIC PAINS                     5/0/0       5/0/0       5/0/0   +6.669  +8.332  +7.319
+  B-XAIC X                         5/0/0       5/0/0       5/0/0   +0.506  +37.032  +38.185
+  B-XAIC P                         5/0/0       5/0/0       5/0/0   +0.383  +95.861  +78.785
+  MUTAG-GT (10 seeds)              9/1/0       0/5/5       5/1/4   +0.652  -0.255  +0.237
+  Mutagenicity GIN                 5/0/0       5/0/0       5/0/0   +9.981  +26.066  +11.184
+  Mutagenicity GINE                5/0/0       5/0/0       5/0/0   +8.286  +8.597  +8.593
+  Mutagenicity GCN                 5/0/0       5/0/0       5/0/0   +9.694  +4.992  +9.785
+
+  P-T5 (R1; >= 4/5 Mutagenicity D-MPNN and each B-XAIC task, >= 8/10 MUTAG-GT): HELD
+
+  Earlier 'sufficiency' (Part A, f53b612): R1 only, m(kept S) vs mean m(kept random connected), one uncorrected test per seed;
+  it was 5/0/0 for every model except MUTAG-GT seeds 0-4 (5/0/0 too). Same quantity as the R1 column here; differences come
+  only from the random draws (new seeded stream) and Holm over 3 rules.
