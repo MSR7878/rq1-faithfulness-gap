@@ -1,0 +1,116 @@
+T3 -- EFFECT SIZES, hierarchical bootstrap (seeds, then molecules within seed; 2,000 reps; seed 2026; 95% percentile CI)
+  Estimand: mean over seeds of the per-seed mean difference (equal seed weight). Normalised GEA: ratio of means per replicate.
+
+  top-k GEA minus random-node GEA, and normalised GEA (ceilings MUTAG-GT 0.751, indole 0.724, Mutagenicity 0.551)
+  cell                      explainer         GEA - RandNode [95% CI]         normalised GEA [95% CI]
+  MUTAG-GT seeds 0-4        GNN       +0.213 [+0.069, +0.320]       +0.351 [+0.114, +0.530]
+  MUTAG-GT seeds 0-4        PG        +0.051 [-0.043, +0.155]       +0.085 [-0.071, +0.257]
+  MUTAG-GT seeds 0-4        SX        -0.078 [-0.111, -0.043]       -0.129 [-0.183, -0.070]
+  MUTAG-GT seeds 0-9        GNN       +0.214 [+0.114, +0.304]       +0.353 [+0.188, +0.501]
+  MUTAG-GT seeds 0-9        PG        +0.065 [+0.009, +0.127]       +0.107 [+0.014, +0.209]
+  MUTAG-GT seeds 0-9        SX        -0.079 [-0.103, -0.053]       -0.130 [-0.170, -0.087]
+  B-XAIC indole             GNN       +0.038 [-0.032, +0.107]       +0.068 [-0.056, +0.191]
+  B-XAIC indole             PG        +0.204 [+0.185, +0.221]       +0.363 [+0.330, +0.393]
+  B-XAIC indole             SX        +0.460 [+0.417, +0.499]       +0.818 [+0.741, +0.888]
+  Mutagenicity D-MPNN       GNN       +0.255 [+0.174, +0.333]       +0.595 [+0.407, +0.774]
+  Mutagenicity D-MPNN       PG        -0.005 [-0.091, +0.087]       -0.011 [-0.211, +0.203]
+  Mutagenicity D-MPNN       SX        +0.150 [+0.131, +0.168]       +0.349 [+0.305, +0.395]
+  Mutagenicity GIN          GNN       +0.039 [-0.020, +0.100]       +0.090 [-0.046, +0.238]
+  Mutagenicity GIN          PG        -0.056 [-0.086, -0.024]       -0.130 [-0.199, -0.057]
+  Mutagenicity GIN          SX        +0.097 [+0.047, +0.143]       +0.226 [+0.109, +0.335]
+  Mutagenicity GINE         GNN       +0.079 [+0.005, +0.150]       +0.186 [+0.011, +0.353]
+  Mutagenicity GINE         PG        -0.088 [-0.120, -0.040]       -0.206 [-0.285, -0.092]
+  Mutagenicity GINE         SX        +0.113 [+0.068, +0.155]       +0.264 [+0.158, +0.363]
+  Mutagenicity GCN          GNN       +0.140 [+0.076, +0.201]       +0.325 [+0.176, +0.471]
+  Mutagenicity GCN          PG        +0.339 [+0.297, +0.374]       +0.787 [+0.685, +0.874]
+  Mutagenicity GCN          SX        +0.053 [+0.033, +0.074]       +0.123 [+0.077, +0.173]
+
+  SubgraphX mean-threshold GEA minus size-matched random-connected GEA
+  MUTAG-GT seeds 0-9            -0.045 [-0.070, -0.019]
+  B-XAIC indole                 +0.479 [+0.436, +0.521]
+  Mutagenicity D-MPNN           +0.267 [+0.236, +0.295]
+  Mutagenicity GIN              +0.186 [+0.119, +0.259]
+  Mutagenicity GINE             +0.168 [+0.112, +0.222]
+  Mutagenicity GCN              +0.093 [+0.071, +0.117]
+  MUTAG-GT seeds 0-4            -0.043 [-0.077, -0.006]
+
+  GCN SubgraphX, mean-threshold vs size-matched random-connected, per seed
+  seed    n     SX   conn zero diff tied |d|  Wilcoxon p Holm p (4) sign test p  bootstrap 95% CI of mean diff
+     0  127  0.184  0.106      0.00       11    8.76e-02   1.75e-01    5.05e-02  [+0.036, +0.122]
+     1  127  0.180  0.101      0.01       15    4.57e-02   1.37e-01    9.01e-02  [+0.041, +0.118]
+     2  127  0.206  0.112      0.02       13    4.59e-02   9.18e-02    2.43e-01  [+0.048, +0.140]
+     3  126  0.217  0.114      0.02       18    1.11e-03   2.22e-03    9.28e-01  [+0.064, +0.146]
+     4  125  0.208  0.095      0.02       18    1.55e-02   3.11e-02    1.74e-01  [+0.059, +0.165]
+
+  Tox21 equivalence (TOST, margin 0.05): probability-space random-node-corrected Fid+ / Fid- under R3 (random ties).
+  'No-separation' cell = n.s. in >= 3/5 seeds in the stored Part B test (logit space, random-node, Holm over 18 within unit).
+  endpoint        expl metric mean diff              90% CI              95% CI  verdict   per-unit TOST
+  NR-AR           GNN  Fid+      +0.037    [+0.004, +0.072]    [-0.000, +0.079]  undecided 2/5
+  NR-AR           GNN  Fid-      -0.034    [-0.064, -0.005]    [-0.069, +0.001]  undecided 2/5
+  NR-AR           PG   Fid+      +0.008    [-0.004, +0.024]    [-0.006, +0.027]  equivalent4/5
+  NR-AR           PG   Fid-      -0.004    [-0.022, +0.013]    [-0.026, +0.017]  equivalent3/5
+  NR-AR           SX   Fid-      -0.077    [-0.117, -0.044]    [-0.123, -0.041]  different 0/5
+  NR-AR-LBD       GNN  Fid+      +0.010    [+0.002, +0.018]    [+0.000, +0.019]  equivalent5/5
+  NR-AR-LBD       GNN  Fid-      -0.008    [-0.018, +0.001]    [-0.020, +0.003]  equivalent5/5
+  NR-AR-LBD       PG   Fid+      -0.001    [-0.008, +0.004]    [-0.009, +0.005]  equivalent5/5
+  NR-AR-LBD       PG   Fid-      +0.007    [-0.002, +0.021]    [-0.002, +0.024]  equivalent4/5
+  NR-AR-LBD       SX   Fid-      -0.039    [-0.068, -0.015]    [-0.074, -0.013]  different 3/5
+  NR-AhR          GNN  Fid+      +0.013    [-0.004, +0.032]    [-0.006, +0.036]  equivalent4/5
+  NR-AhR          GNN  Fid-      -0.007    [-0.026, +0.009]    [-0.030, +0.012]  equivalent2/5
+  NR-AhR          PG   Fid+      +0.011    [-0.004, +0.032]    [-0.006, +0.037]  equivalent4/5
+  NR-AhR          PG   Fid-      -0.008    [-0.026, +0.004]    [-0.031, +0.006]  equivalent4/5
+  NR-AhR          SX   Fid+      +0.029    [+0.003, +0.057]    [-0.002, +0.063]  undecided 2/5
+  NR-AhR          SX   Fid-      -0.033    [-0.066, -0.006]    [-0.073, -0.002]  different 3/5
+  NR-Aromatase    GNN  Fid+      +0.001    [-0.008, +0.011]    [-0.009, +0.013]  equivalent5/5
+  NR-Aromatase    GNN  Fid-      -0.001    [-0.010, +0.008]    [-0.012, +0.010]  equivalent5/5
+  NR-Aromatase    PG   Fid+      +0.000    [-0.009, +0.009]    [-0.011, +0.011]  equivalent5/5
+  NR-Aromatase    PG   Fid-      -0.003    [-0.012, +0.006]    [-0.014, +0.008]  equivalent5/5
+  NR-Aromatase    SX   Fid+      +0.019    [+0.010, +0.029]    [+0.009, +0.031]  equivalent4/5
+  NR-Aromatase    SX   Fid-      -0.011    [-0.021, -0.002]    [-0.024, -0.000]  equivalent5/5
+  NR-ER           GNN  Fid+      +0.001    [-0.007, +0.011]    [-0.009, +0.013]  equivalent5/5
+  NR-ER           GNN  Fid-      -0.002    [-0.010, +0.004]    [-0.011, +0.006]  equivalent5/5
+  NR-ER           PG   Fid+      +0.000    [-0.004, +0.004]    [-0.005, +0.005]  equivalent5/5
+  NR-ER           PG   Fid-      +0.001    [-0.002, +0.006]    [-0.003, +0.007]  equivalent5/5
+  NR-ER           SX   Fid+      +0.020    [+0.009, +0.033]    [+0.008, +0.035]  equivalent4/5
+  NR-ER           SX   Fid-      -0.014    [-0.022, -0.008]    [-0.023, -0.008]  equivalent5/5
+  NR-ER-LBD       GNN  Fid+      -0.002    [-0.029, +0.023]    [-0.035, +0.029]  equivalent3/5
+  NR-ER-LBD       GNN  Fid-      -0.004    [-0.022, +0.009]    [-0.025, +0.010]  equivalent4/5
+  NR-ER-LBD       PG   Fid+      -0.022    [-0.046, -0.003]    [-0.051, -0.001]  equivalent3/5
+  NR-ER-LBD       PG   Fid-      +0.011    [+0.003, +0.020]    [+0.002, +0.022]  equivalent5/5
+  NR-ER-LBD       SX   Fid+      +0.045    [+0.025, +0.069]    [+0.023, +0.076]  different 1/5
+  NR-ER-LBD       SX   Fid-      -0.021    [-0.032, -0.010]    [-0.035, -0.008]  equivalent4/5
+  NR-PPAR-gamma   GNN  Fid+      +0.009    [-0.014, +0.032]    [-0.017, +0.038]  equivalent2/5
+  NR-PPAR-gamma   GNN  Fid-      -0.007    [-0.028, +0.010]    [-0.033, +0.012]  equivalent4/5
+  NR-PPAR-gamma   PG   Fid+      +0.004    [-0.007, +0.016]    [-0.009, +0.018]  equivalent5/5
+  NR-PPAR-gamma   PG   Fid-      +0.000    [-0.012, +0.010]    [-0.015, +0.013]  equivalent4/5
+  NR-PPAR-gamma   SX   Fid-      -0.042    [-0.067, -0.021]    [-0.072, -0.019]  different 0/5
+  SR-ARE          GNN  Fid+      -0.001    [-0.031, +0.031]    [-0.035, +0.037]  equivalent1/5
+  SR-ARE          GNN  Fid-      -0.008    [-0.037, +0.018]    [-0.045, +0.022]  equivalent2/5
+  SR-ARE          PG   Fid+      +0.022    [+0.002, +0.049]    [-0.000, +0.055]  equivalent4/5
+  SR-ARE          PG   Fid-      -0.009    [-0.025, +0.006]    [-0.029, +0.010]  equivalent3/5
+  SR-ARE          SX   Fid+      +0.047    [+0.026, +0.073]    [+0.021, +0.077]  different 1/5
+  SR-ARE          SX   Fid-      -0.049    [-0.077, -0.023]    [-0.082, -0.019]  different 1/5
+  SR-ATAD5        GNN  Fid+      +0.002    [-0.005, +0.011]    [-0.007, +0.014]  equivalent5/5
+  SR-ATAD5        GNN  Fid-      -0.003    [-0.015, +0.007]    [-0.018, +0.009]  equivalent5/5
+  SR-ATAD5        PG   Fid+      +0.006    [-0.006, +0.021]    [-0.008, +0.024]  equivalent4/5
+  SR-ATAD5        PG   Fid-      -0.008    [-0.020, +0.002]    [-0.023, +0.003]  equivalent4/5
+  SR-ATAD5        SX   Fid+      +0.019    [+0.011, +0.029]    [+0.009, +0.031]  equivalent5/5
+  SR-ATAD5        SX   Fid-      -0.020    [-0.032, -0.010]    [-0.034, -0.009]  equivalent3/5
+  SR-HSE          GNN  Fid+      +0.004    [-0.004, +0.013]    [-0.006, +0.015]  equivalent5/5
+  SR-HSE          GNN  Fid-      -0.000    [-0.009, +0.010]    [-0.011, +0.012]  equivalent5/5
+  SR-HSE          PG   Fid+      +0.007    [-0.008, +0.027]    [-0.010, +0.034]  equivalent4/5
+  SR-HSE          PG   Fid-      +0.004    [-0.005, +0.013]    [-0.006, +0.015]  equivalent5/5
+  SR-HSE          SX   Fid-      -0.013    [-0.025, -0.006]    [-0.027, -0.005]  equivalent4/5
+  SR-MMP          GNN  Fid+      +0.022    [-0.014, +0.068]    [-0.018, +0.078]  undecided 3/5
+  SR-MMP          GNN  Fid-      -0.013    [-0.056, +0.017]    [-0.063, +0.021]  undecided 3/5
+  SR-MMP          PG   Fid+      +0.011    [-0.002, +0.029]    [-0.004, +0.034]  equivalent3/5
+  SR-MMP          PG   Fid-      -0.002    [-0.012, +0.006]    [-0.015, +0.007]  equivalent5/5
+  SR-MMP          SX   Fid+      +0.045    [+0.008, +0.086]    [+0.002, +0.094]  different 2/5
+  SR-MMP          SX   Fid-      -0.039    [-0.074, -0.009]    [-0.079, -0.004]  different 2/5
+  SR-p53          GNN  Fid+      -0.006    [-0.016, +0.004]    [-0.018, +0.007]  equivalent5/5
+  SR-p53          GNN  Fid-      +0.013    [+0.002, +0.027]    [-0.000, +0.031]  equivalent4/5
+  SR-p53          PG   Fid+      +0.014    [-0.001, +0.038]    [-0.002, +0.045]  equivalent4/5
+  SR-p53          PG   Fid-      -0.015    [-0.037, -0.000]    [-0.043, +0.001]  equivalent4/5
+  SR-p53          SX   Fid+      +0.034    [+0.018, +0.055]    [+0.016, +0.059]  different 2/5
+  SR-p53          SX   Fid-      -0.031    [-0.049, -0.016]    [-0.054, -0.014]  equivalent2/5
+  no-separation cells: 68; equivalent 53, undecided 5, different 10
