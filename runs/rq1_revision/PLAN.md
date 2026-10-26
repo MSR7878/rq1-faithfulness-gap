@@ -198,3 +198,50 @@ and also on MUTAG-GT.
 - T2, T3, T6 analyses: about 1 h.
 - Total compute about 8 h; wall-clock about 5-6 h. Under the 10-hour limit.
   GPU 1 only; GPU 0 stays free.
+
+## ADDENDUM to T4 (user, 2026-10-26; written BEFORE any of it is computed; running jobs not stopped)
+
+1. The absolute rule std < 1e-6 is not used for any count (MUTAG-GT masks are about
+   1e-21 but ordered). Its output (t4_static) is kept only as a record.
+
+2. Saturation check. The trained explainer MLPs were not saved, so the pre-sigmoid
+   edge logits are obtained by re-running each unit's PGExplainer training (same
+   command, seed and subsample as the original run; PGExplainer only) and evaluating
+   the trained MLP in float64 on the explained molecules. Units: Tox21 priority sweep
+   (60), B-XAIC priority sweep (20), MUTAG-GT seeds 0-9 (10) and decoupled (5),
+   Mutagenicity D-MPNN 5-seed (5) and 5-fold CV (5), GIN/GINE/GCN (15), MUTAG and
+   BBBP single splits (2). The re-run's subsample must match the stored cache key; its
+   masks are compared with the stored masks (collapsed units are expected to reproduce
+   exactly, clean units only approximately because of GPU non-determinism). Per unit:
+   logit mean, std, min, max; fraction of sigmoid outputs < 1e-6 or > 1 - 1e-6;
+   distinct mask values per molecule in float32 vs float64; distinct logit values per
+   molecule (medians over molecules).
+
+3. New collapse definition: a molecule's explanation is degenerate if its edge logits
+   have no ordering, i.e. (max - min) <= 1e-6 * max(1, |mean|) in float64; a run is
+   collapsed if >= half of its explained molecules are degenerate. Every unit above is
+   recounted per dataset and architecture, next to the old float32 std == 0 count.
+
+4. PGExplainer top-k GEA re-scored with node scores computed in float64 from the
+   logits (node score = mean of float64 sigmoid(logit) over incident edges: the same
+   order as the stored mask without float32 underflow ties), random tie-breaking only
+   for exact float64 ties. Direction counts old vs new with each table's original
+   test: main table (MUTAG-GT seeds 0-4, indole, Mutagenicity D-MPNN; Holm over the 3
+   explainers vs random-node), architecture table (registered 4-test family), MUTAG-GT
+   10 seeds (main-table rule); every change flagged. GNNExplainer and SubgraphX keep
+   their random-tie values.
+
+5. T4 re-training: the jobs already running do not save the MLP. Their logits are
+   reconstructed from the saved float32 masks (logit = log m - log(1 - m) in float64);
+   masks that underflowed to exactly 0 (logit < about -103) or rounded to exactly 1
+   only give a bound, and a molecule whose edges are all underflowed is reported as
+   "undetermined" rather than degenerate. Setting (a) is also covered exactly by the
+   item-2 re-runs of the same Tox21 units.
+
+PREDICTION (recorded before computing): at least one third of the units now counted
+as collapsed (old float32 std == 0 rule) have ordered logits, i.e. are saturation
+rather than true collapse. Scored over all units in item 2 that are collapsed under
+the old rule: held if >= 1/3 of them are NOT collapsed under the new logit rule.
+
+Time estimate for items 2-4: about 120 PGExplainer re-trainings, 2-10 min each,
+about 7 h of compute, about 2 h wall-clock with 4 workers alongside T4.
