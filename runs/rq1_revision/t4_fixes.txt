@@ -1,0 +1,49 @@
+[1] collapsed units: degenerate molecules by predicted class, old float32 rule and new logit rule; saturation sign of old-rule degenerate molecules
+  unit                           old coll new coll   class: old-degenerate / new-degenerate / n   [old-degenerate: all logits > +16 | all < -16 | other]
+  bxaic_PAINS_s3                      yes       no   0: 50/0/50 [50|0|0]   1: 350/0/350 [350|0|0]
+  bxaic_PAINS_s4                      yes       no   0: 46/0/46 [46|0|0]   1: 354/0/354 [354|0|0]
+  decoupled_mutag_graphxai_s3         yes       no   0: 58/0/58 [58|0|0]   1: 130/0/130 [130|0|0]
+  mutag_graphxai_s3                   yes       no   0: 58/0/58 [58|0|0]   1: 130/0/130 [130|0|0]
+  mutag_graphxai_s5                   yes       no   0: 61/0/61 [61|0|0]   1: 127/0/127 [127|0|0]
+  mutagenicity_gcn_s0                 yes       no   0: 221/0/222 [0|221|0]   1: 59/0/128 [0|59|0]
+  mutagenicity_gcn_s1                 yes       no   0: 199/0/213 [0|199|0]   1: 2/0/132 [0|0|2]
+  mutagenicity_gcn_s2                 yes       no   0: 214/0/224 [0|214|0]   1: 3/0/124 [1|1|1]
+  mutagenicity_gcn_s3                 yes       no   0: 205/0/228 [0|205|0]   1: 1/0/123 [0|0|1]
+  mutagenicity_gin_s0                 yes       no   0: 141/0/224 [0|141|0]   1: 68/0/126 [0|68|0]
+  mutagenicity_gin_s3                 yes       no   0: 224/0/229 [0|224|0]   1: 106/0/122 [0|106|0]
+  mutagenicity_gine_s4                yes       no   0: 222/0/223 [0|222|0]   1: 120/0/123 [0|120|0]
+  tox21_NR-AR-LBD_s2                  yes       no   0: 23/1/23 [0|0|23]   1: 7/0/7 [0|0|7]
+  tox21_NR-AR-LBD_s3                  yes       no   0: 27/0/27 [27|0|0]   1: 3/0/3 [3|0|0]
+  tox21_NR-AR-LBD_s4                  yes       no   0: 19/0/19 [19|0|0]   1: 11/0/11 [11|0|0]
+  tox21_NR-AR_s1                      yes       no   0: 24/0/24 [24|0|0]   1: 6/0/6 [6|0|0]
+  tox21_NR-AR_s3                       no      yes   0: 0/22/22 [0|0|0]   1: 0/8/8 [0|0|0]
+  tox21_NR-AR_s4                      yes       no   0: 22/0/22 [22|0|0]   1: 8/0/8 [8|0|0]
+  tox21_NR-AhR_s1                     yes       no   0: 23/0/23 [23|0|0]   1: 7/0/7 [7|0|0]
+  tox21_NR-AhR_s2                     yes       no   0: 27/0/28 [27|0|0]   1: 2/0/2 [2|0|0]
+  tox21_NR-AhR_s4                     yes       no   0: 22/0/22 [22|0|0]   1: 8/0/8 [8|0|0]
+  tox21_NR-Aromatase_s2               yes       no   0: 27/0/27 [27|0|0]   1: 3/0/3 [3|0|0]
+  tox21_NR-Aromatase_s4               yes       no   0: 27/0/27 [27|0|0]   1: 3/0/3 [3|0|0]
+  tox21_NR-ER-LBD_s1                  yes       no   0: 24/0/24 [24|0|0]   1: 6/0/6 [6|0|0]
+  tox21_NR-ER-LBD_s4                  yes       no   0: 27/0/27 [27|0|0]   1: 3/0/3 [3|0|0]
+  tox21_NR-ER_s4                      yes       no   0: 25/0/25 [25|0|0]   1: 5/0/5 [5|0|0]
+  tox21_NR-PPAR-gamma_s2              yes       no   0: 24/0/24 [24|0|0]   1: 6/0/6 [6|0|0]
+  tox21_NR-PPAR-gamma_s3              yes       no   0: 27/0/27 [27|0|0]   1: 3/0/3 [3|0|0]
+  tox21_SR-ARE_s1                     yes       no   0: 22/0/22 [22|0|0]   1: 8/0/8 [8|0|0]
+  tox21_SR-ARE_s2                     yes       no   0: 24/0/24 [24|0|0]   1: 6/0/6 [6|0|0]
+  tox21_SR-ARE_s4                     yes       no   0: 24/0/24 [24|0|0]   1: 6/0/6 [6|0|0]
+  tox21_SR-ATAD5_s2                   yes       no   0: 29/0/29 [29|0|0]   1: 1/0/1 [1|0|0]
+  tox21_SR-MMP_s0                     yes       no   0: 19/0/19 [19|0|0]   1: 11/0/11 [11|0|0]
+  tox21_SR-MMP_s1                     yes       no   0: 21/0/21 [21|0|0]   1: 9/0/9 [9|0|0]
+  tox21_SR-MMP_s4                     yes      yes   0: 11/20/20 [0|0|11]   1: 4/10/10 [0|0|4]
+  tox21_SR-p53_s0                     yes       no   0: 29/0/29 [29|0|0]   1: 1/0/1 [1|0|0]
+  tox21_SR-p53_s4                     yes       no   0: 26/0/26 [26|0|0]   1: 4/0/4 [4|0|0]
+
+[2] reproduction of the stored PGExplainer masks by the re-run: fraction of explained molecules with max |edge-mask difference| <= 1e-5
+  mutag_graphxai        s0 1.00  s1 1.00  s2 1.00  s3 1.00  s4 1.00  s5 1.00  s6 1.00  s7 1.00  s8 1.00  s9 1.00
+  bxaic_indole          s0 0.00  s1 0.02  s2 0.02  s3 0.01  s4 0.00
+  mutagenicity_dmpnn    s0 0.04  s1 0.03  s2 0.01  s3 0.01  s4 0.00
+  mutagenicity_gin      s0 1.00  s1 0.05  s2 0.08  s3 1.00  s4 1.00
+  mutagenicity_gine     s0 1.00  s1 0.01  s2 0.02  s3 0.01  s4 1.00
+  mutagenicity_gcn      s0 0.81  s1 0.71  s2 0.87  s3 0.77  s4 0.12
+
+[3] T5, MUTAG-GT under R1 (Holm over 3 rules), seeds 0-9: + + + + + + + + + -; seeds 0-4: +++++ (5/0/0) vs earlier Part A 5/0/0 (uncorrected, other random draws)
