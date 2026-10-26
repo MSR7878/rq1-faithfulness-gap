@@ -140,6 +140,7 @@ def part_c(rep):
             new = dict(base); new["pgexplainer_topk"] = pg_new(unit, dl, scorer, st["mol_idx"])
             po[s], pn[s] = (base,), (new,)
         fam = [(f"{e}_topk", "rn_k") for e in EXPL]
+        na.SEEDS = list(seeds)                      # the counter loops over na.SEEDS: one table at a time
         for e in EXPL:
             a1, b1, _, c1 = na.sig_counts(po, f"{e}_topk", "rn_k", fam); a2, b2, _, c2 = na.sig_counts(pn, f"{e}_topk", "rn_k", fam)
             ch = (a1, b1) != (a2, b2)
