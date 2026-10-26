@@ -1,0 +1,8 @@
+{
+ "unit": "bxaic_PAINS_s2",
+ "status": "ok",
+ "n": 400,
+ "rerun_vs_stored_max_mask_dev": 0.718962237238884,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 2.4281528127056973e-07,
+ "seconds": 252.1038258075714
+}

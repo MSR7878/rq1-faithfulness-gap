@@ -1,0 +1,8 @@
+{
+ "unit": "mutagenicity_dmpnn_s4",
+ "status": "ok",
+ "n": 346,
+ "rerun_vs_stored_max_mask_dev": 0.9371415127593536,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 6.332559839838936e-07,
+ "seconds": 936.5207121372223
+}

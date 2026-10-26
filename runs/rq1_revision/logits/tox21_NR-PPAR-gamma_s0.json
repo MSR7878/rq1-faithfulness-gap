@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_NR-PPAR-gamma_s0",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.004130442393943667,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 1.7367418575324478e-09,
+ "seconds": 172.71437692642212
+}

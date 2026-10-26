@@ -1,0 +1,176 @@
+[A] PGExplainer pre-sigmoid edge logits (re-run, trained MLP evaluated in float64), per unit
+    sat = fraction of sigmoid outputs < 1e-6 or > 1 - 1e-6; distinct = median over molecules of distinct values per molecule
+  unit                                 mean      std       min      max    sat mask f32 mask f64  logits old coll new coll  rerun dev
+  bbbp                               -83.44    55.47    -918.4    -24.4   1.00       35       42      42       no       no    2.3e-06
+  bxaic_PAINS_s0                      69.43    60.64     -51.9    206.0   0.78       13       19      58       no       no    1.0e+00
+  bxaic_PAINS_s1                      10.08    20.31     -33.3    147.2   0.30       35       43      50       no       no    1.0e+00
+  bxaic_PAINS_s2                     -13.24     7.72     -69.0      5.6   0.35       55       56      56       no       no    7.2e-01
+  bxaic_PAINS_s3                      92.98    30.50      28.2    185.0   1.00        1        1      56      yes       no    0.0e+00
+  bxaic_PAINS_s4                      50.76    11.73      21.5     89.4   1.00        1        7      56      yes       no    0.0e+00
+  bxaic_P_s0                         -38.29    41.57    -336.6     -0.3   0.80       49       53      53       no       no    5.0e-02
+  bxaic_P_s1                        -107.79    69.54    -336.8      1.0   0.93       27       54      54       no       no    3.2e-01
+  bxaic_P_s2                         -53.04    43.74    -336.6      5.6   0.93       50       54      54       no       no    9.2e-01
+  bxaic_P_s3                         -50.41    25.68    -128.2     42.0   0.92       54       54      54       no       no    1.0e+00
+  bxaic_P_s4                         -99.32    58.82    -355.1     11.5   0.94       24       50      50       no       no    9.2e-01
+  bxaic_X_s0                         -36.92    22.11    -170.9      1.1   0.84       57       58      58       no       no    5.0e-01
+  bxaic_X_s1                         -58.46    22.40    -178.2     19.4   0.99       56       58      58       no       no    1.0e+00
+  bxaic_X_s2                         -40.55    17.24    -111.4      1.7   0.95       58       58      58       no       no    1.9e-05
+  bxaic_X_s3                         -26.20    14.29    -127.8      0.8   0.83       58       58      58       no       no    3.4e-06
+  bxaic_X_s4                         -40.78    26.54    -298.9     13.0   0.90       56       56      56       no       no    1.7e-05
+  bxaic_indole_s0                     49.46    55.52     -44.8    221.1   0.73       20       25      60       no       no    1.0e+00
+  bxaic_indole_s1                     63.95    61.84     -39.9    198.5   0.73       19       21      62       no       no    1.0e+00
+  bxaic_indole_s2                     51.26    54.86     -66.2    297.0   0.78       19       22      60       no       no    1.0e+00
+  bxaic_indole_s3                     29.93    36.48     -42.2    120.2   0.71       24       28      62       no       no    1.0e+00
+  bxaic_indole_s4                     70.67    66.36     -57.9    210.7   0.72       19       23      60       no       no    1.0e+00
+  decoupled_mutag_graphxai_s0        -61.66    12.53    -106.0    -33.6   1.00       37       38      38       no       no    2.7e-21
+  decoupled_mutag_graphxai_s1        -79.08    14.77    -117.1    -47.3   1.00       34       38      38       no       no    1.1e-26
+  decoupled_mutag_graphxai_s2        -81.56    16.31    -125.8    -44.1   1.00       31       38      38       no       no    2.5e-25
+  decoupled_mutag_graphxai_s3         58.00    10.37      33.3    109.6   1.00        1        1      38      yes       no    0.0e+00
+  decoupled_mutag_graphxai_s4        -62.08    11.06    -111.2    -37.0   1.00       36       38      38       no       no    1.8e-22
+  mutag                              -75.84    15.71    -108.7    -42.5   1.00       34       36      36       no       no    3.2e-19
+  mutag_graphxai_s0                  -63.63    13.16    -107.5    -34.5   1.00       36       38      38       no       no    1.4e-21
+  mutag_graphxai_s1                  -74.12    13.88    -110.0    -44.1   1.00       36       38      38       no       no    2.8e-25
+  mutag_graphxai_s2                  -66.16    12.77    -105.0    -37.5   1.00       37       38      38       no       no    4.3e-23
+  mutag_graphxai_s3                   56.47    10.15      32.6    108.6   1.00        1        1      38      yes       no    0.0e+00
+  mutag_graphxai_s4                  -61.20    11.40    -100.3    -34.6   1.00       37       38      38       no       no    3.7e-21
+  mutag_graphxai_s5                   72.04    14.23      39.6    126.4   1.00        1        1      38      yes       no    0.0e+00
+  mutag_graphxai_s6                  -76.91    15.32    -128.4    -39.1   1.00       34       38      38       no       no    1.1e-24
+  mutag_graphxai_s7                  -87.61    18.57    -147.6    -40.0   1.00       27       38      38       no       no    2.7e-25
+  mutag_graphxai_s8                  -96.81    18.01    -166.8    -57.7   1.00       23       38      38       no       no    5.7e-31
+  mutag_graphxai_s9                  -88.05    16.28    -130.6    -48.4   1.00       28       38      38       no       no    3.6e-27
+  mutagenicity_cv_f0                 -13.58    12.51    -272.5     -1.2   0.33       47       52      52       no       no    9.9e-01
+  mutagenicity_cv_f1                 -39.60    44.39    -413.7     67.1   0.66       43       50      50       no       no    1.0e+00
+  mutagenicity_cv_f2                 -17.34    36.52    -358.8     45.0   0.44       43       48      48       no       no    1.0e+00
+  mutagenicity_cv_f3                  -9.79     6.94     -84.8      3.6   0.22       51       54      54       no       no    8.9e-01
+  mutagenicity_cv_f4                 -24.65    33.34    -255.4     57.4   0.45       48       52      52       no       no    1.0e+00
+  mutagenicity_dmpnn_s0              -15.62    13.89    -256.1     -0.7   0.48       48       53      53       no       no    2.6e-01
+  mutagenicity_dmpnn_s1              -12.49    13.28    -312.5     -3.5   0.13       48       52      52       no       no    3.0e-02
+  mutagenicity_dmpnn_s2              -16.98    31.14    -574.2     35.8   0.43       46       49      49       no       no    1.0e+00
+  mutagenicity_dmpnn_s3              -20.71    33.07    -429.8     45.4   0.41       45       47      47       no       no    1.0e+00
+  mutagenicity_dmpnn_s4              -13.16    23.68    -347.2      2.7   0.29       48       50      50       no       no    9.4e-01
+  mutagenicity_gcn_s0               -419.96   103.67   -1132.1     46.5   1.00        1       52      53      yes       no    1.0e+00
+  mutagenicity_gcn_s1               -326.99   141.10   -1205.2    135.2   0.99        1       52      52      yes       no    1.0e+00
+  mutagenicity_gcn_s2               -393.83   177.87   -1717.9    188.8   1.00        1       46      48      yes       no    1.0e+00
+  mutagenicity_gcn_s3               -399.67   167.95    -908.3    500.3   1.00        1       47      50      yes       no    1.0e+00
+  mutagenicity_gcn_s4                -65.03    57.06    -500.1    252.1   0.90       44       54      54       no       no    1.0e+00
+  mutagenicity_gin_s0               -141.19    54.63    -812.6    -50.8   1.00        7       53      53      yes       no    6.2e-28
+  mutagenicity_gin_s1               -186.88   506.49   -4230.6     -1.6   0.74       39       50      52       no       no    1.5e-01
+  mutagenicity_gin_s2               -281.27   937.76  -13519.3      1.5   0.42       40       44      48       no       no    4.2e-01
+  mutagenicity_gin_s3               -120.13    62.58    -634.4    -58.4   1.00       29       48      48      yes       no    4.2e-26
+  mutagenicity_gin_s4               -412.36   293.94   -3725.8   -180.1   1.00        1       50      54       no       no    2.7e-16
+  mutagenicity_gine_s0              -127.96    39.00    -510.2    -44.1   1.00       12       52      52       no       no    3.9e-16
+  mutagenicity_gine_s1               -55.33   288.63   -3371.9    194.1   0.46       34       41      47       no       no    1.0e+00
+  mutagenicity_gine_s2               -70.55   273.93   -2940.5    411.9   0.28       36       40      44       no       no    1.0e+00
+  mutagenicity_gine_s3               -46.76   166.59   -1794.0     20.7   0.31       44       48      49       no       no    1.0e+00
+  mutagenicity_gine_s4              -547.90   213.37   -1953.3   -110.2   1.00        1       40      54      yes       no    2.9e-36
+  tox21_NR-AR-LBD_s0                   3.25     4.37     -55.8      4.4   0.01        6        6       6       no       no    9.9e-01
+  tox21_NR-AR-LBD_s1                 -10.00     5.31     -31.4     -1.5   0.26       29       30      30       no       no    3.6e-02
+  tox21_NR-AR-LBD_s2                   5.14     4.24     -30.0      6.5   0.01        6        6       6      yes       no    1.0e+00
+  tox21_NR-AR-LBD_s3                  44.75    15.19      25.5    170.1   1.00        1        8      36      yes       no    0.0e+00
+  tox21_NR-AR-LBD_s4                  42.28    12.92      21.9    108.7   1.00        1       10      40      yes       no    0.0e+00
+  tox21_NR-AR_s0                      -6.78     2.10     -14.5     -2.2   0.00       31       32      32       no       no    7.4e-02
+  tox21_NR-AR_s1                      45.66    12.44      24.3     98.1   1.00        1        8      43      yes       no    0.0e+00
+  tox21_NR-AR_s2                      -9.30   103.16    -240.2    211.4   0.94       11       24      42       no       no    1.0e+00
+  tox21_NR-AR_s3                       6.38     0.00       6.4      6.4   0.00        1        1       1       no      yes    0.0e+00
+  tox21_NR-AR_s4                      49.81    19.68      23.8    185.7   1.00        1        5      38      yes       no    0.0e+00
+  tox21_NR-AhR_s0                     -6.64     2.14     -16.8     -1.0   0.01       26       27      27       no       no    2.1e-01
+  tox21_NR-AhR_s1                     95.32    22.92      52.1    208.4   1.00        1        1      32      yes       no    0.0e+00
+  tox21_NR-AhR_s2                     48.88    13.36      22.7    100.1   1.00        1        4      30      yes       no    0.0e+00
+  tox21_NR-AhR_s3                     -9.50     3.05     -24.1     -4.2   0.08       28       28      28       no       no    4.0e-03
+  tox21_NR-AhR_s4                     90.88    40.26      34.7    357.7   1.00        1        1      28      yes       no    0.0e+00
+  tox21_NR-Aromatase_s0               -8.80     2.77     -22.2     -3.9   0.04       34       36      36       no       no    2.8e-03
+  tox21_NR-Aromatase_s1               -6.58     2.66     -39.5     -1.0   0.02       34       36      36       no       no    1.4e-01
+  tox21_NR-Aromatase_s2               72.10    28.06      30.5    230.5   1.00        1        1      33      yes       no    0.0e+00
+  tox21_NR-Aromatase_s3              -12.96     9.05     -98.8     -5.5   0.16       35       37      37       no       no    2.3e-03
+  tox21_NR-Aromatase_s4               60.06    27.86      32.1    282.3   1.00        1        2      36      yes       no    0.0e+00
+  tox21_NR-ER-LBD_s0                 -29.64    34.65    -293.9      1.3   0.53       23       24      24       no       no    7.8e-01
+  tox21_NR-ER-LBD_s1                  72.11    42.07      36.6    423.0   1.00        1        1      26      yes       no    0.0e+00
+  tox21_NR-ER-LBD_s2                 -46.55    55.38    -317.9     -0.8   0.61       30       33      33       no       no    2.5e-01
+  tox21_NR-ER-LBD_s3                  -5.46     4.12     -32.3     -0.4   0.04       32       32      32       no       no    3.6e-01
+  tox21_NR-ER-LBD_s4                  43.40    14.94      24.4    155.5   1.00        1        8      30      yes       no    0.0e+00
+  tox21_NR-ER_s0                     -54.38    67.53    -554.1     -4.3   0.64       28       31      31       no       no    7.6e-03
+  tox21_NR-ER_s1                     -33.09    94.53   -1384.1     -2.6   0.36       20       22      22       no       no    3.2e-02
+  tox21_NR-ER_s2                     -46.05    82.73    -945.2     -5.1   0.72       26       26      26       no       no    2.5e-03
+  tox21_NR-ER_s3                     -17.77    14.35     -90.0     -4.7   0.39       28       30      30       no       no    7.1e-03
+  tox21_NR-ER_s4                      87.78    33.96      45.6    334.2   1.00        1        1      24      yes       no    0.0e+00
+  tox21_NR-PPAR-gamma_s0              -9.92     3.73     -89.6     -5.5   0.03       27       27      27       no       no    4.1e-03
+  tox21_NR-PPAR-gamma_s1             -10.60     2.78     -25.3     -0.5   0.09       26       26      26       no       no    3.7e-01
+  tox21_NR-PPAR-gamma_s2              58.99    19.59      25.0    172.9   1.00        1        3      36      yes       no    0.0e+00
+  tox21_NR-PPAR-gamma_s3              73.16    22.89      33.0    201.3   1.00        1        1      35      yes       no    0.0e+00
+  tox21_NR-PPAR-gamma_s4             -10.95     9.38    -179.2     -3.6   0.08       25       26      26       no       no    2.2e-02
+  tox21_SR-ARE_s0                     -6.34     1.26     -10.3      0.7   0.00       32       32      32       no       no    5.9e-01
+  tox21_SR-ARE_s1                     74.87    22.45      40.3    236.1   1.00        1        1      28      yes       no    0.0e+00
+  tox21_SR-ARE_s2                     63.82    17.31      34.7    147.2   1.00        1        1      29      yes       no    0.0e+00
+  tox21_SR-ARE_s3                     -8.13     1.49     -13.9     -4.0   0.00       29       32      32       no       no    4.3e-03
+  tox21_SR-ARE_s4                     70.97    24.59      35.8    299.7   1.00        1        1      35      yes       no    0.0e+00
+  tox21_SR-ATAD5_s0                  -20.59    11.55     -87.5     -1.3   0.66       32       33      33       no       no    2.0e-01
+  tox21_SR-ATAD5_s1                  -18.28    24.73    -202.6     -0.5   0.34       24       26      26       no       no    2.9e-01
+  tox21_SR-ATAD5_s2                   64.20    22.68      29.3    225.4   1.00        1        1      33      yes       no    0.0e+00
+  tox21_SR-ATAD5_s3                  -15.26    14.93    -155.8     38.0   0.30       28       29      29       no       no    1.0e+00
+  tox21_SR-ATAD5_s4                  -72.61    23.33    -183.9    -38.7   1.00       28       31      31       no       no    1.5e-17
+  tox21_SR-HSE_s0                   -106.30    35.82    -318.3    -51.9   1.00       20       34      34       no       no    1.1e-28
+  tox21_SR-HSE_s1                    -12.23     4.95     -30.8     -2.5   0.33       22       28      28       no       no    7.0e-02
+  tox21_SR-HSE_s2                    -11.33     2.90     -35.2     -6.3   0.11       32       32      32       no       no    8.1e-04
+  tox21_SR-HSE_s3                     -8.64     2.71     -23.2     -0.6   0.05       24       26      26       no       no    7.1e-02
+  tox21_SR-HSE_s4                   -111.48    46.04    -393.5    -52.6   1.00        9       23      23       no       no    3.3e-27
+  tox21_SR-MMP_s0                     53.91    16.30      27.4    128.6   1.00        1        3      28      yes       no    0.0e+00
+  tox21_SR-MMP_s1                     49.46    15.62      26.8    173.9   1.00        1        5      29      yes       no    0.0e+00
+  tox21_SR-MMP_s2                    -18.24    15.04     -98.9     -0.8   0.45       30       30      30       no       no    1.7e-01
+  tox21_SR-MMP_s3                     -6.77     1.54     -11.7     -2.6   0.00       24       26      26       no       no    1.2e-02
+  tox21_SR-MMP_s4                      7.83     0.00       7.8      7.8   0.00        1        1       1      yes      yes    0.0e+00
+  tox21_SR-p53_s0                     51.02    15.26      24.8    186.4   1.00        1        3      32      yes       no    0.0e+00
+  tox21_SR-p53_s1                     -0.33    40.23     -55.7    348.1   0.15       28       29      30       no       no    1.0e+00
+  tox21_SR-p53_s2                    -20.69    32.58    -240.9      1.7   0.28       27       30      30       no       no    8.1e-01
+  tox21_SR-p53_s3                    -11.83     2.43     -31.5     -6.3   0.15       30       33      33       no       no    2.1e-04
+  tox21_SR-p53_s4                     45.30    14.75      23.6    152.6   1.00        1        6      31      yes       no    0.0e+00
+
+[B] collapse recount per dataset / architecture
+    new rule: a molecule is degenerate if its edge logits have no ordering, (max - min) <= 1e-6 * max(1, |mean|) in float64;
+    a run is collapsed if >= half of its explained molecules are degenerate. Old rule: stored float32 node mask std == 0.
+  dataset / architecture       units  old collapsed  new collapsed   units collapsed under the old rule but ordered under the new
+  B-XAIC P                         5              0              0   -
+  B-XAIC PAINS                     5              2              0   bxaic_PAINS_s3, bxaic_PAINS_s4
+  B-XAIC X                         5              0              0   -
+  B-XAIC indole                    5              0              0   -
+  BBBP                             1              0              0   -
+  MUTAG                            1              0              0   -
+  MUTAG-GT decoupled               5              1              0   decoupled_mutag_graphxai_s3
+  MUTAG-GT seeds 0-9              10              2              0   mutag_graphxai_s3, mutag_graphxai_s5
+  Mutagenicity 5-fold CV           5              0              0   -
+  Mutagenicity D-MPNN              5              0              0   -
+  Mutagenicity GCN                 5              4              0   mutagenicity_gcn_s0, mutagenicity_gcn_s1, mutagenicity_gcn_s2, mutagenicity_gcn_s3
+  Mutagenicity GIN                 5              2              0   mutagenicity_gin_s0, mutagenicity_gin_s3
+  Mutagenicity GINE                5              1              0   mutagenicity_gine_s4
+  Tox21                           60             24              2   tox21_NR-AR-LBD_s2, tox21_NR-AR-LBD_s3, tox21_NR-AR-LBD_s4, tox21_NR-AR_s1, tox21_NR-AR_s4, tox21_NR-AhR_s1, tox21_NR-AhR_s2, tox21_NR-AhR_s4, tox21_NR-Aromatase_s2, tox21_NR-Aromatase_s4, tox21_NR-ER-LBD_s1, tox21_NR-ER-LBD_s4, tox21_NR-ER_s4, tox21_NR-PPAR-gamma_s2, tox21_NR-PPAR-gamma_s3, tox21_SR-ARE_s1, tox21_SR-ARE_s2, tox21_SR-ARE_s4, tox21_SR-ATAD5_s2, tox21_SR-MMP_s0, tox21_SR-MMP_s1, tox21_SR-p53_s0, tox21_SR-p53_s4
+
+  ADDENDUM PREDICTION: of 36 units collapsed under the old rule, 35 have ordered logits (0.97) -> HELD (held if >= 1/3)
+
+[C] PGExplainer top-k GEA re-scored with float64 logit-based node scores (random ties only for exact float64 ties)
+  MUTAG-GT seeds 0-4                gnnexplainer  random-tie 4/1  ->  logit-ranked 4/1
+  MUTAG-GT seeds 0-4                pgexplainer   random-tie 2/3  ->  logit-ranked 2/2   CHANGE
+  MUTAG-GT seeds 0-4                subgraphx     random-tie 0/5  ->  logit-ranked 0/5
+  MUTAG-GT seeds 0-9                gnnexplainer  random-tie 8/2  ->  logit-ranked 8/2
+  MUTAG-GT seeds 0-9                pgexplainer   random-tie 4/3  ->  logit-ranked 4/2   CHANGE
+  MUTAG-GT seeds 0-9                subgraphx     random-tie 0/10  ->  logit-ranked 0/10
+  B-XAIC indole                     gnnexplainer  random-tie 3/2  ->  logit-ranked 3/2
+  B-XAIC indole                     pgexplainer   random-tie 5/0  ->  logit-ranked 5/0
+  B-XAIC indole                     subgraphx     random-tie 5/0  ->  logit-ranked 5/0
+  Mutagenicity D-MPNN (main table)  gnnexplainer  random-tie 5/0  ->  logit-ranked 5/0
+  Mutagenicity D-MPNN (main table)  pgexplainer   random-tie 2/3  ->  logit-ranked 2/3
+  Mutagenicity D-MPNN (main table)  subgraphx     random-tie 5/0  ->  logit-ranked 5/0
+  architecture D-MPNN              PG vs RandNode   random-tie ---++ (2/3)  ->  logit-ranked ---++ (2/3)
+  architecture GIN                 PG vs RandNode   random-tie ---.- (0/4)  ->  logit-ranked ----. (0/4)   CHANGE
+  architecture GINE                PG vs RandNode   random-tie ----. (0/4)  ->  logit-ranked ----. (0/4)
+  architecture GCN                 PG vs RandNode   random-tie +++++ (5/0)  ->  logit-ranked +++++ (5/0)
+
+[D] T4 re-training of PGExplainer (Tox21: 24 originally collapsed units + 11 clean partners), per setting
+    settings: a = 30 epochs lr 0.003 (current); b = 100 epochs; c = 300 epochs; d1 = lr 0.0009; d2 = lr 0.009
+    logits here are reconstructed from the saved float32 masks (log m - log(1 - m)); m == 0 or 1 gives only a bound;
+    a molecule whose edge masks are all exactly 0 (or all exactly 1) is 'undetermined'.
+  setting  jobs  old coll (orig coll)  old coll (orig clean) new coll undet. units final loss  grad norm sat 1e-3 sat 1e-6 distinct f32
+  a          35                 23/24                   0/11        1           22      2.094   2.03e-05     1.00     0.00           22
+  b          35                 22/24                   0/11        1           22      2.081   1.07e-09     1.00     0.33           22
+  c          35                 23/24                   0/11        0           23      2.081   0.00e+00     1.00     0.56           22
+  d1         35                 23/24                   1/11        0           24      2.081   3.61e-05     1.00     0.09           28
+  d2         35                 14/24                   7/11        2           21      2.149   1.04e-09     1.00     0.03           16
+  P-T4 (old float32 rule on the re-run masks -- the registered absolute rule was withdrawn by the addendum): collapse rate of the 24 units a 0.96, b 0.92, c 0.96 -> DID NOT HOLD

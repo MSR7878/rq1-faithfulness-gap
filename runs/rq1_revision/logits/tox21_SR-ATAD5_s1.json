@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_SR-ATAD5_s1",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.28613693453371525,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 3.1645638248756214e-08,
+ "seconds": 172.88726997375488
+}

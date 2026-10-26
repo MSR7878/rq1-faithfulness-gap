@@ -1,0 +1,8 @@
+{
+ "unit": "mutag",
+ "status": "ok",
+ "n": 29,
+ "rerun_vs_stored_max_mask_dev": 3.249598197277977e-19,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 2.9641602694001217e-25,
+ "seconds": 104.09684348106384
+}

@@ -1,0 +1,8 @@
+{
+ "unit": "bxaic_X_s3",
+ "status": "ok",
+ "n": 400,
+ "rerun_vs_stored_max_mask_dev": 3.427267074584961e-06,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 8.921183639043484e-08,
+ "seconds": 238.04891061782837
+}

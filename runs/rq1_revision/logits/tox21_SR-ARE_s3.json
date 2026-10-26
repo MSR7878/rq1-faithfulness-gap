@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_SR-ARE_s3",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.004310404881834984,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 6.854777981346594e-09,
+ "seconds": 171.43398094177246
+}

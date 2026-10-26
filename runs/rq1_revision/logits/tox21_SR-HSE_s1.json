@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_SR-HSE_s1",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.07038385374471545,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 1.2388904666038592e-08,
+ "seconds": 172.50324940681458
+}

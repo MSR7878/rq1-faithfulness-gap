@@ -1,0 +1,8 @@
+{
+ "unit": "bxaic_indole_s4",
+ "status": "ok",
+ "n": 400,
+ "rerun_vs_stored_max_mask_dev": 1.0,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 7.312749819576858e-07,
+ "seconds": 245.54541873931885
+}

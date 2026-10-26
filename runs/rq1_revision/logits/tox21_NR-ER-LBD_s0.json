@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_NR-ER-LBD_s0",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.7811336864251643,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 2.3667534121418754e-07,
+ "seconds": 173.44625806808472
+}

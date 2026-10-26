@@ -1,0 +1,8 @@
+{
+ "unit": "bbbp",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 2.2973581327409467e-06,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 4.9967170839475817e-17,
+ "seconds": 115.98751997947693
+}

@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_NR-AhR_s2",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.0,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 1.3506729068524237e-10,
+ "seconds": 179.6694576740265
+}

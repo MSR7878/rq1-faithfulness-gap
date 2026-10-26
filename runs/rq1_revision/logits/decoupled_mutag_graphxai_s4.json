@@ -1,0 +1,8 @@
+{
+ "unit": "decoupled_mutag_graphxai_s4",
+ "status": "ok",
+ "n": 188,
+ "rerun_vs_stored_max_mask_dev": 1.819797347616661e-22,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 2.4153502859038966e-22,
+ "seconds": 134.27799582481384
+}

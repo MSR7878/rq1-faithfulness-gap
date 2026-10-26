@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_SR-p53_s2",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.8083590809255838,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 9.260493138985026e-08,
+ "seconds": 173.2743434906006
+}

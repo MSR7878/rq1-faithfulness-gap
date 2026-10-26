@@ -1,0 +1,8 @@
+{
+ "unit": "mutagenicity_gine_s4",
+ "status": "ok",
+ "n": 346,
+ "rerun_vs_stored_max_mask_dev": 2.867588299435553e-36,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 1.4359903276596925e-48,
+ "seconds": 858.2022082805634
+}

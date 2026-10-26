@@ -1,0 +1,8 @@
+{
+ "unit": "tox21_NR-Aromatase_s0",
+ "status": "ok",
+ "n": 30,
+ "rerun_vs_stored_max_mask_dev": 0.002767471829429269,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 6.903468267524526e-09,
+ "seconds": 183.7919626235962
+}

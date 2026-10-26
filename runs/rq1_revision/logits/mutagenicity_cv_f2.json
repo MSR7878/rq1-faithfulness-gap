@@ -1,0 +1,8 @@
+{
+ "unit": "mutagenicity_cv_f2",
+ "status": "ok",
+ "n": 350,
+ "rerun_vs_stored_max_mask_dev": 1.0,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 1.3724490586231042e-06,
+ "seconds": 1085.1086580753326
+}

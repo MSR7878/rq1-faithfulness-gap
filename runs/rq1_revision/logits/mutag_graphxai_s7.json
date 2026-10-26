@@ -1,0 +1,8 @@
+{
+ "unit": "mutag_graphxai_s7",
+ "status": "ok",
+ "n": 188,
+ "rerun_vs_stored_max_mask_dev": 2.714186384939622e-25,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 6.4426792364563754e-24,
+ "seconds": 132.58924674987793
+}

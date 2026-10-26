@@ -1,0 +1,8 @@
+{
+ "unit": "bxaic_P_s0",
+ "status": "ok",
+ "n": 400,
+ "rerun_vs_stored_max_mask_dev": 0.04954671859741211,
+ "sigmoid_logits_vs_rerun_mask_max_dev": 4.541486542386508e-08,
+ "seconds": 247.56915521621704
+}
