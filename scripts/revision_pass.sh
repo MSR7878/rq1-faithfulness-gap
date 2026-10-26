@@ -3,7 +3,7 @@
 set -u
 cd "$(dirname "$0")/.."
 PY=${PY:-$HOME/.conda/envs/rq1/bin/python}
-export CUDA_VISIBLE_DEVICES=1 PYTHONWARNINGS=ignore PYTHONIOENCODING=utf-8
+export CUDA_VISIBLE_DEVICES=1 PYTHONWARNINGS=ignore PYTHONIOENCODING=utf-8 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1   # one thread per worker: avoids CPU oversubscription
 R=runs/rq1_revision/pass
 W=${WORKERS:-4}
 mkdir -p $R/logs
