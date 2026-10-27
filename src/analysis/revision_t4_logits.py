@@ -54,6 +54,8 @@ def run_job(unit, setting, spec, device):
     t0 = time.time()
     try:
         cache = f"{OUT}/rerun/{unit}_{setting}_cache.pt"
+        if os.path.exists(cache):  # left by an interrupted job; run_phase3 would reuse it and skip training
+            os.remove(cache)
         rp3.main(["--dataset", spec["dataset"], "--ckpt", spec["ckpt"], "--seed", str(spec["explainer_seed"]), "--explainers", "pgexplainer",
                   "--masking", "R3", "--pg-epochs", str(epochs), "--cache", cache, "--out", f"{OUT}/rerun/{unit}_{setting}_out.json", *spec["args"]])
     finally:
