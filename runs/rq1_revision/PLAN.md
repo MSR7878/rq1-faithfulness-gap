@@ -245,3 +245,36 @@ the old rule: held if >= 1/3 of them are NOT collapsed under the new logit rule.
 
 Time estimate for items 2-4: about 120 PGExplainer re-trainings, 2-10 min each,
 about 7 h of compute, about 2 h wall-clock with 4 workers alongside T4.
+
+## Tier-1 completion (user, 2026-10-27; written before the new runs)
+
+No new analyses and no new predictions.
+
+1. T1 completeness: t1.txt already holds the logit-margin tables and the random-node
+   null for the ground-truth test (rows "node"); a summary is given in the report, no
+   recomputation.
+2. T4 undetermined jobs: settings b, c, d1, d2 re-run on the same 35 Tox21 units (24
+   originally collapsed + 11 clean partners) = 140 jobs, with the explainer MLP saved and
+   float64 logits on the explained molecules (src/analysis/revision_t4_logits.py,
+   output runs/rq1_revision/t4_logits/; runs/rq1_revision/t4 is not touched). Per
+   setting: collapsed under the old float32 rule, degenerate under the logit rule, median
+   gradient norm, saturation fraction. The T4 units are all Tox21, which has no
+   ground-truth masks, so there is no GEA for them.
+   Time estimate: the first T4 run measured about 24 h of single-job time for these 140
+   jobs (b 5.2 h, c 15.7 h, d1 1.6 h, d2 1.6 h; one-thread re-runs take the same time
+   per job); 12 workers, one thread each, GPU 1 -> about 2-2.5 h wall-clock.
+
+### Ledger of Tier-1 predictions
+
+The P-T4 rule registered in a1d6e21 was node std < 1e-6 (float64); the addendum
+(ca3ad87) withdrew it, and the old float32 std == 0 rule was used instead.
+
+| Prediction | Registered | Outcome | One line | Result commit |
+|---|---|---|---|---|
+| P-T1a | a1d6e21 | HELD | GT Fid+ (prob.) above random-connected in 5/5 seeds under R1 and R2 in all 5 datasets | 181bef5 |
+| P-T1b | a1d6e21 | HELD (by the strict rule only) | R3 24/25 vs R2 25/25 seed cells; one seed apart, no real difference | 181bef5 |
+| P-T1c | a1d6e21 | HELD | 16 of 36 cells "larger" (limit 17); on B-XAIC X/P "larger" means random drops more | 181bef5 |
+| P-T2 | a1d6e21 | HELD (at the threshold) | median Kendall tau = +1/3, exactly the limit | 16797e9 |
+| P-T4 | a1d6e21 | FAILED | 24 collapsed units, re-run collapse a -> b -> c: old float32 rule 23 -> 22 -> 23; registered std < 1e-6 rule 23 -> 23 -> 23. Not meaningful under the logit rule (almost no unit is truly degenerate) | 7dc40f6 |
+| P-T5 | a1d6e21 | HELD | R1: Mutagenicity 5/5, each B-XAIC task 5/5, MUTAG-GT 9/10 | dbdfbee |
+| T4 addendum | ca3ad87 | HELD | 35 of 36 old-rule collapsed units have ordered logits (saturation, not collapse) | 7dc40f6 |
