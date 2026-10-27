@@ -80,14 +80,15 @@ def run_job(unit, setting, spec, device):
     sig = 1.0 / (1.0 + np.exp(-allv))
     np.savez(f"{OUT}/{unit}_{setting}.npz", mol_idx=np.array(new["key"]["test_idx"]), logits=np.array(logits, dtype=object),
              node_mask32=np.array(node32, dtype=object), target=np.array([int(r["target"]) for r in res]))
-    log.update({"n": len(res), "orig_collapsed": spec["collapsed"],
-                "n_deg_old_f32": int(sum(old)), "collapsed_old_f32": sum(old) / len(res) >= 0.5,
-                "n_deg_logit": int(sum(newd)), "collapsed_logit": sum(newd) / len(res) >= 0.5,
+    log.update({"n": len(res), "orig_collapsed": bool(spec["collapsed"]),
+                "n_deg_old_f32": int(sum(old)), "collapsed_old_f32": bool(sum(old) / len(res) >= 0.5),
+                "n_deg_logit": int(sum(newd)), "collapsed_logit": bool(sum(newd) / len(res) >= 0.5),
                 "logit_mean": float(allv.mean()) if len(allv) else None, "logit_min": float(allv.min()) if len(allv) else None,
                 "logit_max": float(allv.max()) if len(allv) else None,
                 "sat_1e6_explained": float(np.mean((sig < 1e-6) | (sig > 1 - 1e-6))) if len(allv) else None,
                 "sigmoid_logits_vs_rerun_mask_max_dev": dev, "seconds": time.time() - t0})
-    json.dump(log, open(f"{OUT}/{unit}_{setting}.json", "w"), indent=1)
+    s = json.dumps(log, indent=1)  # serialise first: a failed dump must not leave a file that marks the job done
+    open(f"{OUT}/{unit}_{setting}.json", "w").write(s)
     print(f"{unit} {setting}: old-rule deg {sum(old)}/{len(res)}  logit-rule deg {sum(newd)}/{len(res)}  dev {dev:.1e}  ({log['seconds']:.0f}s)", flush=True)
 
 
