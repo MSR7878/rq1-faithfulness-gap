@@ -1,1 +1,2 @@
 finished 2026-10-26 22:10:30: T1-T6 and the T4 addendum; see the final report
+finished 2026-10-28 01:10: Tier-1 completion -- T1 completeness confirmed (no recomputation); T4 settings b/c/d1/d2 re-run with exact logits (140/140 jobs, runs/rq1_revision/t4_logits, t4_logits.txt; explainer MLPs and re-run caches on ada only); PLAN ledger of predictions. Tier 1 complete.

@@ -1,0 +1,20 @@
+T4 completion: PGExplainer re-training with exact float64 logits (24 originally collapsed Tox21 units + 11 clean partners)
+  settings: a = 30 epochs lr 0.003 (current); b = 100 epochs; c = 300 epochs; d1 = lr 0.0009; d2 = lr 0.009
+  old rule = node mask std == 0 in float32; logit rule = (max - min) of edge logits <= 1e-6 * max(1, |mean|); run collapsed if >= half its molecules are
+  Tox21 has no ground-truth masks: no GEA for these units.
+
+  setting a logit-rule status taken from the addendum re-runs: 35/35 units have a matching command
+
+  set  jobs  old coll  old coll  logit coll  logit coll  deg mols  grad norm sat 1e-3 sat 1e-6 logit min logit max same old mask repro
+              (of 24)   (of 11)     (of 24)     (of 11)   (logit)   (median)  (train)  (expl.)  (median)  (median)   status   (median)
+  a      35     23/24      0/11        1/24        0/11         -   2.03e-05     1.00        -         -         -        -          -
+  b      35     23/24      0/11        1/24        0/11        30   1.07e-09     1.00     1.00      46.2     103.5    34/35       1.00
+  c      35     22/24      1/11        1/24        0/11        31   0.00e+00     1.00     1.00      67.9     159.5    33/35       1.00
+  d1     35     23/24      1/11        0/24        0/11         0   3.61e-05     1.00     1.00      29.0      67.8    35/35       1.00
+  d2     35     14/24      6/11        2/24        0/11        60   4.54e-09     1.00     1.00      -9.3      -3.0    32/35       1.00
+
+  'deg mols' = molecules with no logit ordering, summed over the jobs; 'same old status' / 'mask repro' compare with the first T4 run
+  (setting a row: the first T4 run; its logit-rule column comes from the addendum re-runs).
+
+  P-T4 (registered: collapse rate halves with 100+ epochs): old float32 rule a 0.96, b 0.96, c 0.92 -> failed on this re-run
+  logit rule, collapsed of the 24: a 1/24, b 1/24, c 1/24, d1 0/24, d2 2/24
