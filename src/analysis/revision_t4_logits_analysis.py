@@ -107,7 +107,7 @@ def main():
         P(f"  {s:<4}{len(rows):>5}{cnt(oc, 'old'):>10}{cnt(ok, 'old'):>10}{cnt(oc, 'logit'):>12}{cnt(ok, 'logit'):>12}"
           f"{(str(sum(degs)) if degs else '-'):>10}{med('gn', '.2e'):>11}{med('s3', '.2f'):>9}{med('s6', '.2f'):>9}{med('lmin', '.1f'):>10}{med('lmax', '.1f'):>10}"
           f"{cnt(rows, 'same'):>9}{med('repro', '.2f'):>11}")
-        rates_old[s] = sum(r["old"] for r in oc) / len(oc)
+        rates_old[s] = sum(r["old"] for r in oc) / len(oc) if oc else float("nan")
         lv = [r["logit"] for r in oc if r["logit"] is not None]
         rates_logit[s] = (sum(lv), len(lv))
         rep["settings"][s] = {"jobs": len(rows), "old_coll_orig_coll": cnt(oc, "old"), "old_coll_orig_clean": cnt(ok, "old"),
