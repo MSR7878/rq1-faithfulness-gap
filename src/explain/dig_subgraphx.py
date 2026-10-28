@@ -87,11 +87,17 @@ class SubgraphXWrapper:
     def __init__(self, model, device, *, num_classes: int = 2, num_hops: int = 3,
                  rollout: int = 15, min_atoms: int = 3, c_puct: float = 10.0,
                  expand_atoms: int = 12, sample_num: int = 50,
-                 reward_method: str = "mc_l_shapley", node_frac: float = 0.25):
+                 reward_method: str = "mc_l_shapley", node_frac: float = 0.25,
+                 budget: str = "legacy"):
         self.model = model.to(device).eval()
         self.device = device
         self.num_classes = num_classes
         self.node_frac = node_frac
+        # "legacy": max_nodes = max(min_atoms, round(node_frac * N)) -- the budget every run before RQ1 Tier 2 used.
+        # "score":  max_nodes = max(1, floor(node_frac * N)), the k used by top-k scoring, and the MCTS leaf size
+        #           min_atoms lowered to min(min_atoms, k) so a coalition of <= k atoms exists for small graphs.
+        assert budget in ("legacy", "score"), budget
+        self.budget = budget
         self._kw = dict(num_hops=num_hops, rollout=rollout, min_atoms=min_atoms,
                         c_puct=c_puct, expand_atoms=expand_atoms, sample_num=sample_num,
                         reward_method=reward_method, subgraph_building_method="zero_filling")
@@ -108,9 +114,14 @@ class SubgraphXWrapper:
             pred = int(logits.reshape(-1, logits.shape[-1])[0].argmax())
         tgt = pred if target is None else int(target)
 
+        kw = dict(self._kw)
+        if self.budget == "score":
+            max_nodes = max(1, int(self.node_frac * num_nodes))
+            kw["min_atoms"] = min(kw["min_atoms"], max_nodes)
+        else:
+            max_nodes = max(self._kw["min_atoms"], round(self.node_frac * num_nodes))
         sx = SubgraphX(adapter, num_classes=self.num_classes, device=self.device,
-                       explain_graph=True, verbose=False, vis=False, **self._kw)
-        max_nodes = max(self._kw["min_atoms"], round(self.node_frac * num_nodes))
+                       explain_graph=True, verbose=False, vis=False, **kw)
         results, related = sx.explain(x, edge_index, label=tgt, max_nodes=max_nodes)
         best = find_closest_node_result(sx.read_from_MCTSInfo_list(results), max_nodes=max_nodes)
         coalition = list(best.coalition)
@@ -120,5 +131,6 @@ class SubgraphXWrapper:
         return ExplanationResult(
             node_importance=node_imp, edge_importance=None, target=tgt,
             meta={"explainer": self.name, "coalition": coalition,
-                  "max_nodes": max_nodes, "related_pred": related},
+                  "max_nodes": max_nodes, "min_atoms": kw["min_atoms"], "budget": self.budget,
+                  "related_pred": related},
         )

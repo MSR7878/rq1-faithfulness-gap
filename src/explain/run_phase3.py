@@ -175,6 +175,9 @@ def main(argv=None) -> int:
     ap.add_argument("--pg-epochs", type=int, default=30)
     ap.add_argument("--sx-rollout", type=int, default=20)   # DIG default; locked (see spec)
     ap.add_argument("--sx-sample", type=int, default=30)
+    ap.add_argument("--sx-budget", default="legacy", choices=["legacy", "score"],
+                    help="SubgraphX size budget: legacy = max(3, round(0.25 N)) (every run before RQ1 Tier 2); "
+                         "score = max(1, floor(0.25 N)), the top-k scoring budget (see dig_subgraphx.py)")
     ap.add_argument("--explainers", default="gnnexplainer,pgexplainer,subgraphx",
                     help="comma list; subset to re-run just one method")
     ap.add_argument("--limit", type=int, default=None,
@@ -286,6 +289,8 @@ def main(argv=None) -> int:
     cache_key = dict(ckpt=ckpt_path, test_idx=test_idx, pg_train_idx=pg_train_idx,
                      gnn_epochs=args.gnn_epochs, pg_epochs=args.pg_epochs,
                      sx_rollout=args.sx_rollout, sx_sample=args.sx_sample, k_frac=K_FRAC)
+    if args.sx_budget != "legacy":      # legacy runs keep their old key, so existing caches still match
+        cache_key["sx_budget"] = args.sx_budget
     cached = None
     if not args.refresh_cache and __import__("os").path.exists(cache_path):
         blob = torch.load(cache_path, weights_only=False)
@@ -321,7 +326,8 @@ def main(argv=None) -> int:
             explainers["pgexplainer"] = pg
         if "subgraphx" in want:
             explainers["subgraphx"] = SubgraphXWrapper(
-                model, device, rollout=args.sx_rollout, sample_num=args.sx_sample, node_frac=K_FRAC)
+                model, device, rollout=args.sx_rollout, sample_num=args.sx_sample, node_frac=K_FRAC,
+                budget=args.sx_budget)
 
         for name, ex in explainers.items():
             t0 = time.time()
