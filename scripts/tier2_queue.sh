@@ -13,5 +13,5 @@ mkdir -p $D/logs
 $PY -m src.analysis.tier2_jobs $ITEM $PHASE > $D/jobs_$PHASE.txt || { echo "job list failed" > $D/STOPPED_$PHASE; exit 1; }
 rm -f $D/FAILED_$PHASE $D/FINISHED_$PHASE
 echo "start $(date '+%F %T'), $(wc -l < $D/jobs_$PHASE.txt) jobs, $W workers" > $D/STARTED_$PHASE
-nl -ba -w1 -s' ' $D/jobs_$PHASE.txt | xargs -P $W -L 1 bash -c 'n=$0; shift; cmd="$*"; log='"$D"'/logs/'"$PHASE"'_$n.log; eval "$cmd" > $log 2>&1 || echo "$n $cmd" >> '"$D"'/FAILED_'"$PHASE"
+nl -ba -w1 -s' ' $D/jobs_$PHASE.txt | xargs -P $W -L 1 bash -c 'n=$0; cmd="$*"; log='"$D"'/logs/'"$PHASE"'_$n.log; eval "$cmd" > $log 2>&1 || echo "$n $cmd" >> '"$D"'/FAILED_'"$PHASE"
 echo "finished $(date '+%F %T'); failed jobs: $( [ -f $D/FAILED_$PHASE ] && wc -l < $D/FAILED_$PHASE || echo 0)" > $D/FINISHED_$PHASE
