@@ -1,0 +1,8 @@
+mutagenicity_gine_s4 steps  50: completeness rel. error median 0.0735, 90th pct 0.634, max 1.97; IG GEA 0.2115 (random-node 0.1201)
+mutagenicity_gine_s4 steps 100: completeness rel. error median 0.0218, 90th pct 0.234, max 0.48; IG GEA 0.2143 (random-node 0.1201)
+mutagenicity_gine_s4 steps 200: completeness rel. error median 0.0083, 90th pct 0.083, max 0.27; IG GEA 0.2143 (random-node 0.1201)
+mutagenicity_gine_s4 steps 500: completeness rel. error median 0.0041, 90th pct 0.028, max 0.10; IG GEA 0.2115 (random-node 0.1201)
+mutagenicity_gine_s2 steps  50: completeness rel. error median 0.0288, 90th pct 0.229, max 22.94; IG GEA 0.1983 (random-node 0.1250)
+mutagenicity_gine_s2 steps 100: completeness rel. error median 0.0162, 90th pct 0.100, max 4.05; IG GEA 0.1983 (random-node 0.1250)
+mutagenicity_gine_s2 steps 200: completeness rel. error median 0.0071, 90th pct 0.064, max 3.17; IG GEA 0.1979 (random-node 0.1250)
+mutagenicity_gine_s2 steps 500: completeness rel. error median 0.0028, 90th pct 0.023, max 1.50; IG GEA 0.1979 (random-node 0.1250)
