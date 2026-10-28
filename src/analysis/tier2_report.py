@@ -189,5 +189,74 @@ def G():
     save("G", rep)
 
 
+# ------------------------------------------------------------------ R
+def R():
+    from .revision_analysis import hboot
+    rep = {"models": {}}
+    RG = {"Mutagenicity D-MPNN": [f"mutagenicity_dmpnn_s{s}" for s in range(5)], "B-XAIC indole": [f"bxaic_indole_s{s}" for s in range(5)]}
+    M = ["gnnexplainer", "pgexplainer", "subgraphx", "ig", "sal"]; SHR = {**SH, "subgraphx": "SX-fixed"}
+    P("R -- RANDOMISED-MODEL SANITY CHECK (full = every module re-initialised; head = output FFN only; seed 5000 + model seed)")
+    P("  SubgraphX (scoring budget) on the fixed 100 ground-truth molecules per seed; other methods on all GT molecules.")
+    import torch
+    P("\n  [0] test accuracy / AUROC / share predicted positive of the randomised models (trained in brackets)")
+    for g, units in RG.items():
+        for k in ("full", "head"):
+            cells = []
+            for u in units:
+                ck = torch.load(f"{T}/R/ckpt/{u}_{k}.pt", map_location="cpu", weights_only=False); m = ck["metrics"]
+                rep["models"][f"{u}|{k}"] = {kk: m[kk] for kk in ("test_acc", "test_auroc", "frac_pred_pos")}
+                cells.append(f"s{u[-1]} {m['test_acc']:.2f}/{m['test_auroc']:.2f}/{m['frac_pred_pos']:.2f}")
+            P(f"    {g:<22}{k:<6}" + "  ".join(cells))
+    Z = {(u, k): load(f"{T}/R/score/{u}_{k}.npz") for us in RG.values() for u in us for k in ("full", "head")}
+    P("\n  [1] GEA of the explanations of the randomised model minus null; Holm family per (dataset, randomisation, seed) = 5 methods x 2 nulls = 10")
+    P(f"  {'dataset':<22}{'kind':<6}{'method':<10}{'minus random-node [95% CI]':>32}{'90% CI':>20}{'counts':>8}{'minus random-conn. [95% CI]':>32}{'counts':>8}{'GEA':>7}")
+    cells_r1 = []
+    rep["gea"] = {}
+    for g, units in RG.items():
+        for k in ("full", "head"):
+            sig = {}
+            for u in units:
+                z = Z[(u, k)]
+                raw = {(m, r): C.wil(z[f"{m}_gea"], z[f"{m}_{r}"]) for m in M for r in ("rn", "rc")}
+                for kk, sg in C.holm_signs(raw).items():
+                    sig.setdefault(kk, []).append(sg)
+            for m in M:
+                real = [Z[(u, k)][f"{m}_gea"] for u in units]
+                p, lo, hi, vals = hboot(real, [Z[(u, k)][f"{m}_rn"] for u in units])
+                l90, h90 = float(np.percentile(vals, 5)), float(np.percentile(vals, 95))
+                pc, loc, hic, _ = hboot(real, [Z[(u, k)][f"{m}_rc"] for u in units])
+                within = -0.05 <= p <= 0.05; cells_r1.append((g, k, m, p, within, l90, h90))
+                rep["gea"][f"{g}|{k}|{m}"] = {"rn": [p, lo, hi], "rn90": [l90, h90], "rc": [pc, loc, hic], "signs_rn": sig[(m, "rn")],
+                                             "signs_rc": sig[(m, "rc")], "within_0.05": within, "gea": float(np.mean([np.mean(x) for x in real]))}
+                P(f"  {g:<22}{k:<6}{SHR[m]:<10}{fmt_ci(p, lo, hi):>32}{f'[{l90:+.3f}, {h90:+.3f}]':>20}{C.counts(sig[(m, 'rn')]):>8}"
+                  f"{fmt_ci(pc, loc, hic):>32}{C.counts(sig[(m, 'rc')]):>8}{np.mean([np.mean(x) for x in real]):>7.3f}")
+    held = all(c[4] for c in cells_r1)
+    P(f"\n  P-R1: point estimate of (method - random-node) within [-0.05, +0.05] in every one of the {len(cells_r1)} cells: "
+      f"{sum(c[4] for c in cells_r1)}/{len(cells_r1)} -> {'HELD' if held else 'FAILED'}")
+    for c in cells_r1:
+        if not c[4]:
+            P(f"    outside: {c[0]} {c[1]} {SHR[c[2]]} {c[3]:+.3f}")
+    eq = sum(1 for c in cells_r1 if c[5] > -0.05 and c[6] < 0.05)
+    P(f"  equivalence view (90% CI inside +/-0.05): {eq}/{len(cells_r1)} cells")
+    rep["P-R1"] = {"held": held, "within": sum(c[4] for c in cells_r1), "cells": len(cells_r1), "equivalent_90": eq}
+    P("\n  [2] trained vs randomised atom scores per GT molecule: Spearman (mean over seeds of per-seed means; bootstrap 95% CI) and top-k Jaccard;")
+    P("      n skipped = molecules with a constant score vector on either side; SX-fixed trained = the item-S run (pending until S priority is done)")
+    P(f"  {'dataset':<22}{'kind':<6}{'method':<10}{'Spearman [95% CI]':>30}{'skipped':>9}{'top-k Jaccard [95% CI]':>30}")
+    rep["corr"] = {}
+    for g, units in RG.items():
+        for k in ("full", "head"):
+            for m in M:
+                rr = [Z[(u, k)][f"{m}_spearman"] for u in units]; jj = [Z[(u, k)][f"{m}_jaccard"] for u in units]
+                if all(np.all(np.isnan(x)) for x in jj):
+                    P(f"  {g:<22}{k:<6}{SHR[m]:<10}{'pending (no trained scores yet)':>30}"); continue
+                skip = int(sum(np.isnan(x).sum() for x in rr))
+                r_ok = [x[~np.isnan(x)] for x in rr]; j_ok = [x[~np.isnan(x)] for x in jj]
+                rs = hboot(r_ok, [np.zeros_like(x) for x in r_ok]) if all(len(x) for x in r_ok) else (np.nan, np.nan, np.nan)
+                js = hboot(j_ok, [np.zeros_like(x) for x in j_ok])
+                rep["corr"][f"{g}|{k}|{m}"] = {"spearman": list(rs[:3]), "skipped": skip, "jaccard": list(js[:3])}
+                P(f"  {g:<22}{k:<6}{SHR[m]:<10}{fmt_ci(*rs[:3]):>30}{skip:>9}{fmt_ci(*js[:3]):>30}")
+    save("R", rep)
+
+
 if __name__ == "__main__":
-    {"H": H, "G": G}[sys.argv[1]]()
+    {"H": H, "G": G, "R": R}[sys.argv[1]]()
