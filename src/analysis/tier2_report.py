@@ -258,5 +258,169 @@ def R():
     save("R", rep)
 
 
+# ------------------------------------------------------------------ S
+def S(stage="prio"):
+    import os
+    rep = {"stage": stage}
+    groups = {g: us for g, us in C.GROUPS.items() if all(os.path.exists(f"{T}/S/gea/{u}.npz") for u in us)}
+    P(f"S -- SUBGRAPHX WITH THE SCORING BUDGET (stage: {stage}; groups done: {', '.join(groups)})")
+    P("  old = stored runs, budget max(3, round(0.25 N)), MCTS leaf 3; new = budget k = max(1, floor(0.25 N)), leaf min(3, k);")
+    P("  both scored under the final protocol on the same shared nulls (GEA on GT molecules; Fid on all explained molecules)")
+    Z = {u: (load(f"{T}/H/gea/{u}.npz"), load(f"{T}/S/gea/{u}.npz")) for us in groups.values() for u in us}
+    P("\n  [0] coalition size against the scoring k (all explained molecules), budget changed, run time")
+    P(f"  {'group':<22}{'old |S|=k':>10}{'<k':>7}{'>k':>7}{'new |S|=k':>11}{'<k':>7}{'>k':>7}{'budget changed':>16}{'new s/mol':>11}")
+    rep["sizes"] = {}
+    for g, us in groups.items():
+        k = np.concatenate([Z[u][1]["k"] for u in us]); o = np.concatenate([Z[u][1]["old_size"] for u in us])
+        n = np.concatenate([Z[u][1]["new_size"] for u in us])
+        ob = np.concatenate([Z[u][1]["old_max_nodes"] for u in us]); sec = np.concatenate([Z[u][1]["seconds"] for u in us])
+        r = {"old_eq": float(np.mean(o == k)), "old_lt": float(np.mean(o < k)), "old_gt": float(np.mean(o > k)), "new_eq": float(np.mean(n == k)),
+             "new_lt": float(np.mean(n < k)), "new_gt": float(np.mean(n > k)), "budget_changed": float(np.mean(ob != k)), "sec": float(sec.mean())}
+        rep["sizes"][g] = r
+        P(f"  {g:<22}{r['old_eq']:>10.2f}{r['old_lt']:>7.2f}{r['old_gt']:>7.2f}{r['new_eq']:>11.2f}{r['new_lt']:>7.2f}{r['new_gt']:>7.2f}"
+          f"{r['budget_changed']:>16.2f}{r['sec']:>11.1f}")
+    P("\n  [1] SX GEA minus null, old vs new; Holm family per seed = SX vs {random-node, random-connected} = 2 (old and new each)")
+    P(f"  {'group':<22}{'null':<6}{'old [95% CI]':>30}{'counts':>8}{'new [95% CI]':>30}{'counts':>8}{'GEA old/new':>14}   flag")
+    rep["gea"] = {}
+    changes = []
+    for g, us in groups.items():
+        for r, lab in (("rn", "node"), ("rc", "conn")):
+            res = {}
+            for tag, key, idx in (("old", "subgraphx", 0), ("new", "sx_fixed", 1)):
+                sig = []
+                for u in us:
+                    raw = {rr: C.wil(Z[u][idx][key], Z[u][0][rr]) for rr in ("rn", "rc")}
+                    sig.append(C.holm_signs(raw)[r])
+                p_, lo, hi = C.boot([Z[u][idx][key] for u in us], [Z[u][0][r] for u in us])
+                res[tag] = {"diff": p_, "lo": lo, "hi": hi, "cat": C.ci_cat(lo, hi), "signs": sig,
+                            "gea": float(np.mean([np.mean(Z[u][idx][key]) for u in us]))}
+            flag = []
+            if res["old"]["cat"] != res["new"]["cat"]:
+                flag.append(f"CI {res['old']['cat']} -> {res['new']['cat']}")
+            if C.counts(res["old"]["signs"]) != C.counts(res["new"]["signs"]):
+                flag.append("counts changed")
+            if flag:
+                changes.append((g, lab, "; ".join(flag)))
+            rep["gea"][f"{g}|{r}"] = {**res, "flag": flag}
+            P(f"  {g:<22}{lab:<6}{fmt_ci(res['old']['diff'], res['old']['lo'], res['old']['hi']):>30}{C.counts(res['old']['signs']):>8}"
+              f"{fmt_ci(res['new']['diff'], res['new']['lo'], res['new']['hi']):>30}{C.counts(res['new']['signs']):>8}"
+              f"{res['old']['gea']:>7.3f}/{res['new']['gea']:.3f}   {'; '.join(flag)}")
+    rep["changes"] = changes
+    rep["fid_new"] = fid_table(groups, lambda u: load(f"{T}/S/fid/{u}.npz"), randnode_E, ["sx_fixed"],
+                               "\n  [2a] Fid+ / Fid- of the NEW SubgraphX vs random-node; Holm family per (unit, space) = 6")
+    rep["fid_old"] = fid_table(groups, lambda u: load(f"runs/rq1_revision/pass/E/{u}.npz"), randnode_E, ["subgraphx"],
+                               "\n  [2b] the same for the OLD (stored) SubgraphX, Part-E arrays (random ties)")
+    valid = [g for g in groups if not g.startswith("MUTAG-GT")]
+    n_same = sum(rep["gea"][f"{g}|rn"]["old"]["cat"] == rep["gea"][f"{g}|rn"]["new"]["cat"] for g in valid)
+    mg = rep["gea"].get("MUTAG-GT (10 seeds)|rn")
+    below = mg is not None and mg["new"]["hi"] < 0
+    final = len(valid) == 8
+    held = n_same == len(valid) and below
+    stage_txt = "final" if final else f"PARTIAL, {len(valid)} of 8 valid groups"
+    mg_txt = f"{mg['new']['hi']:+.3f}" if mg is not None else "n/a"
+    P(f"\n  P-S1 ({stage_txt}): SX - random-node CI category unchanged in {n_same}/{len(valid)} valid groups; "
+      f"MUTAG-GT new upper bound {mg_txt} -> {'below 0' if below else 'NOT below 0'} -> {('HELD' if held else 'FAILED') + ('' if final else ' so far')}")
+    rep["P-S1"] = {"final": final, "held": bool(held), "valid_groups": len(valid), "unchanged": n_same}
+    if "Mutagenicity D-MPNN" in groups:
+        us = groups["Mutagenicity D-MPNN"]
+        hm = float(np.mean([np.mean(Z[u][0]["hetero"]) for u in us]))
+        ex = {e: float(np.mean([np.mean(Z[u][0][e]) for u in us])) for e in ("gnnexplainer", "pgexplainer")}
+        ex["sx_fixed"] = float(np.mean([np.mean(Z[u][1]["sx_fixed"]) for u in us]))
+        P(f"  P-H2 secondary line (fixed-budget SX): hetero {hm:.3f}; GNN {ex['gnnexplainer']:.3f}, PG {ex['pgexplainer']:.3f}, "
+          f"SX-fixed {ex['sx_fixed']:.3f} -> hetero >= lowest: {hm >= min(ex.values())}")
+        rep["P-H2_secondary"] = {"hetero": hm, **ex}
+    save(f"S_{stage}", rep)
+
+
+def S_sens():
+    from .tier2_jobs import SENS, SENS_UNITS
+    rep = {}
+    sub = json.load(open(f"{T}/subsets.json"))
+    P("S SENSITIVITY -- SubgraphX search settings on the fixed 100 GT molecules (scoring budget)")
+    P("  base = rollout 20 / sample 30 (the item-S run); 'rep' = base settings with another seed tag (Monte-Carlo noise floor)")
+    P("  changed = share of molecules whose selected coalition differs from the base one")
+    P(f"  {'unit':<24}{'setting':<10}{'rollout':>8}{'sample':>7}{'mean GEA':>10}{'minus base':>11}{'s/mol':>8}{'changed':>9}")
+    for u in SENS_UNITS:
+        dkey = C.dataset_of(u)
+        mols = sub[u]
+        base = C.sx_shard_rows(f"{T}/S/sx/{u}")
+        rows = {"base": (20, 30, base)}
+        for name, (r, s_, _) in SENS.items():
+            rows[name] = (r, s_, C.sx_shard_rows(f"{T}/S/sens/{name}/{u}"))
+        g0 = None
+        rep[u] = {}
+        for name, (r, s_, R_) in rows.items():
+            assert all(m in R_ for m in mols), (u, name)
+            g = float(C.gea_array(u, f"sens-{name}", lambda m, R_=R_: np.asarray(R_[m]["node_importance"], float), mols, dkey).mean())
+            if name == "base":
+                g0 = g
+            ch = float(np.mean([set(R_[m]["coalition"]) != set(base[m]["coalition"]) for m in mols]))
+            sec = float(np.mean([R_[m]["seconds"] for m in mols]))
+            rep[u][name] = {"rollout": r, "sample": s_, "gea": g, "minus_base": g - g0, "sec": sec, "changed": ch}
+            P(f"  {u:<24}{name:<10}{r:>8}{s_:>7}{g:>10.3f}{g - g0:>+11.3f}{sec:>8.1f}{ch:>9.2f}")
+    held = all(abs(rep[u]["r100"]["minus_base"]) < 0.03 for u in SENS_UNITS)
+    vals = ", ".join(f"{u} {rep[u]['r100']['minus_base']:+.3f}" for u in SENS_UNITS)
+    P(f"\n  P-S2: |GEA(rollout 100) - GEA(rollout 20)| < 0.03 on both subsets: {vals} -> {'HELD' if held else 'FAILED'}")
+    rep["P-S2"] = held
+    save("S_sensitivity", rep)
+
+
+# ------------------------------------------------------------------ M
+def M():
+    import torch
+    rep = {}
+    MG = {"Mutagenicity D-MPNN": "mutagenicity_dmpnn", "B-XAIC indole": "bxaic_indole"}
+    meth = ["gnnexplainer", "pgexplainer", "sx_fixed", "ig", "hetero"]
+    P("M -- MORE SEEDS (5-9 trained with the original commands; seeds 0-4 from items H, G, S; SX = scoring budget)")
+    P("\n  [0] new models: test accuracy / AUROC")
+    for g, key in MG.items():
+        cells = []
+        for s in range(5, 10):
+            ck = torch.load(C.m_units()[f"{key}_s{s}"]["ckpt"], map_location="cpu", weights_only=False)
+            cells.append(f"s{s} {ck['metrics']['test_acc']:.3f}/{ck['metrics']['test_auroc']:.3f}")
+            rep[f"{key}_s{s}"] = {"acc": ck["metrics"]["test_acc"], "auroc": ck["metrics"]["test_auroc"]}
+        P(f"    {g:<22}" + "  ".join(cells))
+    A = {}
+    for key in MG.values():
+        for s in range(10):
+            u = f"{key}_s{s}"
+            if s < 5:
+                h, gg, ss = load(f"{T}/H/gea/{u}.npz"), load(f"{T}/G/gea/{u}.npz"), load(f"{T}/S/gea/{u}.npz")
+                A[u] = {"rn": h["rn"], "rc": h["rc"], "gnnexplainer": h["gnnexplainer"], "pgexplainer": h["pgexplainer"], "hetero": h["hetero"],
+                        "ig": gg["ig"], "sx_fixed": ss["sx_fixed"]}
+            else:
+                A[u] = load(f"{T}/M/gea/{u}.npz")
+    P("\n  [1] method minus random-node GEA: 5 seeds vs 10 seeds; Holm family per seed = 5 methods x 2 nulls = 10;")
+    P("      sign test = binomial test on the number of seeds with a positive mean difference")
+    P(f"  {'group':<22}{'method':<10}{'5 seeds [95% CI]':>30}{'counts':>8}{'10 seeds [95% CI]':>30}{'counts':>9}{'sign test 10':>16}  match")
+    allm = True
+    rep["cells"] = {}
+    for g, key in MG.items():
+        sig = {}
+        for s in range(10):
+            z = A[f"{key}_s{s}"]
+            raw = {(m, r): C.wil(z[m], z[r]) for m in meth for r in ("rn", "rc")}
+            for kk, sg in C.holm_signs(raw).items():
+                sig.setdefault(kk, []).append(sg)
+        for m in meth:
+            r5 = C.boot([A[f"{key}_s{s}"][m] for s in range(5)], [A[f"{key}_s{s}"]["rn"] for s in range(5)])
+            r10 = C.boot([A[f"{key}_s{s}"][m] for s in range(10)], [A[f"{key}_s{s}"]["rn"] for s in range(10)])
+            pos, nz, sp = C.seed_sign_test([A[f"{key}_s{s}"][m] for s in range(10)], [A[f"{key}_s{s}"]["rn"] for s in range(10)])
+            c5, c10 = C.ci_cat(r5[1], r5[2]), C.ci_cat(r10[1], r10[2])
+            match = c5 == c10
+            allm &= match
+            rep["cells"][f"{g}|{m}"] = {"5": list(r5), "10": list(r10), "cat5": c5, "cat10": c10, "signs": sig[(m, "rn")], "sign_test": [pos, nz, sp]}
+            st = f"{pos}/{nz} p={sp:.3f}"
+            P(f"  {g:<22}{SH.get(m, m):<10}{fmt_ci(*r5):>30}{C.counts(sig[(m, 'rn')][:5]):>8}{fmt_ci(*r10):>30}{C.counts(sig[(m, 'rn')]):>9}"
+              f"{st:>16}  {'yes' if match else 'NO'}")
+    P(f"\n  P-M1: CI category (vs random-node) with 10 seeds equals the 5-seed one in every (dataset, method) cell -> {'HELD' if allm else 'FAILED'}")
+    rep["P-M1"] = allm
+    save("M", rep)
+
+
 if __name__ == "__main__":
-    {"H": H, "G": G, "R": R}[sys.argv[1]]()
+    a = sys.argv[1]
+    if a.startswith("S:"):
+        S(a[2:])
+    else:
+        {"H": H, "G": G, "R": R, "S_sens": S_sens, "M": M}[a]()

@@ -214,9 +214,26 @@ def torch_load(path):
 
 
 # ------------------------------------------------------------------ where each method's node scores live
+def m_units() -> dict:
+    """Item M: seeds 5-9 of Mutagenicity D-MPNN and B-XAIC indole, with the original explain arguments and explainer seeds."""
+    from .revision_logits import BXA, MUT
+    U = {}
+    for s in range(5, 10):
+        U[f"mutagenicity_dmpnn_s{s}"] = dict(dataset="mutagenicity_graphxai", ckpt=f"{T2}/M/ckpt/mutagenicity_dmpnn_s{s}.pt",
+                                             cache=f"{T2}/M/gp/mutagenicity_dmpnn_s{s}_cache.pt", seed=1000 + s, args=MUT)
+        U[f"bxaic_indole_s{s}"] = dict(dataset="bxaic_indole", ckpt=f"{T2}/M/ckpt/bxaic_indole_s{s}.pt",
+                                       cache=f"{T2}/M/gp/bxaic_indole_s{s}_cache.pt", seed=s, args=BXA)
+    return U
+
+
+M_TRAIN = {"mutagenicity_dmpnn": "--dataset mutagenicity_graphxai --depth 3 --epochs 120 --hidden 300 --val-frac 0.10 --test-frac 0.20",
+           "bxaic_indole": "--dataset bxaic_indole --depth 3 --epochs 25 --batch-size 512 --hidden 256"}
+
+
 def orig_spec(unit):
     from .revision_logits import units
-    return units()[unit]
+    U = units()
+    return U[unit] if unit in U else m_units()[unit]
 
 
 _CACHE = {}

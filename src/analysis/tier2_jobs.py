@@ -91,6 +91,19 @@ def jobs(item, phase):
                 other.append(f"{PY}.tier2_explain grad --unit {u} --ckpt {ck} --mols {C.orig_spec(u)['cache']} --out {T}/R/grad/{k}/{u}.npz")
                 sx.append(sx_jobs(u, ck, sub[u], f"{T}/R/sx/{k}/{u}", "R", mdir=f"{T}/R/mols"))
         return other + interleave(sx)
+    MU = list(C.m_units())
+    if item == "M" and phase == "train":
+        return [f"$PY -u -m src.train.train {C.M_TRAIN[u.rsplit('_s', 1)[0]]} --seed {u.rsplit('_s', 1)[1]} --device cuda --save {C.m_units()[u]['ckpt']}"
+                for u in MU]
+    if item == "M" and phase == "gp":
+        return [f"{PY}.tier2_explain gp --unit {u} --ckpt {C.m_units()[u]['ckpt']} --out {T}/M/gp" for u in MU]
+    if item == "M" and phase == "explain":
+        g = [f"{PY}.tier2_explain grad --unit {u} --ckpt {C.m_units()[u]['ckpt']} --mols {C.m_units()[u]['cache']} --out {T}/M/grad/{u}.npz" for u in MU]
+        sx = [sx_jobs(u, C.m_units()[u]["ckpt"], C.torch_load(C.m_units()[u]["cache"])["key"]["test_idx"], f"{T}/M/sx/{u}", "S", mdir=f"{T}/M/mols")
+              for u in MU]
+        return g + interleave(sx)
+    if item == "M" and phase == "score":
+        return [f"{PY}.tier2_M {u}" for u in MU]
     raise SystemExit(f"unknown item/phase {item} {phase}")
 
 

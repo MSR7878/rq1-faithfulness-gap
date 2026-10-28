@@ -36,7 +36,7 @@ from ..explain import pyg_explainers as pe
 from ..explain import run_phase3 as rp3
 from ..explain.run_phase3 import load_model
 from .revision_logits import units as orig_units
-from .tier2_common import dataset_of, load_data, save_npz
+from .tier2_common import dataset_of, load_data, orig_spec, save_npz
 
 
 def seed_all(s: int):
@@ -113,7 +113,7 @@ def fold64(edge_vals, ei, n):
 
 
 def run_gp(unit, ckpt, out_dir, device, orig=None):
-    sp = (orig or orig_units())[unit]
+    sp = (orig or {unit: orig_spec(unit)})[unit]
     os.makedirs(out_dir, exist_ok=True)
     cache = f"{out_dir}/{unit}_cache.pt"; done = f"{out_dir}/{unit}_pg_logits.npz"
     if os.path.exists(done):
