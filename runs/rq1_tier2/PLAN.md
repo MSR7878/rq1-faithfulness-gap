@@ -163,3 +163,23 @@ Gradients: 0.5 s/molecule. Estimates use the old per-molecule means x 1.7, 12 wo
 | Total | | about 100 h (range 80-125 h), about 4 days |
 
 ada is shared (about 14 of 28 cores busy with other users), so the per-molecule time may drift.
+
+## Addendum after G (user decision, 2026-10-28)
+
+The registered IG completeness check (median relative error <= 0.05 per unit) FAILED on 1 of 50 units:
+Mutagenicity GINE s4, median 0.073 (the other 49 units: 0.000-0.029; every attribution finite and non-zero).
+Decision (user): keep 50 IG steps as specified; no recompute. Diagnostic (src/analysis/tier2_ig_check.py,
+runs/rq1_tier2/G/ig_check.txt) shows IG GEA does not depend on the step count:
+
+| unit | IG steps | median rel. error | IG GEA | random-node GEA |
+|---|---|---|---|---|
+| Mutagenicity GINE s4 | 50 | 0.0735 | 0.2115 | 0.1201 |
+| Mutagenicity GINE s4 | 100 | 0.0218 | 0.2143 | 0.1201 |
+| Mutagenicity GINE s4 | 200 | 0.0083 | 0.2143 | 0.1201 |
+| Mutagenicity GINE s4 | 500 | 0.0041 | 0.2115 | 0.1201 |
+| Mutagenicity GINE s2 | 50 | 0.0288 | 0.1983 | 0.1250 |
+| Mutagenicity GINE s2 | 100 | 0.0162 | 0.1983 | 0.1250 |
+| Mutagenicity GINE s2 | 200 | 0.0071 | 0.1979 | 0.1250 |
+| Mutagenicity GINE s2 | 500 | 0.0028 | 0.1979 | 0.1250 |
+
+Continue R -> S priority -> S sensitivity -> M -> S remainder; stop only if a check fails or something breaks.
