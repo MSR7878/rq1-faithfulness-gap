@@ -211,3 +211,64 @@ def save_npz(path, **A):
 
 def torch_load(path):
     return torch.load(path, weights_only=False)
+
+
+# ------------------------------------------------------------------ where each method's node scores live
+def orig_spec(unit):
+    from .revision_logits import units
+    return units()[unit]
+
+
+_CACHE = {}
+
+
+def stored_cache(unit):
+    if unit not in _CACHE:
+        _CACHE[unit] = torch_load(orig_spec(unit)["cache"])
+    return _CACHE[unit]
+
+
+def pg_final(unit) -> tuple[dict, dict]:
+    """PGExplainer node scores under the final rule (stored mask; exact ties split by the re-run's float64 logit scores
+    only where the re-run reproduces the stored edge mask). Returns (mi -> scores, stats)."""
+    blob = stored_cache(unit); res = blob["results"]["pgexplainer"]; ti = [int(m) for m in blob["key"]["test_idx"]]
+    lz = np.load(f"runs/rq1_revision/logits/{unit}.npz", allow_pickle=True)
+    rr = torch_load(f"runs/rq1_revision/logits/rerun/{unit}_cache.pt")["results"]["pgexplainer"]
+    assert [int(m) for m in lz["mol_idx"]] == ti
+    out, st = {}, {"tie_boundary": 0, "resolved_by_logits": 0, "random_fallback": 0}
+    for pos, mi in enumerate(ti):
+        prim = np.asarray(res[pos]["node_importance"], dtype=np.float64); k = kbudget(len(prim))
+        a, b = np.asarray(res[pos]["edge_importance"]), np.asarray(rr[pos]["edge_importance"])
+        rep = len(a) == 0 or float(np.max(np.abs(a - b))) <= 1e-5
+        sc = lex_scores(prim, lz["node_score64"][pos]) if rep else prim
+        if boundary_tie(prim, k):
+            st["tie_boundary"] += 1
+            st["resolved_by_logits" if not boundary_tie(sc, k) else "random_fallback"] += 1
+        out[mi] = sc
+    return out, st
+
+
+def stored_scores(unit, method) -> dict:
+    blob = stored_cache(unit)
+    return {int(mi): np.asarray(r["node_importance"], dtype=np.float64) for mi, r in zip(blob["key"]["test_idx"], blob["results"][method])}
+
+
+def npz_scores(path, key) -> dict:
+    z = np.load(path, allow_pickle=True)
+    return {int(mi): np.asarray(v, dtype=np.float64) for mi, v in zip(z["mol_idx"], z[key])}
+
+
+def sx_shard_scores(d) -> dict:
+    import glob
+    rows = [r for f in sorted(glob.glob(f"{d}/shard_*_of_*.pt")) for r in torch_load(f)]
+    return {int(r["mol_idx"]): np.asarray(r["node_importance"], dtype=np.float64) for r in rows}
+
+
+def sx_shard_rows(d) -> dict:
+    import glob
+    return {int(r["mol_idx"]): r for f in sorted(glob.glob(f"{d}/shard_*_of_*.pt")) for r in torch_load(f)}
+
+
+def heuristic_dict(unit, mol_idx, which) -> dict:
+    dkey = dataset_of(unit); dl, _ = load_data(dkey)
+    return {int(mi): heuristic_scores(dl[int(mi)], dkey)[which] for mi in mol_idx}
