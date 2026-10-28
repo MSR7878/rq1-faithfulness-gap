@@ -1,0 +1,69 @@
+R -- RANDOMISED-MODEL SANITY CHECK (full = every module re-initialised; head = output FFN only; seed 5000 + model seed)
+  SubgraphX (scoring budget) on the fixed 100 ground-truth molecules per seed; other methods on all GT molecules.
+
+  [0] test accuracy / AUROC / share predicted positive of the randomised models (trained in brackets)
+    Mutagenicity D-MPNN   full  s0 0.36/0.35/0.99  s1 0.36/0.31/1.00  s2 0.36/0.32/0.99  s3 0.36/0.36/1.00  s4 0.36/0.42/1.00
+    Mutagenicity D-MPNN   head  s0 0.65/0.65/0.02  s1 0.64/0.74/0.00  s2 0.40/0.40/0.65  s3 0.36/0.43/1.00  s4 0.65/0.65/0.01
+    B-XAIC indole         full  s0 0.63/0.30/0.00  s1 0.37/0.72/1.00  s2 0.39/0.74/0.98  s3 0.47/0.65/0.80  s4 0.63/0.32/0.00
+    B-XAIC indole         head  s0 0.63/0.16/0.00  s1 0.39/0.66/0.97  s2 0.66/0.75/0.52  s3 0.39/0.45/0.96  s4 0.28/0.17/0.87
+
+  [1] GEA of the explanations of the randomised model minus null; Holm family per (dataset, randomisation, seed) = 5 methods x 2 nulls = 10
+  dataset               kind  method          minus random-node [95% CI]              90% CI  counts     minus random-conn. [95% CI]  counts    GEA
+  Mutagenicity D-MPNN   full  GNN                +0.020 [+0.003, +0.038]    [+0.005, +0.035]   0/0/5         +0.039 [+0.019, +0.060]   3/0/2  0.143
+  Mutagenicity D-MPNN   full  PG                 +0.036 [+0.014, +0.056]    [+0.018, +0.053]   0/0/5         +0.054 [+0.029, +0.076]   3/0/2  0.158
+  Mutagenicity D-MPNN   full  SX-fixed           -0.037 [-0.082, +0.009]    [-0.074, +0.001]   0/4/1         -0.019 [-0.065, +0.029]   0/3/2  0.085
+  Mutagenicity D-MPNN   full  IG                 +0.026 [-0.055, +0.116]    [-0.045, +0.101]   2/2/1         +0.045 [-0.037, +0.134]   2/1/2  0.148
+  Mutagenicity D-MPNN   full  Saliency           -0.100 [-0.113, -0.084]    [-0.111, -0.087]   0/5/0         -0.081 [-0.097, -0.062]   0/5/0  0.022
+  Mutagenicity D-MPNN   head  GNN                -0.011 [-0.035, +0.017]    [-0.032, +0.011]   1/2/2         +0.008 [-0.015, +0.035]   1/1/3  0.111
+  Mutagenicity D-MPNN   head  PG                 +0.076 [+0.026, +0.145]    [+0.031, +0.132]   2/0/3         +0.095 [+0.043, +0.167]   2/0/3  0.198
+  Mutagenicity D-MPNN   head  SX-fixed           +0.070 [-0.013, +0.156]    [+0.001, +0.143]   2/1/2         +0.088 [+0.002, +0.176]   2/1/2  0.192
+  Mutagenicity D-MPNN   head  IG                 +0.218 [+0.128, +0.310]    [+0.143, +0.299]   5/0/0         +0.236 [+0.142, +0.334]   5/0/0  0.340
+  Mutagenicity D-MPNN   head  Saliency           +0.217 [+0.156, +0.285]    [+0.164, +0.275]   5/0/0         +0.236 [+0.170, +0.309]   5/0/0  0.339
+  B-XAIC indole         full  GNN                +0.018 [-0.025, +0.075]    [-0.021, +0.066]   2/2/1         -0.037 [-0.082, +0.021]   1/4/0  0.180
+  B-XAIC indole         full  PG                 -0.132 [-0.141, -0.123]    [-0.139, -0.124]   0/5/0         -0.187 [-0.195, -0.179]   0/5/0  0.031
+  B-XAIC indole         full  SX-fixed           -0.016 [-0.065, +0.035]    [-0.060, +0.028]   1/3/1         -0.072 [-0.124, -0.020]   0/3/2  0.146
+  B-XAIC indole         full  IG                 +0.005 [-0.085, +0.134]    [-0.081, +0.111]   2/3/0         -0.050 [-0.142, +0.079]   1/4/0  0.167
+  B-XAIC indole         full  Saliency           +0.126 [+0.082, +0.179]    [+0.089, +0.168]   5/0/0         +0.071 [+0.026, +0.124]   4/0/1  0.288
+  B-XAIC indole         head  GNN                +0.039 [-0.012, +0.087]    [-0.008, +0.085]   3/2/0         -0.016 [-0.066, +0.032]   3/2/0  0.201
+  B-XAIC indole         head  PG                 -0.136 [-0.154, -0.104]    [-0.153, -0.107]   0/5/0         -0.191 [-0.209, -0.161]   0/5/0  0.026
+  B-XAIC indole         head  SX-fixed           +0.241 [+0.095, +0.372]    [+0.122, +0.354]   4/0/1         +0.185 [+0.043, +0.311]   4/1/0  0.403
+  B-XAIC indole         head  IG                 +0.136 [+0.070, +0.230]    [+0.075, +0.216]   5/0/0         +0.081 [+0.016, +0.173]   4/0/1  0.298
+  B-XAIC indole         head  Saliency           +0.305 [+0.167, +0.424]    [+0.196, +0.408]   5/0/0         +0.251 [+0.109, +0.369]   4/0/1  0.468
+
+  P-R1: point estimate of (method - random-node) within [-0.05, +0.05] in every one of the 20 cells: 9/20 -> FAILED
+    outside: Mutagenicity D-MPNN full Saliency -0.100
+    outside: Mutagenicity D-MPNN head PG +0.076
+    outside: Mutagenicity D-MPNN head SX-fixed +0.070
+    outside: Mutagenicity D-MPNN head IG +0.218
+    outside: Mutagenicity D-MPNN head Saliency +0.217
+    outside: B-XAIC indole full PG -0.132
+    outside: B-XAIC indole full Saliency +0.126
+    outside: B-XAIC indole head PG -0.136
+    outside: B-XAIC indole head SX-fixed +0.241
+    outside: B-XAIC indole head IG +0.136
+    outside: B-XAIC indole head Saliency +0.305
+  equivalence view (90% CI inside +/-0.05): 2/20 cells
+
+  [2] trained vs randomised atom scores per GT molecule: Spearman (mean over seeds of per-seed means; bootstrap 95% CI) and top-k Jaccard;
+      n skipped = molecules with a constant score vector on either side; SX-fixed trained = the item-S run (pending until S priority is done)
+  dataset               kind  method                 Spearman [95% CI]  skipped        top-k Jaccard [95% CI]
+  Mutagenicity D-MPNN   full  GNN              +0.297 [+0.254, +0.332]        0       +0.237 [+0.204, +0.267]
+  Mutagenicity D-MPNN   full  PG               -0.001 [-0.090, +0.114]        0       +0.189 [+0.157, +0.223]
+  Mutagenicity D-MPNN   full  SX-fixed         +0.144 [+0.017, +0.301]      393       +0.238 [+0.168, +0.325]
+  Mutagenicity D-MPNN   full  IG               +0.013 [-0.080, +0.130]        0       +0.178 [+0.130, +0.230]
+  Mutagenicity D-MPNN   full  Saliency         +0.103 [+0.024, +0.185]        0       +0.153 [+0.125, +0.182]
+  Mutagenicity D-MPNN   head  GNN              +0.215 [+0.151, +0.273]        0       +0.194 [+0.157, +0.227]
+  Mutagenicity D-MPNN   head  PG               +0.059 [-0.075, +0.220]        0       +0.186 [+0.134, +0.253]
+  Mutagenicity D-MPNN   head  SX-fixed         +0.226 [+0.069, +0.377]      393       +0.269 [+0.196, +0.340]
+  Mutagenicity D-MPNN   head  IG               +0.274 [+0.166, +0.370]        0       +0.359 [+0.275, +0.437]
+  Mutagenicity D-MPNN   head  Saliency         +0.403 [+0.248, +0.538]        0       +0.404 [+0.324, +0.475]
+  B-XAIC indole         full  GNN              +0.022 [-0.096, +0.105]        0       +0.142 [+0.100, +0.174]
+  B-XAIC indole         full  PG               -0.743 [-0.763, -0.722]        1       +0.009 [+0.005, +0.013]
+  B-XAIC indole         full  SX-fixed         +0.034 [-0.102, +0.181]      390       +0.154 [+0.091, +0.219]
+  B-XAIC indole         full  IG               +0.032 [-0.170, +0.237]        0       +0.188 [+0.090, +0.322]
+  B-XAIC indole         full  Saliency         +0.211 [+0.147, +0.264]        0       +0.218 [+0.184, +0.264]
+  B-XAIC indole         head  GNN              -0.028 [-0.107, +0.047]        0       +0.144 [+0.121, +0.165]
+  B-XAIC indole         head  PG               -0.575 [-0.732, -0.275]        1       +0.035 [+0.008, +0.088]
+  B-XAIC indole         head  SX-fixed         +0.335 [+0.071, +0.589]      390       +0.372 [+0.187, +0.561]
+  B-XAIC indole         head  IG               +0.223 [+0.087, +0.380]        0       +0.257 [+0.144, +0.402]
+  B-XAIC indole         head  Saliency         +0.495 [+0.368, +0.608]        0       +0.388 [+0.306, +0.467]
