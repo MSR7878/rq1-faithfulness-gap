@@ -190,13 +190,16 @@ def G():
 
 
 # ------------------------------------------------------------------ R
-def R():
+def R(sd="score", name="R"):
     from .revision_analysis import hboot
-    rep = {"models": {}}
+    rep = {"models": {}, "score_dir": sd}
     RG = {"Mutagenicity D-MPNN": [f"mutagenicity_dmpnn_s{s}" for s in range(5)], "B-XAIC indole": [f"bxaic_indole_s{s}" for s in range(5)]}
     M = ["gnnexplainer", "pgexplainer", "subgraphx", "ig", "sal"]; SHR = {**SH, "subgraphx": "SX-fixed"}
     P("R -- RANDOMISED-MODEL SANITY CHECK (full = every module re-initialised; head = output FFN only; seed 5000 + model seed)")
     P("  SubgraphX (scoring budget) on the fixed 100 ground-truth molecules per seed; other methods on all GT molecules.")
+    P("  The FULL reset is the main sanity check. The head reset keeps the trained encoder, so explanations that stay")
+    P("  above random there are expected (the atom embeddings still carry what the model learned); it is a secondary view.")
+    P(f"  Scores read from runs/rq1_tier2/R/{sd}/.")
     import torch
     P("\n  [0] test accuracy / AUROC / share predicted positive of the randomised models (trained in brackets)")
     for g, units in RG.items():
@@ -207,7 +210,7 @@ def R():
                 rep["models"][f"{u}|{k}"] = {kk: m[kk] for kk in ("test_acc", "test_auroc", "frac_pred_pos")}
                 cells.append(f"s{u[-1]} {m['test_acc']:.2f}/{m['test_auroc']:.2f}/{m['frac_pred_pos']:.2f}")
             P(f"    {g:<22}{k:<6}" + "  ".join(cells))
-    Z = {(u, k): load(f"{T}/R/score/{u}_{k}.npz") for us in RG.values() for u in us for k in ("full", "head")}
+    Z = {(u, k): load(f"{T}/R/{sd}/{u}_{k}.npz") for us in RG.values() for u in us for k in ("full", "head")}
     P("\n  [1] GEA of the explanations of the randomised model minus null; Holm family per (dataset, randomisation, seed) = 5 methods x 2 nulls = 10")
     P(f"  {'dataset':<22}{'kind':<6}{'method':<10}{'minus random-node [95% CI]':>32}{'90% CI':>20}{'counts':>8}{'minus random-conn. [95% CI]':>32}{'counts':>8}{'GEA':>7}")
     cells_r1 = []
@@ -238,7 +241,26 @@ def R():
             P(f"    outside: {c[0]} {c[1]} {SHR[c[2]]} {c[3]:+.3f}")
     eq = sum(1 for c in cells_r1 if c[5] > -0.05 and c[6] < 0.05)
     P(f"  equivalence view (90% CI inside +/-0.05): {eq}/{len(cells_r1)} cells")
-    rep["P-R1"] = {"held": held, "within": sum(c[4] for c in cells_r1), "cells": len(cells_r1), "equivalent_90": eq}
+    full = [c for c in cells_r1 if c[1] == "full"]
+    P(f"  full reset only (descriptive, not a registered prediction): {sum(c[4] for c in full)}/{len(full)} cells within +/-0.05; "
+      f"90% CI inside +/-0.05: {sum(1 for c in full if c[5] > -0.05 and c[6] < 0.05)}/{len(full)}")
+    rep["P-R1"] = {"held": held, "within": sum(c[4] for c in cells_r1), "cells": len(cells_r1), "equivalent_90": eq,
+                   "full_within": sum(c[4] for c in full)}
+    P("\n  [1b] GEA(trained) - GEA(full reset) on the same GT molecules (trained = items H / G / S, final protocol; PG = final rule);")
+    P("       hierarchical bootstrap 95% CI; SubgraphX on the 100-molecule subsets, trained = the item-S scoring-budget run")
+    P(f"  {'dataset':<22}{'method':<10}{'GEA trained':>12}{'GEA full reset':>16}{'trained - full [95% CI]':>30}{'n mols':>8}")
+    rep["trained_minus_full"] = {}
+    for g, units in RG.items():
+        for m in M:
+            tr = [Z[(u, 'full')][f"{m}_trained_gea"] for u in units]; rz = [Z[(u, 'full')][f"{m}_gea"] for u in units]
+            ok = [~np.isnan(t) for t in tr]
+            if not all(o.all() for o in ok):
+                P(f"  {g:<22}{SHR[m]:<10}{'pending: trained scores missing for ' + str(int(sum((~o).sum() for o in ok))) + ' molecules':>66}")
+                continue
+            p, lo, hi, _ = hboot(tr, rz)
+            gt_, gr_ = float(np.mean([t.mean() for t in tr])), float(np.mean([r.mean() for r in rz]))
+            rep["trained_minus_full"][f"{g}|{m}"] = {"trained": gt_, "full": gr_, "diff": [p, lo, hi], "cat": C.ci_cat(lo, hi)}
+            P(f"  {g:<22}{SHR[m]:<10}{gt_:>12.3f}{gr_:>16.3f}{fmt_ci(p, lo, hi):>30}{sum(len(t) for t in tr):>8}")
     P("\n  [2] trained vs randomised atom scores per GT molecule: Spearman (mean over seeds of per-seed means; bootstrap 95% CI) and top-k Jaccard;")
     P("      n skipped = molecules with a constant score vector on either side; SX-fixed trained = the item-S run (pending until S priority is done)")
     P(f"  {'dataset':<22}{'kind':<6}{'method':<10}{'Spearman [95% CI]':>30}{'skipped':>9}{'top-k Jaccard [95% CI]':>30}")
@@ -255,7 +277,33 @@ def R():
                 js = hboot(j_ok, [np.zeros_like(x) for x in j_ok])
                 rep["corr"][f"{g}|{k}|{m}"] = {"spearman": list(rs[:3]), "skipped": skip, "jaccard": list(js[:3])}
                 P(f"  {g:<22}{k:<6}{SHR[m]:<10}{fmt_ci(*rs[:3]):>30}{skip:>9}{fmt_ci(*js[:3]):>30}")
-    save("R", rep)
+    P("\n  [3] PGExplainer: saturation direction and logit-ranked atoms. Edge masks: share of edges with sigmoid > 0.99 (hi) and")
+    P("      < 0.01 (lo), share of atoms whose float64 sigmoid score is exactly 1.0 (tied). Logit-ranked = atoms ranked by the mean")
+    P("      incident edge logit. 'trained' = the float64 re-run of the trained explainer (runs/rq1_revision/logits); on indole this")
+    P("      re-run does not reproduce the stored mask, so its GEA can differ from the PG row in H. Spearman: trained vs reset, per")
+    P("      GT molecule, mean over seeds; GEA columns are minus random-node with 95% CI; 'reversed' = the reset's logit ranking negated.")
+    rep["pg_diag"] = {}
+    for g, units in RG.items():
+        D = [load(f"{T}/R/{sd}/{u}_pgdiag.npz") for u in units]
+        P(f"\n  {g}")
+        for w in ("trained", "full", "head"):
+            hi_, lo_, at1 = (float(np.mean([d[f"{w}_{x}"] for d in D])) for x in ("frac_hi", "frac_lo", "atoms_at_one"))
+            med = float(np.median([d[f"{w}_median_logit"] for d in D]))
+            p, lo, hi, _ = hboot([d[f"{w}_gea_logit"] for d in D], [d["rn"] for d in D])
+            r = {"frac_hi": hi_, "frac_lo": lo_, "atoms_at_one": at1, "median_logit": med, "gea_logit_minus_rn": [p, lo, hi]}
+            line = f"    {w:<8} edges hi {hi_:.2f} lo {lo_:.2f}  median logit {med:+8.1f}  atoms at 1.0 {at1:.2f}  logit-ranked GEA - rn {fmt_ci(p, lo, hi)}"
+            if w != "trained":
+                pn, lon, hin, _ = hboot([d[f"{w}_gea_neglogit"] for d in D], [d["rn"] for d in D])
+                rho = {}
+                for tag in ("sigmoid", "logit"):
+                    x = [d[f"{w}_rho_{tag}"][~np.isnan(d[f"{w}_rho_{tag}"])] for d in D]
+                    rho[tag] = hboot(x, [np.zeros_like(v) for v in x])[:3]
+                r.update({"gea_reversed_minus_rn": [pn, lon, hin], "rho_sigmoid": list(rho["sigmoid"]), "rho_logit": list(rho["logit"])})
+                line += (f"\n             reversed GEA - rn {fmt_ci(pn, lon, hin)}   Spearman with trained: sigmoid-ranked {fmt_ci(*rho['sigmoid'])},"
+                         f" logit-ranked {fmt_ci(*rho['logit'])}")
+            rep["pg_diag"][f"{g}|{w}"] = r
+            P(line)
+    save(name, rep)
 
 
 # ------------------------------------------------------------------ S
@@ -422,5 +470,7 @@ if __name__ == "__main__":
     a = sys.argv[1]
     if a.startswith("S:"):
         S(a[2:])
+    elif a == "R:rescore":
+        R("rescore", "R_rescore")
     else:
         {"H": H, "G": G, "R": R, "S_sens": S_sens, "M": M}[a]()
