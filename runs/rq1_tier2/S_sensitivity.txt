@@ -1,0 +1,16 @@
+S SENSITIVITY -- SubgraphX search settings on the fixed 100 GT molecules (scoring budget)
+  base = rollout 20 / sample 30 (the item-S run); 'rep' = base settings with another seed tag (Monte-Carlo noise floor)
+  changed = share of molecules whose selected coalition differs from the base one
+  unit                    setting    rollout sample  mean GEA minus base   s/mol  changed
+  mutagenicity_dmpnn_s0   base            20     30     0.295     +0.000   168.0     0.00
+  mutagenicity_dmpnn_s0   r50             50     30     0.308     +0.013   389.7     0.22
+  mutagenicity_dmpnn_s0   r100           100     30     0.322     +0.027   891.6     0.26
+  mutagenicity_dmpnn_s0   s100            20    100     0.301     +0.006   339.6     0.62
+  mutagenicity_dmpnn_s0   rep             20     30     0.280     -0.015   147.2     0.68
+  mutag_graphxai_s0       base            20     30     0.047     +0.000   116.6     0.00
+  mutag_graphxai_s0       r50             50     30     0.050     +0.003   194.3     0.06
+  mutag_graphxai_s0       r100           100     30     0.050     +0.003   370.1     0.08
+  mutag_graphxai_s0       s100            20    100     0.048     +0.001   224.7     0.61
+  mutag_graphxai_s0       rep             20     30     0.050     +0.003    88.3     0.60
+
+  P-S2: |GEA(rollout 100) - GEA(rollout 20)| < 0.03 on both subsets: mutagenicity_dmpnn_s0 +0.027, mutag_graphxai_s0 +0.003 -> HELD
