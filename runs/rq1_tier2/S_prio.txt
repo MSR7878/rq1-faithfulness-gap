@@ -1,0 +1,61 @@
+S -- SUBGRAPHX WITH THE SCORING BUDGET (stage: prio; groups done: Mutagenicity D-MPNN, B-XAIC indole, MUTAG-GT (10 seeds))
+  old = stored runs, budget max(3, round(0.25 N)), MCTS leaf 3; new = budget k = max(1, floor(0.25 N)), leaf min(3, k);
+  both scored under the final protocol on the same shared nulls (GEA on GT molecules; Fid on all explained molecules)
+
+  [0] coalition size against the scoring k (all explained molecules), budget changed, run time
+  group                  old |S|=k     <k     >k  new |S|=k     <k     >k  budget changed  new s/mol
+  Mutagenicity D-MPNN         0.39   0.34   0.27       0.60   0.40   0.00            0.43      288.4
+  B-XAIC indole               0.54   0.15   0.31       0.83   0.17   0.00            0.40      248.6
+  MUTAG-GT (10 seeds)         0.53   0.12   0.35       0.84   0.16   0.00            0.43      122.6
+
+  [1] SX GEA minus null, old vs new; Holm family per seed = SX vs {random-node, random-connected} = 2 (old and new each)
+  group                 null                    old [95% CI]  counts                  new [95% CI]  counts   GEA old/new   flag
+  Mutagenicity D-MPNN   node         +0.152 [+0.133, +0.171]   5/0/0       +0.158 [+0.141, +0.176]   5/0/0  0.275/0.281   
+  Mutagenicity D-MPNN   conn         +0.171 [+0.153, +0.190]   5/0/0       +0.177 [+0.161, +0.194]   5/0/0  0.275/0.281   
+  B-XAIC indole         node         +0.459 [+0.416, +0.499]   5/0/0       +0.468 [+0.426, +0.507]   5/0/0  0.621/0.630   
+  B-XAIC indole         conn         +0.404 [+0.362, +0.444]   5/0/0       +0.413 [+0.372, +0.450]   5/0/0  0.621/0.630   
+  MUTAG-GT (10 seeds)   node         -0.079 [-0.103, -0.054]  0/10/0       -0.077 [-0.101, -0.053]  0/10/0  0.066/0.068   
+  MUTAG-GT (10 seeds)   conn         -0.070 [-0.094, -0.044]  0/10/0       -0.068 [-0.092, -0.043]  0/10/0  0.066/0.068   
+
+  [2a] Fid+ / Fid- of the NEW SubgraphX vs random-node; Holm family per (unit, space) = 6
+
+  [prob space] counts better/worse/n.s. over seeds and bootstrap mean (method - random-node) [95% CI]
+  group                 method    metric                                      R1                                      R2                                      R3
+  Mutagenicity D-MPNN   SX-fixed  Fid+      5/0/0        +0.094 [+0.073, +0.117]    5/0/0        +0.252 [+0.204, +0.295]    5/0/0        +0.128 [+0.111, +0.144]
+  Mutagenicity D-MPNN   SX-fixed  Fid-      5/0/0        -0.311 [-0.351, -0.280]    5/0/0        -0.090 [-0.138, -0.050]    5/0/0        -0.151 [-0.168, -0.133]
+  B-XAIC indole         SX-fixed  Fid+      5/0/0        +0.056 [+0.044, +0.069]    5/0/0        +0.422 [+0.408, +0.435]    4/0/1        +0.265 [+0.147, +0.396]
+  B-XAIC indole         SX-fixed  Fid-      5/0/0        -0.346 [-0.425, -0.279]    5/0/0        -0.682 [-0.742, -0.609]    5/0/0        -0.178 [-0.329, -0.082]
+  MUTAG-GT (10 seeds)   SX-fixed  Fid+     10/0/0        +0.023 [+0.006, +0.044]   10/0/0        +0.115 [+0.096, +0.134]   10/0/0        +0.051 [+0.039, +0.064]
+  MUTAG-GT (10 seeds)   SX-fixed  Fid-      1/5/4        +0.015 [-0.007, +0.035]   10/0/0        -0.148 [-0.192, -0.117]   10/0/0        -0.047 [-0.056, -0.039]
+
+  [logit space] counts better/worse/n.s. over seeds and bootstrap mean (method - random-node) [95% CI]
+  group                 method    metric                                      R1                                      R2                                      R3
+  Mutagenicity D-MPNN   SX-fixed  Fid+      5/0/0        +1.212 [+0.830, +1.682]    5/0/0        +2.977 [+2.471, +3.382]    5/0/0        +1.976 [+1.674, +2.312]
+  Mutagenicity D-MPNN   SX-fixed  Fid-      5/0/0        -2.304 [-2.855, -1.857]    5/0/0        -1.718 [-2.038, -1.419]    5/0/0        -2.011 [-2.396, -1.687]
+  B-XAIC indole         SX-fixed  Fid+      5/0/0        +0.721 [+0.270, +1.228]    5/0/0        +7.004 [+6.369, +7.666]    5/0/0        +4.374 [+3.056, +6.085]
+  B-XAIC indole         SX-fixed  Fid-      5/0/0        -5.698 [-6.296, -5.179]    5/0/0      -10.839 [-12.133, -9.453]    5/0/0        -5.058 [-7.117, -3.257]
+  MUTAG-GT (10 seeds)   SX-fixed  Fid+      7/0/3        +0.278 [+0.128, +0.424]   10/0/0        +1.372 [+1.042, +1.759]   10/0/0        +0.582 [+0.443, +0.721]
+  MUTAG-GT (10 seeds)   SX-fixed  Fid-      0/9/1        +0.379 [+0.211, +0.580]   10/0/0        -1.654 [-2.385, -1.101]   10/0/0        -0.697 [-0.886, -0.528]
+
+  [2b] the same for the OLD (stored) SubgraphX, Part-E arrays (random ties)
+
+  [prob space] counts better/worse/n.s. over seeds and bootstrap mean (method - random-node) [95% CI]
+  group                 method    metric                                      R1                                      R2                                      R3
+  Mutagenicity D-MPNN   SX        Fid+      5/0/0        +0.103 [+0.075, +0.135]    5/0/0        +0.270 [+0.217, +0.316]    5/0/0        +0.133 [+0.118, +0.148]
+  Mutagenicity D-MPNN   SX        Fid-      5/0/0        -0.308 [-0.349, -0.273]    5/0/0        -0.082 [-0.128, -0.045]    5/0/0        -0.143 [-0.164, -0.122]
+  B-XAIC indole         SX        Fid+      5/0/0        +0.054 [+0.043, +0.066]    5/0/0        +0.424 [+0.409, +0.438]    4/0/1        +0.263 [+0.137, +0.401]
+  B-XAIC indole         SX        Fid-      5/0/0        -0.290 [-0.358, -0.234]    5/0/0        -0.654 [-0.714, -0.583]    5/0/0        -0.170 [-0.315, -0.075]
+  MUTAG-GT (10 seeds)   SX        Fid+     10/0/0        +0.026 [+0.008, +0.047]   10/0/0        +0.128 [+0.106, +0.153]   10/0/0        +0.053 [+0.041, +0.066]
+  MUTAG-GT (10 seeds)   SX        Fid-      1/5/4        +0.016 [-0.007, +0.036]   10/0/0        -0.139 [-0.173, -0.112]   10/0/0        -0.046 [-0.055, -0.039]
+
+  [logit space] counts better/worse/n.s. over seeds and bootstrap mean (method - random-node) [95% CI]
+  group                 method    metric                                      R1                                      R2                                      R3
+  Mutagenicity D-MPNN   SX        Fid+      5/0/0        +1.300 [+0.853, +1.857]    5/0/0        +3.165 [+2.608, +3.636]    5/0/0        +2.042 [+1.737, +2.396]
+  Mutagenicity D-MPNN   SX        Fid-      5/0/0        -2.256 [-2.799, -1.786]    5/0/0        -1.674 [-1.989, -1.392]    5/0/0        -1.946 [-2.351, -1.581]
+  B-XAIC indole         SX        Fid+      4/0/1        +0.628 [+0.168, +1.143]    5/0/0        +6.997 [+6.394, +7.621]    5/0/0        +4.356 [+2.987, +6.081]
+  B-XAIC indole         SX        Fid-      5/0/0        -5.109 [-5.638, -4.635]    5/0/0      -10.176 [-11.342, -8.952]    5/0/0        -4.899 [-6.875, -3.223]
+  MUTAG-GT (10 seeds)   SX        Fid+      6/0/4        +0.323 [+0.151, +0.495]   10/0/0        +1.538 [+1.162, +1.981]   10/0/0        +0.639 [+0.485, +0.797]
+  MUTAG-GT (10 seeds)   SX        Fid-      0/8/2        +0.368 [+0.210, +0.559]   10/0/0        -1.590 [-2.243, -1.071]   10/0/0        -0.691 [-0.883, -0.517]
+
+  P-S1 (PARTIAL, 2 of 8 valid groups): SX - random-node CI category unchanged in 2/2 valid groups; MUTAG-GT new upper bound -0.053 -> below 0 -> HELD so far
+  P-H2 secondary line (fixed-budget SX): hetero 0.352; GNN 0.378, PG 0.118, SX-fixed 0.281 -> hetero >= lowest: True
