@@ -1,0 +1,10 @@
+$PY -u -m src.analysis.tier2_M mutagenicity_dmpnn_s5
+$PY -u -m src.analysis.tier2_M bxaic_indole_s5
+$PY -u -m src.analysis.tier2_M mutagenicity_dmpnn_s6
+$PY -u -m src.analysis.tier2_M bxaic_indole_s6
+$PY -u -m src.analysis.tier2_M mutagenicity_dmpnn_s7
+$PY -u -m src.analysis.tier2_M bxaic_indole_s7
+$PY -u -m src.analysis.tier2_M mutagenicity_dmpnn_s8
+$PY -u -m src.analysis.tier2_M bxaic_indole_s8
+$PY -u -m src.analysis.tier2_M mutagenicity_dmpnn_s9
+$PY -u -m src.analysis.tier2_M bxaic_indole_s9

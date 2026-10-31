@@ -1,0 +1,10 @@
+$PY -u -m src.train.train --dataset mutagenicity_graphxai --depth 3 --epochs 120 --hidden 300 --val-frac 0.10 --test-frac 0.20 --seed 5 --device cuda --save runs/rq1_tier2/M/ckpt/mutagenicity_dmpnn_s5.pt
+$PY -u -m src.train.train --dataset bxaic_indole --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 5 --device cuda --save runs/rq1_tier2/M/ckpt/bxaic_indole_s5.pt
+$PY -u -m src.train.train --dataset mutagenicity_graphxai --depth 3 --epochs 120 --hidden 300 --val-frac 0.10 --test-frac 0.20 --seed 6 --device cuda --save runs/rq1_tier2/M/ckpt/mutagenicity_dmpnn_s6.pt
+$PY -u -m src.train.train --dataset bxaic_indole --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 6 --device cuda --save runs/rq1_tier2/M/ckpt/bxaic_indole_s6.pt
+$PY -u -m src.train.train --dataset mutagenicity_graphxai --depth 3 --epochs 120 --hidden 300 --val-frac 0.10 --test-frac 0.20 --seed 7 --device cuda --save runs/rq1_tier2/M/ckpt/mutagenicity_dmpnn_s7.pt
+$PY -u -m src.train.train --dataset bxaic_indole --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 7 --device cuda --save runs/rq1_tier2/M/ckpt/bxaic_indole_s7.pt
+$PY -u -m src.train.train --dataset mutagenicity_graphxai --depth 3 --epochs 120 --hidden 300 --val-frac 0.10 --test-frac 0.20 --seed 8 --device cuda --save runs/rq1_tier2/M/ckpt/mutagenicity_dmpnn_s8.pt
+$PY -u -m src.train.train --dataset bxaic_indole --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 8 --device cuda --save runs/rq1_tier2/M/ckpt/bxaic_indole_s8.pt
+$PY -u -m src.train.train --dataset mutagenicity_graphxai --depth 3 --epochs 120 --hidden 300 --val-frac 0.10 --test-frac 0.20 --seed 9 --device cuda --save runs/rq1_tier2/M/ckpt/mutagenicity_dmpnn_s9.pt
+$PY -u -m src.train.train --dataset bxaic_indole --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 9 --device cuda --save runs/rq1_tier2/M/ckpt/bxaic_indole_s9.pt

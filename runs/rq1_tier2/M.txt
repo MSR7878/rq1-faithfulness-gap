@@ -1,0 +1,21 @@
+M -- MORE SEEDS (5-9 trained with the original commands; seeds 0-4 from items H, G, S; SX = scoring budget)
+
+  [0] new models: test accuracy / AUROC
+    Mutagenicity D-MPNN   s5 0.983/0.994  s6 0.992/1.000  s7 0.983/0.999  s8 0.980/0.993  s9 0.992/0.997
+    B-XAIC indole         s5 0.999/1.000  s6 0.998/1.000  s7 0.999/1.000  s8 0.998/1.000  s9 0.999/1.000
+
+  [1] method minus random-node GEA: 5 seeds vs 10 seeds; Holm family per seed = 5 methods x 2 nulls = 10;
+      sign test = binomial test on the number of seeds with a positive mean difference
+  group                 method                  5 seeds [95% CI]  counts             10 seeds [95% CI]   counts    sign test 10  match
+  Mutagenicity D-MPNN   GNN              +0.255 [+0.176, +0.331]   5/0/0       +0.255 [+0.206, +0.300]   10/0/0   10/10 p=0.002  yes
+  Mutagenicity D-MPNN   PG               -0.004 [-0.091, +0.087]   2/3/0       +0.014 [-0.061, +0.098]    4/6/0    4/10 p=0.754  yes
+  Mutagenicity D-MPNN   SX-fixed         +0.158 [+0.141, +0.176]   5/0/0       +0.141 [+0.114, +0.163]    9/0/1   10/10 p=0.002  yes
+  Mutagenicity D-MPNN   IG               +0.373 [+0.344, +0.401]   5/0/0       +0.334 [+0.301, +0.366]   10/0/0   10/10 p=0.002  yes
+  Mutagenicity D-MPNN   hetero           +0.230 [+0.212, +0.249]   5/0/0       +0.227 [+0.214, +0.242]   10/0/0   10/10 p=0.002  yes
+  B-XAIC indole         GNN              +0.037 [-0.031, +0.107]   3/2/0       +0.056 [-0.014, +0.128]    6/4/0    6/10 p=0.754  yes
+  B-XAIC indole         PG               +0.204 [+0.185, +0.222]   5/0/0       +0.265 [+0.204, +0.331]   10/0/0   10/10 p=0.002  yes
+  B-XAIC indole         SX-fixed         +0.468 [+0.426, +0.507]   5/0/0       +0.491 [+0.462, +0.513]   10/0/0   10/10 p=0.002  yes
+  B-XAIC indole         IG               +0.418 [+0.394, +0.445]   5/0/0       +0.434 [+0.410, +0.459]   10/0/0   10/10 p=0.002  yes
+  B-XAIC indole         hetero           -0.081 [-0.083, -0.079]   0/5/0       -0.082 [-0.083, -0.080]   0/10/0    0/10 p=0.002  yes
+
+  P-M1: CI category (vs random-node) with 10 seeds equals the 5-seed one in every (dataset, method) cell -> HELD
