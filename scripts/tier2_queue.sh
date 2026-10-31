@@ -10,6 +10,7 @@ export PY CUDA_VISIBLE_DEVICES=1 PYTHONWARNINGS=ignore PYTHONIOENCODING=utf-8 OM
 ITEM=$1; PHASE=${2:-all}; W=${WORKERS:-12}
 D=runs/rq1_tier2/$ITEM
 mkdir -p $D/logs
+rm -f $D/STOPPED_$PHASE
 $PY -m src.analysis.tier2_jobs $ITEM $PHASE > $D/jobs_$PHASE.txt || { echo "job list failed" > $D/STOPPED_$PHASE; exit 1; }
 rm -f $D/FAILED_$PHASE $D/FINISHED_$PHASE
 echo "start $(date '+%F %T'), $(wc -l < $D/jobs_$PHASE.txt) jobs, $W workers" > $D/STARTED_$PHASE

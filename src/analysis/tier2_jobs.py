@@ -55,7 +55,7 @@ def sx_jobs(unit, ckpt, mols, out, tag, rollout=20, sample=30, mdir=None):
 
 def interleave(lists):
     out = []
-    for i in range(max(len(x) for x in lists)):
+    for i in range(max((len(x) for x in lists), default=0)):
         out += [x[i] for x in lists if i < len(x)]
     return out
 

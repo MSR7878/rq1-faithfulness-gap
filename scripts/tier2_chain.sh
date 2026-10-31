@@ -8,6 +8,7 @@ D=runs/rq1_tier2
 while [ ! -f $D/S/FINISHED_prio ]; do sleep 120; done
 run() {  # ITEM PHASE
   bash scripts/tier2_queue.sh "$1" "$2"
+  if [ -f $D/$1/STOPPED_$2 ]; then echo "stage $1 $2 stopped: $(cat $D/$1/STOPPED_$2)" > $D/CHAIN_STOPPED; exit 1; fi
   if [ -f $D/$1/FAILED_$2 ]; then echo "stage $1 $2 had failed jobs" > $D/CHAIN_STOPPED; exit 1; fi
 }
 run S prio_score
