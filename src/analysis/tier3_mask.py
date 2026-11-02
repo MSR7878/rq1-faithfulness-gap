@@ -1,0 +1,87 @@
+"""
+RQ1 Tier 3, item E: where the edge mask enters each model, and the variants all / first / last.
+
+PyG's set_masks switches on explain mode for every MessagePassing module; each propagate() call then multiplies its
+messages by the mask in explain_message. `use_variant` wraps explain_message with a per-forward call counter, so the mask
+acts on every call (all), the first call (first) or the last call (last) of one model forward; the calls run in step order.
+The trained weights are never touched.
+
+    python -m src.analysis.tier3_mask check          # documents the path on one graph per model; exits 1 if a check fails
+"""
+from __future__ import annotations
+
+import contextlib
+import json
+import os
+import sys
+
+import torch
+from torch_geometric.explain.algorithm.utils import clear_masks, set_masks
+from torch_geometric.nn import MessagePassing
+
+from . import reliance_fidelity as rf
+from . import tier2_common as C
+
+VARIANTS = ("all", "first", "last")
+_S = {"n": 0, "depth": 0, "variant": "all", "calls": 0}
+_ORIG = MessagePassing.explain_message
+
+
+def _explain_message(self, inputs, dim_size=None):
+    i = _S["n"]; _S["n"] += 1; _S["calls"] += 1
+    v = _S["variant"]
+    if v == "all" or (v == "first" and i == 0) or (v == "last" and i == _S["depth"] - 1):
+        return _ORIG(self, inputs, dim_size)
+    return inputs
+
+
+@contextlib.contextmanager
+def use_variant(model, variant):
+    """Mask only at the chosen step(s) of each forward of `model`."""
+    assert variant in VARIANTS
+    _S.update(variant=variant, depth=int(model.cfg.depth), n=0)
+    h = model.register_forward_pre_hook(lambda m, a: _S.update(n=0))
+    MessagePassing.explain_message = _explain_message
+    try:
+        yield
+    finally:
+        MessagePassing.explain_message = _ORIG
+        h.remove()
+
+
+def output(model, d, edge_mask, variant):
+    """Logits with a constant / given edge mask under a variant (no sigmoid: the value is the mask)."""
+    set_masks(model, edge_mask, d.edge_index, apply_sigmoid=False)
+    _S["calls"] = 0
+    with use_variant(model, variant), torch.no_grad():
+        out = model(d.x, d.edge_index, getattr(d, "edge_attr", None)).detach().cpu()
+    calls = _S["calls"]; clear_masks(model)
+    return out, calls
+
+
+def check(path=f"runs/rq1_tier3/E/mask_path.json"):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu"); rep = {}; ok = True
+    dl, _ = C.load_data("mutagenicity_graphxai")
+    for arch in ("dmpnn", "gin", "gine", "gcn"):
+        unit = f"mutagenicity_{arch}_s0"; model, _ = rf.load_model(C.orig_spec(unit)["ckpt"], device); model.eval()
+        mi = int(C.stored_cache(unit)["key"]["test_idx"][0]); d = dl[mi].clone().to(device); E = d.edge_index.size(1)
+        with torch.no_grad():
+            clean = model(d.x, d.edge_index, getattr(d, "edge_attr", None)).detach().cpu()
+        one, zero = torch.ones(E, device=device), torch.zeros(E, device=device)
+        r = {"mol": mi, "edges": E, "depth": int(model.cfg.depth), "mp_modules": sum(isinstance(m, MessagePassing) for m in model.modules())}; zs = {}
+        for v in VARIANTS:
+            a, calls = output(model, d, one, v); b, _ = output(model, d, zero, v); zs[v] = b
+            diff, ident = float((a - b).abs().max()), float((a - clean).abs().max())
+            r[v] = {"mask_calls_per_forward": calls, "max_abs_diff_ones_vs_zeros": diff, "max_abs_diff_ones_vs_clean": ident}
+            ok &= diff > 1e-6 and ident < 1e-4 and calls == r["depth"]
+        r["zero_mask_all_vs_first"] = float((zs["all"] - zs["first"]).abs().max()); r["zero_mask_all_vs_last"] = float((zs["all"] - zs["last"]).abs().max())
+        r["zero_mask_first_vs_last"] = float((zs["first"] - zs["last"]).abs().max())
+        ok &= min(r["zero_mask_all_vs_first"], r["zero_mask_all_vs_last"], r["zero_mask_first_vs_last"]) > 1e-6
+        rep[arch] = r; print(arch, json.dumps(r), flush=True)
+    os.makedirs(os.path.dirname(path), exist_ok=True); json.dump({"all_checks_pass": ok, **rep}, open(path, "w"), indent=1)
+    print("all checks pass" if ok else "CHECK FAILED", flush=True)
+    return ok
+
+
+if __name__ == "__main__":
+    sys.exit(0 if check() else 1)
