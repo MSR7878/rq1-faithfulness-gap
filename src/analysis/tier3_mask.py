@@ -50,6 +50,29 @@ def use_variant(model, variant):
         h.remove()
 
 
+def _explain_message_cyclic(self, inputs, dim_size=None):
+    i = _S["n"] % _S["depth"]; _S["n"] += 1
+    v = _S["variant"]
+    if v == "all" or (v == "first" and i == 0) or (v == "last" and i == _S["depth"] - 1):
+        return _ORIG(self, inputs, dim_size)
+    return inputs
+
+
+@contextlib.contextmanager
+def global_variant(variant, depth=3):
+    """The same variant when the model is built elsewhere (run_phase3): every masked forward makes exactly `depth` mask calls,
+    so the call number modulo depth is the step. Raises if the total is not a positive multiple of depth."""
+    assert variant in VARIANTS
+    _S.update(variant=variant, depth=int(depth), n=0)
+    MessagePassing.explain_message = _explain_message_cyclic
+    try:
+        yield
+        if _S["n"] == 0 or _S["n"] % _S["depth"]:
+            raise RuntimeError(f"mask calls {_S['n']} not a positive multiple of depth {_S['depth']}")
+    finally:
+        MessagePassing.explain_message = _ORIG
+
+
 def output(model, d, edge_mask, variant):
     """Logits with a constant / given edge mask under a variant (no sigmoid: the value is the mask)."""
     set_masks(model, edge_mask, d.edge_index, apply_sigmoid=False)
