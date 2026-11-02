@@ -28,7 +28,7 @@ _S = {"n": 0, "depth": 0, "variant": "all", "calls": 0}
 _ORIG = MessagePassing.explain_message
 
 
-def _explain_message(self, inputs, dim_size=None):
+def _explain_message(self, inputs, dim_size):
     i = _S["n"]; _S["n"] += 1; _S["calls"] += 1
     v = _S["variant"]
     if v == "all" or (v == "first" and i == 0) or (v == "last" and i == _S["depth"] - 1):
@@ -50,12 +50,16 @@ def use_variant(model, variant):
         h.remove()
 
 
-def _explain_message_cyclic(self, inputs, dim_size=None):
+def _explain_message_cyclic(self, inputs, dim_size):
     i = _S["n"] % _S["depth"]; _S["n"] += 1
     v = _S["variant"]
     if v == "all" or (v == "first" and i == 0) or (v == "last" and i == _S["depth"] - 1):
         return _ORIG(self, inputs, dim_size)
     return inputs
+
+
+# PyG's Inspector looks the function up by __name__ when a model is built or explain mode is set
+_explain_message.__name__ = _explain_message_cyclic.__name__ = "explain_message"
 
 
 @contextlib.contextmanager
