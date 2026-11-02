@@ -15,6 +15,7 @@ import json
 import os
 import sys
 
+import numpy as np
 import torch
 from torch_geometric.explain.algorithm.utils import clear_masks, set_masks
 from torch_geometric.nn import MessagePassing
@@ -74,9 +75,17 @@ def check(path=f"runs/rq1_tier3/E/mask_path.json"):
             diff, ident = float((a - b).abs().max()), float((a - clean).abs().max())
             r[v] = {"mask_calls_per_forward": calls, "max_abs_diff_ones_vs_zeros": diff, "max_abs_diff_ones_vs_clean": ident}
             ok &= diff > 1e-6 and ident < 1e-4 and calls == r["depth"]
+        # constant zero mask: on the D-MPNN all and last are identical by construction (the readout input is zeroed, nothing upstream reaches it)
         r["zero_mask_all_vs_first"] = float((zs["all"] - zs["first"]).abs().max()); r["zero_mask_all_vs_last"] = float((zs["all"] - zs["last"]).abs().max())
-        r["zero_mask_first_vs_last"] = float((zs["first"] - zs["last"]).abs().max())
-        ok &= min(r["zero_mask_all_vs_first"], r["zero_mask_all_vs_last"], r["zero_mask_first_vs_last"]) > 1e-6
+        # fractional mask (fixed seed): the three variants must differ pairwise, and "all" must equal PyG's unpatched behaviour
+        fr = torch.as_tensor(np.random.default_rng(86000).random(E), dtype=torch.float, device=device); fs = {v: output(model, d, fr, v)[0] for v in VARIANTS}
+        set_masks(model, fr, d.edge_index, apply_sigmoid=False)
+        with torch.no_grad():
+            stock = model(d.x, d.edge_index, getattr(d, "edge_attr", None)).detach().cpu()
+        clear_masks(model)
+        r["frac_all_vs_stock_pyg"] = float((fs["all"] - stock).abs().max()); r["frac_first_vs_stock_pyg"] = float((fs["first"] - stock).abs().max()); r["frac_last_vs_stock_pyg"] = float((fs["last"] - stock).abs().max())
+        r["frac_all_vs_first"] = float((fs["all"] - fs["first"]).abs().max()); r["frac_all_vs_last"] = float((fs["all"] - fs["last"]).abs().max()); r["frac_first_vs_last"] = float((fs["first"] - fs["last"]).abs().max())
+        ok &= r["frac_all_vs_stock_pyg"] < 1e-5 and min(r["frac_all_vs_first"], r["frac_all_vs_last"], r["frac_first_vs_last"]) > 1e-6
         rep[arch] = r; print(arch, json.dumps(r), flush=True)
     os.makedirs(os.path.dirname(path), exist_ok=True); json.dump({"all_checks_pass": ok, **rep}, open(path, "w"), indent=1)
     print("all checks pass" if ok else "CHECK FAILED", flush=True)
