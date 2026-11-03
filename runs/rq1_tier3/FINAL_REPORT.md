@@ -45,7 +45,7 @@ Stored PG = final rule; variant PG = float64 logit scores.
 - PGExplainer on GCN: last - all -0.168 [-0.227, -0.107].
 - Ordering of GNN, PG, SX fixed by mean GEA: the same under all, first and last on D-MPNN (GNN > SX > PG), GIN and GINE (SX > GNN > PG). On GCN it changes only under "last" (GNN 0.327 > PG 0.298; stored PG 0.464 > GNN 0.260).
 - **D-MPNN seed 0, PG "first":** constant atom scores on all 127 molecules, so its GEA equals random-node (0.117) and Spearman is undefined. The +0.062 for D-MPNN PG "first" therefore comes from seeds 1-4 plus one seed at random. Other undefined-Spearman counts are small (1-12 molecules per seed; listed in `E.txt`).
-- **PGExplainer re-runs are not exactly reproducible.** GNNExplainer's "all" re-run matches stored exactly, but PGExplainer's does not (Spearman with stored 0.89-0.95; GINE all - stored +0.050 [+0.000, +0.148]). See contradictions.
+- **PGExplainer re-runs are not exactly reproducible.** GNNExplainer's "all" re-run matches stored exactly, but PGExplainer's does not (Spearman with stored 0.89-0.95). Both sides ranked by float64 logits, GINE all - stored is +0.050 [+0.000, +0.148], and the CI category vs random-node changes (see contradictions).
 
 ## F. Fine-tuned copy and bounded hiding rule
 
@@ -95,14 +95,16 @@ Secondary (all 7 methods, not scored): median tau(Fid+, GEA) F +0.62, R2 +0.43.
 
 Methods under F (minus random-node, probability, Fid+): GNNExplainer, SubgraphX fixed and the gradient methods are above random in most groups. PGExplainer is below or at random on Mutagenicity D-MPNN (-0.011 [-0.033, +0.014], 0/5/0), GIN (-0.043 [-0.073, -0.007]) and GINE (-0.079 [-0.105, -0.049]), and above random on GCN and B-XAIC. The heteroatom rule is above random on Fid+ in all 8 valid groups. On MUTAG-GT only SX fixed and the gradient methods are above random (10/0/0), GNN +0.031 [+0.015, +0.049] (6/1/3), and PG and hetero are not.
 
+Some `F.txt` rows have a CI above 0 but counts like 0/5/0 (for example, B-XAIC X GNN Fid+ vs random-connected, +0.029 [+0.015, +0.043], 0/5/0). The difference is skewed. The bootstrap uses means, which are positive in all 5 seeds (+0.018 to +0.043). The Wilcoxon test uses ranks, and 57-60% of molecules are below the null (per-seed median about -0.03). It is not a sign error.
+
 ## X. Small gaps and the new figure
 
 **Fid for the new seeds (item M, seeds 5-9)**, compared with seeds 0-4 (`G.txt`, `H.txt`) for IG and hetero. In probability space all rows keep their CI category except two:
 - IG, Mutagenicity D-MPNN, Fid+ under R1: seeds 0-4 +0.032 [-0.018, +0.093] -> seeds 5-9 +0.053 [+0.014, +0.095] (n.s. -> above).
-- hetero, B-XAIC indole, Fid- under R3: seeds 0-4 +0.189 [-0.027, +0.347] -> seeds 5-9 +0.297 [+0.130, +0.464] (n.s. -> above).
+- hetero, B-XAIC indole, Fid- under R3: seeds 0-4 +0.189 [-0.027, +0.347] -> seeds 5-9 +0.297 [+0.130, +0.464] (n.s. -> higher than random-node, which for Fid- means worse).
 GNN, PG and SX fixed for seeds 5-9 are in `X.txt`; I did not compare them line by line with seeds 0-4 (those tables are in `runs/rq1_revision`).
 
-**Fid for the randomised models (item R).** Under R2 and R3 all full-reset cells are within +/-0.012 of random-node. Under R1 some full-reset cells are not:
+**Fid for the randomised models (item R).** Under R2 and R3 all full-reset cells are within +/-0.013 of random-node (probability space). Under R1 some full-reset cells are not:
 
 | Cell (full reset, R1, probability) | Fid+ minus random-node | counts |
 |---|---|---|
@@ -123,7 +125,7 @@ So Fid under R1 can also be away from random on a model with no learned signal, 
 | B-XAIC indole | 10 | 0.160-0.164 | high degree 0.225-0.233 | 0.218; +0.056 [-0.014, +0.128] | 0.430; +0.268 [+0.207, +0.333] | 0.654; +0.491 [+0.462, +0.513] | 0.596; +0.434 [+0.410, +0.459] |
 | B-XAIC PAINS | 5 | 0.159-0.167 | high degree 0.233-0.241 | 0.236; +0.073 [+0.049, +0.096] | 0.221; +0.058 [+0.012, +0.109] | 0.466; +0.303 [+0.289, +0.316] | 0.372; +0.209 [+0.186, +0.235] |
 
-Each cell: mean of per-seed mean GEA; minus random-node [95% CI]. PG final rule, not shown: MUTAG-GT +0.065 [+0.010, +0.125], D-MPNN +0.014 [-0.061, +0.098], indole +0.265 [+0.204, +0.331], PAINS +0.064 [+0.019, +0.113]. Per-seed values and box medians are in `X.txt`. PAINS has 5 seeds because no more exist.
+Each cell: mean of per-seed mean GEA; minus random-node [95% CI]. PG final rule, not shown: MUTAG-GT +0.065 [+0.010, +0.125], D-MPNN +0.014 [-0.061, +0.098], indole +0.265 [+0.204, +0.331], PAINS +0.064 [+0.019, +0.113]. Per-seed values and box medians are in `X.txt`. PAINS has 5 seeds because no more exist. On MUTAG-GT the logit scores were loaded (`runs/rq1_revision/logits`), but in 8 of 10 seeds they give the same top-k sets as the final rule (no ties at the boundary); seeds 3 and 5 differ slightly, so the two PG numbers agree to three decimals.
 
 ## Contradictions with current results
 
@@ -131,9 +133,9 @@ Rule: only a change of CI category counts. The paper's `.tex` files are not on t
 
 | Current result | New number | Why it matters |
 |---|---|---|
-| T3 / H: Mutagenicity GINE PG below random, -0.087 [-0.122, -0.031] (0/4/1) | Seeded "all" re-run of the same PGExplainer: -0.027 [-0.113, +0.127] (1/4/0); "all" - stored +0.050 [+0.000, +0.148] | **CI category changes (below -> n.s.) just from re-training PGExplainer.** GNNExplainer's re-run matches exactly, so this is run-to-run variation in PGExplainer, not a code change. "PG below random on GINE" is not stable |
+| T3 / H: Mutagenicity GINE PG below random, -0.087 [-0.122, -0.031] (0/4/1, final rule) | Same ranking rule on both sides (float64 logits): stored -0.077 [-0.121, -0.015] -> seeded "all" re-run -0.027 [-0.113, +0.127] (1/4/0); difference +0.050 [+0.000, +0.148] | **CI category changes (below -> n.s.) from re-training PGExplainer alone**, with the ranking rule held fixed. GNNExplainer's re-run matches exactly, so this is run-to-run variation in PGExplainer training, not a code change. "PG below random on GINE" is not stable. (GIN, D-MPNN, GCN keep their category: -0.071 -> -0.074, -0.014 -> -0.006, +0.339 -> +0.343) |
 | IG, Mutagenicity D-MPNN, Fid+ under R1, n.s. (seeds 0-4) | above random with seeds 5-9: +0.053 [+0.014, +0.095] | Category change with the new seeds |
-| hetero, indole, Fid- under R3, n.s. (seeds 0-4) | above random with seeds 5-9: +0.297 [+0.130, +0.464] | Category change with the new seeds |
+| hetero, indole, Fid- under R3, n.s. (seeds 0-4) | higher than random-node with seeds 5-9 (worse, since lower Fid- is better): +0.297 [+0.130, +0.464] | Category change with the new seeds |
 | Any claim that Fid shows reliance on the model | Full reset, R1: D-MPNN Saliency Fid+ +0.066 [+0.034, +0.098]; indole PG Fid+ -0.122 [-0.155, -0.092] | Fid under R1 is away from random on models with no learned signal (R2 and R3 are not) |
 | Any claim that a fine-tuned hiding rule fixes Fid's disagreement with GEA | P-F2 failed: median tau F +0.33 = R2 +0.33 | F does not raise the median agreement (the mean and the share with tau = 1 are somewhat higher) |
 
