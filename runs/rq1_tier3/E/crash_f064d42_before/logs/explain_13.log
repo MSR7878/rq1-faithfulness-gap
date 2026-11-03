@@ -1,0 +1,37 @@
+dataset=mutagenicity_graphxai  masking=R3  has_ground_truth=True  stratify_frac=None  max_nodes=80 (excluded 26 graphs from test+train pools)
+model: test_acc=0.986 test_auroc=0.999 | explaining 346/354 test molecules [125pos/221neg]  | PGExplainer trains on 1219/1219 [445pos/774neg]
+PGExplainer train:   0%|          | 0/30 [00:00<?, ?epoch/s]PGExplainer train:   0%|          | 0/30 [00:00<?, ?epoch/s]
+Traceback (most recent call last):
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier3_E.py", line 58, in <module>
+    explain(a.unit, a.variant) if a.cmd == "explain" else score(a.unit)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier3_E.py", line 25, in explain
+    run_gp(unit, sp["ckpt"], f"{T}/gp/{v}", torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier2_explain.py", line 129, in run_gp
+    rp3.main(["--dataset", sp["dataset"], "--ckpt", ckpt, "--seed", str(sp["seed"]), "--explainers", "gnnexplainer,pgexplainer",
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/run_phase3.py", line 323, in main
+    pg_losses = pg.train(pg_train)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/pyg_explainers.py", line 97, in train
+    loss = self.algorithm.train(
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/explain/algorithm/pg_explainer.py", line 198, in train
+    set_masks(model, edge_mask, edge_index, apply_sigmoid=True)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/explain/algorithm/utils.py", line 34, in set_masks
+    module.explain = True
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 2029, in __setattr__
+    super().__setattr__(name, value)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/conv/message_passing.py", line 726, in explain
+    self._user_args = self.inspector.get_flat_param_names(
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/inspector.py", line 297, in get_flat_param_names
+    return list(self.get_flat_param_dict(funcs, exclude).keys())
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/inspector.py", line 222, in get_flat_param_dict
+    params = self.get_params(func, exclude)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/inspector.py", line 205, in get_params
+    return list(self.get_param_dict(func, exclude).values())
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/inspector.py", line 191, in get_param_dict
+    return self.get_signature(func, exclude).param_dict
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/inspector.py", line 150, in get_signature
+    raise IndexError(f"Could not access signature for function "
+IndexError: Could not access signature for function 'explain_message'. Did you forget to inspect it?

@@ -64,8 +64,9 @@ def E():
     P("\n  [2] how much each explainer responds: variant minus the 'all' re-run (95% CI); mean Spearman of atom scores with 'all'; 'all' re-run vs stored")
     P(f"  {'model':<22}{'method':<10}{'first - all':>28}{'rho':>7}{'last - all':>28}{'rho':>7}{'all - stored':>28}{'rho':>7}")
     rep["response"] = {}
+    # rho is undefined when a score vector is constant; average over the seeds where it is defined anywhere
     def mrho(key, us):
-        return float(np.mean([np.nanmean(Z[u][key]) for u in us]))
+        return float(np.mean([np.nanmean(Z[u][key]) for u in us if (~np.isnan(Z[u][key])).any()]))
     for g, us in MUT.items():
         for m in ("gnnexplainer", "pgexplainer"):
             al = [Z[u][f"all_{m}"] for u in us]; f = C.boot([Z[u][f"first_{m}"] for u in us], al); l = C.boot([Z[u][f"last_{m}"] for u in us], al)
@@ -73,6 +74,14 @@ def E():
             rep["response"][f"{g}|{m}"] = {"first": list(f), "last": list(l), "all_vs_stored": list(st), "rho_first": mrho(f"rho_first_{m}", us), "rho_last": mrho(f"rho_last_{m}", us), "rho_stored": mrho(f"rho_stored_{m}", us)}
             P(f"  {g:<22}{SH[m]:<10}{fmt_ci(*f):>28}{mrho(f'rho_first_{m}', us):>7.2f}{fmt_ci(*l):>28}{mrho(f'rho_last_{m}', us):>7.2f}{fmt_ci(*st):>28}{mrho(f'rho_stored_{m}', us):>7.2f}")
     P("      'all - stored' for PG compares with the float64 scores of the T4 re-run, so both sides use the same ranking rule.")
+    P("      molecules with undefined rho (one side has constant atom scores; its top-k is then all random ties), per seed:")
+    rep["undefined_rho"] = {}
+    for g, us in MUT.items():
+        for k in ("rho_first_pgexplainer", "rho_last_pgexplainer", "rho_stored_pgexplainer", "rho_first_gnnexplainer", "rho_last_gnnexplainer"):
+            n = [int(np.isnan(Z[u][k]).sum()) for u in us]
+            if any(n):
+                rep["undefined_rho"][f"{g}|{k[4:]}"] = n
+                P(f"        {g:<22}{k[4:]:<24}{' '.join(f'{x}/{len(Z[u][k])}' for x, u in zip(n, us))}")
     P("\n  [3] ordering by mean GEA (best first); SX fixed is not re-run")
     rep["order"] = {}
     for g, us in MUT.items():

@@ -1,0 +1,90 @@
+E -- EDGE-MASK INJECTION ABLATION (EXPLORATORY, no prediction; P-E1 and P-E2 withdrawn, wrong premise; see PLAN.md)
+  GNNExplainer's atom scores come from its node mask, trained jointly with the edge mask, so it may barely respond to the variants.
+  PGExplainer's atom scores come from the edge mask. Stored PG = final rule; variant PG = float64 logit-based scores.
+
+  [0] mask path on one graph per model; all checks pass: True
+  model    MP modules mask calls  all vs stock PyG    ones vs zeros all  ones vs zeros first   ones vs zeros last  all vs first (frac)  all vs last (frac)
+  dmpnn             1          3           0.0e+00                3.651               34.810                3.651                1.471               1.200
+  gin               3          3           0.0e+00               11.578               12.928                7.296                1.686               4.032
+  gine              3          3           0.0e+00                6.200                4.323                2.786                0.103               3.979
+  gcn               3          3           0.0e+00                7.531                8.549                3.987                1.680               3.632
+
+  [1] GEA minus null. Holm per (model, seed): variants 2 x 3 x 2 = 12; stored 2 x 2 = 4
+  model                 variant  method          minus random-node [95% CI]  counts     minus random-conn. [95% CI]  counts    GEA
+  Mutagenicity D-MPNN   stored   GNN                +0.255 [+0.176, +0.331]   5/0/0         +0.274 [+0.195, +0.351]   5/0/0  0.378
+  Mutagenicity D-MPNN   stored   PG                 -0.004 [-0.091, +0.087]   2/3/0         +0.015 [-0.071, +0.106]   2/3/0  0.118
+  Mutagenicity D-MPNN   all      GNN                +0.255 [+0.176, +0.331]   5/0/0         +0.274 [+0.195, +0.351]   5/0/0  0.378
+  Mutagenicity D-MPNN   all      PG                 -0.006 [-0.098, +0.102]   2/3/0         +0.013 [-0.080, +0.120]   2/3/0  0.117
+  Mutagenicity D-MPNN   first    GNN                +0.169 [+0.117, +0.221]   5/0/0         +0.188 [+0.135, +0.241]   5/0/0  0.292
+  Mutagenicity D-MPNN   first    PG                 +0.062 [+0.026, +0.099]   4/0/1         +0.081 [+0.041, +0.118]   4/0/1  0.184
+  Mutagenicity D-MPNN   last     GNN                +0.182 [+0.106, +0.263]   5/0/0         +0.201 [+0.123, +0.280]   5/0/0  0.304
+  Mutagenicity D-MPNN   last     PG                 -0.066 [-0.098, -0.036]   0/5/0         -0.047 [-0.076, -0.019]   0/5/0  0.056
+  Mutagenicity GIN      stored   GNN                +0.039 [-0.021, +0.102]   2/1/2         +0.057 [-0.003, +0.121]   3/1/1  0.161
+  Mutagenicity GIN      stored   PG                 -0.093 [-0.107, -0.075]   0/5/0         -0.075 [-0.090, -0.055]   0/5/0  0.029
+  Mutagenicity GIN      all      GNN                +0.039 [-0.021, +0.102]   2/1/2         +0.057 [-0.003, +0.121]   3/1/1  0.161
+  Mutagenicity GIN      all      PG                 -0.074 [-0.100, -0.030]   0/4/1         -0.055 [-0.084, -0.010]   0/4/1  0.049
+  Mutagenicity GIN      first    GNN                +0.014 [-0.027, +0.057]   2/1/2         +0.033 [-0.008, +0.075]   2/1/2  0.137
+  Mutagenicity GIN      first    PG                 -0.054 [-0.099, -0.000]   0/3/2         -0.036 [-0.082, +0.020]   1/3/1  0.068
+  Mutagenicity GIN      last     GNN                +0.056 [-0.003, +0.113]   3/1/1         +0.074 [+0.015, +0.132]   3/1/1  0.178
+  Mutagenicity GIN      last     PG                 -0.093 [-0.101, -0.085]   0/5/0         -0.075 [-0.084, -0.064]   0/5/0  0.029
+  Mutagenicity GINE     stored   GNN                +0.080 [+0.004, +0.154]   3/1/1         +0.100 [+0.024, +0.170]   3/1/1  0.203
+  Mutagenicity GINE     stored   PG                 -0.087 [-0.122, -0.031]   0/4/1         -0.067 [-0.101, -0.011]   0/4/1  0.037
+  Mutagenicity GINE     all      GNN                +0.080 [+0.004, +0.154]   3/1/1         +0.100 [+0.024, +0.170]   3/1/1  0.203
+  Mutagenicity GINE     all      PG                 -0.027 [-0.113, +0.127]   1/4/0         -0.007 [-0.091, +0.147]   1/4/0  0.097
+  Mutagenicity GINE     first    GNN                +0.098 [+0.006, +0.223]   3/1/1         +0.118 [+0.025, +0.242]   3/0/2  0.221
+  Mutagenicity GINE     first    PG                 -0.032 [-0.108, +0.111]   1/4/0         -0.012 [-0.090, +0.131]   1/4/0  0.091
+  Mutagenicity GINE     last     GNN                +0.118 [+0.004, +0.227]   3/1/1         +0.138 [+0.024, +0.251]   3/1/1  0.242
+  Mutagenicity GINE     last     PG                 -0.021 [-0.046, +0.003]   0/2/3         -0.001 [-0.025, +0.022]   0/2/3  0.103
+  Mutagenicity GCN      stored   GNN                +0.137 [+0.071, +0.199]   4/0/1         +0.156 [+0.093, +0.215]   4/0/1  0.260
+  Mutagenicity GCN      stored   PG                 +0.341 [+0.304, +0.373]   5/0/0         +0.360 [+0.321, +0.392]   5/0/0  0.464
+  Mutagenicity GCN      all      GNN                +0.137 [+0.071, +0.199]   4/0/1         +0.156 [+0.093, +0.215]   4/0/1  0.260
+  Mutagenicity GCN      all      PG                 +0.343 [+0.299, +0.384]   5/0/0         +0.361 [+0.316, +0.403]   5/0/0  0.466
+  Mutagenicity GCN      first    GNN                +0.148 [+0.106, +0.192]   5/0/0         +0.167 [+0.126, +0.209]   5/0/0  0.271
+  Mutagenicity GCN      first    PG                 +0.325 [+0.265, +0.380]   5/0/0         +0.344 [+0.282, +0.400]   5/0/0  0.448
+  Mutagenicity GCN      last     GNN                +0.204 [+0.163, +0.247]   5/0/0         +0.222 [+0.183, +0.264]   5/0/0  0.327
+  Mutagenicity GCN      last     PG                 +0.175 [+0.127, +0.217]   5/0/0         +0.193 [+0.146, +0.235]   5/0/0  0.298
+
+  [2] how much each explainer responds: variant minus the 'all' re-run (95% CI); mean Spearman of atom scores with 'all'; 'all' re-run vs stored
+  model                 method                     first - all    rho                  last - all    rho                all - stored    rho
+  Mutagenicity D-MPNN   GNN            -0.086 [-0.126, -0.043]   0.18     -0.074 [-0.122, -0.032]   0.34     +0.000 [+0.000, +0.000]   1.00
+  Mutagenicity D-MPNN   PG             +0.068 [-0.010, +0.135]  -0.17     -0.061 [-0.193, +0.057]   0.51     +0.009 [-0.025, +0.049]   0.89
+  Mutagenicity GIN      GNN            -0.025 [-0.050, -0.002]   0.83     +0.017 [-0.009, +0.045]   0.73     +0.000 [+0.000, +0.000]   1.00
+  Mutagenicity GIN      PG             +0.019 [-0.005, +0.050]   0.63     -0.019 [-0.065, +0.007]   0.70     -0.003 [-0.064, +0.057]   0.89
+  Mutagenicity GINE     GNN            +0.018 [-0.059, +0.107]   0.54     +0.038 [-0.035, +0.123]   0.30     +0.000 [+0.000, +0.000]   1.00
+  Mutagenicity GINE     PG             -0.005 [-0.024, +0.015]   0.52     +0.006 [-0.138, +0.092]   0.35     +0.050 [+0.000, +0.148]   0.90
+  Mutagenicity GCN      GNN            +0.011 [-0.019, +0.048]   0.73     +0.067 [+0.025, +0.120]   0.59     +0.000 [+0.000, +0.000]   1.00
+  Mutagenicity GCN      PG             -0.018 [-0.036, +0.000]   0.77     -0.168 [-0.227, -0.107]   0.39     +0.004 [-0.007, +0.018]   0.95
+      'all - stored' for PG compares with the float64 scores of the T4 re-run, so both sides use the same ranking rule.
+      molecules with undefined rho (one side has constant atom scores; its top-k is then all random ties), per seed:
+        Mutagenicity D-MPNN   first_pgexplainer       127/127 3/127 4/127 0/126 0/125
+        Mutagenicity GIN      first_pgexplainer       0/127 2/127 11/127 4/126 0/125
+        Mutagenicity GIN      last_pgexplainer        0/127 2/127 11/127 2/126 0/125
+        Mutagenicity GIN      stored_pgexplainer      0/127 2/127 11/127 2/126 12/125
+        Mutagenicity GINE     first_pgexplainer       2/127 1/127 3/127 0/126 0/125
+        Mutagenicity GINE     last_pgexplainer        0/127 1/127 3/127 0/126 0/125
+        Mutagenicity GINE     stored_pgexplainer      0/127 1/127 3/127 0/126 2/125
+        Mutagenicity GCN      first_pgexplainer       0/127 2/127 2/127 0/126 1/125
+        Mutagenicity GCN      last_pgexplainer        0/127 2/127 2/127 0/126 1/125
+        Mutagenicity GCN      stored_pgexplainer      0/127 2/127 2/127 0/126 1/125
+
+  [3] ordering by mean GEA (best first); SX fixed is not re-run
+  Mutagenicity D-MPNN
+    stored GNN 0.378 > SX 0.281 > PG 0.118
+    all GNN 0.378 > SX 0.281 > PG 0.117
+    first GNN 0.292 > SX 0.281 > PG 0.184
+    last GNN 0.304 > SX 0.281 > PG 0.056
+  Mutagenicity GIN
+    stored SX 0.222 > GNN 0.161 > PG 0.029
+    all SX 0.222 > GNN 0.161 > PG 0.049
+    first SX 0.222 > GNN 0.137 > PG 0.068
+    last SX 0.222 > GNN 0.178 > PG 0.029
+  Mutagenicity GINE
+    stored SX 0.249 > GNN 0.203 > PG 0.037
+    all SX 0.249 > GNN 0.203 > PG 0.097
+    first SX 0.249 > GNN 0.221 > PG 0.091
+    last SX 0.249 > GNN 0.242 > PG 0.103
+  Mutagenicity GCN
+    stored PG 0.464 > GNN 0.260 > SX 0.182
+    all PG 0.466 > GNN 0.260 > SX 0.182
+    first PG 0.448 > GNN 0.271 > SX 0.182
+    last GNN 0.327 > PG 0.298 > SX 0.182
