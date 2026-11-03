@@ -24,7 +24,7 @@ fs = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(fs)
 OUT = "figures/final"
 PANELS = ["MUTAG-GT", "Mutagenicity D-MPNN", "B-XAIC indole", "B-XAIC PAINS"]
 METHODS = ["gnnexplainer", "pgexplainer", "sx_fixed", "ig"]
-LABEL = {"gnnexplainer": "GNNExplainer", "pgexplainer": "PGExplainer", "sx_fixed": "SubgraphX", "ig": "IG"}
+LABEL = {"gnnexplainer": "GNN-\nExplainer", "pgexplainer": "PG-\nExplainer", "sx_fixed": "SubgraphX\n(fixed)", "ig": "IG"}
 STYLE = {"gnnexplainer": fs.ESTYLE["gnnexplainer"], "pgexplainer": fs.ESTYLE["pgexplainer"], "sx_fixed": fs.ESTYLE["subgraphx"],
          "ig": {"fill": "#fb9a99", "hatch": "..", "edge": "#b2182b", "dot": "#e31a1c"}}
 RULES = {"hetero": "heteroatom", "deg_high": "high degree", "deg_low": "low degree"}
@@ -45,14 +45,14 @@ def main():
             return ax.axhspan(lo - pad, hi + pad, **kw)
         band(rn, color="#9e9ac8", alpha=0.45, zorder=0)
         band(rb, facecolor="0.8", edgecolor="0.35", hatch="\\\\\\\\", linewidth=0, alpha=0.7, zorder=0.5)
-        ax.text(4.45, min(rb) + (max(rb) - min(rb)) / 2, RULES[best], ha="right", va="center", fontsize=6.6, color="0.15", bbox=dict(facecolor="white", edgecolor="none", pad=0.8, alpha=0.8), zorder=5)
         bp = ax.boxplot([np.concatenate([P[m][u] for u in us]) for m in METHODS], positions=[1, 2, 3, 4], widths=0.55, patch_artist=True, showfliers=False,
                         medianprops={"color": "#222222", "linewidth": 1.4}, whiskerprops={"color": "0.2", "linewidth": 0.8}, capprops={"color": "0.2", "linewidth": 0.8}, boxprops={"linewidth": 0.8})
         for patch, m in zip(bp["boxes"], METHODS):
             patch.set_facecolor(STYLE[m]["fill"]); patch.set_edgecolor(STYLE[m]["edge"]); patch.set_hatch(STYLE[m]["hatch"])
         for x0, m in zip([1, 2, 3, 4], METHODS):
             hb = ax.scatter(x0 + np.linspace(-0.18, 0.18, len(us)), seed_means(m), marker="D", s=20, facecolor="white", edgecolor="black", linewidths=0.8, zorder=4)
-        ax.set_xticks([1, 2, 3, 4]); ax.set_xticklabels([LABEL[m] for m in METHODS], fontsize=7.2); ax.set_title(f"{panel} ({len(us)} seeds)", fontsize=9.5)
+        ax.set_xticks([1, 2, 3, 4]); ax.set_xticklabels([LABEL[m] for m in METHODS], fontsize=7.2)
+        ax.set_title(f"{panel} ({len(us)} seeds)\nbest trivial rule: {RULES[best]}", fontsize=9.5)
         ax.set_ylim(-0.05, 1.05); ax.grid(axis="y", zorder=-1); ax.set_axisbelow(True)
         for spine in ("top", "right"):
             ax.spines[spine].set_visible(False)
