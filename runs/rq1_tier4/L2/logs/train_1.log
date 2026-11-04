@@ -1,0 +1,7 @@
+loaded bbbp: 2039 graphs, 9 node / 3 edge feats  [device=cuda]
+----------------------------------------------------------------
+bbbp: single 70/15/15 split  (train=1427 val=306 test=306)
+  test accuracy = 0.8693
+  test AUROC    = 0.8752  (val_auroc=0.878, ep29)
+  majority-class baseline acc = 0.7651 (AUROC 0.5)   49s
+  saved checkpoint -> runs/rq1_tier4/L2/ckpt/bbbp_s0.pt

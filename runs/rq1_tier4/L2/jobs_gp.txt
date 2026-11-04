@@ -1,0 +1,5 @@
+$PY -u -m src.analysis.tier2_explain gp --unit bbbp_s0 --ckpt runs/rq1_tier4/L2/ckpt/bbbp_s0.pt --out runs/rq1_tier4/L2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bbbp_s1 --ckpt runs/rq1_tier4/L2/ckpt/bbbp_s1.pt --out runs/rq1_tier4/L2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bbbp_s2 --ckpt runs/rq1_tier4/L2/ckpt/bbbp_s2.pt --out runs/rq1_tier4/L2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bbbp_s3 --ckpt runs/rq1_tier4/L2/ckpt/bbbp_s3.pt --out runs/rq1_tier4/L2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bbbp_s4 --ckpt runs/rq1_tier4/L2/ckpt/bbbp_s4.pt --out runs/rq1_tier4/L2/gp

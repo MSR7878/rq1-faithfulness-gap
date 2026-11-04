@@ -1,0 +1,5 @@
+[ -f runs/rq1_tier4/L2/ckpt/bbbp_s0.pt ] || $PY -u -m src.train.train --dataset bbbp --depth 3 --hidden 300 --epochs 100 --batch-size 64 --seed 0 --device cuda --save runs/rq1_tier4/L2/ckpt/bbbp_s0.pt
+[ -f runs/rq1_tier4/L2/ckpt/bbbp_s1.pt ] || $PY -u -m src.train.train --dataset bbbp --depth 3 --hidden 300 --epochs 100 --batch-size 64 --seed 1 --device cuda --save runs/rq1_tier4/L2/ckpt/bbbp_s1.pt
+[ -f runs/rq1_tier4/L2/ckpt/bbbp_s2.pt ] || $PY -u -m src.train.train --dataset bbbp --depth 3 --hidden 300 --epochs 100 --batch-size 64 --seed 2 --device cuda --save runs/rq1_tier4/L2/ckpt/bbbp_s2.pt
+[ -f runs/rq1_tier4/L2/ckpt/bbbp_s3.pt ] || $PY -u -m src.train.train --dataset bbbp --depth 3 --hidden 300 --epochs 100 --batch-size 64 --seed 3 --device cuda --save runs/rq1_tier4/L2/ckpt/bbbp_s3.pt
+[ -f runs/rq1_tier4/L2/ckpt/bbbp_s4.pt ] || $PY -u -m src.train.train --dataset bbbp --depth 3 --hidden 300 --epochs 100 --batch-size 64 --seed 4 --device cuda --save runs/rq1_tier4/L2/ckpt/bbbp_s4.pt

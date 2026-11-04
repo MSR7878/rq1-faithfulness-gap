@@ -1,0 +1,5 @@
+$PY -u -m src.analysis.tier4_L2 --unit bbbp_s0
+$PY -u -m src.analysis.tier4_L2 --unit bbbp_s1
+$PY -u -m src.analysis.tier4_L2 --unit bbbp_s2
+$PY -u -m src.analysis.tier4_L2 --unit bbbp_s3
+$PY -u -m src.analysis.tier4_L2 --unit bbbp_s4

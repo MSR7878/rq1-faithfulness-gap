@@ -1,0 +1,63 @@
+dataset=bbbp  masking=R3  has_ground_truth=False  stratify_frac=None
+model: test_acc=0.866 test_auroc=0.895 | explaining 30/306 test molecules [22pos/8neg]  | PGExplainer trains on 150/1427 [117pos/33neg]
+PGExplainer train:   0%|          | 0/30 [00:00<?, ?epoch/s]PGExplainer train:   0%|          | 0/30 [00:04<?, ?epoch/s, loss=2.972]PGExplainer train:   0%|          | 0/30 [00:07<?, ?epoch/s, loss=2.768]PGExplainer train:   7%|▋         | 2/30 [00:07<01:39,  3.54s/epoch, loss=2.768]PGExplainer train:   7%|▋         | 2/30 [00:09<01:39,  3.54s/epoch, loss=2.765]PGExplainer train:   7%|▋         | 2/30 [00:12<01:39,  3.54s/epoch, loss=2.765]PGExplainer train:  13%|█▎        | 4/30 [00:12<01:21,  3.12s/epoch, loss=2.765]PGExplainer train:  13%|█▎        | 4/30 [00:15<01:21,  3.12s/epoch, loss=2.764]PGExplainer train:  13%|█▎        | 4/30 [00:18<01:21,  3.12s/epoch, loss=2.764]PGExplainer train:  20%|██        | 6/30 [00:18<01:13,  3.07s/epoch, loss=2.764]PGExplainer train:  20%|██        | 6/30 [00:21<01:13,  3.07s/epoch, loss=2.764]PGExplainer train:  20%|██        | 6/30 [00:24<01:13,  3.07s/epoch, loss=2.764]PGExplainer train:  27%|██▋       | 8/30 [00:24<01:07,  3.07s/epoch, loss=2.764]PGExplainer train:  27%|██▋       | 8/30 [00:27<01:07,  3.07s/epoch, loss=2.764]PGExplainer train:  27%|██▋       | 8/30 [00:30<01:07,  3.07s/epoch, loss=2.764]PGExplainer train:  33%|███▎      | 10/30 [00:30<01:00,  3.01s/epoch, loss=2.764]PGExplainer train:  33%|███▎      | 10/30 [00:33<01:00,  3.01s/epoch, loss=2.764]PGExplainer train:  33%|███▎      | 10/30 [00:36<01:00,  3.01s/epoch, loss=2.764]PGExplainer train:  40%|████      | 12/30 [00:36<00:53,  2.99s/epoch, loss=2.764]PGExplainer train:  40%|████      | 12/30 [00:39<00:53,  2.99s/epoch, loss=2.764]PGExplainer train:  40%|████      | 12/30 [00:42<00:53,  2.99s/epoch, loss=2.764]PGExplainer train:  47%|████▋     | 14/30 [00:42<00:47,  2.98s/epoch, loss=2.764]PGExplainer train:  47%|████▋     | 14/30 [00:45<00:47,  2.98s/epoch, loss=2.764]PGExplainer train:  47%|████▋     | 14/30 [00:48<00:47,  2.98s/epoch, loss=2.764]PGExplainer train:  53%|█████▎    | 16/30 [00:48<00:41,  2.96s/epoch, loss=2.764]PGExplainer train:  53%|█████▎    | 16/30 [00:51<00:41,  2.96s/epoch, loss=2.764]PGExplainer train:  53%|█████▎    | 16/30 [00:54<00:41,  2.96s/epoch, loss=2.764]PGExplainer train:  60%|██████    | 18/30 [00:54<00:35,  2.93s/epoch, loss=2.764]PGExplainer train:  60%|██████    | 18/30 [00:57<00:35,  2.93s/epoch, loss=2.764]PGExplainer train:  60%|██████    | 18/30 [01:00<00:35,  2.93s/epoch, loss=2.764]PGExplainer train:  67%|██████▋   | 20/30 [01:00<00:29,  2.95s/epoch, loss=2.764]PGExplainer train:  67%|██████▋   | 20/30 [01:03<00:29,  2.95s/epoch, loss=2.764]PGExplainer train:  67%|██████▋   | 20/30 [01:05<00:29,  2.95s/epoch, loss=2.764]PGExplainer train:  73%|███████▎  | 22/30 [01:05<00:23,  2.93s/epoch, loss=2.764]PGExplainer train:  73%|███████▎  | 22/30 [01:08<00:23,  2.93s/epoch, loss=2.764]PGExplainer train:  73%|███████▎  | 22/30 [01:11<00:23,  2.93s/epoch, loss=2.764]PGExplainer train:  80%|████████  | 24/30 [01:11<00:17,  2.93s/epoch, loss=2.764]PGExplainer train:  80%|████████  | 24/30 [01:14<00:17,  2.93s/epoch, loss=2.764]PGExplainer train:  80%|████████  | 24/30 [01:17<00:17,  2.93s/epoch, loss=2.764]PGExplainer train:  87%|████████▋ | 26/30 [01:17<00:11,  2.89s/epoch, loss=2.764]PGExplainer train:  87%|████████▋ | 26/30 [01:20<00:11,  2.89s/epoch, loss=2.764]PGExplainer train:  87%|████████▋ | 26/30 [01:22<00:11,  2.89s/epoch, loss=2.764]PGExplainer train:  93%|█████████▎| 28/30 [01:22<00:05,  2.87s/epoch, loss=2.764]PGExplainer train:  93%|█████████▎| 28/30 [01:25<00:05,  2.87s/epoch, loss=2.764]PGExplainer train:  93%|█████████▎| 28/30 [01:28<00:05,  2.87s/epoch, loss=2.764]PGExplainer train: 100%|██████████| 30/30 [01:28<00:00,  2.86s/epoch, loss=2.764]PGExplainer train: 100%|██████████| 30/30 [01:28<00:00,  2.95s/epoch, loss=2.764]
+PGExplainer trained on 150 graphs, 30 epochs (89s), loss 2.972 -> 2.764
+gnnexplainer explain:   0%|          | 0/30 [00:00<?, ?mol/s]/home/manvendra.singh/rq1-faithfulness-gap/src/explain/pyg_explainers.py:54: UserWarning: The 'target' should not be provided for the explanation type 'model'
+  expl = self.explainer(
+gnnexplainer explain:  10%|█         | 3/30 [00:07<01:04,  2.39s/mol]gnnexplainer explain:  20%|██        | 6/30 [00:14<00:57,  2.39s/mol]gnnexplainer explain:  30%|███       | 9/30 [00:21<00:50,  2.38s/mol]gnnexplainer explain:  40%|████      | 12/30 [00:28<00:43,  2.39s/mol]gnnexplainer explain:  50%|█████     | 15/30 [00:35<00:35,  2.39s/mol]gnnexplainer explain:  60%|██████    | 18/30 [00:42<00:28,  2.38s/mol]gnnexplainer explain:  70%|███████   | 21/30 [00:50<00:21,  2.38s/mol]gnnexplainer explain:  80%|████████  | 24/30 [00:57<00:14,  2.39s/mol]gnnexplainer explain:  90%|█████████ | 27/30 [01:04<00:07,  2.39s/mol]gnnexplainer explain: 100%|██████████| 30/30 [01:11<00:00,  2.39s/mol]gnnexplainer explain: 100%|██████████| 30/30 [01:11<00:00,  2.39s/mol]
+  gnnexplainer: explained 30 mols in 72s (2.4s/mol)
+
+--- sanity check: gnnexplainer ---
+  mol  0  N=20  |expl|(mean-thr)=12  |expl|(top25%)= 5  top-k nodes=[8, 11, 14, 15, 19]
+  mol  1  N=29  |expl|(mean-thr)=15  |expl|(top25%)= 7  top-k nodes=[2, 3, 7, 14, 16, 20, 28]
+  mol  2  N=13  |expl|(mean-thr)= 6  |expl|(top25%)= 3  top-k nodes=[5, 7, 11]
+  mol  3  N=14  |expl|(mean-thr)= 6  |expl|(top25%)= 4  top-k nodes=[0, 4, 6, 10]
+  mol  4  N=19  |expl|(mean-thr)=11  |expl|(top25%)= 5  top-k nodes=[3, 4, 9, 14, 15]
+  => 0 empty, 0 whole-graph explanations out of 30
+pgexplainer explain:   0%|          | 0/30 [00:00<?, ?mol/s]pgexplainer explain: 100%|██████████| 30/30 [00:00<00:00, 123.09mol/s]
+  pgexplainer: explained 30 mols in 0s (0.0s/mol)
+
+--- sanity check: pgexplainer ---
+  mol  0  N=20  |expl|(mean-thr)=19  |expl|(top25%)= 5  top-k nodes=[11, 12, 13, 14, 15]
+  mol  1  N=29  |expl|(mean-thr)= 0  |expl|(top25%)= 7  top-k nodes=[15, 16, 18, 19, 20, 21, 22]
+  mol  2  N=13  |expl|(mean-thr)= 0  |expl|(top25%)= 3  top-k nodes=[8, 9, 10]
+  mol  3  N=14  |expl|(mean-thr)= 0  |expl|(top25%)= 4  top-k nodes=[8, 9, 10, 11]
+  mol  4  N=19  |expl|(mean-thr)= 0  |expl|(top25%)= 5  top-k nodes=[10, 11, 12, 13, 14]
+  => 28 empty, 0 whole-graph explanations out of 30
+    [empty] mol 1: N=29  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 2: N=13  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 3: N=14  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 4: N=19  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 5: N=10  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 6: N=23  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 7: N=23  node_importance min=1 max=1 mean=1 std=0
+    [empty] mol 8: N=17  node_importance min=1 max=1 mean=1 std=0
+  !! WARNING [pgexplainer]: 28 empty / 0 whole / 28 degenerate(std=0) of 30 -- this explainer's numbers on this dataset are unreliable
+  cached explanations -> runs/rq1_tier4/L2/gp/bbbp_s3_cache.pt
+score R3/mean/gnnexplainer:   0%|          | 0/30 [00:00<?, ?mol/s]score R3/mean/gnnexplainer: 100%|██████████| 30/30 [00:00<00:00, 56.51mol/s]
+score R3/mean/pgexplainer:   0%|          | 0/30 [00:00<?, ?mol/s]score R3/mean/pgexplainer: 100%|██████████| 30/30 [00:00<00:00, 69.38mol/s]
+score R3/mode/gnnexplainer:   0%|          | 0/30 [00:00<?, ?mol/s]score R3/mode/gnnexplainer: 100%|██████████| 30/30 [00:00<00:00, 104.65mol/s]
+score R3/mode/pgexplainer:   0%|          | 0/30 [00:00<?, ?mol/s]score R3/mode/pgexplainer: 100%|██████████| 30/30 [00:00<00:00, 98.11mol/s]
+
+====================================================================================
+bbbp | R3 masking, fill='mean' | top-25% node explanations | n=30
+====================================================================================
+explainer                Fid+           Fid-            GEF
+--------------------------------------------------------------------------------
+gnnexplainer    0.106±0.171   0.233±0.245   0.255±0.259 
+pgexplainer     0.118±0.175   0.223±0.236   0.236±0.242 
+
+====================================================================================
+bbbp | R3 masking, fill='mode' | top-25% node explanations | n=30
+====================================================================================
+explainer                Fid+           Fid-            GEF
+--------------------------------------------------------------------------------
+gnnexplainer    0.097±0.176   0.156±0.241   0.186±0.213 
+pgexplainer     0.118±0.189   0.147±0.223   0.161±0.191 
+
+Fid+ higher = explanation more necessary | Fid- lower = more sufficient
+GEF lower = more faithful (bounded [0,1))
+(no ground truth for bbbp -- GEA not applicable, per spec's applicability table)
+
+saved -> runs/rq1_tier4/L2/gp/bbbp_s3_out.json
+bbbp_s3: gp done (30 mols) -> runs/rq1_tier4/L2/gp
