@@ -1,0 +1,22 @@
+L6 -- SUBGRAPHX PER-MOLECULE STABILITY: 3 extra fixed-budget runs (explainer seeds from tags L6a, L6b, L6c) on the fixed 100-molecule subsets, seed-0 models
+
+  mutagenicity_dmpnn_s0 (100 molecules)
+    Jaccard between the 3 runs: mean 0.635, median 0.667; molecules with identical sets in all pairs 0.19; vs the Tier-2 run 0.634
+    atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.729
+    consensus set size 4.0 (k = 5.8)
+    GEA (sets scored as sets): single run mean 0.361, consensus 0.376; consensus - single +0.015 [-0.000, +0.030]
+    minus random-node: single +0.240 [+0.180, +0.301], consensus +0.255 [+0.190, +0.324], single under the final protocol +0.163 [+0.121, +0.207]
+
+  bxaic_indole_s0 (100 molecules)
+    Jaccard between the 3 runs: mean 0.815, median 0.810; molecules with identical sets in all pairs 0.24; vs the Tier-2 run 0.826
+    atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.868
+    consensus set size 7.2 (k = 7.4)
+    GEA (sets scored as sets): single run mean 0.643, consensus 0.642; consensus - single -0.000 [-0.007, +0.007]
+    minus random-node: single +0.477 [+0.435, +0.514], consensus +0.476 [+0.433, +0.517], single under the final protocol +0.471 [+0.430, +0.509]
+
+  mutag_graphxai_s0 (100 molecules)
+    Jaccard between the 3 runs: mean 0.628, median 0.661; molecules with identical sets in all pairs 0.26; vs the Tier-2 run 0.596
+    atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.707
+    consensus set size 3.4 (k = 4.0)
+    GEA (sets scored as sets): single run mean 0.031, consensus 0.025; consensus - single -0.006 [-0.012, +0.001]
+    minus random-node: single -0.118 [-0.131, -0.104], consensus -0.124 [-0.137, -0.109], single under the final protocol -0.099 [-0.112, -0.085]

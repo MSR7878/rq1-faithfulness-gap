@@ -1,0 +1,5 @@
+mutag_graphxai_s0 L6b mol 1: N=13 k=3 |S|=2 7.4s
+mutag_graphxai_s0 L6b mol 35: N=14 k=3 |S|=1 9.8s
+mutag_graphxai_s0 L6b mol 75: N=10 k=2 |S|=1 7.6s
+mutag_graphxai_s0 L6b mol 116: N=21 k=5 |S|=4 154.7s
+mutag_graphxai_s0 L6b mol 160: N=26 k=6 |S|=6 286.9s

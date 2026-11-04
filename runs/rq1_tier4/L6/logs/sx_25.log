@@ -1,0 +1,5 @@
+mutagenicity_dmpnn_s0 L6c mol 64: N=19 k=4 |S|=3 124.0s
+mutagenicity_dmpnn_s0 L6c mol 416: N=20 k=5 |S|=3 127.5s
+mutagenicity_dmpnn_s0 L6c mol 867: N=12 k=3 |S|=3 29.6s
+mutagenicity_dmpnn_s0 L6c mol 1281: N=36 k=9 |S|=9 203.1s
+mutagenicity_dmpnn_s0 L6c mol 1626: N=22 k=5 |S|=4 32.1s

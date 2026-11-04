@@ -1,0 +1,5 @@
+mutagenicity_dmpnn_s0 L6a mol 103: N=10 k=2 |S|=2 3.2s
+mutagenicity_dmpnn_s0 L6a mol 612: N=14 k=3 |S|=3 42.5s
+mutagenicity_dmpnn_s0 L6a mol 993: N=17 k=4 |S|=3 70.2s
+mutagenicity_dmpnn_s0 L6a mol 1339: N=22 k=5 |S|=4 167.6s
+mutagenicity_dmpnn_s0 L6a mol 1655: N=29 k=7 |S|=7 72.6s
