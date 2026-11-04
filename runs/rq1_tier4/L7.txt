@@ -1,0 +1,108 @@
+L7 -- FINE-TUNED COPIES THAT DRIFTED: re-tuned (learning-rate ladder 5e-5, 2e-5, 1e-5, up to 5 epochs, last epoch within 0.02) and item F re-scored
+
+  [0] clean test metrics (original -> copy); Tier-3 copy for reference
+  unit                          lr epochs             acc           AUROC  |d acc| |d AUROC|  fixed  Tier-3 |d acc| / |d AUROC|
+  mutagenicity_gin_s3        5e-05      5  0.983 -> 0.975  0.971 -> 0.990    0.008     0.019    yes         0.008 / 0.022
+  mutag_graphxai_s0          2e-05      1  0.897 -> 0.897  0.984 -> 0.989    0.000     0.005    yes         0.034 / 0.016
+  mutag_graphxai_s1          1e-05      1  0.931 -> 0.862  0.937 -> 0.937    0.069     0.000     NO         0.069 / 0.011
+  mutag_graphxai_s2          5e-05      1  0.862 -> 0.862  0.968 -> 0.968    0.000     0.000    yes         0.069 / 0.021
+  mutag_graphxai_s3          5e-05      1  0.759 -> 0.759  0.863 -> 0.879    0.000     0.016    yes         0.069 / 0.042
+  mutag_graphxai_s5          5e-05      5  0.828 -> 0.828  0.905 -> 0.921    0.000     0.016    yes         0.069 / 0.011
+  mutag_graphxai_s6          1e-05      1  0.931 -> 0.931  0.979 -> 0.979    0.000     0.000    yes         0.034 / 0.011
+  mutag_graphxai_s7          5e-05      1  0.828 -> 0.828  0.926 -> 0.942    0.000     0.016    yes         0.034 / 0.016
+  mutag_graphxai_s8          5e-05      3  0.690 -> 0.690  0.884 -> 0.895    0.000     0.011    yes         0.069 / 0.011
+  mutag_graphxai_s9          1e-05      1  0.690 -> 0.655  0.847 -> 0.847    0.034     0.000     NO         0.034 / 0.032
+  fixed: 8 of 10
+
+  [1] methods under F minus null (probability), 95% CI and counts; Holm per (unit, space) = 7 x 2 x 2 = 28. 're-tuned' = re-tuned copies for drifted seeds, Tier-3 copies otherwise
+  group                 method    metriccopies                 minus random-node   counts            minus random-conn.   counts
+  MUTAG-GT (10 seeds)   GNN       Fid+  Tier 3           +0.031 [+0.015, +0.049]    6/1/3       +0.030 [+0.013, +0.049]    3/1/6
+  MUTAG-GT (10 seeds)   GNN       Fid+  re-tuned         +0.037 [+0.015, +0.061]    6/1/3       +0.041 [+0.018, +0.064]    4/2/4
+  MUTAG-GT (10 seeds)   GNN       Fid-  Tier 3           -0.020 [-0.029, -0.012]    7/0/3       -0.016 [-0.026, -0.005]    6/0/4
+  MUTAG-GT (10 seeds)   GNN       Fid-  re-tuned         -0.026 [-0.038, -0.010]    8/1/1       -0.015 [-0.033, +0.012]    7/1/2
+  MUTAG-GT (10 seeds)   PG (final)Fid+  Tier 3           -0.003 [-0.012, +0.006]    0/5/5       -0.004 [-0.012, +0.005]    0/6/4
+  MUTAG-GT (10 seeds)   PG (final)Fid+  re-tuned         -0.013 [-0.027, -0.001]    0/6/4       -0.010 [-0.022, +0.001]    0/6/4
+  MUTAG-GT (10 seeds)   PG (final)Fid-  Tier 3           +0.009 [+0.003, +0.017]    0/3/7       +0.014 [+0.005, +0.024]    0/4/6
+  MUTAG-GT (10 seeds)   PG (final)Fid-  re-tuned         +0.019 [+0.008, +0.035]    1/4/5       +0.030 [+0.010, +0.057]    1/5/4
+  MUTAG-GT (10 seeds)   SX fixed  Fid+  Tier 3           +0.081 [+0.070, +0.093]   10/0/0       +0.080 [+0.069, +0.093]   10/0/0
+  MUTAG-GT (10 seeds)   SX fixed  Fid+  re-tuned         +0.100 [+0.087, +0.115]   10/0/0       +0.103 [+0.088, +0.121]   10/0/0
+  MUTAG-GT (10 seeds)   SX fixed  Fid-  Tier 3           -0.050 [-0.059, -0.043]   10/0/0       -0.046 [-0.052, -0.041]   10/0/0
+  MUTAG-GT (10 seeds)   SX fixed  Fid-  re-tuned         -0.075 [-0.103, -0.058]   10/0/0       -0.065 [-0.081, -0.054]   10/0/0
+  MUTAG-GT (10 seeds)   Saliency  Fid+  Tier 3           +0.045 [+0.037, +0.055]   10/0/0       +0.044 [+0.036, +0.055]   10/0/0
+  MUTAG-GT (10 seeds)   Saliency  Fid+  re-tuned         +0.043 [+0.028, +0.058]    9/0/1       +0.046 [+0.033, +0.060]   10/0/0
+  MUTAG-GT (10 seeds)   Saliency  Fid-  Tier 3           -0.027 [-0.035, -0.021]   10/0/0       -0.023 [-0.028, -0.018]   10/0/0
+  MUTAG-GT (10 seeds)   Saliency  Fid-  re-tuned         -0.037 [-0.063, -0.019]   10/0/0       -0.026 [-0.041, -0.013]    9/0/1
+  MUTAG-GT (10 seeds)   IG        Fid+  Tier 3           +0.068 [+0.056, +0.079]   10/0/0       +0.067 [+0.055, +0.079]   10/0/0
+  MUTAG-GT (10 seeds)   IG        Fid+  re-tuned         +0.079 [+0.061, +0.099]   10/0/0       +0.082 [+0.062, +0.105]    9/0/1
+  MUTAG-GT (10 seeds)   IG        Fid-  Tier 3           -0.042 [-0.052, -0.034]   10/0/0       -0.038 [-0.045, -0.032]   10/0/0
+  MUTAG-GT (10 seeds)   IG        Fid-  re-tuned         -0.059 [-0.086, -0.040]   10/0/0       -0.048 [-0.064, -0.035]   10/0/0
+  MUTAG-GT (10 seeds)   IxG       Fid+  Tier 3           +0.050 [+0.041, +0.060]   10/0/0       +0.049 [+0.040, +0.061]   10/0/0
+  MUTAG-GT (10 seeds)   IxG       Fid+  re-tuned         +0.059 [+0.041, +0.077]   10/0/0       +0.062 [+0.043, +0.083]   10/0/0
+  MUTAG-GT (10 seeds)   IxG       Fid-  Tier 3           -0.033 [-0.043, -0.025]   10/0/0       -0.029 [-0.035, -0.023]   10/0/0
+  MUTAG-GT (10 seeds)   IxG       Fid-  re-tuned         -0.046 [-0.075, -0.026]   10/0/0       -0.036 [-0.052, -0.022]   10/0/0
+  MUTAG-GT (10 seeds)   hetero    Fid+  Tier 3           -0.008 [-0.016, +0.000]    0/7/3       -0.008 [-0.018, +0.001]    0/7/3
+  MUTAG-GT (10 seeds)   hetero    Fid+  re-tuned         -0.018 [-0.037, -0.003]    0/8/2       -0.015 [-0.033, +0.001]    0/7/3
+  MUTAG-GT (10 seeds)   hetero    Fid-  Tier 3           +0.015 [+0.007, +0.025]    0/5/5       +0.020 [+0.009, +0.032]    0/6/4
+  MUTAG-GT (10 seeds)   hetero    Fid-  re-tuned         +0.020 [+0.004, +0.042]    0/5/5       +0.031 [+0.008, +0.064]    0/6/4
+  Mutagenicity GIN      GNN       Fid+  Tier 3           +0.144 [+0.117, +0.171]    5/0/0       +0.128 [+0.081, +0.174]    3/0/2
+  Mutagenicity GIN      GNN       Fid+  re-tuned         +0.146 [+0.117, +0.173]    5/0/0       +0.131 [+0.081, +0.179]    3/0/2
+  Mutagenicity GIN      GNN       Fid-  Tier 3           -0.068 [-0.085, -0.053]    5/0/0       -0.067 [-0.085, -0.053]    5/0/0
+  Mutagenicity GIN      GNN       Fid-  re-tuned         -0.068 [-0.085, -0.053]    5/0/0       -0.067 [-0.084, -0.052]    5/0/0
+  Mutagenicity GIN      PG (final)Fid+  Tier 3           -0.043 [-0.073, -0.007]    0/4/1       -0.059 [-0.088, -0.034]    0/5/0
+  Mutagenicity GIN      PG (final)Fid+  re-tuned         -0.036 [-0.071, +0.000]    0/3/2       -0.050 [-0.087, -0.015]    0/4/1
+  Mutagenicity GIN      PG (final)Fid-  Tier 3           +0.037 [+0.020, +0.055]    0/4/1       +0.037 [+0.020, +0.055]    0/4/1
+  Mutagenicity GIN      PG (final)Fid-  re-tuned         +0.033 [+0.017, +0.053]    0/4/1       +0.035 [+0.017, +0.054]    0/3/2
+  Mutagenicity GIN      SX fixed  Fid+  Tier 3           +0.150 [+0.124, +0.170]    5/0/0       +0.133 [+0.092, +0.170]    4/0/1
+  Mutagenicity GIN      SX fixed  Fid+  re-tuned         +0.155 [+0.126, +0.178]    5/0/0       +0.141 [+0.094, +0.183]    4/0/1
+  Mutagenicity GIN      SX fixed  Fid-  Tier 3           -0.083 [-0.111, -0.057]    5/0/0       -0.083 [-0.108, -0.057]    5/0/0
+  Mutagenicity GIN      SX fixed  Fid-  re-tuned         -0.083 [-0.111, -0.057]    5/0/0       -0.082 [-0.108, -0.057]    5/0/0
+  Mutagenicity GIN      Saliency  Fid+  Tier 3           +0.190 [+0.174, +0.210]    5/0/0       +0.174 [+0.141, +0.213]    5/0/0
+  Mutagenicity GIN      Saliency  Fid+  re-tuned         +0.189 [+0.172, +0.210]    5/0/0       +0.175 [+0.141, +0.213]    5/0/0
+  Mutagenicity GIN      Saliency  Fid-  Tier 3           -0.102 [-0.128, -0.081]    5/0/0       -0.101 [-0.120, -0.085]    5/0/0
+  Mutagenicity GIN      Saliency  Fid-  re-tuned         -0.100 [-0.126, -0.079]    5/0/0       -0.098 [-0.119, -0.081]    5/0/0
+  Mutagenicity GIN      IG        Fid+  Tier 3           +0.102 [+0.064, +0.144]    3/0/2       +0.086 [+0.029, +0.143]    2/1/2
+  Mutagenicity GIN      IG        Fid+  re-tuned         +0.106 [+0.064, +0.152]    3/0/2       +0.091 [+0.029, +0.155]    2/1/2
+  Mutagenicity GIN      IG        Fid-  Tier 3           -0.046 [-0.085, -0.008]    4/0/1       -0.045 [-0.088, -0.006]    4/0/1
+  Mutagenicity GIN      IG        Fid-  re-tuned         -0.047 [-0.086, -0.008]    4/0/1       -0.046 [-0.089, -0.006]    4/0/1
+  Mutagenicity GIN      IxG       Fid+  Tier 3           +0.174 [+0.150, +0.199]    5/0/0       +0.158 [+0.130, +0.190]    5/0/0
+  Mutagenicity GIN      IxG       Fid+  re-tuned         +0.172 [+0.145, +0.199]    5/0/0       +0.158 [+0.130, +0.190]    5/0/0
+  Mutagenicity GIN      IxG       Fid-  Tier 3           -0.076 [-0.097, -0.060]    5/0/0       -0.075 [-0.089, -0.063]    5/0/0
+  Mutagenicity GIN      IxG       Fid-  re-tuned         -0.074 [-0.096, -0.058]    5/0/0       -0.073 [-0.088, -0.061]    5/0/0
+  Mutagenicity GIN      hetero    Fid+  Tier 3           +0.140 [+0.121, +0.160]    3/0/2       +0.123 [+0.085, +0.163]    2/0/3
+  Mutagenicity GIN      hetero    Fid+  re-tuned         +0.137 [+0.119, +0.159]    3/0/2       +0.123 [+0.085, +0.164]    3/0/2
+  Mutagenicity GIN      hetero    Fid-  Tier 3           +0.002 [-0.010, +0.013]    0/1/4       +0.002 [-0.010, +0.016]    0/0/5
+  Mutagenicity GIN      hetero    Fid-  re-tuned         +0.002 [-0.009, +0.014]    0/1/4       +0.003 [-0.009, +0.018]    0/0/5
+  CI categories vs random-node that change (Tier 3 -> re-tuned): 3
+    MUTAG-GT (10 seeds)|re-tuned|pgexplainer|fidp
+    MUTAG-GT (10 seeds)|re-tuned|hetero|fidp
+    Mutagenicity GIN|re-tuned|pgexplainer|fidp
+
+  [2] ground truth minus size-matched null under F and R1c; counts GT better/worse/n.s. (families: prob 12, logit 8 per seed) and bootstrap CI
+  MUTAG-GT (10 seeds)
+    prob  fidp  node     0/9/1     -0.013 [-0.019, -0.007]   0/9/1     -0.020 [-0.031, -0.010]  0/10/0     -0.382 [-0.424, -0.335]  0/10/0     -0.384 [-0.427, -0.337]
+    prob  fidp  conn     0/9/1     -0.016 [-0.023, -0.009]   0/9/1     -0.019 [-0.029, -0.011]  0/10/0     -0.237 [-0.264, -0.210]  0/10/0     -0.237 [-0.265, -0.211]
+    prob  fidm  node     0/5/5     +0.017 [+0.009, +0.027]   0/6/4     +0.019 [+0.008, +0.036]   6/2/2     -0.038 [-0.075, -0.008]   7/2/1     -0.044 [-0.094, -0.008]
+    prob  fidm  conn     0/7/3     +0.018 [+0.011, +0.027]   0/7/3     +0.023 [+0.011, +0.042]  10/0/0     -0.100 [-0.137, -0.065]   9/0/1     -0.108 [-0.159, -0.064]
+    prob  gef   node     3/5/2     +0.015 [+0.003, +0.028]   1/4/5     +0.016 [+0.002, +0.034]   3/2/5     +0.012 [+0.000, +0.024]   3/1/6     +0.011 [+0.000, +0.023]
+    prob  gef   conn     2/5/3     +0.017 [+0.006, +0.030]   1/6/3     +0.021 [+0.005, +0.041]   7/0/3     +0.002 [-0.018, +0.025]   6/0/4     +0.004 [-0.015, +0.028]
+    logit fidp  node     0/9/1     -0.408 [-0.585, -0.241]   0/9/1     -0.536 [-0.825, -0.302]  0/10/0     -4.690 [-5.838, -3.596]  0/10/0     -4.942 [-6.299, -3.690]
+    logit fidp  conn     0/9/1     -0.398 [-0.569, -0.237]   0/9/1     -0.500 [-0.743, -0.291]  0/10/0     -3.110 [-3.856, -2.400]  0/10/0     -3.275 [-4.154, -2.465]
+    logit fidm  node     0/9/1     +0.194 [+0.100, +0.293]   0/9/1     +0.234 [+0.111, +0.389]   6/2/2     -0.180 [-0.347, -0.044]   7/2/1     -0.208 [-0.434, -0.044]
+    logit fidm  conn     0/9/1     +0.230 [+0.124, +0.343]   0/9/1     +0.280 [+0.143, +0.452]  10/0/0     -0.640 [-0.913, -0.375]   9/0/1     -0.694 [-1.032, -0.385]
+    (columns: F Tier 3, F re-tuned, R1c Tier 3, R1c re-tuned)
+  Mutagenicity GIN
+    prob  fidp  node     5/0/0     +0.321 [+0.266, +0.377]   5/0/0     +0.319 [+0.260, +0.377]   5/0/0     +0.333 [+0.278, +0.386]   5/0/0     +0.332 [+0.276, +0.386]
+    prob  fidp  conn     5/0/0     +0.355 [+0.299, +0.414]   5/0/0     +0.352 [+0.294, +0.414]   5/0/0     +0.377 [+0.320, +0.434]   5/0/0     +0.376 [+0.318, +0.434]
+    prob  fidm  node     5/0/0     -0.213 [-0.240, -0.184]   5/0/0     -0.207 [-0.232, -0.181]   5/0/0     -0.287 [-0.335, -0.244]   5/0/0     -0.285 [-0.333, -0.243]
+    prob  fidm  conn     5/0/0     -0.211 [-0.240, -0.181]   5/0/0     -0.206 [-0.234, -0.179]   5/0/0     -0.282 [-0.330, -0.238]   5/0/0     -0.281 [-0.329, -0.237]
+    prob  gef   node     5/0/0     -0.240 [-0.266, -0.213]   5/0/0     -0.234 [-0.258, -0.209]   5/0/0     -0.333 [-0.382, -0.286]   5/0/0     -0.331 [-0.379, -0.284]
+    prob  gef   conn     5/0/0     -0.241 [-0.268, -0.212]   5/0/0     -0.235 [-0.261, -0.209]   5/0/0     -0.323 [-0.372, -0.277]   5/0/0     -0.322 [-0.368, -0.275]
+    logit fidp  node     5/0/0     +2.944 [+2.558, +3.306]   5/0/0     +2.917 [+2.488, +3.306]   5/0/0     +3.022 [+2.640, +3.383]   5/0/0     +3.007 [+2.602, +3.381]
+    logit fidp  conn     5/0/0     +3.305 [+2.949, +3.652]   5/0/0     +3.270 [+2.877, +3.652]   5/0/0     +3.454 [+3.086, +3.834]   5/0/0     +3.431 [+3.031, +3.830]
+    logit fidm  node     5/0/0     -1.910 [-2.316, -1.520]   5/0/0     -1.891 [-2.281, -1.515]   5/0/0     -2.857 [-3.693, -2.066]   5/0/0     -2.855 [-3.694, -2.066]
+    logit fidm  conn     5/0/0     -1.943 [-2.364, -1.524]   5/0/0     -1.938 [-2.358, -1.522]   5/0/0     -2.726 [-3.518, -1.983]   5/0/0     -2.728 [-3.521, -1.983]
+    (columns: F Tier 3, F re-tuned, R1c Tier 3, R1c re-tuned)
+
+  P-F1 with the re-tuned copies (for reference; P-F1 itself was scored in Tier 3 and is not re-scored here):
+    Tier 3     part 2: MUTAG-GT R1c Fid+ GT - random-connected -0.237 [-0.264, -0.210], 0/10 better -> holds; part 1 GIN: 5/5 under F
+    re-tuned   part 2: MUTAG-GT R1c Fid+ GT - random-connected -0.237 [-0.265, -0.211], 0/10 better -> holds; part 1 GIN: 5/5 under F
