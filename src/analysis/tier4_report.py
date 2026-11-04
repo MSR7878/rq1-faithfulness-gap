@@ -178,5 +178,55 @@ def L3():
     save("L3", rep)
 
 
+# ------------------------------------------------------------------ L4
+def L4():
+    rep = {}; Z = {u: load(f"{T4}/L4/{u}.npz") for u in MUTAG}
+    P("L4 -- WHAT THE MUTAG-GT MODEL USES: the aromatic scaffold (all atoms on an aromatic bond) vs random sets of the same size; 10 seeds")
+    P(f"  molecules per seed (all / test): {[(len(Z[u]['mol_idx']), int(Z[u]['is_test'].sum())) for u in MUTAG]}; skipped (no aromatic atom or all atoms aromatic): {[len(Z[u]['skipped']) for u in MUTAG]}")
+    P(f"  mean scaffold size {np.mean([Z[u]['scaf_size'].mean() for u in MUTAG]):.1f} atoms of {np.mean([Z[u]['n'].mean() for u in MUTAG]):.1f}")
+    P("  Fid+ = scaffold hidden (necessity: higher = more needed); Fid- = only the scaffold kept (sufficiency: lower = more sufficient); GEF lower = better.")
+    P("  counts = scaffold better/worse/n.s.; Holm per seed over 3 rules x {Fid+, Fid-} = 6, per space and per null; GEF in its own family of 3.")
+    sel = lambda u, part: np.ones(len(Z[u]["mol_idx"]), bool) if part == "all" else Z[u]["is_test"].astype(bool)
+    rep["scaffold"] = {}
+    for space in ("logit", "prob"):
+        fams = [("fidp", "fidm")] + ([("gef",)] if space == "prob" else [])
+        ko = lambda mt: "gef" if mt == "gef" else f"{mt}_{space}"
+        for nl in ("conn", "node"):
+            for part in ("all", "test"):
+                for fam in fams:
+                    sig = holm_counts([{(mt, r): RA.wp(Z[u][f"scaf_{r}_{ko(mt)}"][sel(u, part)], Z[u][f"{nl}_{r}_{ko(mt)}"][sel(u, part)]) for mt in fam for r in RULES} for u in MUTAG])
+                    for mt in fam:
+                        for r in RULES:
+                            d, _ = boot([Z[u][f"scaf_{r}_{ko(mt)}"][sel(u, part)] for u in MUTAG], [Z[u][f"{nl}_{r}_{ko(mt)}"][sel(u, part)] for u in MUTAG])
+                            rep["scaffold"][f"{space}|{nl}|{part}|{mt}|{r}"] = {"ci": list(d), "signs": [flip(s, mt) for s in sig[(mt, r)]]}
+        P(f"\n  [{space}] scaffold minus null")
+        P(f"  {'null':<6}{'set':<6}{'metric':<7}" + "".join(f"{r:>37}" for r in RULES))
+        for nl in ("conn", "node"):
+            for part in ("all", "test"):
+                for mt in (("fidp", "fidm", "gef") if space == "prob" else ("fidp", "fidm")):
+                    cells = "".join(f"{C.counts(rep['scaffold'][f'{space}|{nl}|{part}|{mt}|{r}']['signs']):>9} {fmt_ci(*rep['scaffold'][f'{space}|{nl}|{part}|{mt}|{r}']['ci']):>27}" for r in RULES)
+                    P(f"  {nl:<6}{part:<6}{mt:<7}{cells}")
+    P("\n  [overlap] share of chosen atoms that are aromatic, minus random-connected sets of the same size; Holm per seed = 3")
+    P(f"  {'method':<14}{'set':<6}{'mean share':>11}{'null share':>11}{'difference [95% CI]':>30}{'counts':>9}")
+    rep["overlap"] = {}
+    OV = {"sx_fixed": ("ov_sx", "ov_sx_conn"), "gnnexplainer": ("ov_gnn", "ov_topk_conn"), "ig": ("ov_ig", "ov_topk_conn")}
+    for part in ("all", "test"):
+        sig = holm_counts([{m: RA.wp(Z[u][a][sel(u, part)], Z[u][b][sel(u, part)]) for m, (a, b) in OV.items()} for u in MUTAG])
+        for m, (a, b) in OV.items():
+            d, _ = boot([Z[u][a][sel(u, part)] for u in MUTAG], [Z[u][b][sel(u, part)] for u in MUTAG])
+            ma = np.mean([np.nanmean(Z[u][a][sel(u, part)]) for u in MUTAG]); mb = np.mean([np.nanmean(Z[u][b][sel(u, part)]) for u in MUTAG])
+            rep["overlap"][f"{m}|{part}"] = {"ci": list(d), "signs": sig[m], "share": float(ma), "null": float(mb)}
+            P(f"  {SH[m]:<14}{part:<6}{ma:>11.3f}{mb:>11.3f}{fmt_ci(*d):>30}{C.counts(sig[m]):>9}")
+    P(f"  SubgraphX coalition size: mean {np.mean([Z[u]['sx_size'].mean() for u in MUTAG]):.1f}; molecules with an empty coalition: {sum(int((Z[u]['sx_size'] == 0).sum()) for u in MUTAG)}")
+    a = rep["scaffold"]["logit|conn|all|fidp|R1"]; b = rep["overlap"]["sx_fixed|all"]
+    na, nb = a["signs"].count("+"), b["signs"].count("+")
+    P("\n  P-L4 (all explained molecules with an aromatic scaffold):")
+    P(f"    (a) R1 necessity, logit Fid+ scaffold minus random-connected {fmt_ci(*a['ci'])}; scaffold significantly higher in {na}/10 seeds -> {'>= 8' if na >= 8 else '< 8'}")
+    P(f"    (b) SubgraphX aromatic share minus random-connected {fmt_ci(*b['ci'])}; significantly higher in {nb}/10 seeds -> {'>= 8' if nb >= 8 else '< 8'}")
+    held = na >= 8 and nb >= 8; rep["P-L4"] = {"a_seeds": na, "b_seeds": nb, "held": held}
+    P(f"  P-L4 {'HELD' if held else 'FAILED'}")
+    save("L4", rep)
+
+
 if __name__ == "__main__":
     globals()[sys.argv[1]]()
