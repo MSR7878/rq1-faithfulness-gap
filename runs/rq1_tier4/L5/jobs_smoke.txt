@@ -1,0 +1,1 @@
+CUBLAS_WORKSPACE_CONFIG=:4096:8 $PY -u -m src.analysis.tier4_L5 smoke

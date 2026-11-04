@@ -1,0 +1,8 @@
+{
+ "unit": "mutagenicity_dmpnn_s0",
+ "error": null,
+ "identical": true,
+ "n_mols": 350,
+ "max_abs_diff": 0.0,
+ "device": "cuda"
+}

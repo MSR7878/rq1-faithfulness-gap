@@ -1,0 +1,46 @@
+L5 -- PGEXPLAINER REPRODUCIBILITY (Mutagenicity D-MPNN and GINE, seeds 0-4; 3 repeats; original arguments and explainer seed)
+  device rule (PLAN): GPU smoke test -> identical (max |edge mask difference| 0.0); all repeats ran on: CUDA
+  settings: use_deterministic_algorithms(True), cudnn deterministic, CUBLAS_WORKSPACE_CONFIG=:4096:8, fixed seeds
+
+  [1] mask equality across the 3 repeats (all explained molecules)
+  unit                       molecules  identical masks  mols differing  max |edge diff|  max |logit diff|
+  mutagenicity_dmpnn_s0            350              yes               0         0.00e+00          0.00e+00
+  mutagenicity_dmpnn_s1            345              yes               0         0.00e+00          0.00e+00
+  mutagenicity_dmpnn_s2            348              yes               0         0.00e+00          0.00e+00
+  mutagenicity_dmpnn_s3            351              yes               0         0.00e+00          0.00e+00
+  mutagenicity_dmpnn_s4            346              yes               0         0.00e+00          0.00e+00
+  mutagenicity_gine_s0             350              yes               0         0.00e+00          0.00e+00
+  mutagenicity_gine_s1             345              yes               0         0.00e+00          0.00e+00
+  mutagenicity_gine_s2             348              yes               0         0.00e+00          0.00e+00
+  mutagenicity_gine_s3             351              yes               0         0.00e+00          0.00e+00
+  mutagenicity_gine_s4             346              yes               0         0.00e+00          0.00e+00
+
+  [2] PGExplainer GEA minus random-node per run (logit-ranked unless stated), 95% CI, counts (Holm per seed = 1)
+  D-MPNN  repeat 0                               +0.007 [-0.087, +0.108]    2/3/0   includes 0
+  D-MPNN  repeat 1                               +0.007 [-0.087, +0.108]    2/3/0   includes 0
+  D-MPNN  repeat 2                               +0.007 [-0.087, +0.108]    2/3/0   includes 0
+  D-MPNN  earlier: stored (final rule)           -0.004 [-0.091, +0.087]    2/3/0   includes 0
+  D-MPNN  earlier: T4 re-run                     -0.014 [-0.087, +0.063]    2/3/0   includes 0
+  D-MPNN  earlier: Tier-3 E 'all' re-run         -0.006 [-0.098, +0.102]    2/3/0   includes 0
+  GINE    repeat 0                               -0.070 [-0.114, -0.011]    1/4/0   below
+  GINE    repeat 1                               -0.070 [-0.114, -0.011]    1/4/0   below
+  GINE    repeat 2                               -0.070 [-0.114, -0.011]    1/4/0   below
+  GINE    earlier: stored (final rule)           -0.087 [-0.122, -0.031]    0/4/1   below
+  GINE    earlier: T4 re-run                     -0.077 [-0.121, -0.015]    0/4/1   below
+  GINE    earlier: Tier-3 E 'all' re-run         -0.027 [-0.113, +0.127]    1/4/0   includes 0
+
+  [3] spread of the earlier non-deterministic runs: pairwise max |edge mask difference| (float32) and mean Spearman of node scores
+  unit                                     stored vs T4 re-run                   stored vs E all                T4 re-run vs E all
+  mutagenicity_dmpnn_s0                 2.64e-01  rho  0.918              3.29e-01  rho  0.937              3.45e-01  rho  0.919  
+  mutagenicity_dmpnn_s1                 2.96e-02  rho  0.972              2.30e-02  rho  0.943              2.24e-02  rho  0.941  
+  mutagenicity_dmpnn_s2                 1.00e+00  rho  0.881              1.00e+00  rho  0.844              1.00e+00  rho  0.845  
+  mutagenicity_dmpnn_s3                 1.00e+00  rho  0.915              1.00e+00  rho  0.894              1.00e+00  rho  0.886  
+  mutagenicity_dmpnn_s4                 9.37e-01  rho  0.910              9.37e-01  rho  0.921              9.94e-01  rho  0.929  
+  mutagenicity_gine_s0                  3.87e-16  rho  0.849              3.87e-16  rho  0.849              4.70e-22  rho  0.999  
+  mutagenicity_gine_s1                  1.00e+00  rho  0.912              1.00e+00  rho  0.914              1.00e+00  rho  0.956  
+  mutagenicity_gine_s2                  1.00e+00  rho  0.943              1.00e+00  rho  0.890              1.00e+00  rho  0.900  
+  mutagenicity_gine_s3                  1.00e+00  rho  0.889              1.00e+00  rho  0.909              1.00e+00  rho  0.851  
+  mutagenicity_gine_s4                  2.87e-36  rho    nan              7.23e-26  rho  0.921              7.23e-26  rho    nan  
+
+  P-L5: three deterministic repeats give bitwise-identical float32 edge masks on all 10 units -> yes
+  P-L5 HELD
