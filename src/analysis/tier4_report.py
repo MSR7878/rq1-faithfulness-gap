@@ -228,5 +228,69 @@ def L4():
     save("L4", rep)
 
 
+# ------------------------------------------------------------------ L5
+def _pg_cache(path):
+    r = C.torch_load(path)["results"]["pgexplainer"]
+    return [np.asarray(x["edge_importance"], dtype=np.float32) for x in r], [np.asarray(x["node_importance"], dtype=np.float64) for x in r]
+
+
+def _spear(a, b):
+    from scipy.stats import spearmanr
+    v = [np.nan if np.std(x) == 0 or np.std(y) == 0 else spearmanr(x, y).statistic for x, y in zip(a, b)]
+    return float(np.nanmean(v)) if not all(np.isnan(v)) else np.nan
+
+
+def L5():
+    from .tier4_L5 import UNITS
+    rep = {}; dev = json.load(open(f"{T4}/L5/device.json")); rep["device"] = dev
+    P("L5 -- PGEXPLAINER REPRODUCIBILITY (Mutagenicity D-MPNN and GINE, seeds 0-4; 3 repeats; original arguments and explainer seed)")
+    P(f"  device rule (PLAN): GPU smoke test -> {dev.get('error') or ('identical' if dev.get('identical') else 'not identical')} "
+      f"(max |edge mask difference| {dev.get('max_abs_diff', float('nan'))}); all repeats ran on: {dev['device'].upper()}")
+    P("  settings: use_deterministic_algorithms(True), cudnn deterministic, CUBLAS_WORKSPACE_CONFIG=:4096:8, fixed seeds" + (", 1 CPU thread" if dev["device"] == "cpu" else ""))
+    P("\n  [1] mask equality across the 3 repeats (all explained molecules)")
+    P(f"  {'unit':<26}{'molecules':>10}{'identical masks':>17}{'mols differing':>16}{'max |edge diff|':>17}{'max |logit diff|':>18}")
+    allsame = True; rep["units"] = {}
+    for u in UNITS:
+        E_ = [_pg_cache(f"{T4}/L5/rep{r}/{u}_cache.pt")[0] for r in range(3)]
+        L_ = [list(np.load(f"{T4}/L5/rep{r}/{u}_pg_logits.npz", allow_pickle=True)["logits"]) for r in range(3)]
+        diff_mols = sum(any(not np.array_equal(E_[0][i], E_[r][i]) for r in (1, 2)) for i in range(len(E_[0])))
+        me = max(float(np.abs(E_[0][i] - E_[r][i]).max()) if len(E_[0][i]) else 0.0 for r in (1, 2) for i in range(len(E_[0])))
+        ml = max(float(np.abs(np.asarray(L_[0][i], float) - np.asarray(L_[r][i], float)).max()) if len(L_[0][i]) else 0.0 for r in (1, 2) for i in range(len(L_[0])))
+        same = diff_mols == 0; allsame &= same
+        rep["units"][u] = {"n": len(E_[0]), "identical": same, "mols_differing": diff_mols, "max_edge_diff": me, "max_logit_diff": ml}
+        P(f"  {u:<26}{len(E_[0]):>10}{'yes' if same else 'NO':>17}{diff_mols:>16}{me:>17.2e}{ml:>18.2e}")
+    P("\n  [2] PGExplainer GEA minus random-node per run (logit-ranked unless stated), 95% CI, counts (Holm per seed = 1)")
+    runs = {f"repeat {r}": (lambda u, r=r: C.npz_scores(f"{T4}/L5/rep{r}/{u}_pg_logits.npz", "node_score64")) for r in range(3)}
+    runs.update({"earlier: stored (final rule)": None, "earlier: T4 re-run": (lambda u: C.npz_scores(f"runs/rq1_revision/logits/{u}.npz", "node_score64")),
+                 "earlier: Tier-3 E 'all' re-run": (lambda u: C.npz_scores(f"runs/rq1_tier3/E/gp/all/{u}_pg_logits.npz", "node_score64"))})
+    rep["gea"] = {}
+    for arch in ("dmpnn", "gine"):
+        us = [u for u in UNITS if f"_{arch}_" in u]; H = {u: load(f"{C.T2}/H/gea/{u}.npz") for u in us}
+        for name, f in runs.items():
+            if f is None:
+                a = [H[u]["pgexplainer"] for u in us]
+            else:
+                a = []
+                for u in us:
+                    sc = f(u); a.append(C.gea_array(u, "pgexplainer", lambda x, sc=sc: sc[x], [int(m) for m in H[u]["mol_idx"]], C.dataset_of(u)))
+            d, _ = boot(a, [H[u]["rn"] for u in us]); sg = [RA.fam_signs({0: RA.wp(x, H[u]["rn"])})[0] for x, u in zip(a, us)]
+            rep["gea"][f"{arch}|{name}"] = {"ci": list(d), "cat": cat(d), "signs": sg}
+            P(f"  {'D-MPNN' if arch == 'dmpnn' else 'GINE':<8}{name:<34}{fmt_ci(*d):>28}{C.counts(sg):>9}   {cat(d)}")
+    P("\n  [3] spread of the earlier non-deterministic runs: pairwise max |edge mask difference| (float32) and mean Spearman of node scores")
+    pairs = [("stored", "T4 re-run"), ("stored", "E all"), ("T4 re-run", "E all")]; rep["earlier"] = {}
+    P(f"  {'unit':<26}" + "".join(f"{a + ' vs ' + b:>34}" for a, b in pairs))
+    for u in UNITS:
+        src = {"stored": _pg_cache(C.orig_spec(u)["cache"]), "T4 re-run": _pg_cache(f"runs/rq1_revision/logits/rerun/{u}_cache.pt"), "E all": _pg_cache(f"runs/rq1_tier3/E/gp/all/{u}_cache.pt")}
+        cells = ""
+        for a, b in pairs:
+            me = max(float(np.abs(x - y).max()) if len(x) else 0.0 for x, y in zip(src[a][0], src[b][0])); sp = _spear(src[a][1], src[b][1])
+            rep["earlier"][f"{u}|{a}|{b}"] = {"max_edge_diff": me, "spearman": sp}; cells += f"{me:>20.2e}  rho {sp:>6.3f}  "
+        P(f"  {u:<26}{cells}")
+    rep["P-L5"] = {"held": allsame}
+    P(f"\n  P-L5: three deterministic repeats give bitwise-identical float32 edge masks on all 10 units -> {'yes' if allsame else 'NO'}")
+    P(f"  P-L5 {'HELD' if allsame else 'FAILED'}")
+    save("L5", rep)
+
+
 if __name__ == "__main__":
     globals()[sys.argv[1]]()
