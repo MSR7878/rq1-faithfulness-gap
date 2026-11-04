@@ -292,5 +292,264 @@ def L5():
     save("L5", rep)
 
 
+# ------------------------------------------------------------------ L7
+def L7():
+    import torch
+    from .tier3_F import METHODS as FM
+    from .tier4_L7 import DRIFTED
+    rep = {}; T3 = "runs/rq1_tier3/F"
+    P("L7 -- FINE-TUNED COPIES THAT DRIFTED: re-tuned (learning-rate ladder 5e-5, 2e-5, 1e-5, up to 5 epochs, last epoch within 0.02) and item F re-scored")
+    P("\n  [0] clean test metrics (original -> copy); Tier-3 copy for reference")
+    P(f"  {'unit':<24}{'lr':>8}{'epochs':>7}{'acc':>16}{'AUROC':>16}{'|d acc|':>9}{'|d AUROC|':>10}{'fixed':>7}{'Tier-3 |d acc| / |d AUROC|':>28}")
+    rep["tune"] = {}
+    for u in DRIFTED:
+        f = torch.load(f"{T4}/L7/ckpt/{u}.pt", map_location="cpu", weights_only=False)["finetune"]; g = torch.load(f"{T3}/ckpt/{u}.pt", map_location="cpu", weights_only=False)["finetune"]
+        da, dr = abs(f["test_acc_after"] - f["test_acc_before"]), abs(f["test_auroc_after"] - f["test_auroc_before"])
+        rep["tune"][u] = {**{k: f[k] for k in ("lr", "epochs", "test_acc_before", "test_acc_after", "test_auroc_before", "test_auroc_after", "fixed")}, "ladder": f["ladder"]}
+        P(f"  {u:<24}{f['lr']:>8.0e}{f['epochs']:>7}{f['test_acc_before']:>7.3f} -> {f['test_acc_after']:.3f}{f['test_auroc_before']:>7.3f} -> {f['test_auroc_after']:.3f}"
+          f"{da:>9.3f}{dr:>10.3f}{'yes' if f['fixed'] else 'NO':>7}{abs(g['test_acc_after'] - g['test_acc_before']):>14.3f} / {abs(g['test_auroc_after'] - g['test_auroc_before']):.3f}")
+    nf = sum(rep["tune"][u]["fixed"] for u in DRIFTED); P(f"  fixed: {nf} of {len(DRIFTED)}"); rep["n_fixed"] = nf
+    groups = {"MUTAG-GT (10 seeds)": MUTAG, "Mutagenicity GIN": [f"mutagenicity_gin_s{s}" for s in range(5)]}
+    src = {"Tier 3": lambda u: load(f"{T3}/score/{u}.npz"), "re-tuned": lambda u: load(f"{T4}/L7/score/{u}.npz" if u in DRIFTED else f"{T3}/score/{u}.npz")}
+    P("\n  [1] methods under F minus null (probability), 95% CI and counts; Holm per (unit, space) = 7 x 2 x 2 = 28. 're-tuned' = re-tuned copies for drifted seeds, Tier-3 copies otherwise")
+    P(f"  {'group':<22}{'method':<10}{'metric':<6}{'copies':<10}{'minus random-node':>30}{'counts':>9}{'minus random-conn.':>30}{'counts':>9}")
+    rep["methods"] = {}
+    for g, us in groups.items():
+        for name, ld in src.items():
+            Z = {u: ld(u) for u in us}
+            sig = holm_counts([{(m, mt, r): C.wil(Z[u][f"{m}_{mt}_prob"], Z[u][f"{r}_{mt}_prob"]) for m in FM for mt in ("fidp", "fidm") for r in ("rn", "rc")} for u in us])
+            for m in FM:
+                for mt in ("fidp", "fidm"):
+                    n, _ = boot([Z[u][f"{m}_{mt}_prob"] for u in us], [Z[u][f"rn_{mt}_prob"] for u in us]); c, _ = boot([Z[u][f"{m}_{mt}_prob"] for u in us], [Z[u][f"rc_{mt}_prob"] for u in us])
+                    rep["methods"][f"{g}|{name}|{m}|{mt}"] = {"rn": list(n), "rc": list(c), "cat_rn": cat(n), "signs_rn": [flip(s, mt) for s in sig[(m, mt, "rn")]], "signs_rc": [flip(s, mt) for s in sig[(m, mt, "rc")]]}
+        for m in FM:
+            for mt in ("fidp", "fidm"):
+                for name in src:
+                    x = rep["methods"][f"{g}|{name}|{m}|{mt}"]
+                    P(f"  {g:<22}{('PG (final)' if m == 'pgexplainer' else SH[m]):<10}{'Fid+' if mt == 'fidp' else 'Fid-':<6}{name:<10}{fmt_ci(*x['rn']):>30}{C.counts(x['signs_rn']):>9}{fmt_ci(*x['rc']):>30}{C.counts(x['signs_rc']):>9}")
+    ch = [k for k in rep["methods"] if "|re-tuned|" in k and rep["methods"][k]["cat_rn"] != rep["methods"][k.replace("|re-tuned|", "|Tier 3|")]["cat_rn"]]
+    P(f"  CI categories vs random-node that change (Tier 3 -> re-tuned): {len(ch)}"); [P(f"    {k}") for k in ch]; rep["method_changes"] = ch
+    P("\n  [2] ground truth minus size-matched null under F and R1c; counts GT better/worse/n.s. (families: prob 12, logit 8 per seed) and bootstrap CI")
+    rep["oracle"] = {}
+    for g, us in groups.items():
+        for name, ld in src.items():
+            Z = {u: ld(u) for u in us}
+            for space, mets in (("prob", ["fidp", "fidm", "gef"]), ("logit", ["fidp", "fidm"])):
+                ko = lambda mt: "gef" if mt == "gef" else f"{mt}_{space}"
+                sig = holm_counts([{(mt, r, nl): RA.wp(Z[u][f"G_gt_{r}_{ko(mt)}"], Z[u][f"G_{nl}_{r}_{ko(mt)}"]) for mt in mets for r in ("F", "R1c") for nl in ("node", "conn")} for u in us])
+                for mt in mets:
+                    for r in ("F", "R1c"):
+                        for nl in ("node", "conn"):
+                            d, _ = boot([Z[u][f"G_gt_{r}_{ko(mt)}"] for u in us], [Z[u][f"G_{nl}_{r}_{ko(mt)}"] for u in us])
+                            rep["oracle"][f"{g}|{name}|{space}|{mt}|{r}|{nl}"] = {"ci": list(d), "signs": [flip(s, mt) for s in sig[(mt, r, nl)]]}
+        P(f"  {g}")
+        for space, mets in (("prob", ["fidp", "fidm", "gef"]), ("logit", ["fidp", "fidm"])):
+            for mt in mets:
+                for nl in ("node", "conn"):
+                    cells = "".join(f"{C.counts(rep['oracle'][f'{g}|{name}|{space}|{mt}|{r}|{nl}']['signs']):>8} {fmt_ci(*rep['oracle'][f'{g}|{name}|{space}|{mt}|{r}|{nl}']['ci']):>27}"
+                                    for r in ("F", "R1c") for name in src)
+                    P(f"    {space:<6}{mt:<6}{nl:<6}" + cells)
+        P(f"    (columns: F Tier 3, F re-tuned, R1c Tier 3, R1c re-tuned)")
+    mg = "MUTAG-GT (10 seeds)"
+    P("\n  P-F1 with the re-tuned copies (for reference; P-F1 itself was scored in Tier 3 and is not re-scored here):")
+    for name in src:
+        x = rep["oracle"][f"{mg}|{name}|prob|fidp|R1c|conn"]; nb = x["signs"].count("+"); ok = not x["ci"][1] > 0 and nb < 8
+        gin = rep["oracle"][f"Mutagenicity GIN|{name}|prob|fidp|F|conn"]["signs"].count("+")
+        rep[f"P-F1|{name}"] = {"part2": ok, "mutag_r1c": x["ci"], "better": nb, "gin_F_conn_better": gin}
+        P(f"    {name:<10} part 2: MUTAG-GT R1c Fid+ GT - random-connected {fmt_ci(*x['ci'])}, {nb}/10 better -> {'holds' if ok else 'does not hold'}; part 1 GIN: {gin}/5 under F")
+    save("L7", rep)
+
+
+# ------------------------------------------------------------------ L2
+def L2():
+    import torch
+    from scipy.stats import ttest_1samp
+    from .tier4_common import bbbp_units
+    from .tier4_L2 import METHODS
+    rep = {}; us = bbbp_units(); Z = {u: load(f"{T4}/L2/fid/{u}.npz") for u in us}
+    P("L2 -- SINGLE-SPLIT DATASETS. MUTAG (standard) is dropped from all results (MUTAG-GT, 10 seeds, covers it); recorded in PLAN.md.")
+    P("  BBBP, 5 seeds, 30 explained test molecules per seed; EXPLORATORY (no prediction). Fid minus 20 random rankings.")
+    P("\n  [0] models (test split)")
+    for u in us:
+        m = torch.load(C.orig_spec(u)["ckpt"], map_location="cpu", weights_only=False)["metrics"]; rep.setdefault("models", {})[u] = m
+        P(f"    {u}: acc {m['test_acc']:.3f} AUROC {m['test_auroc']:.3f}")
+    P("    (the stored single BBBP model: acc 0.833, AUROC 0.841)")
+    rep["fid"] = {}
+    for space in ("prob", "logit"):
+        P(f"\n  [1 {space}] method minus random rankings, 95% CI, counts better/worse/n.s.; Holm per (seed, space) = 5 methods x 2 metrics x 3 rules = 30")
+        sig = holm_counts([{(m, mt, r): C.wil(Z[u][f"{m}_{r}_{mt}_{space}"], Z[u][f"randnode_{r}_{mt}_{space}"]) for m in METHODS for mt in ("fidp", "fidm") for r in RULES} for u in us])
+        P(f"  {'method':<12}{'metric':<6}" + "".join(f"{r:>39}" for r in RULES))
+        for m in METHODS:
+            for mt in ("fidp", "fidm"):
+                cells = ""
+                for r in RULES:
+                    p, lo, hi, vals = RA.hboot([Z[u][f"{m}_{r}_{mt}_{space}"] for u in us], [Z[u][f"randnode_{r}_{mt}_{space}"] for u in us])
+                    sg = [flip(s, mt) for s in sig[(m, mt, r)]]; x = {"ci": [p, lo, hi], "signs": sg}
+                    if space == "prob":
+                        c90 = (float(np.percentile(vals, 5)), float(np.percentile(vals, 95)))
+                        v = "equivalent" if (c90[0] > -0.05 and c90[1] < 0.05) else ("different" if (lo > 0 or hi < 0) else "undecided")
+                        tost = 0
+                        for u in us:
+                            dd = Z[u][f"{m}_{r}_{mt}_{space}"] - Z[u][f"randnode_{r}_{mt}_{space}"]
+                            tost += max(ttest_1samp(dd, -0.05, alternative="greater").pvalue, ttest_1samp(dd, 0.05, alternative="less").pvalue) < 0.05
+                        x.update(ci90=list(c90), verdict=v, unit_tost=int(tost))
+                    rep["fid"][f"{space}|{m}|{mt}|{r}"] = x; cells += f"{C.counts(sg):>9} {fmt_ci(p, lo, hi):>29}"
+                P(f"  {SH[m]:<12}{'Fid+' if mt == 'fidp' else 'Fid-':<6}{cells}")
+    P("\n  [2] TOST, margin 0.05 (probability space; as for Tox21): verdict and per-seed TOST count")
+    P(f"  {'method':<12}{'metric':<6}" + "".join(f"{r:>34}" for r in RULES))
+    tally = {}
+    for m in METHODS:
+        for mt in ("fidp", "fidm"):
+            cells = ""
+            for r in RULES:
+                x = rep["fid"][f"prob|{m}|{mt}|{r}"]; tally[x["verdict"]] = tally.get(x["verdict"], 0) + 1
+                cells += f"{x['verdict']:>12} {x['unit_tost']}/5 [{x['ci90'][0]:+.3f}, {x['ci90'][1]:+.3f}]"
+            P(f"  {SH[m]:<12}{'Fid+' if mt == 'fidp' else 'Fid-':<6}{cells}")
+    P(f"  verdicts over {sum(tally.values())} cells: " + ", ".join(f"{k} {v}" for k, v in sorted(tally.items()))); rep["tost_tally"] = tally
+    save("L2", rep)
+
+
+# ------------------------------------------------------------------ L6
+def L6():
+    from .tier4_jobs import L6_TAGS, L6_UNITS
+    rep = {}; sub = json.load(open(f"{C.T2}/subsets.json"))
+    P("L6 -- SUBGRAPHX PER-MOLECULE STABILITY: 3 extra fixed-budget runs (explainer seeds from tags L6a, L6b, L6c) on the fixed 100-molecule subsets, seed-0 models")
+    for u in L6_UNITS:
+        dkey = C.dataset_of(u); dl, _ = C.load_data(dkey); mols = [int(m) for m in sub[u]]
+        R = {t: C.sx_shard_rows(f"{T4}/L6/sx/{t}/{u}") for t in L6_TAGS}; S0 = C.sx_shard_rows(f"{C.T2}/S/sx/{u}")
+        H = load(f"{C.T2}/H/gea/{u}.npz"); rn = dict(zip([int(m) for m in H["mol_idx"]], H["rn"]))
+        jac = lambda a, b: len(a & b) / len(a | b) if (a | b) else 1.0
+        J, JS, share2, single, cons, prot, csize, k_ = [], [], [], [], [], [], [], []
+        for mi in mols:
+            d = dl[mi]; n = d.num_nodes; sc = C.scorer_for(dkey, d, mi); sets = [set(int(v) for v in R[t][mi]["coalition"]) for t in L6_TAGS]
+            J.append(np.mean([jac(sets[i], sets[j]) for i, j in ((0, 1), (0, 2), (1, 2))]))
+            JS.append(np.mean([jac(s, set(int(v) for v in S0[mi]["coalition"])) for s in sets]))
+            cnt = np.zeros(n); [np.add.at(cnt, list(s), 1) for s in sets if s]
+            picked = cnt > 0; share2.append(float((cnt >= 2).sum() / picked.sum()) if picked.any() else np.nan)
+            mask = lambda s: np.isin(np.arange(n), list(s))
+            single.append(np.mean([sc(mask(s)) for s in sets])); cons.append(sc(cnt >= 2)); csize.append(int((cnt >= 2).sum())); k_.append(C.kbudget(n))
+            prot.append(np.mean([C.gea_random_ties(np.asarray(R[t][mi]["node_importance"], float), C.kbudget(n), sc, f"{u}|sx_fixed|gea", mi) for t in L6_TAGS]))
+        J, JS, share2, single, cons, prot = map(np.array, (J, JS, share2, single, cons, prot)); null = np.array([rn[m] for m in mols])
+        d, _ = boot([cons], [single]); dn, _ = boot([single], [null]); dc, _ = boot([cons], [null]); dp, _ = boot([prot], [null])
+        rep[u] = {"jaccard_mean": float(J.mean()), "jaccard_median": float(np.median(J)), "identical_share": float(np.mean(J == 1.0)), "jaccard_vs_tier2": float(JS.mean()),
+                  "share_ge2": float(np.nanmean(share2)), "gea_single_set": float(single.mean()), "gea_consensus": float(cons.mean()), "consensus_minus_single": list(d),
+                  "single_minus_rn": list(dn), "consensus_minus_rn": list(dc), "protocol_minus_rn": list(dp), "consensus_size": float(np.mean(csize)), "k": float(np.mean(k_)),
+                  "wilcoxon_consensus_vs_single": C.wil(cons, single)}
+        P(f"\n  {u} ({len(mols)} molecules)")
+        P(f"    Jaccard between the 3 runs: mean {J.mean():.3f}, median {np.median(J):.3f}; molecules with identical sets in all pairs {np.mean(J == 1.0):.2f}; vs the Tier-2 run {JS.mean():.3f}")
+        P(f"    atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: {np.nanmean(share2):.3f}")
+        P(f"    consensus set size {np.mean(csize):.1f} (k = {np.mean(k_):.1f})")
+        P(f"    GEA (sets scored as sets): single run mean {single.mean():.3f}, consensus {cons.mean():.3f}; consensus - single {fmt_ci(*d)}")
+        P(f"    minus random-node: single {fmt_ci(*dn)}, consensus {fmt_ci(*dc)}, single under the final protocol {fmt_ci(*dp)}")
+    save("L6", rep)
+
+
+# ------------------------------------------------------------------ M1
+def _dmpnn_arrays(u):
+    """B-XAIC D-MPNN unit from Tier 2: the same arrays as an M1 gea file (PG ranked by the T4 re-run's float64 logits)."""
+    H, G, S = (load(f"{C.T2}/{i}/gea/{u}.npz") for i in "HGS"); mol = [int(m) for m in H["mol_idx"]]; pg = C.npz_scores(f"runs/rq1_revision/logits/{u}.npz", "node_score64")
+    sub = json.load(open(f"{T4}/subsets.json"))[u]; pos = {int(m): i for i, m in enumerate(S["mol_idx"])}
+    ck = C.torch_load(C.orig_spec(u)["ckpt"])["metrics"]
+    return {"mol_idx": np.array(mol), "rn": H["rn"], "rc": H["rc"], "gnnexplainer": H["gnnexplainer"], "pgexplainer": C.gea_array(u, "pgexplainer", lambda x: pg[x], mol, C.dataset_of(u)),
+            "sal": G["sal"], "ig": G["ig"], "ixg": G["ixg"], "hetero": H["hetero"], "deg_high": H["deg_high"], "deg_low": H["deg_low"],
+            "sx_mol_idx": np.array(sub), "sx_fixed": np.array([S["sx_fixed"][pos[m]] for m in sub]), "test_acc": ck["test_acc"], "test_auroc": ck["test_auroc"]}
+
+
+def _on(Z, key, mols):
+    pos = {int(m): i for i, m in enumerate(Z["mol_idx"])}
+    return np.array([Z[key][pos[int(m)]] for m in mols])
+
+
+def M1():
+    from .tier4_common import M1_ARCHS, M1_TASKS, BAR_ACC, BAR_AUROC
+    from .tier4_M import METHODS
+    rep = {}; ARCH = ["dmpnn"] + M1_ARCHS; LAB = {"dmpnn": "D-MPNN", "gin": "GIN", "gine": "GINE", "gcn": "GCN"}
+    unit = lambda t, a, s: f"bxaic_{t}_s{s}" if a == "dmpnn" else f"bxaic_{t}_{a}_s{s}"
+    Z = {unit(t, a, s): (_dmpnn_arrays(unit(t, a, s)) if a == "dmpnn" else load(f"{T4}/M1/gea/{unit(t, a, s)}.npz")) for t in M1_TASKS for a in ARCH for s in range(5)}
+    P("M1 -- OTHER ARCHITECTURES ON B-XAIC indole AND PAINS (5 seeds; the D-MPNN's split and explained molecules; D-MPNN numbers from Tier 2)")
+    P("  SubgraphX (fixed budget) on a fixed subset of 100 GT molecules per seed (the same molecules for all four architectures); all other methods on all GT-bearing explained molecules.")
+    P(f"\n  [0] models (test split); bar: acc >= {BAR_ACC}, AUROC >= {BAR_AUROC}")
+    rep["models"] = {}
+    for t in M1_TASKS:
+        for a in ARCH:
+            ms = [(float(Z[unit(t, a, s)]["test_acc"]), float(Z[unit(t, a, s)]["test_auroc"])) for s in range(5)]; miss = [s for s, (x, y) in enumerate(ms) if x < BAR_ACC or y < BAR_AUROC]
+            rep["models"][f"{t}|{a}"] = {"metrics": ms, "miss_bar": miss}
+            P(f"    {t:<7}{LAB[a]:<8}" + "  ".join(f"s{s} {x:.3f}/{y:.3f}" for s, (x, y) in enumerate(ms)) + (f"   MISSES THE BAR: seeds {miss}" if miss else ""))
+    rep["vs_random"] = {}; rep["vs_rule"] = {}
+    for t in M1_TASKS:
+        P(f"\n  [1] {t}: GEA minus null, 95% CI, counts; Holm per unit = 9 methods x 2 nulls = 18 (SubgraphX rows on the 100-molecule subset)")
+        P(f"  {'model':<8}{'method':<12}{'minus random-node':>30}{'counts':>9}{'minus random-conn.':>30}{'counts':>9}{'mean GEA':>10}")
+        for a in ARCH:
+            us = [unit(t, a, s) for s in range(5)]
+            arr = lambda u, m: (Z[u][m], Z[u]["rn"], Z[u]["rc"]) if m != "sx_fixed" else (Z[u]["sx_fixed"], _on(Z[u], "rn", Z[u]["sx_mol_idx"]), _on(Z[u], "rc", Z[u]["sx_mol_idx"]))
+            ms = METHODS + ["sx_fixed"]
+            sig = holm_counts([{(m, i): C.wil(arr(u, m)[0], arr(u, m)[i]) for m in ms for i in (1, 2)} for u in us])
+            for m in ms:
+                n, _ = boot([arr(u, m)[0] for u in us], [arr(u, m)[1] for u in us]); c, _ = boot([arr(u, m)[0] for u in us], [arr(u, m)[2] for u in us])
+                mean = float(np.mean([arr(u, m)[0].mean() for u in us]))
+                rep["vs_random"][f"{t}|{a}|{m}"] = {"rn": list(n), "rc": list(c), "signs_rn": sig[(m, 1)], "signs_rc": sig[(m, 2)], "mean": mean}
+                P(f"  {LAB[a]:<8}{SH[m]:<12}{fmt_ci(*n):>30}{C.counts(sig[(m, 1)]):>9}{fmt_ci(*c):>30}{C.counts(sig[(m, 2)]):>9}{mean:>10.3f}")
+        P(f"\n  [2] {t}: GEA minus the best trivial rule (high degree, fixed in the PLAN); Holm per unit = 6 (SubgraphX vs the rule on the same 100 molecules)")
+        P(f"  {'model':<8}" + "".join(f"{SH[m]:>32}" for m in ("gnnexplainer", "pgexplainer", "sx_fixed", "sal", "ig", "ixg")))
+        for a in ARCH:
+            us = [unit(t, a, s) for s in range(5)]; MM = ("gnnexplainer", "pgexplainer", "sx_fixed", "sal", "ig", "ixg")
+            pr = lambda u, m: (Z[u][m], Z[u]["deg_high"]) if m != "sx_fixed" else (Z[u]["sx_fixed"], _on(Z[u], "deg_high", Z[u]["sx_mol_idx"]))
+            sig = holm_counts([{m: C.wil(*pr(u, m)) for m in MM} for u in us]); cells = ""
+            for m in MM:
+                d, _ = boot([pr(u, m)[0] for u in us], [pr(u, m)[1] for u in us]); rep["vs_rule"][f"{t}|{a}|{m}"] = {"ci": list(d), "signs": sig[m]}
+                cells += f"{C.counts(sig[m]):>7} {fmt_ci(*d):>24}"
+            P(f"  {LAB[a]:<8}{cells}")
+        P(f"\n  [3] {t}: ordering by mean GEA (best first; SubgraphX mean on its 100-molecule subset)")
+        rep.setdefault("order", {})
+        for a in ARCH:
+            means = {m: rep["vs_random"][f"{t}|{a}|{m}"]["mean"] for m in METHODS + ["sx_fixed"]}; order = sorted(means, key=lambda m: -means[m])
+            rep["order"][f"{t}|{a}"] = order
+            P(f"    {LAB[a]:<8}" + " > ".join(f"{SH[m]} {means[m]:.3f}" for m in order))
+    P("\n  P-M1: SubgraphX and IG above the best trivial rule (CI entirely above 0) for every architecture on indole and PAINS")
+    ok = True
+    for t in M1_TASKS:
+        for a in ARCH:
+            s_, i_ = rep["vs_rule"][f"{t}|{a}|sx_fixed"]["ci"], rep["vs_rule"][f"{t}|{a}|ig"]["ci"]; good = s_[1] > 0 and i_[1] > 0; ok &= good
+            flag = " (model misses the bar in seeds " + str(rep["models"][f"{t}|{a}"]["miss_bar"]) + ")" if rep["models"][f"{t}|{a}"]["miss_bar"] else ""
+            P(f"    {t:<7}{LAB[a]:<8} SX {fmt_ci(*s_)}  IG {fmt_ci(*i_)}  -> {'both above' if good else 'NOT both above'}{flag}")
+    rep["P-M1"] = {"held": ok}; P(f"  P-M1 {'HELD' if ok else 'FAILED'}")
+    save("M1", rep)
+
+
+# ------------------------------------------------------------------ M2
+def M2():
+    from .tier4_common import m2_units
+    rep = {}; old = [f"bxaic_PAINS_s{s}" for s in range(5)]; new = m2_units()
+    Z = {u: _dmpnn_arrays_full(u) for u in old}; Z.update({u: load(f"{T4}/M2/gea/{u}.npz") for u in new})
+    P("M2 -- B-XAIC PAINS D-MPNN WITH 10 SEEDS (seeds 5-9 new; SubgraphX fixed budget on all explained molecules; PG ranked by float64 logits for all 10 seeds)")
+    P("\n  [0] new models (test split): " + "  ".join(f"{u.rsplit('_', 1)[1]} {float(Z[u]['test_acc']):.3f}/{float(Z[u]['test_auroc']):.3f}" for u in new))
+    P("\n  [1] GEA minus random-node: 5 seeds vs 10 seeds, counts (Holm per seed = 5 for the scored cells), seed sign test (10 seeds)")
+    P(f"  {'method':<12}{'5 seeds':>28}{'10 seeds':>28}{'counts (10)':>13}{'sign test (10)':>18}{'category':>24}")
+    cells = ["gnnexplainer", "pgexplainer", "sx_fixed", "ig", "hetero"]; other = ["sal", "ixg", "deg_high", "deg_low"]
+    sig = holm_counts([{m: C.wil(Z[u][m], Z[u]["rn"]) for m in cells} for u in old + new]); same_all = True; rep["cells"] = {}
+    for m in cells + other:
+        a5, a10 = boot([Z[u][m] for u in old], [Z[u]["rn"] for u in old])[0], boot([Z[u][m] for u in old + new], [Z[u]["rn"] for u in old + new])[0]
+        pos, nz, p = C.seed_sign_test([Z[u][m] for u in old + new], [Z[u]["rn"] for u in old + new]); same = cat(a5) == cat(a10)
+        if m in cells:
+            same_all &= same
+        rep["cells"][m] = {"five": list(a5), "ten": list(a10), "cat5": cat(a5), "cat10": cat(a10), "same": same, "signs": sig.get(m), "sign_test": [pos, nz, p], "scored": m in cells}
+        P(f"  {SH[m] + ('' if m in cells else ' *'):<12}{fmt_ci(*a5):>28}{fmt_ci(*a10):>28}{(C.counts(sig[m]) if m in cells else '-'):>13}{f'{pos}/{nz}, p={p:.3f}':>18}"
+          f"{(cat(a5) + ' -> ' + cat(a10)):>24}")
+    P("  * not one of the P-M2 cells (reported only)")
+    rep["P-M2"] = {"held": same_all}; P(f"\n  P-M2: every scored cell keeps its CI category -> {'yes' if same_all else 'NO'}"); P(f"  P-M2 {'HELD' if same_all else 'FAILED'}")
+    save("M2", rep)
+
+
+def _dmpnn_arrays_full(u):
+    """Tier-2 PAINS D-MPNN unit with SubgraphX fixed on all explained GT molecules (for M2)."""
+    H, G, S = (load(f"{C.T2}/{i}/gea/{u}.npz") for i in "HGS"); mol = [int(m) for m in H["mol_idx"]]; pg = C.npz_scores(f"runs/rq1_revision/logits/{u}.npz", "node_score64")
+    if [int(m) for m in S["mol_idx"]] != mol:
+        raise RuntimeError(f"{u}: Tier-2 S and H molecule lists differ")
+    ck = C.torch_load(C.orig_spec(u)["ckpt"])["metrics"]
+    return {"mol_idx": np.array(mol), "rn": H["rn"], "rc": H["rc"], "gnnexplainer": H["gnnexplainer"], "pgexplainer": C.gea_array(u, "pgexplainer", lambda x: pg[x], mol, C.dataset_of(u)),
+            "sal": G["sal"], "ig": G["ig"], "ixg": G["ixg"], "hetero": H["hetero"], "deg_high": H["deg_high"], "deg_low": H["deg_low"], "sx_fixed": S["sx_fixed"],
+            "test_acc": ck["test_acc"], "test_auroc": ck["test_auroc"]}
+
+
 if __name__ == "__main__":
     globals()[sys.argv[1]]()
