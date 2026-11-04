@@ -67,8 +67,9 @@ def collect(acc, name, lg, c, pairs):
         acc.setdefault(f"{name}_{k}", []).append(float(np.mean([v[k] for v in vals])))
 
 
-def run(unit, device):
-    model, _ = rf.load_model(f"{T}/ckpt/{unit}.pt", device); dkey = C.dataset_of(unit); dl, meta = C.load_data(dkey)
+def run(unit, device, ckpt=None, out_path=None):
+    """ckpt / out default to the Tier-3 copy and score file (Tier 4 L7 passes its re-tuned copies)."""
+    model, _ = rf.load_model(ckpt or f"{T}/ckpt/{unit}.pt", device); dkey = C.dataset_of(unit); dl, meta = C.load_data(dkey)
     motifs = meta.extras.get("motifs") if hasattr(meta, "extras") else None
     ti = [int(m) for m in C.stored_cache(unit)["key"]["test_idx"]]; S = method_scores(unit, ti)
     A, B = {"mol_idx": [], "n": [], "n_methods_tied": []}, {"mol_idx": [], "n_masks": [], "mask_size": [], "cut_fidp": [], "cut_fidm": []}
@@ -108,7 +109,7 @@ def run(unit, device):
             for key, v in one.items():
                 B.setdefault(key, []).append(float(np.mean(v)))
     out = {k: np.array(v) for k, v in A.items()}; out.update({f"G_{k}": np.array(v) for k, v in B.items()})
-    C.save_npz(f"{T}/score/{unit}.npz", unit=unit, cut_expl_fidp=cut_p, cut_expl_fidm=cut_m, **out)
+    C.save_npz(out_path or f"{T}/score/{unit}.npz", unit=unit, cut_expl_fidp=cut_p, cut_expl_fidm=cut_m, **out)
     print(f"{unit}: scored {len(ti)} molecules, {len(B['mol_idx'])} with ground truth", flush=True)
 
 

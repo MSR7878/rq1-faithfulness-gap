@@ -65,6 +65,8 @@ def dataset_of(unit: str) -> str:
         return "mutagenicity_graphxai"
     if unit.startswith("mutag_graphxai"):
         return "mutag_graphxai"
+    if unit.startswith("bbbp"):
+        return "bbbp"
     return "bxaic_" + unit.split("_")[1]
 
 
@@ -233,7 +235,13 @@ M_TRAIN = {"mutagenicity_dmpnn": "--dataset mutagenicity_graphxai --depth 3 --ep
 def orig_spec(unit):
     from .revision_logits import units
     U = units()
-    return U[unit] if unit in U else m_units()[unit]
+    if unit in U:
+        return U[unit]
+    M = m_units()
+    if unit in M:
+        return M[unit]
+    from .tier4_common import t4_units      # Tier 4 units (runs/rq1_tier4/PLAN.md)
+    return t4_units()[unit]
 
 
 _CACHE = {}
