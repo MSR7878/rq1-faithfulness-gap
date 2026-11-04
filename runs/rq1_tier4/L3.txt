@@ -1,0 +1,29 @@
+L3 -- PGEXPLAINER SATURATION AND THE MODEL ORDERING (Mutagenicity, 5 seeds, GT-bearing explained molecules)
+  main split: the T4 re-run's float32 edge mask constant (max == min) or not; GEA ranked by the same run's float64 logits.
+  Holm per (model, seed) = 2 parts. Seeds with no molecule in a part are dropped from that part (number of seeds shown).
+
+  [main] split on the T4 re-run float32 mask
+  model   part          molecules (per seed)                PG logit minus random-node   counts seeds   PG final rule minus random-node
+  D-MPNN  not constant  631 [127, 127, 126, 126, 125]          -0.015 [-0.089, +0.062]    0/3/2     5           -0.004 [-0.092, +0.090]
+  D-MPNN  constant      1 [0, 0, 1, 0, 0]                      +0.290 [+0.290, +0.290]    0/0/5     1           +0.290 [+0.290, +0.290]
+  GIN     not constant  391 [58, 121, 112, 100, 0]             -0.103 [-0.111, -0.095]    0/4/1     4           -0.105 [-0.113, -0.097]
+  GIN     constant      241 [69, 6, 15, 26, 125]               -0.032 [-0.090, +0.020]    0/1/4     5           -0.072 [-0.116, -0.015]
+  GINE    not constant  496 [124, 126, 120, 126, 0]            -0.109 [-0.128, -0.089]    0/4/1     4           -0.111 [-0.125, -0.098]
+  GINE    constant      136 [3, 1, 7, 0, 125]                  +0.041 [-0.014, +0.113]    0/0/5     4           -0.131 [-0.283, +0.007]
+  GCN     not constant  563 [68, 127, 121, 123, 124]           +0.389 [+0.341, +0.445]    5/0/0     5           +0.387 [+0.346, +0.441]
+  GCN     constant      69 [59, 0, 6, 3, 1]                    -0.032 [-0.101, +0.038]    0/0/5     4           +0.131 [-0.059, +0.346]
+
+  [secondary] split on the stored float32 mask
+  model   part          molecules (per seed)                PG logit minus random-node   counts seeds   PG final rule minus random-node
+  D-MPNN  not constant  631 [127, 127, 126, 126, 125]          -0.015 [-0.089, +0.062]    0/3/2     5           -0.004 [-0.092, +0.090]
+  D-MPNN  constant      1 [0, 0, 1, 0, 0]                      +0.290 [+0.290, +0.290]    0/0/5     1           +0.290 [+0.290, +0.290]
+  GIN     not constant  422 [58, 120, 112, 16, 116]            -0.082 [-0.122, -0.024]    0/4/1     5           -0.094 [-0.114, -0.069]
+  GIN     constant      210 [69, 7, 15, 110, 9]                -0.061 [-0.113, +0.000]    0/2/3     5           -0.087 [-0.145, -0.011]
+  GINE    not constant  502 [125, 126, 122, 126, 3]            -0.094 [-0.121, -0.062]    0/4/1     5           -0.073 [-0.120, +0.008]
+  GINE    constant      130 [2, 1, 5, 0, 122]                  +0.064 [-0.005, +0.151]    0/0/5     4           -0.160 [-0.330, +0.005]
+  GCN     not constant  566 [70, 125, 122, 125, 124]           +0.389 [+0.346, +0.444]    5/0/0     5           +0.388 [+0.348, +0.443]
+  GCN     constant      66 [57, 2, 5, 1, 1]                    -0.134 [-0.377, +0.023]    0/0/5     5           +0.007 [-0.082, +0.146]
+
+  P-L3: PG (logit) minus random-node on non-constant molecules (re-run split): D-MPNN -0.015, GIN -0.103, GINE -0.109, GCN +0.389
+    range (max - min) 0.499 -> >= 0.10
+  P-L3 FAILED
