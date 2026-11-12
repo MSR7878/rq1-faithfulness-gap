@@ -1,0 +1,138 @@
+TOST RE-LABELLING (four labels; stored numbers only, nothing re-run)
+  different = 95% CI excludes 0 and |effect| > 0.05; small but real = 95% CI excludes 0 and |effect| <= 0.05;
+  equivalent = 95% CI includes 0 and 90% CI within +/-0.05; undecided = otherwise. Probability space, margin 0.05.
+
+  Tox21 (68 cells)
+  cell                                      effect              90% CI              95% CI  old label   new label
+  NR-AR gnnexplainer Fid+ R3                +0.037    [+0.004, +0.072]    [-0.000, +0.079]  undecided   undecided
+  NR-AR gnnexplainer Fid- R3                -0.034    [-0.064, -0.005]    [-0.069, +0.001]  undecided   undecided
+  NR-AR pgexplainer Fid+ R3                 +0.008    [-0.004, +0.024]    [-0.006, +0.027]  equivalent  equivalent
+  NR-AR pgexplainer Fid- R3                 -0.004    [-0.022, +0.013]    [-0.026, +0.017]  equivalent  equivalent
+  NR-AR subgraphx Fid- R3                   -0.077    [-0.117, -0.044]    [-0.123, -0.041]  different   different
+  NR-AR-LBD gnnexplainer Fid+ R3            +0.010    [+0.002, +0.018]    [+0.000, +0.019]  equivalent  small but real
+  NR-AR-LBD gnnexplainer Fid- R3            -0.008    [-0.018, +0.001]    [-0.020, +0.003]  equivalent  equivalent
+  NR-AR-LBD pgexplainer Fid+ R3             -0.001    [-0.008, +0.004]    [-0.009, +0.005]  equivalent  equivalent
+  NR-AR-LBD pgexplainer Fid- R3             +0.007    [-0.002, +0.021]    [-0.002, +0.024]  equivalent  equivalent
+  NR-AR-LBD subgraphx Fid- R3               -0.039    [-0.068, -0.015]    [-0.074, -0.013]  different   small but real
+  NR-AhR gnnexplainer Fid+ R3               +0.013    [-0.004, +0.032]    [-0.006, +0.036]  equivalent  equivalent
+  NR-AhR gnnexplainer Fid- R3               -0.007    [-0.026, +0.009]    [-0.030, +0.012]  equivalent  equivalent
+  NR-AhR pgexplainer Fid+ R3                +0.011    [-0.004, +0.032]    [-0.006, +0.037]  equivalent  equivalent
+  NR-AhR pgexplainer Fid- R3                -0.008    [-0.026, +0.004]    [-0.031, +0.006]  equivalent  equivalent
+  NR-AhR subgraphx Fid+ R3                  +0.029    [+0.003, +0.057]    [-0.002, +0.063]  undecided   undecided
+  NR-AhR subgraphx Fid- R3                  -0.033    [-0.066, -0.006]    [-0.073, -0.002]  different   small but real
+  NR-Aromatase gnnexplainer Fid+ R3         +0.001    [-0.008, +0.011]    [-0.009, +0.013]  equivalent  equivalent
+  NR-Aromatase gnnexplainer Fid- R3         -0.001    [-0.010, +0.008]    [-0.012, +0.010]  equivalent  equivalent
+  NR-Aromatase pgexplainer Fid+ R3          +0.000    [-0.009, +0.009]    [-0.011, +0.011]  equivalent  equivalent
+  NR-Aromatase pgexplainer Fid- R3          -0.003    [-0.012, +0.006]    [-0.014, +0.008]  equivalent  equivalent
+  NR-Aromatase subgraphx Fid+ R3            +0.019    [+0.010, +0.029]    [+0.009, +0.031]  equivalent  small but real
+  NR-Aromatase subgraphx Fid- R3            -0.011    [-0.021, -0.002]    [-0.024, -0.000]  equivalent  small but real
+  NR-ER gnnexplainer Fid+ R3                +0.001    [-0.007, +0.011]    [-0.009, +0.013]  equivalent  equivalent
+  NR-ER gnnexplainer Fid- R3                -0.002    [-0.010, +0.004]    [-0.011, +0.006]  equivalent  equivalent
+  NR-ER pgexplainer Fid+ R3                 +0.000    [-0.004, +0.004]    [-0.005, +0.005]  equivalent  equivalent
+  NR-ER pgexplainer Fid- R3                 +0.001    [-0.002, +0.006]    [-0.003, +0.007]  equivalent  equivalent
+  NR-ER subgraphx Fid+ R3                   +0.020    [+0.009, +0.033]    [+0.008, +0.035]  equivalent  small but real
+  NR-ER subgraphx Fid- R3                   -0.014    [-0.022, -0.008]    [-0.023, -0.008]  equivalent  small but real
+  NR-ER-LBD gnnexplainer Fid+ R3            -0.002    [-0.029, +0.023]    [-0.035, +0.029]  equivalent  equivalent
+  NR-ER-LBD gnnexplainer Fid- R3            -0.004    [-0.022, +0.009]    [-0.025, +0.010]  equivalent  equivalent
+  NR-ER-LBD pgexplainer Fid+ R3             -0.022    [-0.046, -0.003]    [-0.051, -0.001]  equivalent  small but real
+  NR-ER-LBD pgexplainer Fid- R3             +0.011    [+0.003, +0.020]    [+0.002, +0.022]  equivalent  small but real
+  NR-ER-LBD subgraphx Fid+ R3               +0.045    [+0.025, +0.069]    [+0.023, +0.076]  different   small but real
+  NR-ER-LBD subgraphx Fid- R3               -0.021    [-0.032, -0.010]    [-0.035, -0.008]  equivalent  small but real
+  NR-PPAR-gamma gnnexplainer Fid+ R3        +0.009    [-0.014, +0.032]    [-0.017, +0.038]  equivalent  equivalent
+  NR-PPAR-gamma gnnexplainer Fid- R3        -0.007    [-0.028, +0.010]    [-0.033, +0.012]  equivalent  equivalent
+  NR-PPAR-gamma pgexplainer Fid+ R3         +0.004    [-0.007, +0.016]    [-0.009, +0.018]  equivalent  equivalent
+  NR-PPAR-gamma pgexplainer Fid- R3         +0.000    [-0.012, +0.010]    [-0.015, +0.013]  equivalent  equivalent
+  NR-PPAR-gamma subgraphx Fid- R3           -0.042    [-0.067, -0.021]    [-0.072, -0.019]  different   small but real
+  SR-ARE gnnexplainer Fid+ R3               -0.001    [-0.031, +0.031]    [-0.035, +0.037]  equivalent  equivalent
+  SR-ARE gnnexplainer Fid- R3               -0.008    [-0.037, +0.018]    [-0.045, +0.022]  equivalent  equivalent
+  SR-ARE pgexplainer Fid+ R3                +0.022    [+0.002, +0.049]    [-0.000, +0.055]  equivalent  equivalent
+  SR-ARE pgexplainer Fid- R3                -0.009    [-0.025, +0.006]    [-0.029, +0.010]  equivalent  equivalent
+  SR-ARE subgraphx Fid+ R3                  +0.047    [+0.026, +0.073]    [+0.021, +0.077]  different   small but real
+  SR-ARE subgraphx Fid- R3                  -0.049    [-0.077, -0.023]    [-0.082, -0.019]  different   small but real
+  SR-ATAD5 gnnexplainer Fid+ R3             +0.002    [-0.005, +0.011]    [-0.007, +0.014]  equivalent  equivalent
+  SR-ATAD5 gnnexplainer Fid- R3             -0.003    [-0.015, +0.007]    [-0.018, +0.009]  equivalent  equivalent
+  SR-ATAD5 pgexplainer Fid+ R3              +0.006    [-0.006, +0.021]    [-0.008, +0.024]  equivalent  equivalent
+  SR-ATAD5 pgexplainer Fid- R3              -0.008    [-0.020, +0.002]    [-0.023, +0.003]  equivalent  equivalent
+  SR-ATAD5 subgraphx Fid+ R3                +0.019    [+0.011, +0.029]    [+0.009, +0.031]  equivalent  small but real
+  SR-ATAD5 subgraphx Fid- R3                -0.020    [-0.032, -0.010]    [-0.034, -0.009]  equivalent  small but real
+  SR-HSE gnnexplainer Fid+ R3               +0.004    [-0.004, +0.013]    [-0.006, +0.015]  equivalent  equivalent
+  SR-HSE gnnexplainer Fid- R3               -0.000    [-0.009, +0.010]    [-0.011, +0.012]  equivalent  equivalent
+  SR-HSE pgexplainer Fid+ R3                +0.007    [-0.008, +0.027]    [-0.010, +0.034]  equivalent  equivalent
+  SR-HSE pgexplainer Fid- R3                +0.004    [-0.005, +0.013]    [-0.006, +0.015]  equivalent  equivalent
+  SR-HSE subgraphx Fid- R3                  -0.013    [-0.025, -0.006]    [-0.027, -0.005]  equivalent  small but real
+  SR-MMP gnnexplainer Fid+ R3               +0.022    [-0.014, +0.068]    [-0.018, +0.078]  undecided   undecided
+  SR-MMP gnnexplainer Fid- R3               -0.013    [-0.056, +0.017]    [-0.063, +0.021]  undecided   undecided
+  SR-MMP pgexplainer Fid+ R3                +0.011    [-0.002, +0.029]    [-0.004, +0.034]  equivalent  equivalent
+  SR-MMP pgexplainer Fid- R3                -0.002    [-0.012, +0.006]    [-0.015, +0.007]  equivalent  equivalent
+  SR-MMP subgraphx Fid+ R3                  +0.045    [+0.008, +0.086]    [+0.002, +0.094]  different   small but real
+  SR-MMP subgraphx Fid- R3                  -0.039    [-0.074, -0.009]    [-0.079, -0.004]  different   small but real
+  SR-p53 gnnexplainer Fid+ R3               -0.006    [-0.016, +0.004]    [-0.018, +0.007]  equivalent  equivalent
+  SR-p53 gnnexplainer Fid- R3               +0.013    [+0.002, +0.027]    [-0.000, +0.031]  equivalent  equivalent
+  SR-p53 pgexplainer Fid+ R3                +0.014    [-0.001, +0.038]    [-0.002, +0.045]  equivalent  equivalent
+  SR-p53 pgexplainer Fid- R3                -0.015    [-0.037, -0.000]    [-0.043, +0.001]  equivalent  equivalent
+  SR-p53 subgraphx Fid+ R3                  +0.034    [+0.018, +0.055]    [+0.016, +0.059]  different   small but real
+  SR-p53 subgraphx Fid- R3                  -0.031    [-0.049, -0.016]    [-0.054, -0.014]  equivalent  small but real
+  old labels: different 10, equivalent 53, undecided 5
+  new labels: different 1, equivalent 41, small but real 21, undecided 5
+  cells whose label changed: 21
+    NR-AR-LBD gnnexplainer Fid+ R3: equivalent -> small but real
+    NR-AR-LBD subgraphx Fid- R3: different -> small but real
+    NR-AhR subgraphx Fid- R3: different -> small but real
+    NR-Aromatase subgraphx Fid+ R3: equivalent -> small but real
+    NR-Aromatase subgraphx Fid- R3: equivalent -> small but real
+    NR-ER subgraphx Fid+ R3: equivalent -> small but real
+    NR-ER subgraphx Fid- R3: equivalent -> small but real
+    NR-ER-LBD pgexplainer Fid+ R3: equivalent -> small but real
+    NR-ER-LBD pgexplainer Fid- R3: equivalent -> small but real
+    NR-ER-LBD subgraphx Fid+ R3: different -> small but real
+    NR-ER-LBD subgraphx Fid- R3: equivalent -> small but real
+    NR-PPAR-gamma subgraphx Fid- R3: different -> small but real
+    SR-ARE subgraphx Fid+ R3: different -> small but real
+    SR-ARE subgraphx Fid- R3: different -> small but real
+    SR-ATAD5 subgraphx Fid+ R3: equivalent -> small but real
+    SR-ATAD5 subgraphx Fid- R3: equivalent -> small but real
+    SR-HSE subgraphx Fid- R3: equivalent -> small but real
+    SR-MMP subgraphx Fid+ R3: different -> small but real
+    SR-MMP subgraphx Fid- R3: different -> small but real
+    SR-p53 subgraphx Fid+ R3: different -> small but real
+    SR-p53 subgraphx Fid- R3: equivalent -> small but real
+
+  BBBP (30 cells)
+  cell                                      effect              90% CI              95% CI  old label   new label
+  GNN Fid+ R1                               +0.010    [-0.017, +0.037]    [-0.023, +0.043]  equivalent  equivalent
+  GNN Fid+ R2                               +0.012    [-0.020, +0.048]    [-0.025, +0.056]  equivalent  equivalent
+  GNN Fid+ R3                               +0.015    [-0.014, +0.050]    [-0.018, +0.059]  equivalent  equivalent
+  GNN Fid- R1                               -0.010    [-0.029, +0.013]    [-0.032, +0.018]  equivalent  equivalent
+  GNN Fid- R2                               -0.011    [-0.041, +0.019]    [-0.047, +0.025]  equivalent  equivalent
+  GNN Fid- R3                               -0.013    [-0.043, +0.012]    [-0.049, +0.016]  equivalent  equivalent
+  PG (logit) Fid+ R1                        +0.006    [-0.028, +0.047]    [-0.032, +0.057]  equivalent  equivalent
+  PG (logit) Fid+ R2                        +0.016    [-0.007, +0.036]    [-0.012, +0.040]  equivalent  equivalent
+  PG (logit) Fid+ R3                        +0.019    [+0.005, +0.036]    [+0.003, +0.039]  equivalent  small but real
+  PG (logit) Fid- R1                        -0.016    [-0.035, +0.003]    [-0.039, +0.007]  equivalent  equivalent
+  PG (logit) Fid- R2                        -0.040    [-0.078, -0.002]    [-0.087, +0.005]  undecided   undecided
+  PG (logit) Fid- R3                        -0.011    [-0.037, +0.015]    [-0.043, +0.019]  equivalent  equivalent
+  SX fixed Fid+ R1                          +0.079    [+0.055, +0.102]    [+0.051, +0.107]  different   different
+  SX fixed Fid+ R2                          +0.185    [+0.140, +0.232]    [+0.133, +0.243]  different   different
+  SX fixed Fid+ R3                          +0.047    [+0.025, +0.072]    [+0.021, +0.077]  different   small but real
+  SX fixed Fid- R1                          -0.057    [-0.089, -0.024]    [-0.094, -0.019]  different   different
+  SX fixed Fid- R2                          -0.176    [-0.247, -0.103]    [-0.259, -0.090]  different   different
+  SX fixed Fid- R3                          -0.029    [-0.046, -0.012]    [-0.049, -0.009]  equivalent  small but real
+  Saliency Fid+ R1                          +0.033    [+0.000, +0.066]    [-0.004, +0.071]  undecided   undecided
+  Saliency Fid+ R2                          +0.059    [+0.002, +0.129]    [-0.008, +0.140]  undecided   undecided
+  Saliency Fid+ R3                          +0.065    [+0.032, +0.103]    [+0.027, +0.111]  different   different
+  Saliency Fid- R1                          +0.081    [+0.021, +0.147]    [+0.009, +0.161]  different   different
+  Saliency Fid- R2                          -0.051    [-0.104, -0.002]    [-0.113, +0.007]  undecided   undecided
+  Saliency Fid- R3                          -0.056    [-0.095, -0.023]    [-0.104, -0.016]  different   different
+  IG Fid+ R1                                +0.016    [-0.014, +0.048]    [-0.019, +0.054]  equivalent  equivalent
+  IG Fid+ R2                                +0.076    [+0.023, +0.128]    [+0.016, +0.135]  different   different
+  IG Fid+ R3                                +0.053    [+0.022, +0.089]    [+0.018, +0.097]  different   different
+  IG Fid- R1                                +0.042    [-0.008, +0.097]    [-0.013, +0.112]  undecided   undecided
+  IG Fid- R2                                -0.057    [-0.120, +0.006]    [-0.130, +0.016]  undecided   undecided
+  IG Fid- R3                                -0.044    [-0.080, -0.013]    [-0.090, -0.007]  different   small but real
+  old labels: different 11, equivalent 13, undecided 6
+  new labels: different 9, equivalent 11, small but real 4, undecided 6
+  cells whose label changed: 4
+    PG (logit) Fid+ R3: equivalent -> small but real
+    SX fixed Fid+ R3: different -> small but real
+    SX fixed Fid- R3: equivalent -> small but real
+    IG Fid- R3: different -> small but real
