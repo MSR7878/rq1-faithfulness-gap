@@ -42,6 +42,13 @@ def run(unit):
             "ig_smooth": {m: smooth(src["ig"][m], dl[m].edge_index.numpy()) for m in mols}}
     for w in COMBOS:
         A[w] = C.gea_array(unit, f"T5|{w}", lambda x, s=comb[w]: s[x], mols, dkey)
+    # for P-N3: the old methods on all of the unit's GT molecules that have their scores (registered molecules; same streams)
+    allgt = T5.gt_mols(unit); A["all__mols"] = np.array(allgt)
+    for k, v in T5.null_arrays(unit, allgt).items():
+        A[f"all__{k}"] = v
+    for w in OLD:
+        mw = [m for m in allgt if m in src[w]]
+        A[f"all__{w}__mols"] = np.array(mw); A[f"all__{w}__gea"] = C.gea_array(unit, w, lambda x, s=src[w]: s[x], mw, dkey)
     C.save_npz(f"{T5.T5}/N4/{unit}.npz", **A)
     print(f"{unit}: {len(mols)} molecules with SubgraphX", flush=True)
 
