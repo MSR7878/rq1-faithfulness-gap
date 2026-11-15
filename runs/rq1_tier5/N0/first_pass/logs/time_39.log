@@ -1,0 +1,6 @@
+mutag_graphxai_s0 gnnshap 75 None {'n': 10, 'seconds': 1.6800181865692139, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 gnnshap 115 None {'n': 10, 'seconds': 0.1355888843536377, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 gnnshap 169 None {'n': 17, 'seconds': 1.0651359558105469, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 gnnshap 19 None {'n': 18, 'seconds': 1.3096764087677002, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 gnnshap 108 None {'n': 28, 'seconds': 1.1033310890197754, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 gnnshap 179 None {'n': 28, 'seconds': 1.3274199962615967, 'finite': True, 'nonconstant': True, 'error': None}

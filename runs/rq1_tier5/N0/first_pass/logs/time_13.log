@@ -1,0 +1,14 @@
+/home/manvendra.singh/rq1-faithfulness-gap/third_party/same/shapley.py:88: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  dataloader = DataLoader(marginal_subgraph_dataset, batch_size=256, shuffle=False, pin_memory=False, num_workers=0) # pin_memory: True, CUDA out of memory
+mutag_graphxai_s0 same 75 k {'n': 10, 'seconds': 14.951239109039307, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 75 own {'n': 10, 'seconds': 77.01493406295776, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 115 k {'n': 10, 'seconds': 13.850931882858276, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 115 own {'n': 10, 'seconds': 70.8297348022461, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 169 k {'n': 17, 'seconds': 68.40973496437073, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 169 own {'n': 17, 'seconds': 229.86478304862976, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 19 k {'n': 18, 'seconds': 78.18902492523193, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 19 own {'n': 18, 'seconds': 276.1405539512634, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 108 k {'n': 28, 'seconds': 232.01030802726746, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 108 own {'n': 28, 'seconds': 486.80538296699524, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 179 k {'n': 28, 'seconds': 153.3348319530487, 'finite': True, 'nonconstant': True, 'error': None}
+mutag_graphxai_s0 same 179 own {'n': 28, 'seconds': 334.39318203926086, 'finite': True, 'nonconstant': True, 'error': None}

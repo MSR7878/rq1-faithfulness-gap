@@ -1,0 +1,114 @@
+{
+ "unit": "bxaic_indole_gcn_s0",
+ "explainer": "gstarx",
+ "rows": [
+  {
+   "mol_idx": 21090,
+   "n": 13,
+   "bonds": 14,
+   "budget": null,
+   "seconds": 72.590176820755,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.7190298438072205,
+    "empty": 0.02359795942902565,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 12044,
+   "n": 14,
+   "bonds": 16,
+   "budget": null,
+   "seconds": 75.27729368209839,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.7254182696342468,
+    "empty": 0.009760021232068539,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 19716,
+   "n": 30,
+   "bonds": 34,
+   "budget": null,
+   "seconds": 163.46672654151917,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9532162547111511,
+    "empty": 0.02359795942902565,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 21477,
+   "n": 30,
+   "bonds": 34,
+   "budget": null,
+   "seconds": 159.91139841079712,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9907370209693909,
+    "empty": 0.02359795942902565,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 6619,
+   "n": 79,
+   "bonds": 84,
+   "budget": null,
+   "seconds": 376.68527245521545,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9985899329185486,
+    "empty": 0.02359795942902565,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 40900,
+   "n": 80,
+   "bonds": 81,
+   "budget": null,
+   "seconds": 211.20766472816467,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.994835376739502,
+    "empty": 0.02359795942902565,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  }
+ ]
+}

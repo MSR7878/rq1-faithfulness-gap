@@ -1,0 +1,114 @@
+{
+ "unit": "mutagenicity_dmpnn_s0",
+ "explainer": "gstarx",
+ "rows": [
+  {
+   "mol_idx": 1659,
+   "n": 6,
+   "bonds": 5,
+   "budget": null,
+   "seconds": 0.5636768341064453,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9659284949302673,
+    "empty": 0.32088199257850647,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1760,
+   "n": 8,
+   "bonds": 7,
+   "budget": null,
+   "seconds": 0.840688943862915,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9999788999557495,
+    "empty": 0.32088199257850647,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1650,
+   "n": 22,
+   "bonds": 24,
+   "budget": null,
+   "seconds": 123.30133104324341,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.32088199257850647,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1664,
+   "n": 22,
+   "bonds": 22,
+   "budget": null,
+   "seconds": 123.01915550231934,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9999958276748657,
+    "empty": 0.32088199257850647,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 712,
+   "n": 60,
+   "bonds": 63,
+   "budget": null,
+   "seconds": 332.15877532958984,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 0
+   },
+   "perturbation": {
+    "full": 0.937990128993988,
+    "empty": 0.6295947432518005,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 768,
+   "n": 70,
+   "bonds": 73,
+   "budget": null,
+   "seconds": 338.7265074253082,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9999998807907104,
+    "empty": 0.3838563561439514,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  }
+ ]
+}

@@ -1,0 +1,138 @@
+{
+ "unit": "mutagenicity_gin_s0",
+ "explainer": "gnnshap",
+ "rows": [
+  {
+   "mol_idx": 1659,
+   "n": 6,
+   "bonds": 5,
+   "budget": null,
+   "seconds": 1.697371244430542,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 5,
+    "fnull": 0.4844810962677002,
+    "ffull": 0.9999982118606567,
+    "sum_phi": 0.5155171072110534
+   },
+   "perturbation": {
+    "full": 0.9999982118606567,
+    "empty": 0.4844810962677002,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1760,
+   "n": 8,
+   "bonds": 7,
+   "budget": null,
+   "seconds": 0.05227947235107422,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 7,
+    "fnull": 0.6003532409667969,
+    "ffull": 1.0,
+    "sum_phi": 0.3996467646211386
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.6003532409667969,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1650,
+   "n": 22,
+   "bonds": 24,
+   "budget": null,
+   "seconds": 1.1121065616607666,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 24,
+    "fnull": 0.0013782522873952985,
+    "ffull": 0.9999998807907104,
+    "sum_phi": 0.9986216276884079
+   },
+   "perturbation": {
+    "full": 0.9999998807907104,
+    "empty": 0.0013782522873952985,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1664,
+   "n": 22,
+   "bonds": 22,
+   "budget": null,
+   "seconds": 1.4474577903747559,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 22,
+    "fnull": 0.4204733967781067,
+    "ffull": 1.0,
+    "sum_phi": 0.5795265955966897
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.4204733967781067,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 712,
+   "n": 60,
+   "bonds": 63,
+   "budget": null,
+   "seconds": 1.2673583030700684,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 63,
+    "fnull": 0.25719335675239563,
+    "ffull": 0.8734965324401855,
+    "sum_phi": 0.6163031546602724
+   },
+   "perturbation": {
+    "full": 0.8734965324401855,
+    "empty": 0.25719332695007324,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 768,
+   "n": 70,
+   "bonds": 73,
+   "budget": null,
+   "seconds": 1.6174342632293701,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 73,
+    "fnull": 0.45015987753868103,
+    "ffull": 1.0,
+    "sum_phi": 0.5498401229560841
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.45015987753868103,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  }
+ ]
+}

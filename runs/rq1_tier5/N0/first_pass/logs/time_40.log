@@ -1,0 +1,6 @@
+mutagenicity_dmpnn_s0 eig 1659 None {'n': 6, 'seconds': 0.9278688430786133, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_dmpnn_s0 eig 1760 None {'n': 8, 'seconds': 0.04805350303649902, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_dmpnn_s0 eig 1650 None {'n': 22, 'seconds': 0.1233525276184082, 'finite': True, 'nonconstant': False, 'error': None}
+mutagenicity_dmpnn_s0 eig 1664 None {'n': 22, 'seconds': 0.1171107292175293, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_dmpnn_s0 eig 712 None {'n': 60, 'seconds': 0.3106381893157959, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_dmpnn_s0 eig 768 None {'n': 70, 'seconds': 0.34954071044921875, 'finite': True, 'nonconstant': True, 'error': None}

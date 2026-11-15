@@ -1,0 +1,6 @@
+mutag_graphxai_s0 gstarx 75 None {'n': 10, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+mutag_graphxai_s0 gstarx 115 None {'n': 10, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+mutag_graphxai_s0 gstarx 169 None {'n': 17, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+mutag_graphxai_s0 gstarx 19 None {'n': 18, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+mutag_graphxai_s0 gstarx 108 None {'n': 28, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+mutag_graphxai_s0 gstarx 179 None {'n': 28, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}

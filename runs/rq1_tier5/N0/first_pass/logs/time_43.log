@@ -1,0 +1,6 @@
+mutagenicity_gcn_s0 eig 1659 None {'n': 6, 'seconds': 0.8848979473114014, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gcn_s0 eig 1760 None {'n': 8, 'seconds': 0.05549287796020508, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gcn_s0 eig 1650 None {'n': 22, 'seconds': 0.15959525108337402, 'finite': True, 'nonconstant': False, 'error': None}
+mutagenicity_gcn_s0 eig 1664 None {'n': 22, 'seconds': 0.13384103775024414, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gcn_s0 eig 712 None {'n': 60, 'seconds': 0.3571004867553711, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gcn_s0 eig 768 None {'n': 70, 'seconds': 0.3699073791503906, 'finite': True, 'nonconstant': True, 'error': None}

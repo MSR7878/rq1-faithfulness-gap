@@ -1,0 +1,14 @@
+/home/manvendra.singh/rq1-faithfulness-gap/third_party/same/shapley.py:88: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  dataloader = DataLoader(marginal_subgraph_dataset, batch_size=256, shuffle=False, pin_memory=False, num_workers=0) # pin_memory: True, CUDA out of memory
+mutagenicity_gin_s0 same 1659 k {'n': 6, 'seconds': 2.842020273208618, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1659 own {'n': 6, 'seconds': 6.686459541320801, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1760 k {'n': 8, 'seconds': 5.239885091781616, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1760 own {'n': 8, 'seconds': 35.50758457183838, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1650 k {'n': 22, 'seconds': 117.85203552246094, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1650 own {'n': 22, 'seconds': 428.3211178779602, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1664 k {'n': 22, 'seconds': 60.99074363708496, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 1664 own {'n': 22, 'seconds': 277.80493330955505, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 712 k {'n': 60, 'seconds': 581.6233263015747, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 712 own {'n': 60, 'seconds': 1307.3924119472504, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 768 k {'n': 70, 'seconds': 621.8843152523041, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gin_s0 same 768 own {'n': 70, 'seconds': 1486.749339580536, 'finite': True, 'nonconstant': True, 'error': None}

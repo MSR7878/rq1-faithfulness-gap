@@ -1,0 +1,14 @@
+/home/manvendra.singh/rq1-faithfulness-gap/third_party/same/shapley.py:88: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  dataloader = DataLoader(marginal_subgraph_dataset, batch_size=256, shuffle=False, pin_memory=False, num_workers=0) # pin_memory: True, CUDA out of memory
+bxaic_indole_gin_s0 same 21090 k {'n': 13, 'seconds': 30.286552667617798, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 21090 own {'n': 13, 'seconds': 129.98980474472046, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 12044 k {'n': 14, 'seconds': 28.712289810180664, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 12044 own {'n': 14, 'seconds': 124.90789604187012, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 19716 k {'n': 30, 'seconds': 189.9998381137848, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 19716 own {'n': 30, 'seconds': 533.7275245189667, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 21477 k {'n': 30, 'seconds': 168.46598982810974, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 21477 own {'n': 30, 'seconds': 556.6890873908997, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 6619 k {'n': 79, 'seconds': 1041.982322692871, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 6619 own {'n': 79, 'seconds': 2184.6127593517303, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 40900 k {'n': 80, 'seconds': 497.5978546142578, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_gin_s0 same 40900 own {'n': 80, 'seconds': 407.4627916812897, 'finite': True, 'nonconstant': True, 'error': None}

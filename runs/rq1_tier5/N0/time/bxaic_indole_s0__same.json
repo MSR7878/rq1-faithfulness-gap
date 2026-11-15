@@ -1,0 +1,375 @@
+{
+ "unit": "bxaic_indole_s0",
+ "explainer": "same",
+ "rows": [
+  {
+   "mol_idx": 21090,
+   "n": 13,
+   "bonds": 14,
+   "budget": "k",
+   "seconds": 27.77339792251587,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 3,
+    "coalition": [
+     11,
+     12,
+     7
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9952718615531921,
+    "empty": 5.339917152014095e-06,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 21090,
+   "n": 13,
+   "bonds": 14,
+   "budget": "own",
+   "seconds": 120.40122699737549,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 7,
+    "coalition": [
+     2,
+     3,
+     6,
+     7,
+     8,
+     9,
+     12
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9952718615531921,
+    "empty": 5.339917152014095e-06,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 12044,
+   "n": 14,
+   "bonds": 16,
+   "budget": "k",
+   "seconds": 29.94881319999695,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 3,
+    "coalition": [
+     5,
+     6,
+     7
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9955514073371887,
+    "empty": 1.1175384315720294e-06,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 12044,
+   "n": 14,
+   "bonds": 16,
+   "budget": "own",
+   "seconds": 127.16255855560303,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 7,
+    "coalition": [
+     1,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9955514073371887,
+    "empty": 1.1175384315720294e-06,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 19716,
+   "n": 30,
+   "bonds": 34,
+   "budget": "k",
+   "seconds": 157.1144151687622,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 7,
+    "coalition": [
+     5,
+     6,
+     8,
+     9,
+     10,
+     26,
+     27
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9998968839645386,
+    "empty": 1.1171713727720078e-11,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 19716,
+   "n": 30,
+   "bonds": 34,
+   "budget": "own",
+   "seconds": 413.73109436035156,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 15,
+    "coalition": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     26,
+     27
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9998968839645386,
+    "empty": 1.1171713727720078e-11,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 21477,
+   "n": 30,
+   "bonds": 34,
+   "budget": "k",
+   "seconds": 177.82869458198547,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 7,
+    "coalition": [
+     9,
+     10,
+     13,
+     14,
+     15,
+     16,
+     21
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9999847412109375,
+    "empty": 9.640181014569649e-11,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 21477,
+   "n": 30,
+   "bonds": 34,
+   "budget": "own",
+   "seconds": 559.7151620388031,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 15,
+    "coalition": [
+     9,
+     10,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     21
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9999847412109375,
+    "empty": 9.640181014569649e-11,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 6619,
+   "n": 79,
+   "bonds": 84,
+   "budget": "k",
+   "seconds": 713.1187670230865,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 19,
+    "coalition": [
+     2,
+     3,
+     4,
+     5,
+     9,
+     10,
+     11,
+     12,
+     20
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.999998927116394,
+    "empty": 3.1729193286434847e-29,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 6619,
+   "n": 79,
+   "bonds": 84,
+   "budget": "own",
+   "seconds": 1678.0885779857635,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 40,
+    "coalition": [
+     2,
+     3,
+     4,
+     5,
+     9,
+     10,
+     11,
+     12,
+     20,
+     21
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.999998927116394,
+    "empty": 3.1729193286434847e-29,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 40900,
+   "n": 80,
+   "bonds": 81,
+   "budget": "k",
+   "seconds": 731.8783676624298,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 20,
+    "coalition": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     16,
+     21,
+     23,
+     24
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9999992847442627,
+    "empty": 2.522813833311138e-34,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 40900,
+   "n": 80,
+   "bonds": 81,
+   "budget": "own",
+   "seconds": 1068.2476494312286,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 40,
+    "coalition": [
+     32,
+     34,
+     3,
+     4,
+     5,
+     6,
+     35,
+     40,
+     41,
+     36,
+     21,
+     24
+    ],
+    "block": "bbbp"
+   },
+   "perturbation": {
+    "full": 0.9999992847442627,
+    "empty": 2.522813833311138e-34,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  }
+ ]
+}

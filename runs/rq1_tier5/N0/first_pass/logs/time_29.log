@@ -1,0 +1,6 @@
+mutagenicity_gine_s0 gnnshap 1659 None {'n': 6, 'seconds': 1.7664029598236084, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gine_s0 gnnshap 1760 None {'n': 8, 'seconds': 0.05528092384338379, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gine_s0 gnnshap 1650 None {'n': 22, 'seconds': 1.1600289344787598, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gine_s0 gnnshap 1664 None {'n': 22, 'seconds': 1.3922669887542725, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gine_s0 gnnshap 712 None {'n': 60, 'seconds': 1.3276786804199219, 'finite': True, 'nonconstant': True, 'error': None}
+mutagenicity_gine_s0 gnnshap 768 None {'n': 70, 'seconds': 1.621196985244751, 'finite': True, 'nonconstant': True, 'error': None}

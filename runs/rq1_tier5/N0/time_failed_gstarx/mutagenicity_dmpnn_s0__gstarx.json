@@ -1,0 +1,74 @@
+{
+ "unit": "mutagenicity_dmpnn_s0",
+ "explainer": "gstarx",
+ "rows": [
+  {
+   "mol_idx": 1659,
+   "n": 6,
+   "bonds": 5,
+   "budget": null,
+   "seconds": 2.361227512359619,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9659284949302673,
+    "empty": 0.32088199257850647,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1760,
+   "n": 8,
+   "bonds": 7,
+   "budget": null,
+   "seconds": 1.7672362327575684,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1
+   },
+   "perturbation": {
+    "full": 0.9999788999557495,
+    "empty": 0.32088199257850647,
+    "how": "remove: one atom left",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1650,
+   "n": 22,
+   "bonds": 24,
+   "budget": null,
+   "error": "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')",
+   "traceback": "Traceback (most recent call last):\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_N0.py\", line 129, in time_unit\n    t0 = time.time(); e = ex.explain(d, b); r[\"seconds\"] = time.time() - t0\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py\", line 132, in explain\n    s = self.gx.explain(g, superadditive_ext=self.CFG[\"superadditive_ext\"], sample_method=self.CFG[\"sample_method\"],\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/gstarx.py\", line 61, in explain\n    sampled_nodes, sampled_data, sampled_adj = sample_subgraph(\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py\", line 227, in sample_subgraph\n    sampled_edge_index, _ = subgraph(\n  File \"/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/utils/_subgraph.py\", line 143, in subgraph\n    edge_mask = node_mask[edge_index[0]] & node_mask[edge_index[1]]\nRuntimeError: indices should be either on cpu or on the same device as the indexed tensor (cpu)\n"
+  },
+  {
+   "mol_idx": 1664,
+   "n": 22,
+   "bonds": 22,
+   "budget": null,
+   "error": "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')",
+   "traceback": "Traceback (most recent call last):\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_N0.py\", line 129, in time_unit\n    t0 = time.time(); e = ex.explain(d, b); r[\"seconds\"] = time.time() - t0\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py\", line 132, in explain\n    s = self.gx.explain(g, superadditive_ext=self.CFG[\"superadditive_ext\"], sample_method=self.CFG[\"sample_method\"],\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/gstarx.py\", line 61, in explain\n    sampled_nodes, sampled_data, sampled_adj = sample_subgraph(\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py\", line 227, in sample_subgraph\n    sampled_edge_index, _ = subgraph(\n  File \"/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/utils/_subgraph.py\", line 143, in subgraph\n    edge_mask = node_mask[edge_index[0]] & node_mask[edge_index[1]]\nRuntimeError: indices should be either on cpu or on the same device as the indexed tensor (cpu)\n"
+  },
+  {
+   "mol_idx": 712,
+   "n": 60,
+   "bonds": 63,
+   "budget": null,
+   "error": "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')",
+   "traceback": "Traceback (most recent call last):\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_N0.py\", line 129, in time_unit\n    t0 = time.time(); e = ex.explain(d, b); r[\"seconds\"] = time.time() - t0\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py\", line 132, in explain\n    s = self.gx.explain(g, superadditive_ext=self.CFG[\"superadditive_ext\"], sample_method=self.CFG[\"sample_method\"],\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/gstarx.py\", line 61, in explain\n    sampled_nodes, sampled_data, sampled_adj = sample_subgraph(\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py\", line 227, in sample_subgraph\n    sampled_edge_index, _ = subgraph(\n  File \"/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/utils/_subgraph.py\", line 143, in subgraph\n    edge_mask = node_mask[edge_index[0]] & node_mask[edge_index[1]]\nRuntimeError: indices should be either on cpu or on the same device as the indexed tensor (cpu)\n"
+  },
+  {
+   "mol_idx": 768,
+   "n": 70,
+   "bonds": 73,
+   "budget": null,
+   "error": "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')",
+   "traceback": "Traceback (most recent call last):\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_N0.py\", line 129, in time_unit\n    t0 = time.time(); e = ex.explain(d, b); r[\"seconds\"] = time.time() - t0\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py\", line 132, in explain\n    s = self.gx.explain(g, superadditive_ext=self.CFG[\"superadditive_ext\"], sample_method=self.CFG[\"sample_method\"],\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/gstarx.py\", line 61, in explain\n    sampled_nodes, sampled_data, sampled_adj = sample_subgraph(\n  File \"/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py\", line 227, in sample_subgraph\n    sampled_edge_index, _ = subgraph(\n  File \"/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/utils/_subgraph.py\", line 143, in subgraph\n    edge_mask = node_mask[edge_index[0]] & node_mask[edge_index[1]]\nRuntimeError: indices should be either on cpu or on the same device as the indexed tensor (cpu)\n"
+  }
+ ]
+}

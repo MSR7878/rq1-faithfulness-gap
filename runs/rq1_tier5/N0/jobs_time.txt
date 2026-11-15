@@ -1,0 +1,52 @@
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_dmpnn_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gin_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gine_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gcn_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gin_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gine_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gcn_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gin_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gine_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gcn_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit mutag_graphxai_s0 --expl same
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_dmpnn_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gin_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gine_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gcn_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gin_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gine_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gcn_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gin_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gine_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gcn_s0 --expl gstarx
+$PY -u -m src.analysis.tier5_N0 time --unit mutag_graphxai_s0 --expl gstarx
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_dmpnn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gin_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gine_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gcn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gin_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gine_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gcn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gin_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gine_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gcn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_N0 time --unit mutag_graphxai_s0 --expl gnnshap
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_dmpnn_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gin_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gine_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit mutagenicity_gcn_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gin_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gine_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_indole_gcn_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gin_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gine_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit bxaic_PAINS_gcn_s0 --expl eig
+$PY -u -m src.analysis.tier5_N0 time --unit mutag_graphxai_s0 --expl eig

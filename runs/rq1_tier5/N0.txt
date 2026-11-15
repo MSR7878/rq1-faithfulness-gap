@@ -1,0 +1,69 @@
+N0 -- INTEGRATION CHECK (no GEA or Fid number)
+
+  [1] adapter checks (pass needed): all pass
+    mutagenicity_dmpnn_s0    full 0.0e+00  removed 0.0e+00  batched 4.8e-07  EiG two-graph 5.6e-09  zero-bond/single-atom finite True  -> pass
+    mutagenicity_gin_s0      full 9.5e-07  removed 0.0e+00  batched 1.9e-06  EiG two-graph 0.0e+00  zero-bond/single-atom finite True  -> pass
+    mutagenicity_gine_s0     full 4.8e-07  removed 0.0e+00  batched 2.9e-06  EiG two-graph 3.0e-08  zero-bond/single-atom finite True  -> pass
+    mutagenicity_gcn_s0      full 0.0e+00  removed 0.0e+00  batched 3.8e-06  EiG two-graph 0.0e+00  zero-bond/single-atom finite True  -> pass
+    bxaic_indole_s0          full 0.0e+00  removed 0.0e+00  batched 9.5e-07  EiG two-graph 1.9e-08  zero-bond/single-atom finite True  -> pass
+    mutag_graphxai_s0        full 3.0e-07  removed 4.8e-07  batched 4.8e-07  EiG two-graph 5.6e-09  zero-bond/single-atom finite True  -> pass
+
+  [2] per explainer and model (6 timing molecules): runs / finite / non-constant / perturbation reaches the model / mean seconds
+    EiG      mutagenicity_dmpnn_s0      6/6 runs, finite 6, non-constant 5, perturbation 5/6,      0.3 s/molecule
+    EiG      mutagenicity_gin_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.3 s/molecule
+    EiG      mutagenicity_gine_s0       6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.3 s/molecule
+    EiG      mutagenicity_gcn_s0        6/6 runs, finite 6, non-constant 5, perturbation 4/6,      0.3 s/molecule
+    EiG      bxaic_indole_s0            6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.4 s/molecule
+    EiG      bxaic_indole_gin_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.3 s/molecule
+    EiG      bxaic_indole_gine_s0       6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.3 s/molecule
+    EiG      bxaic_indole_gcn_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.4 s/molecule
+    EiG      bxaic_PAINS_s0             6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.3 s/molecule
+    EiG      bxaic_PAINS_gin_s0         6/6 runs, finite 6, non-constant 6, perturbation 5/6,      0.3 s/molecule
+    EiG      bxaic_PAINS_gine_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.3 s/molecule
+    EiG      bxaic_PAINS_gcn_s0         6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.4 s/molecule
+    EiG      mutag_graphxai_s0          6/6 runs, finite 6, non-constant 6, perturbation 6/6,      0.2 s/molecule
+    GStarX   mutagenicity_dmpnn_s0      6/6 runs, finite 6, non-constant 6, perturbation 6/6,    153.1 s/molecule
+    GStarX   mutagenicity_gin_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,    151.7 s/molecule
+    GStarX   mutagenicity_gine_s0       6/6 runs, finite 6, non-constant 6, perturbation 6/6,    151.7 s/molecule
+    GStarX   mutagenicity_gcn_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,    152.0 s/molecule
+    GStarX   bxaic_indole_s0            6/6 runs, finite 6, non-constant 6, perturbation 6/6,     50.4 s/molecule
+    GStarX   bxaic_indole_gin_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,    179.3 s/molecule
+    GStarX   bxaic_indole_gine_s0       6/6 runs, finite 6, non-constant 6, perturbation 6/6,    179.3 s/molecule
+    GStarX   bxaic_indole_gcn_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,    176.5 s/molecule
+    GStarX   bxaic_PAINS_s0             6/6 runs, finite 6, non-constant 6, perturbation 6/6,    171.9 s/molecule
+    GStarX   bxaic_PAINS_gin_s0         6/6 runs, finite 6, non-constant 6, perturbation 6/6,    173.2 s/molecule
+    GStarX   bxaic_PAINS_gine_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,    173.5 s/molecule
+    GStarX   bxaic_PAINS_gcn_s0         6/6 runs, finite 6, non-constant 6, perturbation 6/6,    170.2 s/molecule
+    GStarX   mutag_graphxai_s0          6/6 runs, finite 6, non-constant 6, perturbation 6/6,     99.2 s/molecule
+    SAME     mutagenicity_dmpnn_s0      12/12 runs, finite 12, non-constant 12, perturbation 10/12,    939.8 s/molecule
+    SAME     mutagenicity_gin_s0        12/12 runs, finite 12, non-constant 12, perturbation 12/12,    822.1 s/molecule
+    SAME     mutagenicity_gine_s0       12/12 runs, finite 12, non-constant 12, perturbation 12/12,    797.9 s/molecule
+    SAME     mutagenicity_gcn_s0        12/12 runs, finite 12, non-constant 12, perturbation 8/12,    606.5 s/molecule
+    SAME     bxaic_indole_s0            12/12 runs, finite 12, non-constant 12, perturbation 12/12,    967.5 s/molecule
+    SAME     bxaic_indole_gin_s0        12/12 runs, finite 12, non-constant 12, perturbation 12/12,    982.4 s/molecule
+    SAME     bxaic_indole_gine_s0       12/12 runs, finite 12, non-constant 12, perturbation 12/12,    965.3 s/molecule
+    SAME     bxaic_indole_gcn_s0        12/12 runs, finite 12, non-constant 12, perturbation 12/12,    964.4 s/molecule
+    SAME     bxaic_PAINS_s0             12/12 runs, finite 12, non-constant 12, perturbation 12/12,    920.7 s/molecule
+    SAME     bxaic_PAINS_gin_s0         12/12 runs, finite 12, non-constant 12, perturbation 10/12,    756.1 s/molecule
+    SAME     bxaic_PAINS_gine_s0        12/12 runs, finite 12, non-constant 10, perturbation 12/12,    812.9 s/molecule
+    SAME     bxaic_PAINS_gcn_s0         12/12 runs, finite 12, non-constant 12, perturbation 12/12,    966.7 s/molecule
+    SAME     mutag_graphxai_s0          12/12 runs, finite 12, non-constant 12, perturbation 12/12,    339.3 s/molecule
+    GNNShap  mutagenicity_dmpnn_s0      6/6 runs, finite 6, non-constant 6, perturbation 5/6,      1.0 s/molecule
+    GNNShap  mutagenicity_gin_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.2 s/molecule
+    GNNShap  mutagenicity_gine_s0       6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.2 s/molecule
+    GNNShap  mutagenicity_gcn_s0        6/6 runs, finite 6, non-constant 6, perturbation 4/6,      1.2 s/molecule
+    GNNShap  bxaic_indole_s0            6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.6 s/molecule
+    GNNShap  bxaic_indole_gin_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.9 s/molecule
+    GNNShap  bxaic_indole_gine_s0       6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.6 s/molecule
+    GNNShap  bxaic_indole_gcn_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.6 s/molecule
+    GNNShap  bxaic_PAINS_s0             6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.4 s/molecule
+    GNNShap  bxaic_PAINS_gin_s0         6/6 runs, finite 6, non-constant 6, perturbation 5/6,      1.4 s/molecule
+    GNNShap  bxaic_PAINS_gine_s0        6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.4 s/molecule
+    GNNShap  bxaic_PAINS_gcn_s0         6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.4 s/molecule
+    GNNShap  mutag_graphxai_s0          6/6 runs, finite 6, non-constant 6, perturbation 6/6,      1.1 s/molecule
+
+  [3] scale rule (projected N1 hours at 12 workers; first level <= 24 h)
+    EiG      -> L0   L0 0.2 h  L1 0.1 h  L2 0.0 h  L3 0.0 h  L4 0.0 h
+    GStarX   -> L2   L0 77.8 h  L1 28.4 h  L2 22.9 h  L3 11.5 h  L4 5.7 h
+    SAME     -> L4 (over 24 h even at L4)   L0 459.2 h  L1 162.1 h  L2 125.5 h  L3 62.7 h  L4 31.4 h
+    GNNShap  -> L0   L0 0.8 h  L1 0.3 h  L2 0.2 h  L3 0.1 h  L4 0.1 h

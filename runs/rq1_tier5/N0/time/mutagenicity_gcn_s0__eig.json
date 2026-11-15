@@ -1,0 +1,194 @@
+{
+ "unit": "mutagenicity_gcn_s0",
+ "explainer": "eig",
+ "rows": [
+  {
+   "mol_idx": 1659,
+   "n": 6,
+   "bonds": 5,
+   "budget": null,
+   "seconds": 0.8848979473114014,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 5,
+    "chosen_bonds": 1,
+    "max_bonds": 1,
+    "search_diffs": [
+     0.9010568261146545
+    ]
+   },
+   "perturbation": {
+    "full": 0.9997672438621521,
+    "empty": 0.9999450445175171,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1760,
+   "n": 8,
+   "bonds": 7,
+   "budget": null,
+   "seconds": 0.05549287796020508,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 7,
+    "chosen_bonds": 2,
+    "max_bonds": 2,
+    "search_diffs": [
+     9.441375732421875e-05
+    ]
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.9999970197677612,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1650,
+   "n": 22,
+   "bonds": 24,
+   "budget": null,
+   "seconds": 0.15959525108337402,
+   "finite": true,
+   "nonconstant": false,
+   "meta": {
+    "target": 1,
+    "bonds": 24,
+    "chosen_bonds": 7,
+    "max_bonds": 7,
+    "search_diffs": [
+     -0.9875871492549777,
+     -0.982731020078063,
+     -0.9894273169338703,
+     -0.9830871000885963,
+     -0.9897520309314132,
+     -0.004677832126617432
+    ]
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 6.265038943360779e-13,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1664,
+   "n": 22,
+   "bonds": 22,
+   "budget": null,
+   "seconds": 0.13384103775024414,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 22,
+    "chosen_bonds": 5,
+    "max_bonds": 6,
+    "search_diffs": [
+     0.0001919865608215332,
+     0.9441132210195065,
+     0.9693568907678127,
+     0.9728295393288136,
+     0.9699945263564587
+    ]
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 1.0,
+    "how": "all bonds removed",
+    "differs": false
+   }
+  },
+  {
+   "mol_idx": 712,
+   "n": 60,
+   "bonds": 63,
+   "budget": null,
+   "seconds": 0.3571004867553711,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 63,
+    "chosen_bonds": 18,
+    "max_bonds": 18,
+    "search_diffs": [
+     0.7890428120726938,
+     0.78401567270339,
+     0.8888335915062271,
+     0.9930580950076546,
+     0.9962132363389173,
+     0.9977607454766257,
+     0.9982078444163562,
+     0.9985609313916939,
+     0.9988323731886339,
+     0.9992209350784833,
+     0.9993559205104248,
+     0.9993509859541518,
+     0.9993462943821214,
+     0.9995470423855295,
+     0.9996187255746918,
+     0.9996709642255155,
+     0.9997027195677219
+    ]
+   },
+   "perturbation": {
+    "full": 0.9833473563194275,
+    "empty": 1.0,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 768,
+   "n": 70,
+   "bonds": 73,
+   "budget": null,
+   "seconds": 0.3699073791503906,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 73,
+    "chosen_bonds": 11,
+    "max_bonds": 21,
+    "search_diffs": [
+     -0.3487028479576111,
+     0.027456581592559814,
+     0.01427602767944336,
+     0.012824535369873047,
+     0.01137620210647583,
+     0.032620787620544434,
+     0.030235230922698975,
+     0.02916198968887329,
+     0.028519511222839355,
+     0.7784047424793243,
+     0.7450428605079651,
+     0.7105639278888702,
+     0.6743924915790558,
+     0.6732648611068726,
+     0.5848215818405151,
+     0.6332452595233917,
+     0.6047965884208679,
+     0.565583199262619,
+     0.5524162650108337,
+     0.5132468640804291
+    ]
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 1.0,
+    "how": "all bonds removed",
+    "differs": false
+   }
+  }
+ ]
+}

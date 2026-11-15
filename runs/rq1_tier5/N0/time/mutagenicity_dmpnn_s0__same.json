@@ -1,0 +1,332 @@
+{
+ "unit": "mutagenicity_dmpnn_s0",
+ "explainer": "same",
+ "rows": [
+  {
+   "mol_idx": 1659,
+   "n": 6,
+   "bonds": 5,
+   "budget": "k",
+   "seconds": 2.9109840393066406,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 1,
+    "coalition": [
+     5
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9659284949302673,
+    "empty": 0.8748258352279663,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1659,
+   "n": 6,
+   "bonds": 5,
+   "budget": "own",
+   "seconds": 7.096481800079346,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 3,
+    "coalition": [
+     1,
+     4,
+     5
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9659284949302673,
+    "empty": 0.8748258352279663,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1760,
+   "n": 8,
+   "bonds": 7,
+   "budget": "k",
+   "seconds": 6.134524822235107,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 2,
+    "coalition": [
+     1,
+     2
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9999788999557495,
+    "empty": 0.8918081521987915,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1760,
+   "n": 8,
+   "bonds": 7,
+   "budget": "own",
+   "seconds": 35.137593269348145,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 4,
+    "coalition": [
+     1,
+     2,
+     4,
+     5
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9999788999557495,
+    "empty": 0.8918081521987915,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1650,
+   "n": 22,
+   "bonds": 24,
+   "budget": "k",
+   "seconds": 64.60122966766357,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 5,
+    "coalition": [
+     0,
+     18,
+     12
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.9673804044723511,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1650,
+   "n": 22,
+   "bonds": 24,
+   "budget": "own",
+   "seconds": 263.7610127925873,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 11,
+    "coalition": [
+     0,
+     6,
+     12,
+     14,
+     19
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 1.0,
+    "empty": 0.9673804044723511,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1664,
+   "n": 22,
+   "bonds": 22,
+   "budget": "k",
+   "seconds": 77.87061548233032,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 5,
+    "coalition": [
+     3,
+     7,
+     14,
+     20,
+     21
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9999958276748657,
+    "empty": 0.9990038275718689,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 1664,
+   "n": 22,
+   "bonds": 22,
+   "budget": "own",
+   "seconds": 359.52995014190674,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 11,
+    "coalition": [
+     13,
+     3,
+     21,
+     7
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9999958276748657,
+    "empty": 0.9990038275718689,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 712,
+   "n": 60,
+   "bonds": 63,
+   "budget": "k",
+   "seconds": 1037.17755484581,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 0,
+    "budget": "k",
+    "size": 15,
+    "coalition": [
+     12,
+     48,
+     17,
+     50,
+     20,
+     52,
+     23
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9379900097846985,
+    "empty": 8.739192480788915e-08,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 712,
+   "n": 60,
+   "bonds": 63,
+   "budget": "own",
+   "seconds": 2132.1329255104065,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 0,
+    "budget": "own",
+    "size": 30,
+    "coalition": [
+     48,
+     17,
+     50,
+     51,
+     20,
+     23
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.937990128993988,
+    "empty": 8.739192480788915e-08,
+    "how": "split: no atom selected",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 768,
+   "n": 70,
+   "bonds": 73,
+   "budget": "k",
+   "seconds": 578.4713706970215,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "k",
+    "size": 17,
+    "coalition": [
+     1,
+     9,
+     12,
+     49,
+     18
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9999998807907104,
+    "empty": 1.0,
+    "how": "split: no atom selected",
+    "differs": false
+   }
+  },
+  {
+   "mol_idx": 768,
+   "n": 70,
+   "bonds": 73,
+   "budget": "own",
+   "seconds": 1073.821491241455,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "budget": "own",
+    "size": 35,
+    "coalition": [
+     0,
+     1,
+     4,
+     13,
+     18
+    ],
+    "block": "mutag"
+   },
+   "perturbation": {
+    "full": 0.9999998807907104,
+    "empty": 1.0,
+    "how": "split: no atom selected",
+    "differs": false
+   }
+  }
+ ]
+}

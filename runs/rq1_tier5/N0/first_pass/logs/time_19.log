@@ -1,0 +1,6 @@
+bxaic_indole_gin_s0 gstarx 21090 None {'n': 13, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+bxaic_indole_gin_s0 gstarx 12044 None {'n': 14, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+bxaic_indole_gin_s0 gstarx 19716 None {'n': 30, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+bxaic_indole_gin_s0 gstarx 21477 None {'n': 30, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+bxaic_indole_gin_s0 gstarx 6619 None {'n': 79, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}
+bxaic_indole_gin_s0 gstarx 40900 None {'n': 80, 'seconds': None, 'finite': None, 'nonconstant': None, 'error': "RuntimeError('indices should be either on cpu or on the same device as the indexed tensor (cpu)')"}

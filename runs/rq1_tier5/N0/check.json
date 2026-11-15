@@ -1,0 +1,89 @@
+{
+ "units": {
+  "mutagenicity_dmpnn_s0": {
+   "n": 22,
+   "bonds": 22,
+   "adapter_full_maxdiff": 0.0,
+   "adapter_removed_maxdiff": 0.0,
+   "zero_bond_single_atom_finite": {
+    "remove_single_atom": true,
+    "split_no_bonds": true,
+    "no_bonds_direct": true
+   },
+   "batched_vs_single_maxdiff": 4.76837158203125e-07,
+   "eig_two_graph_vs_direct": 5.587935447692871e-09,
+   "pass": true
+  },
+  "mutagenicity_gin_s0": {
+   "n": 22,
+   "bonds": 22,
+   "adapter_full_maxdiff": 9.5367431640625e-07,
+   "adapter_removed_maxdiff": 0.0,
+   "zero_bond_single_atom_finite": {
+    "remove_single_atom": true,
+    "split_no_bonds": true,
+    "no_bonds_direct": true
+   },
+   "batched_vs_single_maxdiff": 1.9073486328125e-06,
+   "eig_two_graph_vs_direct": 0.0,
+   "pass": true
+  },
+  "mutagenicity_gine_s0": {
+   "n": 22,
+   "bonds": 22,
+   "adapter_full_maxdiff": 4.76837158203125e-07,
+   "adapter_removed_maxdiff": 0.0,
+   "zero_bond_single_atom_finite": {
+    "remove_single_atom": true,
+    "split_no_bonds": true,
+    "no_bonds_direct": true
+   },
+   "batched_vs_single_maxdiff": 2.86102294921875e-06,
+   "eig_two_graph_vs_direct": 2.9802322387695312e-08,
+   "pass": true
+  },
+  "mutagenicity_gcn_s0": {
+   "n": 22,
+   "bonds": 22,
+   "adapter_full_maxdiff": 0.0,
+   "adapter_removed_maxdiff": 0.0,
+   "zero_bond_single_atom_finite": {
+    "remove_single_atom": true,
+    "split_no_bonds": true,
+    "no_bonds_direct": true
+   },
+   "batched_vs_single_maxdiff": 3.814697265625e-06,
+   "eig_two_graph_vs_direct": 0.0,
+   "pass": true
+  },
+  "bxaic_indole_s0": {
+   "n": 30,
+   "bonds": 34,
+   "adapter_full_maxdiff": 0.0,
+   "adapter_removed_maxdiff": 0.0,
+   "zero_bond_single_atom_finite": {
+    "remove_single_atom": true,
+    "split_no_bonds": true,
+    "no_bonds_direct": true
+   },
+   "batched_vs_single_maxdiff": 9.5367431640625e-07,
+   "eig_two_graph_vs_direct": 1.862645149230957e-08,
+   "pass": true
+  },
+  "mutag_graphxai_s0": {
+   "n": 18,
+   "bonds": 20,
+   "adapter_full_maxdiff": 2.980232238769531e-07,
+   "adapter_removed_maxdiff": 4.76837158203125e-07,
+   "zero_bond_single_atom_finite": {
+    "remove_single_atom": true,
+    "split_no_bonds": true,
+    "no_bonds_direct": true
+   },
+   "batched_vs_single_maxdiff": 4.76837158203125e-07,
+   "eig_two_graph_vs_direct": 5.587935447692871e-09,
+   "pass": true
+  }
+ },
+ "all_pass": true
+}

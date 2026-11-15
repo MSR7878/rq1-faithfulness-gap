@@ -1,0 +1,138 @@
+{
+ "unit": "bxaic_indole_gcn_s0",
+ "explainer": "gnnshap",
+ "rows": [
+  {
+   "mol_idx": 21090,
+   "n": 13,
+   "bonds": 14,
+   "budget": null,
+   "seconds": 3.5928566455841064,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 14,
+    "fnull": 0.00022963847732171416,
+    "ffull": 0.7190297245979309,
+    "sum_phi": 0.7188000967144035
+   },
+   "perturbation": {
+    "full": 0.7190298438072205,
+    "empty": 0.00022963847732171416,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 12044,
+   "n": 14,
+   "bonds": 16,
+   "budget": null,
+   "seconds": 1.1209917068481445,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 16,
+    "fnull": 0.00013883496285416186,
+    "ffull": 0.7254183888435364,
+    "sum_phi": 0.7252795600797981
+   },
+   "perturbation": {
+    "full": 0.7254183292388916,
+    "empty": 0.00013883496285416186,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 19716,
+   "n": 30,
+   "bonds": 34,
+   "budget": null,
+   "seconds": 1.181786298751831,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 34,
+    "fnull": 4.779899427376222e-07,
+    "ffull": 0.9532162547111511,
+    "sum_phi": 0.9532157882349566
+   },
+   "perturbation": {
+    "full": 0.9532162547111511,
+    "empty": 4.779894879902713e-07,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 21477,
+   "n": 30,
+   "bonds": 34,
+   "budget": null,
+   "seconds": 1.1652419567108154,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 34,
+    "fnull": 2.3640961899218382e-06,
+    "ffull": 0.9907370209693909,
+    "sum_phi": 0.9907346547907991
+   },
+   "perturbation": {
+    "full": 0.9907370209693909,
+    "empty": 2.3640870949748205e-06,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 6619,
+   "n": 79,
+   "bonds": 84,
+   "budget": null,
+   "seconds": 1.3359968662261963,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 84,
+    "fnull": 3.791749605828776e-17,
+    "ffull": 0.9985899329185486,
+    "sum_phi": 0.9985899468883872
+   },
+   "perturbation": {
+    "full": 0.9985899329185486,
+    "empty": 3.791749605828776e-17,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  },
+  {
+   "mol_idx": 40900,
+   "n": 80,
+   "bonds": 81,
+   "budget": null,
+   "seconds": 1.34287691116333,
+   "finite": true,
+   "nonconstant": true,
+   "meta": {
+    "target": 1,
+    "bonds": 81,
+    "fnull": 4.622873604875763e-24,
+    "ffull": 0.994835376739502,
+    "sum_phi": 0.9948353780200705
+   },
+   "perturbation": {
+    "full": 0.994835376739502,
+    "empty": 4.622909103616498e-24,
+    "how": "all bonds removed",
+    "differs": true
+   }
+  }
+ ]
+}

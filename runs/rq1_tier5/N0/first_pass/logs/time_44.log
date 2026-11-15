@@ -1,0 +1,6 @@
+bxaic_indole_s0 eig 21090 None {'n': 13, 'seconds': 0.9008772373199463, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_s0 eig 12044 None {'n': 14, 'seconds': 0.07491207122802734, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_s0 eig 19716 None {'n': 30, 'seconds': 0.1702437400817871, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_s0 eig 21477 None {'n': 30, 'seconds': 0.1663377285003662, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_s0 eig 6619 None {'n': 79, 'seconds': 0.4516284465789795, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_indole_s0 eig 40900 None {'n': 80, 'seconds': 0.41110801696777344, 'finite': True, 'nonconstant': True, 'error': None}

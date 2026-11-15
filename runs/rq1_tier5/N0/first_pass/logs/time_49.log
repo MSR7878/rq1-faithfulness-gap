@@ -1,0 +1,6 @@
+bxaic_PAINS_gin_s0 eig 42221 None {'n': 10, 'seconds': 0.9101414680480957, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_PAINS_gin_s0 eig 11071 None {'n': 13, 'seconds': 0.052536725997924805, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_PAINS_gin_s0 eig 13148 None {'n': 29, 'seconds': 0.13032102584838867, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_PAINS_gin_s0 eig 13280 None {'n': 29, 'seconds': 0.1400449275970459, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_PAINS_gin_s0 eig 21984 None {'n': 70, 'seconds': 0.3122062683105469, 'finite': True, 'nonconstant': True, 'error': None}
+bxaic_PAINS_gin_s0 eig 18842 None {'n': 75, 'seconds': 0.31618762016296387, 'finite': True, 'nonconstant': True, 'error': None}
