@@ -1,0 +1,5 @@
+bxaic_PAINS_s6 S mol 3500: N=24 k=6 |S|=6 196.3s
+bxaic_PAINS_s6 S mol 10512: N=26 k=6 |S|=3 29.0s
+bxaic_PAINS_s6 S mol 19399: N=29 k=7 |S|=6 315.6s
+bxaic_PAINS_s6 S mol 32861: N=35 k=8 |S|=6 391.1s
+bxaic_PAINS_s6 S mol 46739: N=32 k=8 |S|=7 182.2s

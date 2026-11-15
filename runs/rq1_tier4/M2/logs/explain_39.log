@@ -1,0 +1,5 @@
+bxaic_PAINS_s8 S mol 609: N=20 k=5 |S|=5 106.2s
+bxaic_PAINS_s8 S mol 7400: N=20 k=5 |S|=5 134.3s
+bxaic_PAINS_s8 S mol 15864: N=42 k=10 |S|=10 424.9s
+bxaic_PAINS_s8 S mol 24426: N=34 k=8 |S|=8 289.8s
+bxaic_PAINS_s8 S mol 39408: N=35 k=8 |S|=8 387.0s

@@ -1,0 +1,5 @@
+$PY -u -m src.analysis.tier4_M score --unit bxaic_PAINS_s5
+$PY -u -m src.analysis.tier4_M score --unit bxaic_PAINS_s6
+$PY -u -m src.analysis.tier4_M score --unit bxaic_PAINS_s7
+$PY -u -m src.analysis.tier4_M score --unit bxaic_PAINS_s8
+$PY -u -m src.analysis.tier4_M score --unit bxaic_PAINS_s9

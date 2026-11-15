@@ -1,0 +1,5 @@
+$PY -u -m src.analysis.tier2_explain gp --unit bxaic_PAINS_s5 --ckpt runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s5.pt --out runs/rq1_tier4/M2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bxaic_PAINS_s6 --ckpt runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s6.pt --out runs/rq1_tier4/M2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bxaic_PAINS_s7 --ckpt runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s7.pt --out runs/rq1_tier4/M2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bxaic_PAINS_s8 --ckpt runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s8.pt --out runs/rq1_tier4/M2/gp
+$PY -u -m src.analysis.tier2_explain gp --unit bxaic_PAINS_s9 --ckpt runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s9.pt --out runs/rq1_tier4/M2/gp

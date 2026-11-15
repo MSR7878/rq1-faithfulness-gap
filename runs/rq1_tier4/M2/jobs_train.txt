@@ -1,0 +1,5 @@
+[ -f runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s5.pt ] || $PY -u -m src.train.train --dataset bxaic_PAINS --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 5 --device cuda --save runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s5.pt
+[ -f runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s6.pt ] || $PY -u -m src.train.train --dataset bxaic_PAINS --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 6 --device cuda --save runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s6.pt
+[ -f runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s7.pt ] || $PY -u -m src.train.train --dataset bxaic_PAINS --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 7 --device cuda --save runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s7.pt
+[ -f runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s8.pt ] || $PY -u -m src.train.train --dataset bxaic_PAINS --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 8 --device cuda --save runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s8.pt
+[ -f runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s9.pt ] || $PY -u -m src.train.train --dataset bxaic_PAINS --depth 3 --epochs 25 --batch-size 512 --hidden 256 --seed 9 --device cuda --save runs/rq1_tier4/M2/ckpt/bxaic_PAINS_s9.pt
