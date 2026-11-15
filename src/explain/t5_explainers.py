@@ -201,7 +201,8 @@ class GNNShapExplainer:
         pairs, bid = bonds_of(d.edge_index); B = len(pairs)
         if B < 2:
             return {"node": np.zeros(n), "own": None, "meta": {"target": c, "bonds": B, "skipped": "fewer than 2 bonds"}}
-        mask, kw = self.Sampler(nplayers=B, nsamples=self.ns).sample()
+        sampler = self.Sampler(nplayers=B, nsamples=self.ns)           # the base class caps nsamples at 2^B - 2
+        mask, kw = sampler.sample(); mask = mask.to(dev); kw = kw.to(dev)
         bid_t = torch.as_tensor(bid, device=mask.device)
         yhat = []
         for i in range(0, mask.shape[0], self.bs):
@@ -210,7 +211,8 @@ class GNNShapExplainer:
         yhat = torch.cat(yhat).double()
         none = np.zeros(len(bid), dtype=bool); full = np.ones(len(bid), dtype=bool)
         f2 = torch.softmax(batch_logits(self.model, keep_edges_batch(d, [none, full], dev)), -1)[:, c].double()
-        phi, _ = self.Solver(mask, kw, yhat, float(f2[0]), float(f2[1]), device=dev).solve()
+        phi = self.Solver(mask, kw, yhat, float(f2[0]), float(f2[1]), device=dev,
+                          fraction_evaluated=sampler.nsamples / sampler.max_samples, l1_reg=False).solve()
         phi = np.asarray(phi, dtype=np.float64).reshape(-1)
         node = np.zeros(n)
         for b in range(B):

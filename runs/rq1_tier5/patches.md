@@ -37,4 +37,11 @@ replace, add or work around is listed here. Code: `src/explain/t5_common.py`, `s
   - value = predicted-class probability with the coalition's bonds kept;
   - fnull = no bonds; ffull = all bonds.
 - **`colorlog` shim** (`src/explain/t5_shims/colorlog.py`): the package is not installed on ada, and ada has no internet. GNNShap uses it only for coloured logging; the shim maps it to the standard `logging` module.
+- **Build environment for the CUDA extension** (torch.utils.cpp_extension.load, as the authors call it): ada has neither ninja on the default PATH nor a new enough default compiler (gcc 7.5; torch 2.6 headers need gcc >= 9). Every GNNShap job runs with:
+  - `PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH` (an existing conda package cache on ada; nothing installed);
+  - `CC=gcc-9 CXX=g++-9` (system compilers);
+  - `TORCH_CUDA_ARCH_LIST=7.0`;
+  - nvcc from /usr/local/cuda (11.3) against torch built for CUDA 11.8.
+
+  The .cu file is unchanged.
 - Molecules with fewer than 2 bonds are not explained (scores 0) and are listed.
