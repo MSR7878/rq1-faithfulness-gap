@@ -1,0 +1,7 @@
+loaded bxaic:indole: 50000 graphs, 11 node / 1 edge feats  [device=cuda]
+----------------------------------------------------------------
+bxaic:indole: single 70/15/15 split  (train=35000 val=7500 test=7500)
+  test accuracy = 0.9825
+  test AUROC    = 0.9987  (val_auroc=0.998, ep25)
+  majority-class baseline acc = 0.6319 (AUROC 0.5)   171s
+  saved checkpoint -> runs/rq1_tier4/M1/ckpt/bxaic_indole_gine_s1.pt

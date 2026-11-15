@@ -1,0 +1,5 @@
+bxaic_indole_gcn_s4 S mol 125: N=32 k=8 |S|=8 242.2s
+bxaic_indole_gcn_s4 S mol 6106: N=20 k=5 |S|=4 73.2s
+bxaic_indole_gcn_s4 S mol 13686: N=30 k=7 |S|=6 273.8s
+bxaic_indole_gcn_s4 S mol 19111: N=30 k=7 |S|=3 173.7s
+bxaic_indole_gcn_s4 S mol 37856: N=29 k=7 |S|=7 149.0s

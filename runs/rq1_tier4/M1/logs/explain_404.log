@@ -1,0 +1,5 @@
+bxaic_indole_gcn_s3 S mol 5138: N=27 k=6 |S|=4 44.1s
+bxaic_indole_gcn_s3 S mol 10296: N=31 k=7 |S|=7 311.2s
+bxaic_indole_gcn_s3 S mol 16153: N=34 k=8 |S|=8 203.8s
+bxaic_indole_gcn_s3 S mol 24619: N=57 k=14 |S|=14 406.8s
+bxaic_indole_gcn_s3 S mol 42000: N=71 k=17 |S|=14 1124.5s

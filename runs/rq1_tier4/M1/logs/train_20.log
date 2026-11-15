@@ -1,0 +1,7 @@
+loaded bxaic:PAINS: 50000 graphs, 11 node / 1 edge feats  [device=cuda]
+----------------------------------------------------------------
+bxaic:PAINS: single 70/15/15 split  (train=35000 val=7500 test=7500)
+  test accuracy = 0.9401
+  test AUROC    = 0.9814  (val_auroc=0.983, ep23)
+  majority-class baseline acc = 0.6711 (AUROC 0.5)   162s
+  saved checkpoint -> runs/rq1_tier4/M1/ckpt/bxaic_PAINS_gin_s4.pt
