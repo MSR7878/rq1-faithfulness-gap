@@ -221,7 +221,9 @@ def _predictions_n1(rep):
         for c in ("bxaic_indole|dmpnn", "bxaic_PAINS|dmpnn"):
             x = cells.get(c, {}).get("methods", {}).get(w)
             P(f"    P-N1 {SH[w]:<8} {cname(c):<14} " + ("not run" if x is None else f"- random-node {fmt_ci(*x['rn'])}  - high deg {fmt_ci(*x['deg_high'])}"))
-    rep["P-N1"] = bool(hits); P(f"  P-N1 {'HELD' if hits else 'FAILED'}" + (f" ({', '.join(SH[w] for w in hits)})" if hits else ""))
+    missing = [w for w in NEWB if any(cells.get(c, {}).get("methods", {}).get(w) is None for c in ("bxaic_indole|dmpnn", "bxaic_PAINS|dmpnn"))]
+    rep["P-N1"] = "HELD" if hits else ("NOT DECIDED" if missing else "FAILED")
+    P(f"  P-N1 {rep['P-N1']}" + (f" ({', '.join(SH[w] for w in hits)})" if hits else (f" (missing: {', '.join(SH[w] for w in missing)})" if missing else "")))
     # P-N2
     c = "mutagenicity_graphxai|dmpnn"; bad, ran = [], []
     for w in NEWB:
@@ -249,10 +251,10 @@ def _predictions_n1(rep):
                 row[cl] = hb([a for a, _ in al], [b for _, b in al])
         res[w] = row
     P("    P-N3: minus random-node per cell (above = CI entirely above 0)")
-    P(f"    {'method':<12}" + "".join(f"{cname(cl):<17}" for cl in CELL_ORDER[:-1]))
+    P(f"    {'method':<12}" + "".join(f"{cname(cl):<21}" for cl in CELL_ORDER[:-1]))
     breakers, undecided = [], []
     for w, row in res.items():
-        P(f"    {SH[w]:<12}" + "".join(f"{('-' if v is None else ('above' if v[1] > 0 else 'below' if v[2] < 0 else 'incl. 0')):<17}" for v in row.values()))
+        P(f"    {SH[w]:<12}" + "".join(f"{('-' if v is None else ('above' if v[1] > 0 else 'below' if v[2] < 0 else 'incl. 0')):<21}" for v in row.values()))
         vals = list(row.values())
         if all(v is not None and v[1] > 0 for v in vals):
             breakers.append(w)
