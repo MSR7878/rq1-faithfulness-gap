@@ -118,6 +118,15 @@ class GStarXExplainer:
 
     def __init__(self, model, device, payoff_avg):
         mods = load_repo("GStarX", ["gstarx"], shims=True)
+        # PyG 2.8 compatibility (patches.md): the authors' sample_subgraph passes a CPU node list with a GPU edge_index to
+        # torch_geometric.utils.subgraph, which PyG 2.1 accepted and PyG 2.8 rejects; move the subset to edge_index's device.
+        g = mods["gstarx"].sample_subgraph.__globals__; orig_subgraph = g["subgraph"]
+
+        def subgraph_same_device(subset, edge_index, *a, **k):
+            if torch.is_tensor(subset):
+                subset = subset.to(edge_index.device)
+            return orig_subgraph(subset, edge_index, *a, **k)
+        g["subgraph"] = subgraph_same_device
         self.adapter = IdAdapter(model.eval(), device).to(device)
         c = self.CFG
         self.gx = mods["gstarx"].GStarX(self.adapter, device, max_sample_size=c["max_sample_size"], tau=c["tau"],

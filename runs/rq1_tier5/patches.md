@@ -28,6 +28,7 @@ replace, add or work around is listed here. Code: `src/explain/t5_common.py`, `s
 ## GStarX (770b286)
 - `gstarx.GStarX` is used unchanged with the molecular config.
 - `payoff_avg` = the unit's own mean test-split probabilities.
+- **PyG 2.8 compatibility:** the authors' `sample_subgraph` (used for every molecule with more than 10 atoms) passes a CPU node list together with a GPU `edge_index` to `torch_geometric.utils.subgraph`. PyG 2.1 accepted this; PyG 2.8 raises "indices should be either on cpu or on the same device". Our wrapper replaces the name `subgraph` in that module's namespace with a version that first moves the node list to `edge_index`'s device; the result is the same. Found in N0, where the first GStarX timing run failed on all molecules with N > 10 (kept in `N0/time_failed_gstarx/`).
 - **`more_itertools` shim** (`src/explain/t5_shims/more_itertools.py`): the package is not installed on ada, and ada has no internet. GStarX imports `set_partitions` only for the superadditive extension, which the config turns off. The shim raises if it is ever called.
 
 ## GNNShap (f967229)
