@@ -25,7 +25,7 @@ was committed before any number was computed. Full tables are in `L1.txt` ... `M
 
 | Limit | Status | One line |
 |---|---|---|
-| L1 MUTAG-GT scored on all 188 molecules, including training molecules | **resolved** | Test-only gives the same GEA categories; 14 of 108 Fid cells lose significance (same sign) |
+| L1 MUTAG-GT scored on all 188 molecules, including training molecules | **resolved** | Test-only gives the same GEA categories; 14 of 108 Fid cells lose significance (none reverses a significant result) |
 | L2 single-split datasets (MUTAG, BBBP) | **partly** | BBBP now has 5 seeds; MUTAG (standard) is dropped, not re-run (MUTAG-GT with 10 seeds covers it); BBBP models are below the Mutagenicity bar |
 | L3 PG saturation behind the model ordering | **resolved** (answer: no) | On non-constant masks the GCN lead stays (+0.389 vs about -0.1 for GIN and GINE), so saturation does not explain it |
 | L4 what the MUTAG-GT model uses | **partly** | The aromatic scaffold is sufficient (Fid- R1 10/10) but not more necessary than random sets; the scaffold covers 12.4 of 18.3 atoms, so the test has little room |
@@ -52,7 +52,7 @@ Each seed has 29 test molecules; 10 seeds; no new explanations.
 | low degree | +0.310 [+0.297, +0.323] | +0.308 [+0.304, +0.313] | 10/0/0 |
 
 - No GEA category changes between test-only and all 188.
-- Fid: 14 of 108 cells go from significant (all 188) to "includes 0" (test only). None changes sign. This is the loss of power from 29 instead of 188 molecules per seed.
+- Fid: 14 of 108 cells go from significant (all 188) to "includes 0" (test only). One point estimate flips sign (IxG Fid- R3, probability: +0.002 test vs -0.013 all, both near 0); none reverses a significant result. This is the loss of power from 29 instead of 188 molecules per seed.
 - Freshly computed all-188 Fid matches the reported pass-E arrays (differences <= 0.002).
 
 ## L3. PG saturation (`L3.txt`)
@@ -142,7 +142,7 @@ Minus the best trivial rule (high degree); SubgraphX on the same 100 molecules f
 | PAINS | GCN (bar missed) | +0.107 [+0.083, +0.134] | **+0.013 [-0.016, +0.041]** | +0.025 | -0.022 | -0.004 |
 
 Ordering by mean GEA: SubgraphX is first on D-MPNN (both tasks) and GCN (both tasks); Saliency is first on GIN and GINE (both
-tasks). PG is far below random-node on indole GINE (-0.139 [-0.156, -0.113]) and near random on indole GIN (+0.012 [-0.093, +0.192]),
+tasks; SubgraphX means are on its 100-molecule subset, the others on all GT molecules). PG is far below random-node on indole GINE (-0.139 [-0.156, -0.113]) and near random on indole GIN (+0.012 [-0.093, +0.192]),
 while it is +0.211 on the D-MPNN. GNNExplainer is at or below random-node on indole for GIN, GINE and GCN.
 
 ## M2. PAINS D-MPNN, 10 seeds (`M2.txt`)
@@ -184,20 +184,20 @@ Rule (as in Tier 3): a change of CI category counts. The paper's `.tex` files we
 
 | Current result | New number | Why it matters |
 |---|---|---|
-| Tier 3 contradiction: "GINE PG below random is not stable" (stored logit -0.077 [-0.121, -0.015] vs Tier-3 E "all" re-run -0.027 [-0.113, +0.127]) | **L5: three deterministic repeats give -0.070 [-0.114, -0.011] (below random), identical in all three**, matching the stored run (final rule -0.087 [-0.122, -0.031]; logit -0.077 [-0.121, -0.015]) | **Correction:** GINE PG is below random. The one run that disagreed was the Tier-3 E "all" re-run, which was not deterministic. The Tier-3 contradiction is withdrawn |
+| Tier 3 contradiction: "GINE PG below random is not stable" (stored logit -0.077 [-0.121, -0.015] vs Tier-3 E "all" re-run -0.027 [-0.113, +0.127]) | **L5: three deterministic repeats give -0.070 [-0.114, -0.011] (below random), identical in all three**, matching the stored run (final rule -0.087 [-0.122, -0.031]) and the T4 re-run (logit -0.077 [-0.121, -0.015]) | **Correction:** GINE PG is below random. The one run that disagreed was the Tier-3 E "all" re-run. Of the three earlier trainings (all non-deterministic), it is the only one whose CI includes 0. Logit-ranked like for like: deterministic -0.070, T4 re-run -0.077, E "all" -0.027. The Tier-3 contradiction is withdrawn |
 | Tox21 TOST: 53 of 68 no-separation cells "equivalent", 10 "different" | Four labels: 41 equivalent, 21 small but real, 1 different, 5 undecided | 12 "equivalent" cells have a 95% CI excluding 0; 9 of 10 "different" cells have effects <= 0.05. Only NR-AR SX Fid- is different by more than the margin |
 | BBBP TOST (L2): SX Fid- R3 "equivalent" | -0.029 [-0.049, -0.009], now "small but real" | The old rule called a cell equivalent although its CI excludes 0 |
-| MUTAG-GT Fid on all 188 molecules: 14 cells significant (e.g. SX fixed R1 logit Fid+ +0.278 [+0.136, +0.417]) | Test only: includes 0 (e.g. +0.321 [-0.013, +0.621]); full list in `L1.txt` | These 14 cells rest on training molecules for power; no sign changes |
-| Tier 3 F: MUTAG-GT PG Fid+ vs random-node -0.003 [-0.012, +0.006] (n.s.) | Re-tuned copies: -0.013 [-0.027, -0.001] (below) | Category change from re-tuning |
-| Tier 3 F: MUTAG-GT hetero Fid+ vs random-node -0.008 [-0.016, +0.000] (n.s.) | Re-tuned copies: -0.018 [-0.037, -0.003] (below) | Category change from re-tuning |
+| MUTAG-GT Fid on all 188 molecules: 14 cells significant (e.g. SX fixed R1 logit Fid+ +0.278 [+0.136, +0.417]) | Test only: includes 0 (e.g. +0.321 [-0.013, +0.621]); full list in `L1.txt` | These 14 cells rest on training molecules for power; one point estimate flips sign near 0 (IxG Fid- R3 prob +0.002 vs -0.013), none reverses a significant result |
+| Tier 3 F: MUTAG-GT PG Fid+ vs random-node -0.003 [-0.012, +0.006] (n.s.) | Re-tuned copies: -0.013 [-0.027, -0.001] (below) | Category change from re-tuning (the re-tuned set includes s1 and s9, which are still outside the limit) |
+| Tier 3 F: MUTAG-GT hetero Fid+ vs random-node -0.008 [-0.016, +0.000] (n.s.) | Re-tuned copies: -0.018 [-0.037, -0.003] (below) | Category change from re-tuning (includes s1 and s9, still outside the limit) |
 | Tier 3 F: Mutagenicity GIN PG Fid+ vs random-node -0.043 [-0.073, -0.007] (below) | Re-tuned copy: -0.036 [-0.071, +0.000] (includes 0) | Category change from re-tuning |
 | SX and IG beat the best trivial rule on B-XAIC (D-MPNN, Tier 2 / Tier 3 X) | PAINS GCN IG - high degree +0.013 [-0.016, +0.041] | Does not hold for every architecture (this model misses the accuracy bar) |
-| B-XAIC indole PG above random on the D-MPNN, +0.211 [+0.188, +0.237] | indole GINE PG -0.139 [-0.156, -0.113] (below); GIN +0.012 [-0.093, +0.192] (n.s.) | PG's result on indole depends on the architecture |
-| B-XAIC ordering with SubgraphX first (D-MPNN) | Saliency first on GIN and GINE (indole and PAINS) | The ordering depends on the architecture |
 
 Not a category change, but it bears on how results are read:
 - **L3:** the GCN PG lead on Mutagenicity is not a saturation effect. On non-constant masks GCN is +0.389 and GIN and GINE are about -0.10.
 - **L4:** the aromatic scaffold is not more necessary than random connected sets under R1 (-0.357 [-0.681, -0.106]). It is much more sufficient (Fid- -2.213 [-2.820, -1.704], 10/10).
+- **M1, PG:** on indole, PG is +0.211 [+0.188, +0.237] on the D-MPNN, but -0.139 [-0.156, -0.113] on GINE and +0.012 [-0.093, +0.192] on GIN, so PG's result depends on the architecture (these are new models, not a re-test of a current cell).
+- **M1, ordering:** SubgraphX is first on the D-MPNN and GCN; Saliency is first on GIN and GINE. SubgraphX means are on the 100-molecule subset and Saliency on all GT molecules; the gap is narrow on PAINS GINE (0.422 vs 0.390).
 - **L6:** SubgraphX sets change between runs with different seeds (Jaccard 0.63 on Mutagenicity and MUTAG-GT), but no conclusion changes.
 
 Confirmed, no change:
