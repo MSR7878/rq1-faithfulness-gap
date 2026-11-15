@@ -1,0 +1,101 @@
+N4 -- COMBINATIONS FROM CACHED SCORES (no new explanations); GT molecules with SubgraphX; seeds: all that exist
+  shares are per-molecule GEA comparisons (mean over seeds of the per-seed share, bootstrap CI); Holm per unit = 3 combinations x 3 comparisons
+
+  indole D-MPNN (10 seeds, molecules per seed [360])
+    shares: GNN > SX 0.03 [0.02, 0.04]; SX > GNN 0.92 [0.87, 0.96]; tie 0.05 [0.02, 0.09]; IG > both 0.14 [0.09, 0.20]
+    best single method (highest mean GEA among the six old methods): SX fixed 0.654; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.575   - random-node +0.413 [+0.369, +0.457] 10/0/0   - high deg +0.346 [+0.301, +0.389] 10/0/0   - SX fixed -0.079 [-0.117, -0.041] 1/9/0
+    rank-avg(GNN,SX)       mean 0.422   - random-node +0.260 [+0.184, +0.336] 10/0/0   - high deg +0.193 [+0.117, +0.269] 10/0/0   - SX fixed -0.232 [-0.303, -0.160] 0/10/0
+    IG smoothed            mean 0.671   - random-node +0.508 [+0.495, +0.521] 10/0/0   - high deg +0.441 [+0.428, +0.454] 10/0/0   - SX fixed +0.017 [-0.004, +0.044] 3/2/5
+
+  indole GIN (5 seeds, molecules per seed [100])
+    shares: GNN > SX 0.27 [0.18, 0.36]; SX > GNN 0.66 [0.56, 0.78]; tie 0.06 [0.03, 0.11]; IG > both 0.50 [0.34, 0.65]
+    best single method (highest mean GEA among the six old methods): Saliency 0.511; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.353   - random-node +0.192 [+0.103, +0.281] 5/0/0   - high deg +0.127 [+0.038, +0.216] 3/0/2   - Saliency -0.158 [-0.245, -0.067] 0/4/1
+    rank-avg(GNN,SX)       mean 0.206   - random-node +0.045 [-0.032, +0.122] 2/1/2   - high deg -0.020 [-0.097, +0.058] 2/3/0   - Saliency -0.304 [-0.387, -0.225] 0/5/0
+    IG smoothed            mean 0.596   - random-node +0.434 [+0.390, +0.478] 5/0/0   - high deg +0.369 [+0.326, +0.413] 5/0/0   - Saliency +0.085 [+0.027, +0.138] 4/0/1
+
+  indole GINE (5 seeds, molecules per seed [100])
+    shares: GNN > SX 0.08 [0.01, 0.18]; SX > GNN 0.90 [0.76, 0.98]; tie 0.02 [0.00, 0.06]; IG > both 0.25 [0.10, 0.51]
+    best single method (highest mean GEA among the six old methods): Saliency 0.548; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.345   - random-node +0.183 [+0.081, +0.283] 4/0/1   - high deg +0.118 [+0.015, +0.219] 4/1/0   - Saliency -0.203 [-0.361, -0.067] 0/4/1
+    rank-avg(GNN,SX)       mean 0.249   - random-node +0.087 [+0.000, +0.166] 4/1/0   - high deg +0.022 [-0.064, +0.102] 3/1/1   - Saliency -0.299 [-0.438, -0.187] 0/5/0
+    IG smoothed            mean 0.555   - random-node +0.393 [+0.344, +0.438] 5/0/0   - high deg +0.328 [+0.278, +0.372] 5/0/0   - Saliency +0.007 [-0.094, +0.094] 3/2/0
+
+  indole GCN (5 seeds, molecules per seed [100])
+    shares: GNN > SX 0.21 [0.14, 0.29]; SX > GNN 0.78 [0.70, 0.84]; tie 0.01 [0.00, 0.03]; IG > both 0.31 [0.23, 0.40]
+    best single method (highest mean GEA among the six old methods): SX fixed 0.453; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.356   - random-node +0.194 [+0.135, +0.247] 5/0/0   - high deg +0.129 [+0.070, +0.182] 4/0/1   - SX fixed -0.097 [-0.136, -0.061] 0/5/0
+    rank-avg(GNN,SX)       mean 0.242   - random-node +0.080 [+0.046, +0.115] 4/0/1   - high deg +0.015 [-0.021, +0.051] 2/0/3   - SX fixed -0.211 [-0.234, -0.186] 0/5/0
+    IG smoothed            mean 0.481   - random-node +0.320 [+0.265, +0.367] 5/0/0   - high deg +0.254 [+0.201, +0.301] 5/0/0   - SX fixed +0.029 [-0.016, +0.072] 1/0/4
+
+  PAINS D-MPNN (10 seeds, molecules per seed [360])
+    shares: GNN > SX 0.16 [0.14, 0.18]; SX > GNN 0.74 [0.71, 0.77]; tie 0.10 [0.09, 0.12]; IG > both 0.17 [0.14, 0.20]
+    best single method (highest mean GEA among the six old methods): SX fixed 0.465; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.401   - random-node +0.239 [+0.228, +0.252] 10/0/0   - high deg +0.166 [+0.154, +0.180] 10/0/0   - SX fixed -0.064 [-0.077, -0.049] 0/10/0
+    rank-avg(GNN,SX)       mean 0.354   - random-node +0.192 [+0.178, +0.206] 10/0/0   - high deg +0.119 [+0.104, +0.134] 10/0/0   - SX fixed -0.111 [-0.126, -0.096] 0/10/0
+    IG smoothed            mean 0.453   - random-node +0.290 [+0.273, +0.310] 10/0/0   - high deg +0.218 [+0.199, +0.239] 10/0/0   - SX fixed -0.013 [-0.031, +0.007] 0/3/7
+
+  PAINS GIN (5 seeds, molecules per seed [100])
+    shares: GNN > SX 0.34 [0.27, 0.41]; SX > GNN 0.60 [0.53, 0.68]; tie 0.06 [0.03, 0.08]; IG > both 0.45 [0.34, 0.55]
+    best single method (highest mean GEA among the six old methods): Saliency 0.410; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.292   - random-node +0.131 [+0.085, +0.180] 5/0/0   - high deg +0.062 [+0.015, +0.112] 3/0/2   - Saliency -0.118 [-0.173, -0.049] 0/4/1
+    rank-avg(GNN,SX)       mean 0.215   - random-node +0.053 [+0.016, +0.098] 3/0/2   - high deg -0.016 [-0.054, +0.029] 1/2/2   - Saliency -0.196 [-0.251, -0.127] 0/5/0
+    IG smoothed            mean 0.405   - random-node +0.243 [+0.147, +0.311] 5/0/0   - high deg +0.174 [+0.077, +0.242] 4/0/1   - Saliency -0.006 [-0.098, +0.069] 1/1/3
+
+  PAINS GINE (5 seeds, molecules per seed [100])
+    shares: GNN > SX 0.21 [0.15, 0.27]; SX > GNN 0.72 [0.65, 0.79]; tie 0.07 [0.04, 0.10]; IG > both 0.28 [0.22, 0.35]
+    best single method (highest mean GEA among the six old methods): Saliency 0.424; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.359   - random-node +0.197 [+0.166, +0.225] 5/0/0   - high deg +0.128 [+0.098, +0.156] 5/0/0   - Saliency -0.065 [-0.095, -0.034] 0/3/2
+    rank-avg(GNN,SX)       mean 0.275   - random-node +0.113 [+0.092, +0.134] 5/0/0   - high deg +0.044 [+0.024, +0.066] 2/0/3   - Saliency -0.150 [-0.179, -0.120] 0/5/0
+    IG smoothed            mean 0.457   - random-node +0.295 [+0.258, +0.329] 5/0/0   - high deg +0.227 [+0.191, +0.260] 5/0/0   - Saliency +0.033 [+0.004, +0.065] 2/0/3
+
+  PAINS GCN (5 seeds, molecules per seed [100])
+    shares: GNN > SX 0.30 [0.24, 0.35]; SX > GNN 0.57 [0.52, 0.62]; tie 0.13 [0.10, 0.17]; IG > both 0.20 [0.14, 0.26]
+    best single method (highest mean GEA among the six old methods): SX fixed 0.337; best rule high deg
+    rank-avg(GNN,SX,IG)    mean 0.295   - random-node +0.133 [+0.110, +0.155] 5/0/0   - high deg +0.065 [+0.041, +0.089] 4/0/1   - SX fixed -0.042 [-0.070, -0.016] 0/2/3
+    rank-avg(GNN,SX)       mean 0.291   - random-node +0.129 [+0.109, +0.151] 5/0/0   - high deg +0.061 [+0.041, +0.083] 2/0/3   - SX fixed -0.046 [-0.060, -0.031] 0/4/1
+    IG smoothed            mean 0.268   - random-node +0.107 [+0.059, +0.151] 4/0/1   - high deg +0.038 [-0.010, +0.085] 2/0/3   - SX fixed -0.069 [-0.124, -0.017] 0/3/2
+
+  Mutagenicity D-MPNN (10 seeds, molecules per seed [124, 125, 126, 127, 128])
+    shares: GNN > SX 0.56 [0.47, 0.65]; SX > GNN 0.24 [0.17, 0.32]; tie 0.20 [0.17, 0.23]; IG > both 0.29 [0.20, 0.40]
+    best single method (highest mean GEA among the six old methods): Saliency 0.472; best rule hetero
+    rank-avg(GNN,SX,IG)    mean 0.436   - random-node +0.314 [+0.290, +0.339] 10/0/0   - hetero +0.086 [+0.056, +0.117] 7/0/3   - Saliency -0.036 [-0.069, -0.005] 0/4/6
+    rank-avg(GNN,SX)       mean 0.348   - random-node +0.225 [+0.191, +0.257] 10/0/0   - hetero -0.002 [-0.041, +0.036] 3/2/5   - Saliency -0.124 [-0.169, -0.082] 0/9/1
+    IG smoothed            mean 0.507   - random-node +0.385 [+0.364, +0.405] 10/0/0   - hetero +0.158 [+0.136, +0.178] 10/0/0   - Saliency +0.036 [+0.014, +0.054] 7/1/2
+
+  Mutagenicity GIN (5 seeds, molecules per seed [125, 126, 127])
+    shares: GNN > SX 0.25 [0.18, 0.33]; SX > GNN 0.52 [0.40, 0.65]; tie 0.22 [0.15, 0.31]; IG > both 0.16 [0.09, 0.24]
+    best single method (highest mean GEA among the six old methods): Saliency 0.384; best rule hetero
+    rank-avg(GNN,SX,IG)    mean 0.204   - random-node +0.082 [-0.004, +0.164] 3/1/1   - hetero -0.150 [-0.241, -0.063] 0/3/2   - Saliency -0.180 [-0.269, -0.103] 0/5/0
+    rank-avg(GNN,SX)       mean 0.201   - random-node +0.079 [+0.010, +0.146] 3/0/2   - hetero -0.152 [-0.225, -0.082] 0/4/1   - Saliency -0.183 [-0.251, -0.120] 0/5/0
+    IG smoothed            mean 0.297   - random-node +0.175 [+0.022, +0.308] 3/1/1   - hetero -0.057 [-0.215, +0.079] 2/2/1   - Saliency -0.087 [-0.243, +0.043] 1/2/2
+
+  Mutagenicity GINE (5 seeds, molecules per seed [125, 126, 127])
+    shares: GNN > SX 0.31 [0.23, 0.39]; SX > GNN 0.39 [0.34, 0.45]; tie 0.29 [0.21, 0.39]; IG > both 0.27 [0.21, 0.33]
+    best single method (highest mean GEA among the six old methods): Saliency 0.431; best rule hetero
+    rank-avg(GNN,SX,IG)    mean 0.281   - random-node +0.158 [+0.073, +0.236] 4/0/1   - hetero -0.073 [-0.167, +0.013] 0/2/3   - Saliency -0.150 [-0.210, -0.079] 0/4/1
+    rank-avg(GNN,SX)       mean 0.222   - random-node +0.099 [+0.027, +0.169] 3/0/2   - hetero -0.132 [-0.213, -0.054] 0/4/1   - Saliency -0.209 [-0.268, -0.131] 0/5/0
+    IG smoothed            mean 0.416   - random-node +0.292 [+0.226, +0.348] 5/0/0   - hetero +0.062 [-0.017, +0.124] 4/0/1   - Saliency -0.015 [-0.041, +0.018] 1/2/2
+
+  Mutagenicity GCN (5 seeds, molecules per seed [125, 126, 127])
+    shares: GNN > SX 0.35 [0.28, 0.42]; SX > GNN 0.27 [0.21, 0.35]; tie 0.37 [0.33, 0.42]; IG > both 0.18 [0.10, 0.28]
+    best single method (highest mean GEA among the six old methods): PG (logit) 0.461; best rule hetero
+    rank-avg(GNN,SX,IG)    mean 0.247   - random-node +0.125 [+0.078, +0.173] 4/0/1   - hetero -0.108 [-0.153, -0.059] 0/3/2   - PG (logit) -0.214 [-0.256, -0.177] 0/5/0
+    rank-avg(GNN,SX)       mean 0.223   - random-node +0.101 [+0.050, +0.151] 3/0/2   - hetero -0.132 [-0.178, -0.082] 0/4/1   - PG (logit) -0.238 [-0.284, -0.201] 0/5/0
+    IG smoothed            mean 0.403   - random-node +0.280 [+0.252, +0.310] 5/0/0   - hetero +0.048 [+0.009, +0.087] 2/0/3   - PG (logit) -0.058 [-0.092, -0.025] 0/3/2
+
+  P-N5: rank-average of GNN, SX, IG not clearly below the best single method in all 12 cells -> no
+    below in indole D-MPNN: -0.079 [-0.117, -0.041] vs SX fixed
+    below in indole GIN: -0.158 [-0.245, -0.067] vs Saliency
+    below in indole GINE: -0.203 [-0.361, -0.067] vs Saliency
+    below in indole GCN: -0.097 [-0.136, -0.061] vs SX fixed
+    below in PAINS D-MPNN: -0.064 [-0.077, -0.049] vs SX fixed
+    below in PAINS GIN: -0.118 [-0.173, -0.049] vs Saliency
+    below in PAINS GINE: -0.065 [-0.095, -0.034] vs Saliency
+    below in PAINS GCN: -0.042 [-0.070, -0.016] vs SX fixed
+    below in Mutagenicity D-MPNN: -0.036 [-0.069, -0.005] vs Saliency
+    below in Mutagenicity GIN: -0.180 [-0.269, -0.103] vs Saliency
+    below in Mutagenicity GINE: -0.150 [-0.210, -0.079] vs Saliency
+    below in Mutagenicity GCN: -0.214 [-0.256, -0.177] vs PG (logit)
+  P-N5 FAILED
