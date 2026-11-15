@@ -122,3 +122,49 @@ def make_explainer(name, model, ck, dkey, device):
     if name == "gnnshap":
         return X.GNNShapExplainer(model, device)
     raise ValueError(name)
+
+
+# ------------------------------------------------------------------ where the old methods' scores and nulls live
+def _src(unit: str) -> str:
+    if unit in T.m1_units():
+        return "M1"
+    if unit in T.m2_units():
+        return "M2"
+    if unit in C.m_units():
+        return "T2M"
+    return "T2"
+
+
+def old_scores(unit: str) -> dict:
+    """method -> {mi: node scores} for GNNExplainer, PG (float64 logits), SubgraphX fixed, Saliency, IG, IxG."""
+    s = _src(unit)
+    gdir = {"M1": f"{T.T4}/M1", "M2": f"{T.T4}/M2", "T2M": f"{C.T2}/M", "T2": f"{C.T2}/G"}[s]
+    sxdir = {"M1": f"{T.T4}/M1/sx", "M2": f"{T.T4}/M2/sx", "T2M": f"{C.T2}/M/sx", "T2": f"{C.T2}/S/sx"}[s]
+    if s in ("M1", "M2"):
+        pg = T.pg64(unit)
+    elif s == "T2M":
+        pg = C.npz_scores(f"{C.T2}/M/gp/{unit}_pg_logits.npz", "node_score64")
+    else:
+        pg = C.npz_scores(f"runs/rq1_revision/logits/{unit}.npz", "node_score64")
+    g = f"{gdir}/grad/{unit}.npz"
+    return {"gnnexplainer": T.cache_scores(spec(unit)["cache"], "gnnexplainer"), "pgexplainer": pg,
+            "sx_fixed": C.sx_shard_scores(f"{sxdir}/{unit}"), "sal": C.npz_scores(g, "sal"), "ig": C.npz_scores(g, "ig"),
+            "ixg": C.npz_scores(g, "ixg")}
+
+
+def null_arrays(unit: str, mols) -> dict:
+    """Random-node / random-connected null GEA for the given molecules, read from the existing full-GT null file
+    (Tier 2 for Tier-2 units and, as in Tier 4 M1, the D-MPNN unit's file for B-XAIC GIN/GINE/GCN; Tier 4 for M2)."""
+    owner = T.dmpnn_of(unit) if unit in T.m1_units() else unit
+    f = f"{T.T4}/nulls/{owner}.npz" if unit in T.m2_units() else f"{C.T2}/nulls/{owner}.npz"
+    z = np.load(f); pos = {int(m): i for i, m in enumerate(z["mol_idx"])}
+    ix = [pos[int(m)] for m in mols]
+    return {"rn": z["rn"][ix], "rc": z["rc"][ix]}
+
+
+def n4_units() -> list[str]:
+    return [u for u in n1_units() if not u.startswith("mutag_graphxai")]
+
+
+def cell_of(unit: str) -> str:
+    return f"{C.dataset_of(unit)}|{arch_of(unit)}"

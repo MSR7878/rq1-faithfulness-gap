@@ -21,6 +21,8 @@ def jobs(item, phase):
         return [f"{env(e)}{PY}.tier5_N0 time --unit {u} --expl {e}" for e in SLOW_FIRST for u in TIME_UNITS]
     if (item, phase) == ("N0", "scale"):
         return [f"{PY}.tier5_N0 scale"]
+    if (item, phase) == ("N4", "score"):
+        return [f"{PY}.tier5_N4 --unit {u}" for u in T5.n4_units()]
     raise SystemExit(f"unknown item/phase {item} {phase}")
 
 
