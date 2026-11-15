@@ -36,4 +36,5 @@ replace, add or work around is listed here. Code: `src/explain/t5_common.py`, `s
   - players = undirected bonds;
   - value = predicted-class probability with the coalition's bonds kept;
   - fnull = no bonds; ffull = all bonds.
+- **`colorlog` shim** (`src/explain/t5_shims/colorlog.py`): the package is not installed on ada, and ada has no internet. GNNShap uses it only for coloured logging; the shim maps it to the standard `logging` module.
 - Molecules with fewer than 2 bonds are not explained (scores 0) and are listed.

@@ -189,7 +189,7 @@ class GNNShapExplainer:
         import os
         cwd = os.getcwd(); os.chdir(os.path.join(__import__("src.explain.t5_common", fromlist=["TP"]).TP, "GNNShap"))
         try:                                               # the sampler compiles cppextension/cudagnnshap.cu relative to cwd
-            mods = load_repo("GNNShap", ["gnnshap.samplers._gnnshap", "gnnshap.solvers._wls"])
+            mods = load_repo("GNNShap", ["gnnshap.samplers._gnnshap", "gnnshap.solvers._wls"], shims=True)
         finally:
             os.chdir(cwd)
         self.Sampler = mods["gnnshap.samplers._gnnshap"].GNNShapSampler; self.Solver = mods["gnnshap.solvers._wls"].WLSSolver
