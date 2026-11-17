@@ -1,0 +1,51 @@
+bxaic_PAINS_gcn_s4 gnnshap T5 mol 85: N=31 3.2s
+Traceback (most recent call last):
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 66, in <module>
+    run(a.unit, a.expl, a.level, a.set, a.tag, a.out, a.shard, a.ckpt, a.budgets)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 50, in run
+    t0 = time.time(); e = ex.explain(d, b); row["seconds"] += time.time() - t0
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py", line 219, in explain
+    yhat.append(torch.softmax(batch_logits(self.model, keep_edges_batch(d, list(m), dev)), -1)[:, c])
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py", line 50, in batch_logits
+    return logits(model, b.x, b.edge_index, getattr(b, "edge_attr", None), b.batch)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_common.py", line 63, in logits
+    lg = model(x, edge_index, edge_attr, batch)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/train/baselines.py", line 179, in forward
+    h_v = F.relu(conv(h_v, edge_index))
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/conv/gcn_conv.py", line 263, in forward
+    out = self.propagate(edge_index, x=x, edge_weight=edge_weight)
+  File "/tmp/torch_geometric.nn.conv.gcn_conv_GCNConv_propagate_2pfx17_v.py", line 245, in propagate
+    out = self.aggregate(
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/conv/message_passing.py", line 594, in aggregate
+    return self.aggr_module(inputs, index, ptr=ptr, dim_size=dim_size,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/experimental.py", line 117, in wrapper
+    return func(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/aggr/base.py", line 139, in __call__
+    raise e
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/aggr/base.py", line 131, in __call__
+    return super().__call__(x, index=index, ptr=ptr, dim_size=dim_size,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/aggr/basic.py", line 22, in forward
+    return self.reduce(x, index, ptr, dim_size, dim, reduce='sum')
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/aggr/base.py", line 185, in reduce
+    return scatter(x, index, dim, dim_size, reduce)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/utils/_scatter.py", line 70, in scatter
+    return src.new_zeros(size).scatter_add_(dim, index, src)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 0 has a total capacity of 31.74 GiB of which 14.88 MiB is free. Process 22271 has 1.83 GiB memory in use. Process 22274 has 2.74 GiB memory in use. Process 22276 has 3.12 GiB memory in use. Process 22287 has 2.24 GiB memory in use. Process 22304 has 2.20 GiB memory in use. Process 22306 has 2.70 GiB memory in use. Process 22310 has 3.49 GiB memory in use. Process 22332 has 3.59 GiB memory in use. Process 22393 has 3.09 GiB memory in use. Process 22396 has 3.17 GiB memory in use. Including non-PyTorch memory, this process has 1.17 GiB memory in use. Process 22448 has 2.38 GiB memory in use. Of the allocated memory 113.83 MiB is allocated by PyTorch, and 14.17 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

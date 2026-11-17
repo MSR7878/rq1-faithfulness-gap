@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 66, in <module>
+    run(a.unit, a.expl, a.level, a.set, a.tag, a.out, a.shard, a.ckpt, a.budgets)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 50, in run
+    t0 = time.time(); e = ex.explain(d, b); row["seconds"] += time.time() - t0
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py", line 224, in explain
+    fraction_evaluated=sampler.nsamples / sampler.max_samples, l1_reg=False).solve()
+  File "/home/manvendra.singh/rq1-faithfulness-gap/third_party/GNNShap/gnnshap/solvers/_wls.py", line 61, in solve
+    tmp2 = torch.linalg.inv(etmp_dot)
+RuntimeError: cusolver error: CUSOLVER_STATUS_INTERNAL_ERROR, when calling `cusolverDnCreate(handle)`. If you keep seeing this error, you may use `torch.backends.cuda.preferred_linalg_library()` to try linear algebra operators with other supported backends. See https://pytorch.org/docs/stable/backends.html#torch.backends.cuda.preferred_linalg_library

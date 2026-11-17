@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 66, in <module>
+    run(a.unit, a.expl, a.level, a.set, a.tag, a.out, a.shard, a.ckpt, a.budgets)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 50, in run
+    t0 = time.time(); e = ex.explain(d, b); row["seconds"] += time.time() - t0
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py", line 219, in explain
+    yhat.append(torch.softmax(batch_logits(self.model, keep_edges_batch(d, list(m), dev)), -1)[:, c])
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py", line 50, in batch_logits
+    return logits(model, b.x, b.edge_index, getattr(b, "edge_attr", None), b.batch)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_common.py", line 63, in logits
+    lg = model(x, edge_index, edge_attr, batch)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/train/baselines.py", line 179, in forward
+    h_v = F.relu(conv(h_v, edge_index))
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/conv/gcn_conv.py", line 260, in forward
+    x = self.lin(x)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/site-packages/torch_geometric/nn/dense/linear.py", line 127, in forward
+    return F.linear(x, self.weight, self.bias)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 48.00 MiB. GPU 0 has a total capacity of 31.74 GiB of which 14.88 MiB is free. Process 21843 has 2.33 GiB memory in use. Process 21860 has 1.62 GiB memory in use. Process 21871 has 3.00 GiB memory in use. Process 21895 has 5.58 GiB memory in use. Process 22020 has 4.01 GiB memory in use. Process 22046 has 3.03 GiB memory in use. Process 22074 has 1.27 GiB memory in use. Process 22076 has 1.82 GiB memory in use. Process 22105 has 2.17 GiB memory in use. Process 22127 has 3.09 GiB memory in use. Process 22134 has 2.85 GiB memory in use. Including non-PyTorch memory, this process has 972.00 MiB memory in use. Of the allocated memory 12.98 MiB is allocated by PyTorch, and 11.02 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

@@ -1,0 +1,1 @@
+bxaic_PAINS_gcn_s1: fid on 100 molecules for ['eig', 'gnnexplainer', 'gnnshap', 'gstarx', 'ig', 'pgexplainer', 'sal', 'sx_fixed']; own slices for ['same']

@@ -1,0 +1,5 @@
+/home/manvendra.singh/rq1-faithfulness-gap/third_party/same/shapley.py:88: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  dataloader = DataLoader(marginal_subgraph_dataset, batch_size=256, shuffle=False, pin_memory=False, num_workers=0) # pin_memory: True, CUDA out of memory
+bxaic_PAINS_gin_s0 same T5 mol 571: N=69 1310.6s
+bxaic_PAINS_gin_s0 same T5 mol 15911: N=27 383.8s
+bxaic_PAINS_gin_s0 same T5 mol 43315: N=26 501.4s

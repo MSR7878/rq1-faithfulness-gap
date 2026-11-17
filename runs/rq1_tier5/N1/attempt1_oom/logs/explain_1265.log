@@ -1,0 +1,25 @@
+/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py:298: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  masked_dataloader = DataLoader(
+mutagenicity_gine_s2 gstarx T5 mol 21: N=29 153.4s
+mutagenicity_gine_s2 gstarx T5 mol 117: N=18 97.0s
+mutagenicity_gine_s2 gstarx T5 mol 277: N=43 232.6s
+mutagenicity_gine_s2 gstarx T5 mol 473: N=25 135.9s
+mutagenicity_gine_s2 gstarx T5 mol 657: N=15 80.5s
+Traceback (most recent call last):
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 66, in <module>
+    run(a.unit, a.expl, a.level, a.set, a.tag, a.out, a.shard, a.ckpt, a.budgets)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_explain.py", line 50, in run
+    t0 = time.time(); e = ex.explain(d, b); row["seconds"] += time.time() - t0
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/explain/t5_explainers.py", line 141, in explain
+    s = self.gx.explain(g, superadditive_ext=self.CFG["superadditive_ext"], sample_method=self.CFG["sample_method"],
+  File "/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/gstarx.py", line 64, in explain
+    sampled_scores = self.compute_scores(
+  File "/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/gstarx.py", line 96, in compute_scores
+    H_tilde = get_limit_game_matrix(H, is_sparse=True)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py", line 181, in get_limit_game_matrix
+    H_tilde = torch.sparse.mm(H, H)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 906.00 MiB. GPU 0 has a total capacity of 31.74 GiB of which 882.88 MiB is free. Process 18196 has 1.73 GiB memory in use. Process 18259 has 2.78 GiB memory in use. Process 18266 has 1.42 GiB memory in use. Process 18411 has 1.65 GiB memory in use. Process 18422 has 1.78 GiB memory in use. Process 18433 has 2.61 GiB memory in use. Process 18437 has 4.59 GiB memory in use. Including non-PyTorch memory, this process has 1.02 GiB memory in use. Process 18469 has 4.07 GiB memory in use. Process 18471 has 2.16 GiB memory in use. Process 18483 has 4.62 GiB memory in use. Process 18512 has 2.45 GiB memory in use. Of the allocated memory 17.51 MiB is allocated by PyTorch, and 8.49 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

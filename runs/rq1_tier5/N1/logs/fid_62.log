@@ -1,0 +1,1 @@
+mutagenicity_gin_s1: fid on 100 molecules for ['eig', 'gnnexplainer', 'gnnshap', 'gstarx', 'ig', 'pgexplainer', 'sal', 'sx_fixed']; own slices for ['same']
