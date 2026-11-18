@@ -86,7 +86,7 @@ def jobs(item, phase):
     if (item, phase) == ("F", "extract"):
         return [f"{PY}.tier5_followups extract --unit {u}" for u in T5.n1_units()]
     if (item, phase) == ("F", "cross"):
-        return [f"{PY}.tier5_followups cross --cell '{c}'" for c in sorted({T5.cell_of(u) for u in T5.n1_units()})]
+        return [f"{PY}.tier5_followups cross --cell {c.replace('|', '__')}" for c in sorted({T5.cell_of(u) for u in T5.n1_units()})]
     if (item, phase) == ("F", "stab"):
         from .tier5_N23 import N3_UNITS
         return [f"{PY}.tier5_followups {w} --unit {u}" for w in ("n3", "det") for u in N3_UNITS]

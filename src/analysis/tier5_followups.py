@@ -75,6 +75,7 @@ def _exp_jac(n, k):
 
 
 def cross(cell):
+    cell = cell.replace("__", "|")                       # the job list writes cells as dataset__arch (no shell pipe)
     sc = scale(); us = sorted([u for u in T5.n1_units() if T5.cell_of(u) == cell], key=T5.seed_of)
     dkey = C.dataset_of(us[0]); dl, _ = C.load_data(dkey); S = {}
     for u in us:
