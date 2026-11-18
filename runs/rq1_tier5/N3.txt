@@ -1,0 +1,19 @@
+N3 -- STABILITY: repeated runs with different explainer seeds on the fixed 100-molecule subsets (or the level's slice), seed-0 models
+
+  mutagenicity_dmpnn_s0
+    EiG       100 molecules: two runs identical on 60 of 100 molecules (max |score difference| 7.23e-07)
+    SAME      25 molecules: Jaccard mean 0.383, median 0.352; identical in all pairs 0.04; atoms in >= 2 of 3 runs 0.455; consensus - single (sets) +0.136 [+0.082, +0.203]; final protocol - random-node +0.263 [+0.179, +0.344]
+    GStarX    100 molecules: Jaccard mean 0.556, median 0.510; identical in all pairs 0.09; atoms in >= 2 of 3 runs 0.648; consensus - single (sets) +0.010 [-0.005, +0.026]; final protocol - random-node +0.176 [+0.127, +0.223]
+    GNNShap   100 molecules: Jaccard mean 0.982, median 1.000; identical in all pairs 0.95; atoms in >= 2 of 3 runs 0.986; consensus - single (sets) -0.000 [-0.000, +0.000]; final protocol - random-node +0.316 [+0.261, +0.369]
+
+  bxaic_indole_s0
+    EiG       100 molecules: two runs identical on 9 of 100 molecules (max |score difference| 1.05e-05)
+    SAME      25 molecules: Jaccard mean 0.649, median 0.643; identical in all pairs 0.20; atoms in >= 2 of 3 runs 0.746; consensus - single (sets) +0.020 [-0.019, +0.059]; final protocol - random-node +0.384 [+0.273, +0.484]
+    GStarX    100 molecules: Jaccard mean 0.356, median 0.342; identical in all pairs 0.00; atoms in >= 2 of 3 runs 0.513; consensus - single (sets) -0.013 [-0.023, -0.003]; final protocol - random-node +0.039 [+0.027, +0.052]
+    GNNShap   100 molecules: Jaccard mean 1.000, median 1.000; identical in all pairs 1.00; atoms in >= 2 of 3 runs 1.000; consensus - single (sets) +0.000 [-0.000, +0.000]; final protocol - random-node +0.527 [+0.490, +0.562]
+
+  mutag_graphxai_s0
+    EiG       100 molecules: two runs identical on 40 of 100 molecules (max |score difference| 1.19e-06)
+    SAME      25 molecules: Jaccard mean 0.377, median 0.371; identical in all pairs 0.00; atoms in >= 2 of 3 runs 0.475; consensus - single (sets) -0.028 [-0.046, -0.013]; final protocol - random-node -0.103 [-0.124, -0.077]
+    GStarX    100 molecules: Jaccard mean 0.556, median 0.511; identical in all pairs 0.13; atoms in >= 2 of 3 runs 0.644; consensus - single (sets) +0.036 [+0.020, +0.053]; final protocol - random-node +0.152 [+0.117, +0.186]
+    GNNShap   100 molecules: Jaccard mean 0.997, median 1.000; identical in all pairs 0.99; atoms in >= 2 of 3 runs 0.998; consensus - single (sets) -0.000 [-0.000, +0.000]; final protocol - random-node -0.103 [-0.127, -0.074]

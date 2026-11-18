@@ -1,0 +1,168 @@
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 0/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 1/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 2/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 3/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 4/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 5/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 6/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 7/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 8/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 9/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 10/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 11/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 12/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutagenicity_dmpnn_s0 --shard 13/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 0/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 1/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 2/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 3/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 4/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 5/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 6/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 7/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 8/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 9/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 10/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 11/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 12/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/bxaic_indole_s0 --shard 13/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutag_graphxai_s0 --shard 0/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutag_graphxai_s0 --shard 1/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutag_graphxai_s0 --shard 2/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutag_graphxai_s0 --shard 3/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/same/T5a/mutag_graphxai_s0 --shard 4/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 0/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 1/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 2/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 3/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 4/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 5/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 6/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 7/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 8/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 9/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 10/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 11/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 12/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutagenicity_dmpnn_s0 --shard 13/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 0/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 1/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 2/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 3/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 4/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 5/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 6/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 7/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 8/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 9/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 10/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 11/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 12/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/bxaic_indole_s0 --shard 13/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutag_graphxai_s0 --shard 0/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutag_graphxai_s0 --shard 1/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutag_graphxai_s0 --shard 2/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutag_graphxai_s0 --shard 3/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/same/T5b/mutag_graphxai_s0 --shard 4/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 0/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 1/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 2/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 3/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 4/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 5/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 6/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 7/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 8/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 9/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 10/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 11/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 12/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutagenicity_dmpnn_s0 --shard 13/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 0/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 1/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 2/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 3/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 4/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 5/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 6/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 7/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 8/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 9/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 10/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 11/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 12/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/bxaic_indole_s0 --shard 13/14 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutag_graphxai_s0 --shard 0/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutag_graphxai_s0 --shard 1/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutag_graphxai_s0 --shard 2/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutag_graphxai_s0 --shard 3/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/same/T5c/mutag_graphxai_s0 --shard 4/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 0/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 1/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 2/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 3/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 4/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 5/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 6/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 7/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutagenicity_dmpnn_s0 --shard 8/9
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/bxaic_indole_s0 --shard 0/3
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/bxaic_indole_s0 --shard 1/3
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/bxaic_indole_s0 --shard 2/3
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutag_graphxai_s0 --shard 0/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutag_graphxai_s0 --shard 1/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutag_graphxai_s0 --shard 2/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutag_graphxai_s0 --shard 3/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutag_graphxai_s0 --shard 4/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gstarx/T5a/mutag_graphxai_s0 --shard 5/6
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 0/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 1/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 2/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 3/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 4/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 5/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 6/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 7/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutagenicity_dmpnn_s0 --shard 8/9
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/bxaic_indole_s0 --shard 0/3
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/bxaic_indole_s0 --shard 1/3
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/bxaic_indole_s0 --shard 2/3
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutag_graphxai_s0 --shard 0/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutag_graphxai_s0 --shard 1/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutag_graphxai_s0 --shard 2/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutag_graphxai_s0 --shard 3/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutag_graphxai_s0 --shard 4/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gstarx/T5b/mutag_graphxai_s0 --shard 5/6
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 0/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 1/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 2/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 3/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 4/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 5/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 6/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 7/9
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutagenicity_dmpnn_s0 --shard 8/9
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/bxaic_indole_s0 --shard 0/3
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/bxaic_indole_s0 --shard 1/3
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/bxaic_indole_s0 --shard 2/3
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutag_graphxai_s0 --shard 0/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutag_graphxai_s0 --shard 1/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutag_graphxai_s0 --shard 2/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutag_graphxai_s0 --shard 3/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutag_graphxai_s0 --shard 4/6
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gstarx/T5c/mutag_graphxai_s0 --shard 5/6
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gnnshap --level L0 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gnnshap/T5a/mutagenicity_dmpnn_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gnnshap --level L0 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gnnshap/T5a/bxaic_indole_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gnnshap --level L0 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/gnnshap/T5a/mutag_graphxai_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gnnshap --level L0 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gnnshap/T5b/mutagenicity_dmpnn_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gnnshap --level L0 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gnnshap/T5b/bxaic_indole_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gnnshap --level L0 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/gnnshap/T5b/mutag_graphxai_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gnnshap --level L0 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gnnshap/T5c/mutagenicity_dmpnn_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gnnshap --level L0 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gnnshap/T5c/bxaic_indole_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gnnshap --level L0 --set n3 --tag T5c --out runs/rq1_tier5/N3/expl/gnnshap/T5c/mutag_graphxai_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl eig --level L0 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/eig/T5a/mutagenicity_dmpnn_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl eig --level L0 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/eig/T5a/bxaic_indole_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl eig --level L0 --set n3 --tag T5a --out runs/rq1_tier5/N3/expl/eig/T5a/mutag_graphxai_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl eig --level L0 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/eig/T5b/mutagenicity_dmpnn_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl eig --level L0 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/eig/T5b/bxaic_indole_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl eig --level L0 --set n3 --tag T5b --out runs/rq1_tier5/N3/expl/eig/T5b/mutag_graphxai_s0 --shard 0/1

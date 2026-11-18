@@ -1,0 +1,218 @@
+{
+ "mutagenicity_dmpnn_s0|eig": {
+  "molecules": 100,
+  "jaccard_mean": 0.9596666666666667,
+  "jaccard_median": 1.0,
+  "identical_share": 0.92,
+  "share_ge2": 0.9596666666666667,
+  "max_score_diff": 7.227063179016113e-07,
+  "consensus_minus_single": [
+   -0.0115,
+   -0.02484583333333333,
+   -0.0003333333333333327
+  ],
+  "protocol_minus_rn": [
+   0.2937926427159012,
+   0.2389412289907375,
+   0.3474499356802897
+  ]
+ },
+ "mutagenicity_dmpnn_s0|same": {
+  "molecules": 25,
+  "jaccard_mean": 0.382880269330127,
+  "jaccard_median": 0.3516483516483517,
+  "identical_share": 0.04,
+  "share_ge2": 0.4552013995636287,
+  "max_score_diff": 1.0,
+  "consensus_minus_single": [
+   0.13643646549528904,
+   0.0816419616331381,
+   0.20283738646973942
+  ],
+  "protocol_minus_rn": [
+   0.26271734966673044,
+   0.17870810037686197,
+   0.3442099202186702
+  ]
+ },
+ "mutagenicity_dmpnn_s0|gstarx": {
+  "molecules": 100,
+  "jaccard_mean": 0.5555145054513744,
+  "jaccard_median": 0.5095238095238095,
+  "identical_share": 0.09,
+  "share_ge2": 0.648357477624926,
+  "max_score_diff": 0.13029993325471878,
+  "consensus_minus_single": [
+   0.010303659303659299,
+   -0.004849619362119365,
+   0.02556105769230767
+  ],
+  "protocol_minus_rn": [
+   0.17632688211484648,
+   0.12653520945335767,
+   0.2232550596075393
+  ]
+ },
+ "mutagenicity_dmpnn_s0|gnnshap": {
+  "molecules": 100,
+  "jaccard_mean": 0.9817777777777777,
+  "jaccard_median": 1.0,
+  "identical_share": 0.95,
+  "share_ge2": 0.9863333333333333,
+  "max_score_diff": 3.94647940993309e-08,
+  "consensus_minus_single": [
+   -1.6653345369377347e-18,
+   -4.440892098500626e-18,
+   2.7755575615628914e-19
+  ],
+  "protocol_minus_rn": [
+   0.3158037538270123,
+   0.2610257643671043,
+   0.3686791137056742
+  ]
+ },
+ "bxaic_indole_s0|eig": {
+  "molecules": 100,
+  "jaccard_mean": 0.9872424242424244,
+  "jaccard_median": 1.0,
+  "identical_share": 0.97,
+  "share_ge2": 0.9872424242424244,
+  "max_score_diff": 1.049041748046875e-05,
+  "consensus_minus_single": [
+   -0.002848345531272361,
+   -0.007504493236200553,
+   0.0
+  ],
+  "protocol_minus_rn": [
+   0.5278330182832944,
+   0.4890379065392659,
+   0.5637792414026358
+  ]
+ },
+ "bxaic_indole_s0|same": {
+  "molecules": 25,
+  "jaccard_mean": 0.6485541029019289,
+  "jaccard_median": 0.6428571428571429,
+  "identical_share": 0.2,
+  "share_ge2": 0.7463400514518161,
+  "max_score_diff": 1.0,
+  "consensus_minus_single": [
+   0.01989100405767072,
+   -0.018745076836743507,
+   0.05868123974790641
+  ],
+  "protocol_minus_rn": [
+   0.3843833186266611,
+   0.2727166665771505,
+   0.483887366398508
+  ]
+ },
+ "bxaic_indole_s0|gstarx": {
+  "molecules": 100,
+  "jaccard_mean": 0.35598700765991714,
+  "jaccard_median": 0.341996891996892,
+  "identical_share": 0.0,
+  "share_ge2": 0.5132565906599794,
+  "max_score_diff": 0.2102106437087059,
+  "consensus_minus_single": [
+   -0.012850132254712276,
+   -0.023342270766318077,
+   -0.002862932725247396
+  ],
+  "protocol_minus_rn": [
+   0.039336349712668174,
+   0.026522329457523548,
+   0.05216961161975177
+  ]
+ },
+ "bxaic_indole_s0|gnnshap": {
+  "molecules": 100,
+  "jaccard_mean": 1.0,
+  "jaccard_median": 1.0,
+  "identical_share": 1.0,
+  "share_ge2": 1.0,
+  "max_score_diff": 2.7008354663848877e-08,
+  "consensus_minus_single": [
+   2.220446049250313e-18,
+   -1.1102230246251566e-18,
+   6.106226635438361e-18
+  ],
+  "protocol_minus_rn": [
+   0.5268546340300169,
+   0.4903269453144104,
+   0.5615581066562895
+  ]
+ },
+ "mutag_graphxai_s0|eig": {
+  "molecules": 100,
+  "jaccard_mean": 0.9727857142857143,
+  "jaccard_median": 1.0,
+  "identical_share": 0.92,
+  "share_ge2": 0.9727857142857143,
+  "max_score_diff": 1.1920928955078125e-06,
+  "consensus_minus_single": [
+   -0.00125,
+   -0.00375,
+   0.0
+  ],
+  "protocol_minus_rn": [
+   -0.05037926546492722,
+   -0.08395941292673828,
+   -0.013367801163297534
+  ]
+ },
+ "mutag_graphxai_s0|same": {
+  "molecules": 25,
+  "jaccard_mean": 0.37709571909571915,
+  "jaccard_median": 0.37142857142857144,
+  "identical_share": 0.0,
+  "share_ge2": 0.4747806637806638,
+  "max_score_diff": 1.0,
+  "consensus_minus_single": [
+   -0.02845347027699969,
+   -0.04603879551820728,
+   -0.013321825396825401
+  ],
+  "protocol_minus_rn": [
+   -0.10253097425450367,
+   -0.12434784658424364,
+   -0.07720048550305905
+  ]
+ },
+ "mutag_graphxai_s0|gstarx": {
+  "molecules": 100,
+  "jaccard_mean": 0.5559735449735449,
+  "jaccard_median": 0.5111111111111111,
+  "identical_share": 0.13,
+  "share_ge2": 0.6444148351648351,
+  "max_score_diff": 0.08998044580221176,
+  "consensus_minus_single": [
+   0.035705174455174446,
+   0.019588877788877784,
+   0.053027879990379966
+  ],
+  "protocol_minus_rn": [
+   0.15200732595291414,
+   0.11697021811589829,
+   0.1860882811041083
+  ]
+ },
+ "mutag_graphxai_s0|gnnshap": {
+  "molecules": 100,
+  "jaccard_mean": 0.9966666666666666,
+  "jaccard_median": 1.0,
+  "identical_share": 0.99,
+  "share_ge2": 0.9975,
+  "max_score_diff": 3.3527612686157227e-08,
+  "consensus_minus_single": [
+   -4.163336342344337e-19,
+   -1.3183898417423734e-18,
+   2.0816681711721684e-19
+  ],
+  "protocol_minus_rn": [
+   -0.10329356868621575,
+   -0.12712632868969265,
+   -0.07435909420644717
+  ]
+ }
+}
