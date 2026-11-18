@@ -22,6 +22,8 @@ Source files: `N0.txt`, `N4.txt`, `N1.txt`, `N2.txt`, `N3.txt`, `F.txt`, `summar
 | 5e46def | N3 done. Registered EiG identity check FAILED (not bitwise) |
 | c4ab175, 845a483, fa1784b, cdecce9 | Follow-ups: PLAN addendum and code, fig code, report code, job-list fix |
 | aeb9177 (+ 7d6faa5 message correction) | Follow-up results F1, F3–F6 |
+| 368783d | FINAL_REPORT.md and DONE |
+| (this commit and the one before) | SX fixed timings in the summary table; report wording fixes after review |
 
 ## 2. Integration status
 
@@ -49,7 +51,7 @@ N0 (`N0.txt`):
 | **P-N3:** no explainer above random-node in all 12 cells | **FAILED** | Above in all 12: SX fixed, IxG (old methods) and EiG, SAME, GNNShap (new). GStarX misses PAINS GCN |
 | **P-N4:** every new explainer passes the full reset on both Mutagenicity D-MPNN and indole | **FAILED** | EiG and GNNShap pass both. SAME on indole: −0.034 [−0.158, +0.098]. GStarX on indole: −0.014 [−0.025, −0.005] |
 | **P-N5:** rank-average of GNN, SX and IG is not below the best single method in any of the 12 cells | **FAILED** | Below in all 12 cells (N4) |
-| N3 registered check: EiG's two runs must be identical | **FAILED** (not bitwise) | Identical scores on 60 / 9 / 40 of 100 molecules; max difference 7.2e-7 / 1.0e-5 / 1.2e-6 (GPU floating-point noise; see 6.1) |
+| N3 registered check: EiG's two runs must be identical | **FAILED** (not bitwise) | Identical scores on 60 / 9 / 40 of 100 molecules; max difference 7.2e-7 / 1.0e-5 / 1.2e-6 (consistent with GPU floating-point noise; see 6.1 and 7.1) |
 
 No N3 prediction was registered beyond this check. The follow-ups add no predictions.
 
@@ -123,8 +125,9 @@ Seconds per molecule (new methods, measured with 8–12 concurrent jobs on one s
 | GNNShap | 1.1–1.3 |
 | GStarX | 130–175 |
 | SAME (both budgets) | 530–745 |
+| SX fixed (its own Tier 2 / Tier 4 runs, different load) | 134–260 (MUTAG-GT 123) |
 
-Old methods' timings were not recorded.
+GNNExplainer, PG and the gradient methods have no time field in their cache or gradient files (checked), so their timings are not recorded.
 
 ## 6. Follow-ups (`PLAN_followups.md`, exploratory; details in `F.txt`)
 
@@ -142,7 +145,7 @@ There is no Tier 4 GNNExplainer or cross-training-seed stability report to copy.
   | EiG | 10, 2, 11 of 20 | 4.3e-6 | identical except one molecule (Jaccard 0.992 on Mutagenicity) |
   | GNNShap | 0, 0, 1 of 20 | 1.9e-8 | identical |
 
-  The differences are GPU floating-point noise and almost never change the explanation.
+  The differences are consistent with GPU floating-point noise. With the same tie stream they changed one top-k set in 240 comparisons (EiG, Mutagenicity).
 - **(c) Across training seeds.** Top-k Jaccard between two models' explanations of the same molecule. Only molecules in both seeds' test sets count. The random baseline is about 0.14.
 
   | Method | Range over cells |
@@ -196,12 +199,15 @@ Results:
   - GNNShap or Saliency first on Mutagenicity GIN and GINE;
   - GNNExplainer first on MUTAG-GT.
 - They disagree on Mutagenicity D-MPNN (Saliency vs IG) and Mutagenicity GCN (PG logit vs Saliency).
-- The Fid+ ranking often disagrees. On indole D-MPNN it puts IG first and EiG fourth, even though Fid is EiG's own objective.
+- The Fid+ ranking often disagrees. On indole D-MPNN it puts IG first and EiG fourth. EiG optimises Fid+ − Fid− at its own size with its own removal rule, not Fid+ R2 at top-25%.
 
 ## 7. Contradictions and points to watch
 
-1. **EiG identity check failed, but only by floating-point noise.** The PLAN expected identical output; GPU message passing is not bitwise deterministic. In N3, most of EiG's top-k disagreements (Jaccard 0.96–0.99) are on molecules with identical scores. They come from the random tie order, which is drawn per run tag, not from the noise. The final protocol averages over 20 tie orders, so GEA is barely affected: single-run GEA minus random-node differs from the final-protocol value by at most 0.001.
-2. **MUTAG-GT reverses the ranking.** EiG, GNNShap, SAME, SX fixed, Saliency and IxG are below random-node on MUTAG-GT. Only GNNExplainer (+0.213), GStarX (+0.109) and PG (+0.065) are above. On the other benchmarks, EiG and GNNShap are at or near the top. This fits Tier 4 L4: the MUTAG-GT model's prediction is already sufficiently explained by the aromatic scaffold, not only by the ground-truth atoms.
+1. **EiG identity check failed by very small score differences.** The differences are at most 1e-5, consistent with GPU floating-point noise (not tested further, e.g. on CPU).
+   - **Tie order:** in N3 the random tie order at the k boundary is drawn per run tag. So N3's top-k Jaccard (0.96–0.99) mixes tie order with noise. Top-k disagreements on molecules with identical scores: 7 of 8 (Mutagenicity), 3 of 3 (indole) and 3 of 8 (MUTAG-GT).
+   - **Clean test:** F1b uses the same tie stream. There, the noise changed EiG's top-k set for 1 of 60 molecules.
+   - **Effect on GEA:** single-run GEA minus random-node differs from the final-protocol value by at most 0.001.
+2. **MUTAG-GT reverses the ranking.** EiG, GNNShap, SAME, SX fixed, Saliency and IxG are below random-node on MUTAG-GT. Only GNNExplainer (+0.213), GStarX (+0.109) and PG (+0.065) are above. On the other benchmarks, EiG and GNNShap are at or near the top. Tier 4 L4 found the aromatic scaffold sufficient for the MUTAG-GT model's prediction (Fid− R1), but rated that item only 'partly' resolved.
 3. **GStarX looks model-independent on indole.** Trained and reset scores correlate at +0.94. It is not above high degree in any B-XAIC cell: below in 6, includes 0 in 2. Its results against random-node there are small (+0.01 to +0.06).
 4. **Fid and GEA disagree** on the ranking of methods (F6). This repeats the Tier 2–4 finding with the new methods.
 5. **Cross-seed stability is not "per molecule across many seeds".** Each seed has its own test split, so pairs share only about 8 (B-XAIC), 26 (Mutagenicity) or 188 (MUTAG-GT) molecules. The Jaccards in 6.1(c) come from those shared molecules only.
@@ -221,7 +227,7 @@ Results:
   - Done only on the D-MPNN for Mutagenicity and indole; the other 10 cells are "not tested".
   - IxG has no reset check (it was not in Tier 2 R).
   - The old PG in Tier 2 R is the final-rule version, not logit.
-- **Old methods' seconds per molecule:** not recorded.
+- **Seconds per molecule:** not recorded for GNNExplainer, PG and the gradient methods. SX fixed's come from its own earlier runs, under a different load.
 - **Determinism reruns:** 20 molecules per method and unit, not every molecule.
 - **fig1_v3:** keeps fig1_v2's 5 PAINS seeds; N1 has all 10.
 - No paper .tex file was edited, and no existing result was overwritten.

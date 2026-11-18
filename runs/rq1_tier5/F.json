@@ -1801,7 +1801,7 @@
    "verdict_counts": "10/0/0",
    "xseed_jaccard": 0.7163774855253886,
    "xseed_random": 0.14254036231465514,
-   "sec": null
+   "sec": 258.28727008534804
   },
   "sx_fixed|bxaic_indole|gin": {
    "random": "above",
@@ -1821,7 +1821,7 @@
    "verdict_counts": "3/0/2",
    "xseed_jaccard": null,
    "xseed_random": null,
-   "sec": null
+   "sec": 249.68082442617415
   },
   "sx_fixed|bxaic_indole|gine": {
    "random": "above",
@@ -1841,7 +1841,7 @@
    "verdict_counts": "4/0/1",
    "xseed_jaccard": null,
    "xseed_random": null,
-   "sec": null
+   "sec": 239.42245375156403
   },
   "sx_fixed|bxaic_indole|gcn": {
    "random": "above",
@@ -1861,7 +1861,7 @@
    "verdict_counts": "5/0/0",
    "xseed_jaccard": null,
    "xseed_random": null,
-   "sec": null
+   "sec": 259.774851559639
   },
   "sx_fixed|bxaic_PAINS|dmpnn": {
    "random": "above",
@@ -1881,7 +1881,7 @@
    "verdict_counts": "10/0/0",
    "xseed_jaccard": 0.5485473168640486,
    "xseed_random": 0.14214610101916725,
-   "sec": null
+   "sec": 238.2500546899769
   },
   "sx_fixed|bxaic_PAINS|gin": {
    "random": "above",
@@ -1901,7 +1901,7 @@
    "verdict_counts": "4/0/1",
    "xseed_jaccard": null,
    "xseed_random": null,
-   "sec": null
+   "sec": 182.92098623752594
   },
   "sx_fixed|bxaic_PAINS|gine": {
    "random": "above",
@@ -1921,7 +1921,7 @@
    "verdict_counts": "5/0/0",
    "xseed_jaccard": null,
    "xseed_random": null,
-   "sec": null
+   "sec": 212.30018132257462
   },
   "sx_fixed|bxaic_PAINS|gcn": {
    "random": "above",
@@ -1941,7 +1941,7 @@
    "verdict_counts": "5/0/0",
    "xseed_jaccard": null,
    "xseed_random": null,
-   "sec": null
+   "sec": 198.46633647060395
   },
   "sx_fixed|mutagenicity_graphxai|dmpnn": {
    "random": "above",
@@ -1966,7 +1966,7 @@
    "verdict_counts": "9/0/1",
    "xseed_jaccard": 0.3796258910559066,
    "xseed_random": 0.1428576955623448,
-   "sec": null
+   "sec": 164.44147095706643
   },
   "sx_fixed|mutagenicity_graphxai|gin": {
    "random": "above",
@@ -1986,7 +1986,7 @@
    "verdict_counts": "3/0/2",
    "xseed_jaccard": 0.33022150744973305,
    "xseed_random": 0.14234946534076515,
-   "sec": null
+   "sec": 133.81940081753308
   },
   "sx_fixed|mutagenicity_graphxai|gine": {
    "random": "above",
@@ -2006,7 +2006,7 @@
    "verdict_counts": "3/0/2",
    "xseed_jaccard": 0.47850891503807147,
    "xseed_random": 0.14234946534076515,
-   "sec": null
+   "sec": 232.91549865014946
   },
   "sx_fixed|mutagenicity_graphxai|gcn": {
    "random": "above",
@@ -2026,7 +2026,7 @@
    "verdict_counts": "1/0/4",
    "xseed_jaccard": 0.47402624045601105,
    "xseed_random": 0.14234946534076515,
-   "sec": null
+   "sec": 250.41861643557306
   },
   "sal|bxaic_indole|dmpnn": {
    "random": "above",

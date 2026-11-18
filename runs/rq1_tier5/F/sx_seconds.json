@@ -1,0 +1,165 @@
+{
+ "bxaic_indole|dmpnn": {
+  "mean": 258.28727008534804,
+  "molecules": 3600,
+  "units": [
+   "bxaic_indole_s0",
+   "bxaic_indole_s1",
+   "bxaic_indole_s2",
+   "bxaic_indole_s3",
+   "bxaic_indole_s4",
+   "bxaic_indole_s5",
+   "bxaic_indole_s6",
+   "bxaic_indole_s7",
+   "bxaic_indole_s8",
+   "bxaic_indole_s9"
+  ]
+ },
+ "bxaic_PAINS|dmpnn": {
+  "mean": 238.2500546899769,
+  "molecules": 3600,
+  "units": [
+   "bxaic_PAINS_s0",
+   "bxaic_PAINS_s1",
+   "bxaic_PAINS_s2",
+   "bxaic_PAINS_s3",
+   "bxaic_PAINS_s4",
+   "bxaic_PAINS_s5",
+   "bxaic_PAINS_s6",
+   "bxaic_PAINS_s7",
+   "bxaic_PAINS_s8",
+   "bxaic_PAINS_s9"
+  ]
+ },
+ "bxaic_indole|gin": {
+  "mean": 249.68082442617415,
+  "molecules": 500,
+  "units": [
+   "bxaic_indole_gin_s0",
+   "bxaic_indole_gin_s1",
+   "bxaic_indole_gin_s2",
+   "bxaic_indole_gin_s3",
+   "bxaic_indole_gin_s4"
+  ]
+ },
+ "bxaic_indole|gine": {
+  "mean": 239.42245375156403,
+  "molecules": 500,
+  "units": [
+   "bxaic_indole_gine_s0",
+   "bxaic_indole_gine_s1",
+   "bxaic_indole_gine_s2",
+   "bxaic_indole_gine_s3",
+   "bxaic_indole_gine_s4"
+  ]
+ },
+ "bxaic_indole|gcn": {
+  "mean": 259.774851559639,
+  "molecules": 500,
+  "units": [
+   "bxaic_indole_gcn_s0",
+   "bxaic_indole_gcn_s1",
+   "bxaic_indole_gcn_s2",
+   "bxaic_indole_gcn_s3",
+   "bxaic_indole_gcn_s4"
+  ]
+ },
+ "bxaic_PAINS|gin": {
+  "mean": 182.92098623752594,
+  "molecules": 500,
+  "units": [
+   "bxaic_PAINS_gin_s0",
+   "bxaic_PAINS_gin_s1",
+   "bxaic_PAINS_gin_s2",
+   "bxaic_PAINS_gin_s3",
+   "bxaic_PAINS_gin_s4"
+  ]
+ },
+ "bxaic_PAINS|gine": {
+  "mean": 212.30018132257462,
+  "molecules": 500,
+  "units": [
+   "bxaic_PAINS_gine_s0",
+   "bxaic_PAINS_gine_s1",
+   "bxaic_PAINS_gine_s2",
+   "bxaic_PAINS_gine_s3",
+   "bxaic_PAINS_gine_s4"
+  ]
+ },
+ "bxaic_PAINS|gcn": {
+  "mean": 198.46633647060395,
+  "molecules": 500,
+  "units": [
+   "bxaic_PAINS_gcn_s0",
+   "bxaic_PAINS_gcn_s1",
+   "bxaic_PAINS_gcn_s2",
+   "bxaic_PAINS_gcn_s3",
+   "bxaic_PAINS_gcn_s4"
+  ]
+ },
+ "mutagenicity_graphxai|dmpnn": {
+  "mean": 164.44147095706643,
+  "molecules": 1264,
+  "units": [
+   "mutagenicity_dmpnn_s0",
+   "mutagenicity_dmpnn_s1",
+   "mutagenicity_dmpnn_s2",
+   "mutagenicity_dmpnn_s3",
+   "mutagenicity_dmpnn_s4",
+   "mutagenicity_dmpnn_s5",
+   "mutagenicity_dmpnn_s6",
+   "mutagenicity_dmpnn_s7",
+   "mutagenicity_dmpnn_s8",
+   "mutagenicity_dmpnn_s9"
+  ]
+ },
+ "mutagenicity_graphxai|gin": {
+  "mean": 133.81940081753308,
+  "molecules": 632,
+  "units": [
+   "mutagenicity_gin_s0",
+   "mutagenicity_gin_s1",
+   "mutagenicity_gin_s2",
+   "mutagenicity_gin_s3",
+   "mutagenicity_gin_s4"
+  ]
+ },
+ "mutagenicity_graphxai|gine": {
+  "mean": 232.91549865014946,
+  "molecules": 632,
+  "units": [
+   "mutagenicity_gine_s0",
+   "mutagenicity_gine_s1",
+   "mutagenicity_gine_s2",
+   "mutagenicity_gine_s3",
+   "mutagenicity_gine_s4"
+  ]
+ },
+ "mutagenicity_graphxai|gcn": {
+  "mean": 250.41861643557306,
+  "molecules": 632,
+  "units": [
+   "mutagenicity_gcn_s0",
+   "mutagenicity_gcn_s1",
+   "mutagenicity_gcn_s2",
+   "mutagenicity_gcn_s3",
+   "mutagenicity_gcn_s4"
+  ]
+ },
+ "mutag_graphxai|dmpnn": {
+  "mean": 122.59377595084779,
+  "molecules": 1880,
+  "units": [
+   "mutag_graphxai_s0",
+   "mutag_graphxai_s1",
+   "mutag_graphxai_s2",
+   "mutag_graphxai_s3",
+   "mutag_graphxai_s4",
+   "mutag_graphxai_s5",
+   "mutag_graphxai_s6",
+   "mutag_graphxai_s7",
+   "mutag_graphxai_s8",
+   "mutag_graphxai_s9"
+  ]
+ }
+}
