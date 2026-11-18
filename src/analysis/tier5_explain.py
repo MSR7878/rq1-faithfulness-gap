@@ -3,7 +3,8 @@ RQ1 Tier 5 (runs/rq1_tier5/PLAN.md): one new explainer on a list of molecules of
 Every molecule is seeded by crc32("<tag>|<unit>|<mol>") (python, numpy, torch), so a result does not depend on its shard.
 SAME is run at both budgets ('k' = floor(0.25 N) and 'own' = ceil(0.5 N); N3 uses --budgets k); the others once.
 
-    python -m src.analysis.tier5_explain --unit U --expl E --level L --set n1|n2|n3 --tag T --out DIR --shard i/n [--ckpt CK]
+    python -m src.analysis.tier5_explain --unit U --expl E --level L --set n1|n2|n3 --tag T --out DIR --shard i/n [--ckpt CK] [--first N]
+--first N keeps the first N molecules of the list (follow-up F1b, determinism reruns; runs/rq1_tier5/PLAN_followups.md).
 """
 from __future__ import annotations
 
@@ -27,9 +28,11 @@ def mols_for(unit, level, which):
     return T5.level_mols(unit, "L1" if level == "L0" else level)
 
 
-def run(unit, name, level, which, tag, out_dir, shard, ckpt=None, budgets=None):
+def run(unit, name, level, which, tag, out_dir, shard, ckpt=None, budgets=None, first=None):
     i, n = (int(v) for v in shard.split("/"))
     mols = mols_for(unit, level, which)
+    if first:
+        mols = list(mols)[:int(first)]
     mine = [int(m) for j, m in enumerate(mols) if j % n == i]
     f = f"{out_dir}/shard_{i}_of_{n}.pt"
     rows = torch.load(f, weights_only=False) if os.path.exists(f) else []
@@ -60,7 +63,7 @@ def run(unit, name, level, which, tag, out_dir, shard, ckpt=None, budgets=None):
 
 if __name__ == "__main__":
     a = argparse.ArgumentParser()
-    for k in ("unit", "expl", "level", "set", "tag", "out", "ckpt", "budgets"):
+    for k in ("unit", "expl", "level", "set", "tag", "out", "ckpt", "budgets", "first"):
         a.add_argument(f"--{k}")
     a.add_argument("--shard", default="0/1"); a = a.parse_args()
-    run(a.unit, a.expl, a.level, a.set, a.tag, a.out, a.shard, a.ckpt, a.budgets)
+    run(a.unit, a.expl, a.level, a.set, a.tag, a.out, a.shard, a.ckpt, a.budgets, a.first)

@@ -72,6 +72,24 @@ def jobs(item, phase):
     if (item, phase) == ("N3", "score"):
         from .tier5_N23 import N3_UNITS
         return [f"{PY}.tier5_N23 n3 --unit {u}" for u in N3_UNITS]
+    # follow-ups (runs/rq1_tier5/PLAN_followups.md)
+    if (item, phase) == ("F", "det"):
+        from .tier5_N23 import N3_UNITS
+        sc = scale(); out = []
+        for name in SLOW_FIRST:
+            k = {"same": 5, "gstarx": 2}.get(name, 1)
+            for u in N3_UNITS:
+                for i in range(k):
+                    out.append(f"{env(name)}{PY}.tier5_explain --unit {u} --expl {name} --level {sc[name]['level']} --set n1 --tag T5 --first 20 "
+                               f"--out {T5.T5}/F/det/{name}/{u} --shard {i}/{k}" + (" --budgets k" if name == "same" else ""))
+        return out
+    if (item, phase) == ("F", "extract"):
+        return [f"{PY}.tier5_followups extract --unit {u}" for u in T5.n1_units()]
+    if (item, phase) == ("F", "cross"):
+        return [f"{PY}.tier5_followups cross --cell '{c}'" for c in sorted({T5.cell_of(u) for u in T5.n1_units()})]
+    if (item, phase) == ("F", "stab"):
+        from .tier5_N23 import N3_UNITS
+        return [f"{PY}.tier5_followups {w} --unit {u}" for w in ("n3", "det") for u in N3_UNITS]
     raise SystemExit(f"unknown item/phase {item} {phase}")
 
 
