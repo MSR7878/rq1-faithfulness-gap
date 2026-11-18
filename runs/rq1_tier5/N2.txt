@@ -1,0 +1,41 @@
+N2 -- SANITY CHECK: explanation of the trained model vs of the reset model (Tier-2 R checkpoints), same molecules, seeds 0-4
+  GEA(trained) - GEA(reset), Spearman of atom scores (trained vs reset), Jaccard of top-k sets; Holm per (dataset, kind, seed) over the method versions
+
+  mutagenicity_dmpnn / full reset
+    EiG              trained - reset +0.365 [+0.286, +0.430] 5/0/0   Spearman +0.043 (seeds -0.05..+0.13)   Jaccard 0.163   undefined Spearman 24
+    EiG (own size)   trained - reset +0.303 [+0.228, +0.366] 5/0/0   Spearman +0.162 (seeds +0.02..+0.24)   Jaccard 0.308   undefined Spearman 0
+    SAME             trained - reset +0.284 [+0.233, +0.340] 5/0/0   Spearman -0.048 (seeds -0.13..+0.01)   Jaccard 0.129   undefined Spearman 1
+    SAME (own size)  trained - reset +0.460 [+0.404, +0.516] 5/0/0   Spearman -0.071 (seeds -0.13..-0.00)   Jaccard 0.083   undefined Spearman 1
+    GStarX           trained - reset +0.216 [+0.145, +0.292] 5/0/0   Spearman -0.648 (seeds -0.68..-0.61)   Jaccard 0.035   undefined Spearman 0
+    GNNShap          trained - reset +0.381 [+0.343, +0.422] 5/0/0   Spearman -0.032 (seeds -0.12..+0.10)   Jaccard 0.181   undefined Spearman 0
+
+  mutagenicity_dmpnn / head reset
+    EiG              trained - reset +0.222 [+0.131, +0.309] 5/0/0   Spearman +0.081 (seeds -0.29..+0.32)   Jaccard 0.266   undefined Spearman 24
+    EiG (own size)   trained - reset +0.179 [+0.091, +0.267] 5/0/0   Spearman +0.196 (seeds -0.15..+0.46)   Jaccard 0.352   undefined Spearman 0
+    SAME             trained - reset +0.197 [+0.093, +0.313] 4/0/1   Spearman +0.046 (seeds -0.10..+0.14)   Jaccard 0.151   undefined Spearman 1
+    SAME (own size)  trained - reset +0.326 [+0.217, +0.447] 5/0/0   Spearman +0.082 (seeds -0.03..+0.23)   Jaccard 0.162   undefined Spearman 1
+    GStarX           trained - reset +0.186 [+0.105, +0.275] 5/0/0   Spearman -0.471 (seeds -0.60..-0.01)   Jaccard 0.073   undefined Spearman 0
+    GNNShap          trained - reset +0.253 [+0.191, +0.340] 5/0/0   Spearman +0.075 (seeds -0.12..+0.26)   Jaccard 0.240   undefined Spearman 0
+
+  bxaic_indole / full reset
+    EiG              trained - reset +0.285 [+0.249, +0.322] 5/0/0   Spearman +0.473 (seeds +0.34..+0.59)   Jaccard 0.462   undefined Spearman 2
+    EiG (own size)   trained - reset +0.187 [+0.148, +0.226] 5/0/0   Spearman +0.522 (seeds +0.40..+0.60)   Jaccard 0.541   undefined Spearman 0
+    SAME             trained - reset -0.034 [-0.158, +0.098] 1/1/3   Spearman +0.401 (seeds +0.33..+0.55)   Jaccard 0.425   undefined Spearman 0
+    SAME (own size)  trained - reset -0.034 [-0.150, +0.079] 0/0/5   Spearman +0.471 (seeds +0.34..+0.62)   Jaccard 0.517   undefined Spearman 0
+    GStarX           trained - reset -0.014 [-0.025, -0.005] 0/2/3   Spearman +0.936 (seeds +0.78..+0.99)   Jaccard 0.833   undefined Spearman 0
+    GNNShap          trained - reset +0.271 [+0.237, +0.304] 5/0/0   Spearman +0.473 (seeds +0.35..+0.56)   Jaccard 0.470   undefined Spearman 0
+
+  bxaic_indole / head reset
+    EiG              trained - reset +0.453 [+0.260, +0.632] 5/0/0   Spearman +0.037 (seeds -0.54..+0.66)   Jaccard 0.290   undefined Spearman 2
+    EiG (own size)   trained - reset +0.428 [+0.257, +0.590] 5/0/0   Spearman +0.115 (seeds -0.34..+0.70)   Jaccard 0.327   undefined Spearman 0
+    SAME             trained - reset +0.195 [+0.034, +0.331] 3/0/2   Spearman +0.150 (seeds -0.07..+0.54)   Jaccard 0.261   undefined Spearman 0
+    SAME (own size)  trained - reset +0.245 [+0.095, +0.375] 3/0/2   Spearman +0.219 (seeds +0.04..+0.61)   Jaccard 0.343   undefined Spearman 0
+    GStarX           trained - reset -0.003 [-0.031, +0.028] 1/3/1   Spearman +0.726 (seeds +0.33..+0.97)   Jaccard 0.704   undefined Spearman 0
+    GNNShap          trained - reset +0.364 [+0.235, +0.489] 5/0/0   Spearman +0.148 (seeds -0.26..+0.66)   Jaccard 0.317   undefined Spearman 0
+
+  P-N4: every new explainer: CI(trained - full reset) entirely above 0 on both Mutagenicity D-MPNN and indole
+    EiG      mutagenicity_dmpnn: +0.365 [+0.286, +0.430]  bxaic_indole: +0.285 [+0.249, +0.322]
+    SAME     mutagenicity_dmpnn: +0.284 [+0.233, +0.340]  bxaic_indole: -0.034 [-0.158, +0.098]
+    GStarX   mutagenicity_dmpnn: +0.216 [+0.145, +0.292]  bxaic_indole: -0.014 [-0.025, -0.005]
+    GNNShap  mutagenicity_dmpnn: +0.381 [+0.343, +0.422]  bxaic_indole: +0.271 [+0.237, +0.304]
+  P-N4 FAILED

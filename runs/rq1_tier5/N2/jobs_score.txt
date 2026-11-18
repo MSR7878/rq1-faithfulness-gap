@@ -1,0 +1,10 @@
+$PY -u -m src.analysis.tier5_N23 n2 --unit mutagenicity_dmpnn_s0
+$PY -u -m src.analysis.tier5_N23 n2 --unit mutagenicity_dmpnn_s1
+$PY -u -m src.analysis.tier5_N23 n2 --unit mutagenicity_dmpnn_s2
+$PY -u -m src.analysis.tier5_N23 n2 --unit mutagenicity_dmpnn_s3
+$PY -u -m src.analysis.tier5_N23 n2 --unit mutagenicity_dmpnn_s4
+$PY -u -m src.analysis.tier5_N23 n2 --unit bxaic_indole_s0
+$PY -u -m src.analysis.tier5_N23 n2 --unit bxaic_indole_s1
+$PY -u -m src.analysis.tier5_N23 n2 --unit bxaic_indole_s2
+$PY -u -m src.analysis.tier5_N23 n2 --unit bxaic_indole_s3
+$PY -u -m src.analysis.tier5_N23 n2 --unit bxaic_indole_s4
