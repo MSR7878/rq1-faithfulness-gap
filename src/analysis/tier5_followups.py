@@ -8,6 +8,8 @@ RQ1 Tier 5 follow-ups F1-F6 (runs/rq1_tier5/PLAN_followups.md). Exploratory; no 
                      baseline (two independent random k-sets) -> F/cross/<cell>.npz
   n3 --unit U        L6-format extras for N3: Jaccard of each run vs the N1 run, consensus size, k -> F/n3/<unit>.npz
   det --unit U       determinism: the F/det reruns (tag T5, same model) vs the N1 rows -> F/det/<unit>.npz
+  sxsec              SubgraphX (fixed) seconds per molecule from its own registered runs (Tier 2 S / M, Tier 4 M1 / M2; the only
+                     old method whose rows record time) -> F/sx_seconds.json
 
     python -m src.analysis.tier5_followups extract|cross|n3|det --unit U | --cell C
 """
@@ -124,10 +126,25 @@ def det(unit):
     C.save_npz(f"{F}/det/{unit}.npz", **A); print(f"{unit}: determinism compared", flush=True)
 
 
+def sxsec():
+    import glob
+    import json
+    from . import tier4_common as T
+    out = {}
+    for u in T5.n1_units():
+        d = {"M1": f"{T.T4}/M1/sx", "M2": f"{T.T4}/M2/sx", "T2M": f"{C.T2}/M/sx", "T2": f"{C.T2}/S/sx"}[T5._src(u)] + f"/{u}"
+        gt = set(T5.gt_mols(u)); sec = [r["seconds"] for f in sorted(glob.glob(f"{d}/shard_*.pt")) for r in C.torch_load(f) if int(r["mol_idx"]) in gt]
+        o = out.setdefault(T5.cell_of(u), {"seconds": [], "units": []}); o["seconds"] += sec; o["units"].append(u)
+    res = {c: {"mean": float(np.mean(v["seconds"])), "molecules": len(v["seconds"]), "units": v["units"]} for c, v in out.items() if v["seconds"]}
+    json.dump(res, open(f"{F}/sx_seconds.json", "w"), indent=1); print(json.dumps({c: round(v["mean"], 1) for c, v in res.items()}), flush=True)
+
+
 if __name__ == "__main__":
-    a = argparse.ArgumentParser(); a.add_argument("cmd", choices=["extract", "cross", "n3", "det"]); a.add_argument("--unit"); a.add_argument("--cell")
+    a = argparse.ArgumentParser(); a.add_argument("cmd", choices=["extract", "cross", "n3", "det", "sxsec"]); a.add_argument("--unit"); a.add_argument("--cell")
     a = a.parse_args()
     if a.cmd == "cross":
         cross(a.cell)
+    elif a.cmd == "sxsec":
+        sxsec()
     else:
         {"extract": extract, "n3": n3, "det": det}[a.cmd](a.unit)

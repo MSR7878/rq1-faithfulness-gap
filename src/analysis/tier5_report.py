@@ -417,6 +417,7 @@ def _F4(rep):
     P("\nF4 -- SUMMARY TABLE (rows = methods; per benchmark x model: above random / above best rule / sanity / stable across seeds / seconds per molecule)")
     n1, n2, rr = rep["N1"], rep["N2"], json.load(open(f"{C.T2}/R_rescore.json"))["trained_minus_full"]
     old = _old_rn_rule(rep); E = {u: _ld(f"{T5.T5}/F/extract/{u}.npz") for u in T5.n1_units()}
+    sxs = json.load(open(f"{T5.T5}/F/sx_seconds.json"))
     rows = {}
     for w in ROWS:
         for cell in TCELLS:
@@ -440,7 +441,9 @@ def _F4(rep):
             cx = rep["F1c"].get(f"{cell}|{w.replace('_own', '')}") if not w.endswith("_own") else None
             r["xseed_jaccard"] = None if not cx else cx["jaccard"]; r["xseed_random"] = None if not cx else cx["random"]
             base = w.replace("_own", "")
-            if base in T5.NEW:
+            if w == "sx_fixed":
+                r["sec"] = sxs.get(cell, {}).get("mean")
+            elif base in T5.NEW:
                 sec = [E[u][f"{base}__sec"] for u in units_of(cell, T5.n1_units()) if f"{base}__sec" in E[u]]
                 r["sec"] = float(np.mean(np.concatenate(sec))) if sec else None
             else:
@@ -468,7 +471,12 @@ def _F4(rep):
           "- **Above random / above best rule.** `+` means the CI is entirely above 0, `-` entirely below 0, `0` includes 0. Old methods are on their registered molecules; new methods are N1, each at its scale level. The best rule is high degree for indole and PAINS and hetero for Mutagenicity.",
           "- **Sanity.** GEA trained minus full reset: `+` / `-` / `0`. Old methods use Tier 2 R_rescore, where PG is the final-rule version; new methods use N2. n.t. = not tested; only the D-MPNN on Mutagenicity and indole was tested.",
           "- **Stable.** `yes` means every seed has the same Holm verdict against random-node; the numbers in brackets are better/worse/n.s. counts. J is the top-k Jaccard across training seeds on shared molecules, with the random baseline in brackets; n.c. = fewer than 20 shared items.",
-          "- **Seconds per molecule.** New methods only, measured with 8-12 concurrent jobs on one shared V100. SAME's time is the sum of its two budget runs. The own-size versions come from the same run. Old methods: not recorded.", ""]
+          "- **Seconds per molecule.** Measured with 8-12 concurrent jobs on one shared V100.",
+          "  - SAME's time is the sum of its two budget runs. The own-size versions come from the same run.",
+          "  - SX fixed: its own registered runs (Tier 2 S / M, Tier 4 M1 / M2), under a different load.",
+          "  - n.r. = not recorded: GNNExplainer, PG and the gradient methods. Their cache and gradient files have no time field (checked).",
+          "- **Rows.** Rows are explainers only. The N4 combinations and the trivial rules are not rows.",
+          "- **Stable: yes** also covers methods that are worse than random in every seed, e.g. GNN on indole GINE (0/5/0).", ""]
     for d in ("bxaic_indole", "bxaic_PAINS", "mutagenicity_graphxai"):
         cs = [c for c in TCELLS if c.startswith(d + "|")]
         md += [f"## {CELL_NAME[d]}", "", "| method | " + " | ".join(cname(c).split(' ', 1)[1] for c in cs) + " |", "|---|" + "---|" * len(cs)]
