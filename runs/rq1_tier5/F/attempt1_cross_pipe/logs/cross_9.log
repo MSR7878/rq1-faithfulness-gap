@@ -1,0 +1,11 @@
+9: dmpnn: command not found
+Traceback (most recent call last):
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/manvendra.singh/.conda/envs/rq1/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_followups.py", line 130, in <module>
+    cross(a.cell)
+  File "/home/manvendra.singh/rq1-faithfulness-gap/src/analysis/tier5_followups.py", line 79, in cross
+    dkey = C.dataset_of(us[0]); dl, _ = C.load_data(dkey); S = {}
+IndexError: list index out of range

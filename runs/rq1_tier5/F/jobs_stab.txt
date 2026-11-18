@@ -1,0 +1,6 @@
+$PY -u -m src.analysis.tier5_followups n3 --unit mutagenicity_dmpnn_s0
+$PY -u -m src.analysis.tier5_followups n3 --unit bxaic_indole_s0
+$PY -u -m src.analysis.tier5_followups n3 --unit mutag_graphxai_s0
+$PY -u -m src.analysis.tier5_followups det --unit mutagenicity_dmpnn_s0
+$PY -u -m src.analysis.tier5_followups det --unit bxaic_indole_s0
+$PY -u -m src.analysis.tier5_followups det --unit mutag_graphxai_s0

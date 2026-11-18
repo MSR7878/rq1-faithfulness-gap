@@ -1,0 +1,13 @@
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_PAINS__dmpnn
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_PAINS__gcn
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_PAINS__gin
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_PAINS__gine
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_indole__dmpnn
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_indole__gcn
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_indole__gin
+$PY -u -m src.analysis.tier5_followups cross --cell bxaic_indole__gine
+$PY -u -m src.analysis.tier5_followups cross --cell mutag_graphxai__dmpnn
+$PY -u -m src.analysis.tier5_followups cross --cell mutagenicity_graphxai__dmpnn
+$PY -u -m src.analysis.tier5_followups cross --cell mutagenicity_graphxai__gcn
+$PY -u -m src.analysis.tier5_followups cross --cell mutagenicity_graphxai__gin
+$PY -u -m src.analysis.tier5_followups cross --cell mutagenicity_graphxai__gine

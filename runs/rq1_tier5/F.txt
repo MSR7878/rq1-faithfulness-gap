@@ -1,0 +1,208 @@
+F1 -- STABILITY (exploratory; PLAN_followups.md)
+  Tier 4 L6 covered SubgraphX only and only run-to-run (3 explainer seeds, seed-0 model); there is no Tier-4 GNNExplainer or cross-training-seed report.
+
+  (a) run to run (registered N3), Tier 4 L6 format; seed-0 models; T5a/T5b/T5c (EiG T5a/T5b)
+
+  mutagenicity_dmpnn_s0
+    EiG (100 molecules, 2 runs)
+      registered check (PLAN: EiG output identical): 60 of 100 molecules identical, max |score difference| 7.23e-07 -> FAILED
+      Jaccard between runs: mean 0.960, median 1.000; molecules with identical sets in all pairs 0.92; vs the N1 run 0.961
+      atoms picked in >= 2 of 2 runs, as a share of atoms picked at least once: 0.960; consensus set size 5.7 (k = 5.8)
+      GEA (sets scored as sets): single run mean 0.414, consensus 0.403; consensus - single -0.011 [-0.025, -0.000]
+      minus random-node: single +0.293 [+0.238, +0.347], consensus +0.281 [+0.226, +0.337], single under the final protocol +0.294 [+0.239, +0.347]
+    SAME (25 molecules, 3 runs)
+      Jaccard between runs: mean 0.383, median 0.352; molecules with identical sets in all pairs 0.04; vs the N1 run 0.397
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.455; consensus set size 5.0 (k = 7.0)
+      GEA (sets scored as sets): single run mean 0.368, consensus 0.504; consensus - single +0.136 [+0.082, +0.203]
+      minus random-node: single +0.252 [+0.165, +0.334], consensus +0.388 [+0.264, +0.513], single under the final protocol +0.263 [+0.179, +0.344]
+    GStarX (100 molecules, 3 runs)
+      Jaccard between runs: mean 0.556, median 0.510; molecules with identical sets in all pairs 0.09; vs the N1 run 0.559
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.648; consensus set size 5.4 (k = 5.8)
+      GEA (sets scored as sets): single run mean 0.298, consensus 0.308; consensus - single +0.010 [-0.005, +0.026]
+      minus random-node: single +0.176 [+0.127, +0.223], consensus +0.187 [+0.133, +0.240], single under the final protocol +0.176 [+0.127, +0.223]
+    GNNShap (100 molecules, 3 runs)
+      Jaccard between runs: mean 0.982, median 1.000; molecules with identical sets in all pairs 0.95; vs the N1 run 0.976
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.986; consensus set size 5.8 (k = 5.8)
+      GEA (sets scored as sets): single run mean 0.437, consensus 0.437; consensus - single -0.000 [-0.000, +0.000]
+      minus random-node: single +0.316 [+0.261, +0.369], consensus +0.316 [+0.261, +0.369], single under the final protocol +0.316 [+0.261, +0.369]
+
+  bxaic_indole_s0
+    EiG (100 molecules, 2 runs)
+      registered check (PLAN: EiG output identical): 9 of 100 molecules identical, max |score difference| 1.05e-05 -> FAILED
+      Jaccard between runs: mean 0.987, median 1.000; molecules with identical sets in all pairs 0.97; vs the N1 run 0.988
+      atoms picked in >= 2 of 2 runs, as a share of atoms picked at least once: 0.987; consensus set size 7.3 (k = 7.4)
+      GEA (sets scored as sets): single run mean 0.693, consensus 0.691; consensus - single -0.003 [-0.008, +0.000]
+      minus random-node: single +0.528 [+0.488, +0.564], consensus +0.525 [+0.483, +0.562], single under the final protocol +0.528 [+0.489, +0.564]
+    SAME (25 molecules, 3 runs)
+      Jaccard between runs: mean 0.649, median 0.643; molecules with identical sets in all pairs 0.20; vs the N1 run 0.681
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.746; consensus set size 7.2 (k = 7.6)
+      GEA (sets scored as sets): single run mean 0.546, consensus 0.566; consensus - single +0.020 [-0.019, +0.059]
+      minus random-node: single +0.386 [+0.276, +0.485], consensus +0.406 [+0.284, +0.517], single under the final protocol +0.384 [+0.273, +0.484]
+    GStarX (100 molecules, 3 runs)
+      Jaccard between runs: mean 0.356, median 0.342; molecules with identical sets in all pairs 0.00; vs the N1 run 0.359
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.513; consensus set size 6.5 (k = 7.4)
+      GEA (sets scored as sets): single run mean 0.205, consensus 0.192; consensus - single -0.013 [-0.023, -0.003]
+      minus random-node: single +0.039 [+0.027, +0.052], consensus +0.026 [+0.008, +0.046], single under the final protocol +0.039 [+0.027, +0.052]
+    GNNShap (100 molecules, 3 runs)
+      Jaccard between runs: mean 1.000, median 1.000; molecules with identical sets in all pairs 1.00; vs the N1 run 1.000
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 1.000; consensus set size 7.4 (k = 7.4)
+      GEA (sets scored as sets): single run mean 0.693, consensus 0.693; consensus - single +0.000 [-0.000, +0.000]
+      minus random-node: single +0.527 [+0.490, +0.562], consensus +0.527 [+0.490, +0.562], single under the final protocol +0.527 [+0.490, +0.562]
+
+  mutag_graphxai_s0
+    EiG (100 molecules, 2 runs)
+      registered check (PLAN: EiG output identical): 40 of 100 molecules identical, max |score difference| 1.19e-06 -> FAILED
+      Jaccard between runs: mean 0.973, median 1.000; molecules with identical sets in all pairs 0.92; vs the N1 run 0.974
+      atoms picked in >= 2 of 2 runs, as a share of atoms picked at least once: 0.973; consensus set size 3.9 (k = 4.0)
+      GEA (sets scored as sets): single run mean 0.098, consensus 0.097; consensus - single -0.001 [-0.004, +0.000]
+      minus random-node: single -0.050 [-0.084, -0.013], consensus -0.052 [-0.086, -0.015], single under the final protocol -0.050 [-0.084, -0.013]
+    SAME (25 molecules, 3 runs)
+      Jaccard between runs: mean 0.377, median 0.371; molecules with identical sets in all pairs 0.00; vs the N1 run 0.363
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.475; consensus set size 3.2 (k = 4.0)
+      GEA (sets scored as sets): single run mean 0.047, consensus 0.018; consensus - single -0.028 [-0.046, -0.013]
+      minus random-node: single -0.106 [-0.131, -0.079], consensus -0.135 [-0.156, -0.111], single under the final protocol -0.103 [-0.124, -0.077]
+    GStarX (100 molecules, 3 runs)
+      Jaccard between runs: mean 0.556, median 0.511; molecules with identical sets in all pairs 0.13; vs the N1 run 0.558
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.644; consensus set size 3.6 (k = 4.0)
+      GEA (sets scored as sets): single run mean 0.301, consensus 0.336; consensus - single +0.036 [+0.020, +0.053]
+      minus random-node: single +0.152 [+0.117, +0.186], consensus +0.188 [+0.143, +0.234], single under the final protocol +0.152 [+0.117, +0.186]
+    GNNShap (100 molecules, 3 runs)
+      Jaccard between runs: mean 0.997, median 1.000; molecules with identical sets in all pairs 0.99; vs the N1 run 0.997
+      atoms picked in >= 2 of 3 runs, as a share of atoms picked at least once: 0.998; consensus set size 4.0 (k = 4.0)
+      GEA (sets scored as sets): single run mean 0.045, consensus 0.045; consensus - single -0.000 [-0.000, +0.000]
+      minus random-node: single -0.103 [-0.127, -0.074], consensus -0.103 [-0.127, -0.074], single under the final protocol -0.103 [-0.127, -0.074]
+
+  (b) determinism: same model, same seed (tag T5), run again on the first 20 molecules of the method's list; compared with the N1 rows
+    mutagenicity_dmpnn_s0    EiG      identical 10/20   max |score difference| 6.85e-07   top-k Jaccard vs N1 0.992   -> NOT deterministic
+    mutagenicity_dmpnn_s0    GStarX   identical 13/20   max |score difference| 7.45e-09   top-k Jaccard vs N1 1.000   -> NOT deterministic
+    mutagenicity_dmpnn_s0    SAME     identical 20/20   max |score difference| 0.00e+00   top-k Jaccard vs N1 1.000   -> deterministic
+    mutagenicity_dmpnn_s0    GNNShap  identical 0/20   max |score difference| 1.49e-08   top-k Jaccard vs N1 1.000   -> NOT deterministic
+    bxaic_indole_s0          EiG      identical 2/20   max |score difference| 4.29e-06   top-k Jaccard vs N1 1.000   -> NOT deterministic
+    bxaic_indole_s0          GStarX   identical 17/20   max |score difference| 2.98e-08   top-k Jaccard vs N1 1.000   -> NOT deterministic
+    bxaic_indole_s0          SAME     identical 20/20   max |score difference| 0.00e+00   top-k Jaccard vs N1 1.000   -> deterministic
+    bxaic_indole_s0          GNNShap  identical 0/20   max |score difference| 1.86e-08   top-k Jaccard vs N1 1.000   -> NOT deterministic
+    mutag_graphxai_s0        EiG      identical 11/20   max |score difference| 1.43e-06   top-k Jaccard vs N1 1.000   -> NOT deterministic
+    mutag_graphxai_s0        GStarX   identical 20/20   max |score difference| 0.00e+00   top-k Jaccard vs N1 1.000   -> deterministic
+    mutag_graphxai_s0        SAME     identical 20/20   max |score difference| 0.00e+00   top-k Jaccard vs N1 1.000   -> deterministic
+    mutag_graphxai_s0        GNNShap  identical 1/20   max |score difference| 1.68e-08   top-k Jaccard vs N1 1.000   -> NOT deterministic
+
+  (c) across training seeds: top-k Jaccard between the explanations of two models (different seeds) of the same molecule;
+      only molecules explained under both seeds (test splits differ by seed); mean over (seed pair, molecule); random = exact expected Jaccard of two random k-sets
+    indole D-MPNN
+      GNN 0.23 (rand 0.14, n 374); PG (logit) 0.44 (rand 0.14, n 374); SX fixed 0.72 (rand 0.14, n 374); Saliency 0.56 (rand 0.14, n 374); IG 0.65 (rand 0.14, n 374); IxG 0.37 (rand 0.14, n 374); EiG 0.89 (rand 0.14, n 374); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.88 (rand 0.14, n 374)
+    indole GIN
+      GNN 0.22 (rand 0.14, n 85); PG (logit) 0.28 (rand 0.14, n 85); SX fixed n.c. (n 7); Saliency 0.50 (rand 0.14, n 85); IG 0.68 (rand 0.14, n 85); IxG 0.36 (rand 0.14, n 85); EiG 0.88 (rand 0.14, n 85); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.89 (rand 0.14, n 85)
+    indole GINE
+      GNN 0.29 (rand 0.14, n 85); PG (logit) 0.58 (rand 0.14, n 85); SX fixed n.c. (n 7); Saliency 0.45 (rand 0.14, n 85); IG 0.40 (rand 0.14, n 85); IxG 0.30 (rand 0.14, n 85); EiG 0.66 (rand 0.14, n 85); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.66 (rand 0.14, n 85)
+    indole GCN
+      GNN 0.47 (rand 0.14, n 85); PG (logit) 0.64 (rand 0.14, n 85); SX fixed n.c. (n 7); Saliency 0.58 (rand 0.14, n 85); IG 0.58 (rand 0.14, n 85); IxG 0.55 (rand 0.14, n 85); EiG 0.81 (rand 0.14, n 85); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.84 (rand 0.14, n 85)
+    PAINS D-MPNN
+      GNN 0.24 (rand 0.14, n 339); PG (logit) 0.18 (rand 0.14, n 339); SX fixed 0.55 (rand 0.14, n 339); Saliency 0.59 (rand 0.14, n 339); IG 0.43 (rand 0.14, n 339); IxG 0.44 (rand 0.14, n 339); EiG 0.68 (rand 0.14, n 339); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.57 (rand 0.14, n 339)
+    PAINS GIN
+      GNN 0.29 (rand 0.14, n 80); PG (logit) 0.34 (rand 0.14, n 80); SX fixed n.c. (n 7); Saliency 0.42 (rand 0.14, n 80); IG 0.51 (rand 0.14, n 80); IxG 0.36 (rand 0.14, n 80); EiG 0.63 (rand 0.14, n 80); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.52 (rand 0.14, n 80)
+    PAINS GINE
+      GNN 0.25 (rand 0.14, n 80); PG (logit) 0.39 (rand 0.14, n 80); SX fixed n.c. (n 7); Saliency 0.50 (rand 0.14, n 80); IG 0.41 (rand 0.14, n 80); IxG 0.36 (rand 0.14, n 80); EiG 0.60 (rand 0.14, n 80); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.51 (rand 0.14, n 80)
+    PAINS GCN
+      GNN 0.33 (rand 0.14, n 80); PG (logit) 0.63 (rand 0.14, n 80); SX fixed n.c. (n 7); Saliency 0.63 (rand 0.14, n 80); IG 0.48 (rand 0.14, n 80); IxG 0.58 (rand 0.14, n 80); EiG 0.60 (rand 0.14, n 80); SAME n.c. (n 0); GStarX n.c. (n 7); GNNShap 0.59 (rand 0.14, n 80)
+    Mutagenicity D-MPNN
+      GNN 0.37 (rand 0.14, n 1176); PG (logit) 0.29 (rand 0.14, n 1176); SX fixed 0.38 (rand 0.14, n 1176); Saliency 0.72 (rand 0.14, n 1176); IG 0.54 (rand 0.14, n 1176); IxG 0.58 (rand 0.14, n 1176); EiG 0.67 (rand 0.14, n 1176); SAME n.c. (n 8); GStarX 0.47 (rand 0.14, n 158); GNNShap 0.70 (rand 0.14, n 1176)
+    Mutagenicity GIN
+      GNN 0.30 (rand 0.14, n 258); PG (logit) 0.29 (rand 0.14, n 258); SX fixed 0.33 (rand 0.14, n 258); Saliency 0.74 (rand 0.14, n 258); IG 0.44 (rand 0.14, n 258); IxG 0.54 (rand 0.14, n 258); EiG 0.57 (rand 0.14, n 258); SAME n.c. (n 8); GStarX 0.49 (rand 0.14, n 158); GNNShap 0.68 (rand 0.14, n 258)
+    Mutagenicity GINE
+      GNN 0.18 (rand 0.14, n 258); PG (logit) 0.25 (rand 0.14, n 258); SX fixed 0.48 (rand 0.14, n 258); Saliency 0.69 (rand 0.14, n 258); IG 0.49 (rand 0.14, n 258); IxG 0.56 (rand 0.14, n 258); EiG 0.56 (rand 0.14, n 258); SAME n.c. (n 8); GStarX 0.33 (rand 0.14, n 158); GNNShap 0.50 (rand 0.14, n 258)
+    Mutagenicity GCN
+      GNN 0.47 (rand 0.14, n 258); PG (logit) 0.57 (rand 0.14, n 258); SX fixed 0.47 (rand 0.14, n 258); Saliency 0.79 (rand 0.14, n 258); IG 0.69 (rand 0.14, n 258); IxG 0.74 (rand 0.14, n 258); EiG 0.65 (rand 0.14, n 258); SAME n.c. (n 8); GStarX 0.49 (rand 0.14, n 158); GNNShap 0.72 (rand 0.14, n 258)
+    MUTAG-GT D-MPNN
+      GNN 0.26 (rand 0.14, n 8460); PG (logit) 0.43 (rand 0.14, n 8460); SX fixed 0.40 (rand 0.14, n 8460); Saliency 0.56 (rand 0.14, n 8460); IG 0.45 (rand 0.14, n 8460); IxG 0.57 (rand 0.14, n 8460); EiG 0.66 (rand 0.14, n 8460); SAME 0.35 (rand 0.15, n 37); GStarX 0.39 (rand 0.14, n 530); GNNShap 0.66 (rand 0.14, n 8460)
+
+F4 -- SUMMARY TABLE (rows = methods; per benchmark x model: above random / above best rule / sanity / stable across seeds / seconds per molecule)
+  written: summary_table.csv, summary_table.md
+
+F5 -- EiG: GEA at its own chosen size vs at the fixed top-25% budget (N1 molecules, all seeds)
+  own size is scored as a set; set GEA moves with set size, so it is also compared with a size-matched random-node null (20 random sets of the same size)
+    cell                 seeds  top-25%: GEA  - random-node              own size: GEA  - random-node             - size-matched null        own size / atoms  at cap
+    indole D-MPNN           10         0.717  +0.554 [+0.546, +0.563]            0.763  +0.601 [+0.590, +0.612]   +0.576 [+0.565, +0.587]         0.310 (0.30-0.33)    0.72
+    indole GIN               5         0.691  +0.528 [+0.513, +0.546]            0.665  +0.502 [+0.477, +0.532]   +0.497 [+0.475, +0.522]         0.272 (0.26-0.28)    0.58
+    indole GINE              5         0.663  +0.501 [+0.485, +0.517]            0.686  +0.524 [+0.500, +0.554]   +0.488 [+0.462, +0.521]         0.338 (0.32-0.36)    0.74
+    indole GCN               5         0.517  +0.355 [+0.342, +0.370]            0.502  +0.340 [+0.328, +0.354]   +0.303 [+0.291, +0.315]         0.344 (0.34-0.35)    0.62
+    PAINS D-MPNN            10         0.570  +0.407 [+0.392, +0.422]            0.628  +0.466 [+0.448, +0.483]   +0.427 [+0.411, +0.442]         0.332 (0.31-0.34)    0.51
+    PAINS GIN                5         0.492  +0.329 [+0.313, +0.346]            0.545  +0.383 [+0.367, +0.398]   +0.352 [+0.337, +0.368]         0.317 (0.31-0.33)    0.48
+    PAINS GINE               5         0.506  +0.343 [+0.330, +0.357]            0.567  +0.404 [+0.384, +0.422]   +0.360 [+0.337, +0.381]         0.339 (0.32-0.36)    0.56
+    PAINS GCN                5         0.280  +0.117 [+0.100, +0.135]            0.349  +0.186 [+0.172, +0.201]   +0.137 [+0.122, +0.153]         0.370 (0.36-0.38)    0.41
+    Mutagenicity D-MPNN     10         0.400  +0.278 [+0.258, +0.297]            0.353  +0.231 [+0.206, +0.256]   +0.221 [+0.196, +0.247]         0.323 (0.29-0.36)    0.48
+    Mutagenicity GIN         5         0.396  +0.274 [+0.219, +0.312]            0.456  +0.334 [+0.252, +0.398]   +0.334 [+0.255, +0.404]         0.261 (0.23-0.28)    0.34
+    Mutagenicity GINE        5         0.379  +0.256 [+0.204, +0.298]            0.454  +0.331 [+0.266, +0.388]   +0.330 [+0.267, +0.388]         0.269 (0.25-0.29)    0.33
+    Mutagenicity GCN         5         0.410  +0.287 [+0.240, +0.324]            0.421  +0.298 [+0.234, +0.354]   +0.294 [+0.232, +0.350]         0.291 (0.27-0.31)    0.34
+    MUTAG-GT D-MPNN         10         0.095  -0.050 [-0.064, -0.034]            0.084  -0.061 [-0.076, -0.043]   -0.076 [-0.090, -0.059]         0.291 (0.27-0.38)    0.34
+  own size / atoms: mean over seeds of the mean fraction (seed range); at cap: share of molecules where EiG chose the maximum number of bonds floor(0.3 x bonds)
+
+F6 -- EiG FIDELITY (NOT an independent check: EiG's search maximises Fid+ - Fid-) and GEA-only rankings
+  EiG Fid on the 100-molecule subsets, minus 20 random rankings, probability space (counts better/worse/n.s.); same numbers as N1.txt
+    indole D-MPNN       R2_fidp +0.420 [+0.382, +0.452] 10/0/0  R2_fidm -0.686 [-0.753, -0.602] 10/0/0  R3_fidp +0.274 [+0.153, +0.393] 7/1/2  R3_fidm -0.229 [-0.342, -0.126] 10/0/0
+    indole GIN          R2_fidp +0.035 [+0.024, +0.047] 5/0/0  R2_fidm +0.000 [-0.000, +0.000] 0/1/4  R3_fidp +0.316 [+0.267, +0.367] 5/0/0  R3_fidm -0.461 [-0.610, -0.292] 5/0/0
+    indole GINE         R2_fidp +0.205 [-0.050, +0.375] 4/1/0  R2_fidm -0.355 [-0.591, -0.150] 4/0/1  R3_fidp +0.194 [-0.093, +0.475] 3/2/0  R3_fidm -0.319 [-0.552, -0.128] 5/0/0
+    indole GCN          R2_fidp +0.065 [+0.055, +0.075] 5/0/0  R2_fidm -0.001 [-0.002, -0.000] 3/0/2  R3_fidp +0.232 [+0.192, +0.280] 5/0/0  R3_fidm +0.069 [+0.001, +0.152] 0/3/2
+    PAINS D-MPNN        R2_fidp +0.460 [+0.430, +0.489] 10/0/0  R2_fidm -0.436 [-0.522, -0.357] 10/0/0  R3_fidp +0.479 [+0.448, +0.510] 10/0/0  R3_fidm -0.485 [-0.515, -0.456] 10/0/0
+    PAINS GIN           R2_fidp -0.014 [-0.232, +0.113] 4/1/0  R2_fidm -0.005 [-0.035, +0.020] 0/3/2  R3_fidp +0.241 [+0.209, +0.277] 5/0/0  R3_fidm -0.264 [-0.427, -0.148] 5/0/0
+    PAINS GINE          R2_fidp +0.326 [+0.251, +0.390] 5/0/0  R2_fidm -0.170 [-0.272, -0.099] 5/0/0  R3_fidp +0.244 [+0.200, +0.283] 5/0/0  R3_fidm -0.239 [-0.298, -0.175] 5/0/0
+    PAINS GCN           R2_fidp +0.171 [+0.143, +0.198] 5/0/0  R2_fidm -0.049 [-0.120, +0.004] 1/0/4  R3_fidp +0.181 [+0.155, +0.207] 5/0/0  R3_fidm -0.087 [-0.116, -0.052] 4/0/1
+    Mutagenicity D-MPNN R2_fidp +0.435 [+0.382, +0.483] 10/0/0  R2_fidm -0.115 [-0.164, -0.068] 10/0/0  R3_fidp +0.555 [+0.524, +0.584] 10/0/0  R3_fidm -0.528 [-0.563, -0.490] 10/0/0
+    Mutagenicity GIN    R2_fidp +0.308 [+0.104, +0.493] 3/1/1  R2_fidm -0.216 [-0.434, -0.008] 4/0/1  R3_fidp +0.434 [+0.386, +0.480] 5/0/0  R3_fidm -0.646 [-0.740, -0.552] 5/0/0
+    Mutagenicity GINE   R2_fidp +0.452 [+0.385, +0.510] 5/0/0  R2_fidm -0.590 [-0.682, -0.497] 5/0/0  R3_fidp +0.454 [+0.421, +0.486] 5/0/0  R3_fidm -0.635 [-0.686, -0.575] 5/0/0
+    Mutagenicity GCN    R2_fidp +0.408 [+0.351, +0.464] 5/0/0  R2_fidm -0.263 [-0.325, -0.196] 5/0/0  R3_fidp +0.436 [+0.398, +0.474] 5/0/0  R3_fidm -0.752 [-0.798, -0.700] 5/0/0
+    MUTAG-GT D-MPNN     R2_fidp +0.051 [+0.023, +0.076] 6/0/4  R2_fidm -0.081 [-0.118, -0.043] 7/0/3  R3_fidp -0.029 [-0.051, -0.005] 1/5/4  R3_fidm +0.010 [-0.014, +0.034] 3/0/7
+
+  Rankings per cell. Fid: by Fid+ R2 (probability) minus random. GEA (1): by GEA minus random-node, each method on its own molecules (N1).
+  GEA (2): by mean GEA on a common set = the SAME L4 slice (25 molecules per seed, seeds 0-4), which every method covers
+    indole D-MPNN
+      Fid+ (R2) : IG > GNNShap > SX fixed > EiG > Saliency > PG (logit) > GStarX > SAME > GNN
+      GEA (1)   : EiG +0.554 > GNNShap +0.534 > SX fixed +0.491 > IG +0.434 > Saliency +0.383 > SAME +0.334 > PG (logit) +0.268 > IxG +0.212 > GNN +0.056 > GStarX +0.056
+      GEA (2)   : EiG 0.726 > GNNShap 0.703 > SX fixed 0.630 > IG 0.582 > Saliency 0.569 > SAME 0.498 > PG (logit) 0.367 > IxG 0.349 > GStarX 0.212 > GNN 0.202
+    indole GIN
+      Fid+ (R2) : GNNShap > IG > Saliency > EiG > GStarX > SAME > SX fixed > GNN > PG (logit)
+      GEA (1)   : EiG +0.528 > GNNShap +0.513 > SAME +0.421 > Saliency +0.351 > IG +0.347 > IxG +0.285 > SX fixed +0.211 > GStarX +0.054 > PG (logit) +0.012 > GNN -0.047
+      GEA (2)   : EiG 0.714 > GNNShap 0.689 > SAME 0.584 > Saliency 0.525 > IG 0.518 > IxG 0.450 > SX fixed 0.418 > GStarX 0.207 > PG (logit) 0.174 > GNN 0.114
+    indole GINE
+      Fid+ (R2) : SX fixed > IG > GNNShap > GNN > EiG > Saliency > SAME > GStarX > PG (logit)
+      GEA (1)   : EiG +0.501 > GNNShap +0.495 > SAME +0.392 > Saliency +0.381 > SX fixed +0.297 > IG +0.268 > IxG +0.204 > GStarX +0.046 > GNN -0.069 > PG (logit) -0.139
+      GEA (2)   : EiG 0.649 > GNNShap 0.646 > SAME 0.555 > Saliency 0.533 > SX fixed 0.445 > IG 0.436 > IxG 0.366 > GStarX 0.220 > GNN 0.103 > PG (logit) 0.021
+    indole GCN
+      Fid+ (R2) : GNNShap > EiG > IG > PG (logit) > GStarX > Saliency > GNN > SX fixed > SAME
+      GEA (1)   : EiG +0.355 > GNNShap +0.342 > SX fixed +0.291 > IxG +0.279 > Saliency +0.273 > IG +0.247 > PG (logit) +0.241 > SAME +0.221 > GStarX +0.037 > GNN -0.056
+      GEA (2)   : EiG 0.524 > GNNShap 0.509 > SX fixed 0.460 > IxG 0.446 > Saliency 0.422 > IG 0.414 > PG (logit) 0.403 > SAME 0.384 > GStarX 0.206 > GNN 0.114
+    PAINS D-MPNN
+      Fid+ (R2) : IG > EiG > SX fixed > GNNShap > Saliency > GNN > SAME > GStarX > PG (logit)
+      GEA (1)   : EiG +0.407 > GNNShap +0.328 > SX fixed +0.303 > SAME +0.282 > IG +0.207 > IxG +0.177 > Saliency +0.162 > GNN +0.074 > PG (logit) +0.042 > GStarX +0.040
+      GEA (2)   : EiG 0.591 > GNNShap 0.505 > SX fixed 0.477 > SAME 0.439 > IG 0.385 > IxG 0.347 > Saliency 0.343 > GNN 0.251 > PG (logit) 0.228 > GStarX 0.213
+    PAINS GIN
+      Fid+ (R2) : GStarX > SX fixed > GNNShap > Saliency > EiG > SAME > IG > PG (logit) > GNN
+      GEA (1)   : EiG +0.329 > Saliency +0.242 > GNNShap +0.205 > IG +0.197 > IxG +0.192 > SAME +0.190 > SX fixed +0.120 > GStarX +0.034 > PG (logit) +0.014 > GNN +0.007
+      GEA (2)   : EiG 0.466 > Saliency 0.385 > GNNShap 0.360 > IG 0.350 > SAME 0.347 > IxG 0.338 > SX fixed 0.263 > GStarX 0.214 > GNN 0.195 > PG (logit) 0.175
+    PAINS GINE
+      Fid+ (R2) : SX fixed > IG > GNNShap > EiG > Saliency > SAME > PG (logit) > GStarX > GNN
+      GEA (1)   : EiG +0.343 > SAME +0.334 > GNNShap +0.297 > Saliency +0.259 > SX fixed +0.228 > IG +0.212 > IxG +0.210 > PG (logit) +0.119 > GStarX +0.052 > GNN +0.002
+      GEA (2)   : EiG 0.527 > SAME 0.491 > GNNShap 0.469 > Saliency 0.424 > SX fixed 0.411 > IxG 0.395 > IG 0.388 > PG (logit) 0.295 > GStarX 0.218 > GNN 0.181
+    PAINS GCN
+      Fid+ (R2) : SX fixed > GStarX > Saliency > EiG > GNN > IG > GNNShap > PG (logit) > SAME
+      GEA (1)   : SX fixed +0.175 > EiG +0.117 > SAME +0.113 > GNNShap +0.112 > Saliency +0.099 > IG +0.087 > IxG +0.075 > GNN +0.070 > PG (logit) +0.052 > GStarX +0.013
+      GEA (2)   : SX fixed 0.318 > EiG 0.293 > Saliency 0.281 > GNNShap 0.279 > SAME 0.270 > IG 0.265 > IxG 0.253 > GNN 0.249 > PG (logit) 0.198 > GStarX 0.186
+    Mutagenicity D-MPNN
+      Fid+ (R2) : GNNShap > EiG > Saliency > GNN > SX fixed > IG > SAME > GStarX > PG (logit)
+      GEA (1)   : Saliency +0.349 > IG +0.334 > IxG +0.308 > GNNShap +0.299 > EiG +0.278 > GNN +0.255 > SAME +0.199 > SX fixed +0.141 > GStarX +0.125 > PG (logit) +0.009
+      GEA (2)   : IG 0.524 > Saliency 0.512 > IxG 0.506 > GNNShap 0.451 > EiG 0.424 > GNN 0.401 > SAME 0.326 > GStarX 0.290 > SX fixed 0.288 > PG (logit) 0.113
+    Mutagenicity GIN
+      Fid+ (R2) : GStarX > GNNShap > GNN > SX fixed > SAME > EiG > IG > Saliency > PG (logit)
+      GEA (1)   : GNNShap +0.297 > EiG +0.274 > Saliency +0.262 > SAME +0.258 > IxG +0.195 > GStarX +0.162 > SX fixed +0.099 > IG +0.073 > GNN +0.039 > PG (logit) -0.071
+      GEA (2)   : GNNShap 0.451 > EiG 0.425 > Saliency 0.422 > SAME 0.387 > IxG 0.338 > GStarX 0.312 > IG 0.260 > SX fixed 0.239 > GNN 0.163 > PG (logit) 0.063
+    Mutagenicity GINE
+      Fid+ (R2) : IG > Saliency > GNNShap > EiG > GStarX > SX fixed > SAME > GNN > PG (logit)
+      GEA (1)   : Saliency +0.308 > GNNShap +0.287 > IxG +0.285 > EiG +0.256 > GStarX +0.234 > IG +0.201 > SAME +0.188 > SX fixed +0.126 > GNN +0.080 > PG (logit) -0.077
+      GEA (2)   : Saliency 0.449 > GNNShap 0.440 > IxG 0.432 > EiG 0.414 > GStarX 0.352 > IG 0.341 > SAME 0.317 > SX fixed 0.259 > GNN 0.202 > PG (logit) 0.052
+    Mutagenicity GCN
+      Fid+ (R2) : Saliency > IG > SX fixed > EiG > GNNShap > GNN > PG (logit) > SAME > GStarX
+      GEA (1)   : PG (logit) +0.339 > Saliency +0.336 > GNNShap +0.293 > EiG +0.287 > IxG +0.205 > IG +0.167 > GNN +0.137 > SAME +0.113 > SX fixed +0.059 > GStarX +0.017
+      GEA (2)   : Saliency 0.495 > PG (logit) 0.493 > GNNShap 0.428 > EiG 0.425 > IxG 0.345 > IG 0.313 > GNN 0.291 > SAME 0.244 > SX fixed 0.196 > GStarX 0.186
+    MUTAG-GT D-MPNN
+      Fid+ (R2) : SX fixed > IG > GNNShap > Saliency > EiG > SAME > GNN > GStarX > PG (logit)
+      GEA (1)   : GNN +0.213 > GStarX +0.109 > PG (logit) +0.065 > IG -0.023 > EiG -0.050 > SX fixed -0.077 > SAME -0.097 > GNNShap -0.106 > IxG -0.114 > Saliency -0.123
+      GEA (2)   : GNN 0.347 > GStarX 0.229 > PG (logit) 0.187 > IG 0.156 > EiG 0.096 > SX fixed 0.079 > SAME 0.050 > GNNShap 0.042 > IxG 0.026 > Saliency 0.020

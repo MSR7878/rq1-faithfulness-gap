@@ -1,0 +1,27 @@
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutagenicity_dmpnn_s0 --shard 0/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutagenicity_dmpnn_s0 --shard 1/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutagenicity_dmpnn_s0 --shard 2/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutagenicity_dmpnn_s0 --shard 3/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutagenicity_dmpnn_s0 --shard 4/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/bxaic_indole_s0 --shard 0/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/bxaic_indole_s0 --shard 1/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/bxaic_indole_s0 --shard 2/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/bxaic_indole_s0 --shard 3/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/bxaic_indole_s0 --shard 4/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutag_graphxai_s0 --shard 0/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutag_graphxai_s0 --shard 1/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutag_graphxai_s0 --shard 2/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutag_graphxai_s0 --shard 3/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl same --level L4 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/same/mutag_graphxai_s0 --shard 4/5 --budgets k
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gstarx/mutagenicity_dmpnn_s0 --shard 0/2
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gstarx --level L2 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gstarx/mutagenicity_dmpnn_s0 --shard 1/2
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gstarx/bxaic_indole_s0 --shard 0/2
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gstarx --level L2 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gstarx/bxaic_indole_s0 --shard 1/2
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gstarx/mutag_graphxai_s0 --shard 0/2
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gstarx --level L2 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gstarx/mutag_graphxai_s0 --shard 1/2
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl gnnshap --level L0 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gnnshap/mutagenicity_dmpnn_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl gnnshap --level L0 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gnnshap/bxaic_indole_s0 --shard 0/1
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl gnnshap --level L0 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/gnnshap/mutag_graphxai_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit mutagenicity_dmpnn_s0 --expl eig --level L0 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/eig/mutagenicity_dmpnn_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit bxaic_indole_s0 --expl eig --level L0 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/eig/bxaic_indole_s0 --shard 0/1
+$PY -u -m src.analysis.tier5_explain --unit mutag_graphxai_s0 --expl eig --level L0 --set n1 --tag T5 --first 20 --out runs/rq1_tier5/F/det/eig/mutag_graphxai_s0 --shard 0/1
