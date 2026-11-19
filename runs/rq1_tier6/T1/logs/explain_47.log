@@ -1,0 +1,19 @@
+/home/manvendra.singh/rq1-faithfulness-gap/third_party/GStarX/utils.py:298: UserWarning: 'data.DataLoader' is deprecated, use 'loader.DataLoader' instead
+  masked_dataloader = DataLoader(
+mutag_graphxai_s8 gstarx T5 mol 3: N=19 66.0s
+mutag_graphxai_s8 gstarx T5 mol 20: N=18 65.9s
+mutag_graphxai_s8 gstarx T5 mol 32: N=23 82.1s
+mutag_graphxai_s8 gstarx T5 mol 42: N=19 67.6s
+mutag_graphxai_s8 gstarx T5 mol 55: N=17 61.5s
+mutag_graphxai_s8 gstarx T5 mol 64: N=16 57.0s
+mutag_graphxai_s8 gstarx T5 mol 77: N=16 56.9s
+mutag_graphxai_s8 gstarx T5 mol 93: N=19 69.5s
+mutag_graphxai_s8 gstarx T5 mol 104: N=17 61.0s
+mutag_graphxai_s8 gstarx T5 mol 116: N=21 76.3s
+mutag_graphxai_s8 gstarx T5 mol 128: N=14 49.6s
+mutag_graphxai_s8 gstarx T5 mol 140: N=11 38.2s
+mutag_graphxai_s8 gstarx T5 mol 153: N=12 42.6s
+mutag_graphxai_s8 gstarx T5 mol 161: N=24 85.6s
+mutag_graphxai_s8 gstarx T5 mol 170: N=24 85.2s
+mutag_graphxai_s8 gstarx T5 mol 180: N=11 39.8s
+mutag_graphxai_s8 gstarx T5 mol 187: N=16 53.4s

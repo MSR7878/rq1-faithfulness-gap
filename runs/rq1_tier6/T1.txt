@@ -1,0 +1,30 @@
+T1 -- MUTAG-GT D-MPNN, 10 seeds: share of the chosen atoms that are aromatic (top-k, random ties, 20 orders), minus 20 random-connected sets of the same size
+  molecules: each method's molecules with 0 < |aromatic scaffold| < N (the 14 without aromatic atoms are left out)
+  GStarX / SAME: seeds 0-4 = Tier 5 N1 runs, seeds 5-9 = new runs (runs/rq1_tier6/T1/expl). counts = higher/lower/n.s., Holm per seed = 6 (EiG own size not in the family)
+
+  [overlap] share of chosen atoms that are aromatic, minus random-connected sets of the same size
+  method          set    mean share null share           difference [95% CI]   counts   molecules per seed
+  EiG             all         0.691      0.732       -0.042 [-0.080, -0.001]    2/2/6   [174, 174, 174, 174, 174, 174, 174, 174, 174, 174]
+  GNNShap         all         0.848      0.732       +0.115 [+0.092, +0.140]   10/0/0   [174, 174, 174, 174, 174, 174, 174, 174, 174, 174]
+  SAME            all         0.801      0.730       +0.071 [+0.029, +0.112]    2/0/8   [24, 23, 23, 22, 24, 25, 20, 23, 23, 22]
+  GStarX          all         0.497      0.735       -0.238 [-0.300, -0.172]    0/9/1   [92, 91, 94, 94, 94, 96, 88, 91, 93, 92]
+  Saliency        all         0.735      0.732       +0.003 [-0.030, +0.038]    4/0/6   [174, 174, 174, 174, 174, 174, 174, 174, 174, 174]
+  IG              all         0.660      0.732       -0.073 [-0.157, +0.006]    3/4/3   [174, 174, 174, 174, 174, 174, 174, 174, 174, 174]
+  EiG (own size)  all         0.751      0.742       +0.009 [-0.022, +0.038]        -   [174, 174, 174, 174, 174, 174, 174, 174, 174, 174]
+  EiG             test        0.700      0.736       -0.036 [-0.113, +0.030]    0/1/9   [29, 27, 26, 25, 28, 26, 27, 26, 27, 28]
+  GNNShap         test        0.849      0.736       +0.113 [+0.068, +0.158]    4/0/6   [29, 27, 26, 25, 28, 26, 27, 26, 27, 28]
+  SAME            test        0.721      0.700       +0.021 [-0.107, +0.141]   0/0/10   [5, 3, 1, 1, 4, 6, 2, 3, 2, 4]  (small)
+  GStarX          test        0.507      0.744       -0.238 [-0.324, -0.148]    0/5/5   [18, 13, 15, 13, 16, 15, 15, 12, 10, 14]  (small)
+  Saliency        test        0.739      0.736       +0.002 [-0.049, +0.054]    1/0/9   [29, 27, 26, 25, 28, 26, 27, 26, 27, 28]
+  IG              test        0.678      0.736       -0.058 [-0.145, +0.025]    0/3/7   [29, 27, 26, 25, 28, 26, 27, 26, 27, 28]
+  EiG (own size)  test        0.759      0.750       +0.009 [-0.045, +0.063]        -   [29, 27, 26, 25, 28, 26, 27, 26, 27, 28]
+
+  mean set size: top-k 4.18 atoms; EiG own size 5.06 atoms
+
+  for reference, Tier 4 L4 (runs/rq1_tier4/L4.txt, not recomputed):
+    SX fixed      all         0.783      0.726       +0.056 [+0.014, +0.094]    6/0/4
+    GNN           all         0.426      0.733       -0.306 [-0.417, -0.172]    2/8/0
+    IG            all         0.660      0.733       -0.073 [-0.155, +0.004]    3/4/3
+    SX fixed      test        0.804      0.725       +0.079 [-0.000, +0.142]    5/0/5
+    GNN           test        0.445      0.744       -0.299 [-0.421, -0.161]    1/8/1
+    IG            test        0.678      0.744       -0.066 [-0.150, +0.014]    0/3/7
