@@ -313,6 +313,25 @@ def item_T6():
                     P(f"  {blab[(b, r)]:<26}{p_['mean']:>11.3f}{p_['null']:>10.3f}{fmt_ci(*p_['diff']):>29}{p_['counts']:>8}"
                       f"{m_['null']:>12.3f}{m_['mean']:>10.3f}{fmt_ci(*m_['diff']):>29}{m_['counts']:>8}")
                     rep[f"{space}|{nl}|{b}|{r}"] = {"fidp": p_, "fidm": m_}
+    # post hoc (added after seeing the skip count above; not in the PLAN; P-T2 is not re-judged on it)
+    Y = [load(f"{T6}/T2/{u}.npz") for u in T2_UNITS]
+    for y, z in zip(Y, Z):
+        if list(y["b__mols"]) != list(z["mol_idx"]):
+            raise RuntimeError("T2 and T6 molecule orders differ")
+    inf = [y["b__nrem"] > z["group_size"] for y, z in zip(Y, Z)]
+    P(f"\n  [post hoc, not in the PLAN] T2(b) on the molecules where atoms other than the group remain after hiding the scaffold "
+      f"({int(inf[0].sum())} of {len(inf[0])}; on the others every chosen set is all GT, so every method equals random-node)")
+    P("  GEA minus random-node, primary k; counts Holm per seed = 5 methods. P-T2 is judged on the PLAN cells only (see T2.txt).")
+    rep["T2b_informative"] = {}
+    for rule in ("R1", "R2"):
+        rows = {}
+        for w in T2_METHODS:
+            r_, n_ = [], []
+            for y, keep in zip(Y, inf):
+                a_, b_ = pairs(y[f"b__{rule}__{w}__gea_p"], y["b__rn_p"], keep); r_.append(a_); n_.append(b_)
+            rows[w] = (r_, n_)
+        res = table(rows, T2_METHODS); rep["T2b_informative"][rule] = res
+        P(f"  (b)-{rule}: " + "; ".join(f"{SH[w]} {fmt_ci(*res[w]['diff'])} {res[w]['counts']}" for w in T2_METHODS))
     save("T6", rep)
 
 
