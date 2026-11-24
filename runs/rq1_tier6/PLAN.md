@@ -120,3 +120,35 @@ Holm per seed and condition: 5 methods = 5 ((a), (b)-R1, (b)-R2; primary and sec
 ## Output
 
 runs/rq1_tier6/T1..T4/, T1.txt ... T4.txt (+ .json), FINAL_REPORT.md, DONE.
+
+## Addendum, 2026-11-24 (written before these numbers are computed; T1, T3 and T4 numbers were known, T2 numbers were not)
+
+Requested after the runs finished. Existing outputs only: no new explainer runs. No prediction is added and P-T2 is unchanged.
+
+**T2 report additions.**
+- The P-T2 table shows, for each of the 6 cells, the "before" next to the "after". "Before" = Tier 5 N1, full graph, all 188
+  molecules (quoted from runs/rq1_tier5/N1.txt and recomputed here), plus the full graph on the same molecules as the "after"
+  (for (a) this is the same number; for (b) the 174 molecules).
+- How often the predicted class changes when the scaffold is hidden: per rule, per seed, and by direction, from the stored
+  pred_full / pred_hidden of the T2 runs. The 5 methods' stored predictions are checked to agree.
+
+**T5. What the chosen atoms are (MUTAG-GT D-MPNN, 10 seeds, all 188 molecules, full graph).**
+- Methods: EiG, GNNShap (N1 runs), GNNExplainer (stored), SX fixed (Tier 2 S), IG, Saliency (Tier 2 G), and random-node.
+- Chosen atoms = the top-k set, k = max(1, floor(0.25 N)), random ties (20 orders, stream "<unit>|<method>|T6comp").
+- Each chosen set is split into (i) ground-truth atoms, (ii) aromatic non-GT atoms, (iii) other non-GT atoms; (iii) is split by
+  element (C / N / O / other = F, I, Cl, Br; one-hot column of x). Also: the share of (iii) atoms bonded to a GT atom.
+- Number = share of the chosen atoms in each part (averaged over molecules). Random-node = the exact expected share of a
+  uniformly random k-set (the part's share of the molecule's atoms).
+- Main rows: method minus random-node, with the hierarchical bootstrap CI and per-seed Wilcoxon + Holm (6 methods per part).
+
+**T6. Does the model need the nitro / amino group once the rings are hidden? (Tier 4 L4 / Part G style test; forward passes only.)**
+- MUTAG-GT D-MPNN, 10 seeds, the 174 molecules with an aromatic scaffold. Group = all GT atoms of the molecule (union of the
+  NO2 and NH2 matches).
+- Base graph: the scaffold hidden with R1 (induced graph of the remaining atoms) or R2 (scaffold rows of x set to 0). In the base
+  graph, the group (or a null set) is hidden with the same rule: necessity = group hidden (Fid+), sufficiency = only the group kept
+  among the remaining atoms (Fid-). Target = the predicted class of the base graph. Logit margin (probability also reported).
+- Nulls: 20 random-connected sets (connected in the graph of the remaining atoms) and 20 random-node sets of the group's size,
+  drawn from the remaining atoms; rng seed [86600, crc32("<unit>|<rule>"), mol].
+- Reference ("before"): the same test on the full graph (pool = all atoms), R1 and R2.
+- Molecules where the group is all the remaining atoms are skipped and counted.
+- Holm per seed, space, null and base (full graph, scaffold hidden): 2 rules x {Fid+, Fid-} = 4.
