@@ -1,0 +1,36 @@
+T5 -- WHAT THE CHOSEN ATOMS ARE: MUTAG-GT D-MPNN, 10 seeds, all 188 molecules, full graph (PLAN addendum 2026-11-24)
+  chosen = top-k, k = max(1, floor(0.25 N)), random ties (20 orders). Share of the chosen atoms in each part, averaged over molecules.
+  (i) GT = nitro / amino atoms; (ii) aromatic non-GT; (iii) other non-GT, split by element and by 'bonded to a GT atom'.
+  random-node = exact expected share of a random k-set (the part's share of the molecule). No GT atom is aromatic, so (i)+(ii)+(iii) = 1.
+  mean k = 4.11 atoms; molecules per seed [188, 188, 188, 188, 188, 188, 188, 188, 188, 188]
+
+  [shares] mean share of the chosen atoms (mean over seeds); the (iii) columns C ... next to GT are parts of (iii)
+  method             (i) GT   (ii) arom (iii) other           C           N           O   F/I/Cl/Br  next to GT
+  EiG                 0.150       0.639       0.211       0.122       0.022       0.018       0.049       0.007
+  GNNShap             0.068       0.785       0.148       0.102       0.022       0.009       0.015       0.013
+  GNN                 0.484       0.395       0.121       0.070       0.013       0.025       0.013       0.008
+  SX fixed            0.111       0.730       0.159       0.106       0.032       0.009       0.013       0.008
+  IG                  0.218       0.611       0.172       0.112       0.025       0.015       0.020       0.008
+  Saliency            0.049       0.680       0.271       0.137       0.040       0.033       0.060       0.006
+  random-node         0.252       0.620       0.129       0.088       0.013       0.014       0.014       0.008
+
+  [mix of (iii)] element mix of the 'other non-GT' chosen atoms (share of (iii), from the means above)
+  method              C       N       O  F/I/Cl/Br  next to GT
+  EiG              0.58    0.10    0.09       0.23        0.03
+  GNNShap          0.69    0.15    0.06       0.10        0.08
+  GNN              0.58    0.10    0.21       0.11        0.07
+  SX fixed         0.66    0.20    0.06       0.08        0.05
+  IG               0.65    0.15    0.09       0.12        0.04
+  Saliency         0.51    0.15    0.12       0.22        0.02
+  random-node      0.68    0.10    0.11       0.10        0.06
+
+  [vs random] method share minus random-node share, hierarchical bootstrap 95% CI; counts = higher/lower/n.s., Holm per seed and part = 6 methods
+  part                                       EiG                          GNNShap                              GNN                         SX fixed                               IG                         Saliency
+  (i) GT         -0.102 [-0.121, -0.079]  0/10/0  -0.184 [-0.202, -0.166]  0/10/0  +0.233 [+0.114, +0.332]   8/2/0  -0.140 [-0.171, -0.109]  0/10/0  -0.034 [-0.108, +0.038]   4/6/0  -0.202 [-0.214, -0.188]  0/10/0
+  (ii) arom      +0.020 [-0.017, +0.058]   2/1/7  +0.165 [+0.142, +0.188]  10/0/0  -0.225 [-0.330, -0.100]   2/8/0  +0.110 [+0.075, +0.144]   9/0/1  -0.009 [-0.083, +0.064]   4/3/3  +0.060 [+0.030, +0.094]   6/0/4
+  (iii) other    +0.082 [+0.051, +0.113]   7/0/3  +0.019 [+0.001, +0.039]   1/1/8  -0.008 [-0.020, +0.006]   1/1/8  +0.030 [+0.015, +0.044]   3/0/7  +0.043 [+0.020, +0.064]   6/0/4  +0.142 [+0.113, +0.169]  10/0/0
+  C              +0.034 [+0.002, +0.066]   7/2/1  +0.015 [-0.003, +0.031]   1/1/8  -0.017 [-0.027, -0.008]   0/5/5  +0.018 [+0.001, +0.033]   3/1/6  +0.024 [-0.001, +0.050]   5/2/3  +0.049 [+0.023, +0.074]   8/1/1
+  N              +0.008 [+0.003, +0.013]   5/0/5  +0.008 [+0.004, +0.013]   3/0/7  -0.001 [-0.004, +0.003]  0/0/10  +0.018 [+0.008, +0.029]   6/0/4  +0.012 [+0.003, +0.021]   3/0/7  +0.026 [+0.018, +0.035]   9/0/1
+  O              +0.004 [-0.000, +0.009]   0/2/8  -0.005 [-0.008, -0.002]   0/5/5  +0.011 [+0.004, +0.018]   5/1/4  -0.005 [-0.008, -0.001]   0/5/5  +0.001 [-0.005, +0.007]   0/3/7  +0.019 [+0.013, +0.026]   6/0/4
+  F/I/Cl/Br      +0.036 [+0.028, +0.043]   8/0/2  +0.001 [-0.004, +0.006]   0/1/9  -0.000 [-0.004, +0.004]  0/0/10  -0.001 [-0.008, +0.007]   1/4/5  +0.006 [-0.004, +0.019]   3/2/5  +0.047 [+0.039, +0.054]  10/0/0
+  next to GT     -0.001 [-0.005, +0.002]   0/5/5  +0.005 [+0.001, +0.008]  0/0/10  +0.000 [-0.003, +0.004]   0/3/7  +0.000 [-0.002, +0.003]   0/1/9  -0.000 [-0.003, +0.003]   0/3/7  -0.002 [-0.005, +0.001]   0/6/4
