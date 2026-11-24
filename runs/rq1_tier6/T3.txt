@@ -1,0 +1,35 @@
+T3 -- FULL-RESET SANITY CHECK (as N2): GEA(trained) - GEA(full reset), the unit's 100-molecule subset, seeds 0-4
+  counts = trained better/worse/n.s., Holm per seed = 4 methods. Passes = CI entirely above 0.
+  Spearman = trained vs reset atom scores (mean over molecules and seeds); Jaccard = trained vs reset top-k sets
+
+  PAINS D-MPNN: trained acc [0.973, 0.973, 0.981, 0.979, 0.975], AUROC [0.996, 0.996, 0.998, 0.997, 0.996]
+                reset acc [0.671, 0.329, 0.341, 0.426, 0.671], AUROC [0.549, 0.479, 0.476, 0.537, 0.525], predicted positive [0.0, 1.0, 0.98, 0.79, 0.0]
+  method      trained   reset      trained - reset [95% CI]  counts  Spearman  Jaccard   passes
+  EiG           0.586   0.248       +0.339 [+0.304, +0.374]   5/0/0      0.12     0.23   yes
+  GNNShap       0.509   0.238       +0.272 [+0.226, +0.322]   5/0/0      0.18     0.25   yes
+  Saliency      0.321   0.267       +0.054 [+0.010, +0.095]   2/0/3     -0.10     0.14   yes
+  IG            0.369   0.183       +0.186 [+0.145, +0.224]   5/0/0      0.07     0.18   yes
+
+  indole GCN: trained acc [0.94, 0.938, 0.95, 0.946, 0.941], AUROC [0.98, 0.979, 0.985, 0.983, 0.98]
+                reset acc [0.632, 0.369, 0.369, 0.37, 0.368], AUROC [0.33, 0.465, 0.51, 0.608, 0.626], predicted positive [0.0, 1.0, 0.95, 1.0, 1.0]
+  method      trained   reset      trained - reset [95% CI]  counts  Spearman  Jaccard   passes
+  EiG           0.521   0.178       +0.343 [+0.275, +0.398]   5/0/0      0.02     0.16   yes
+  GNNShap       0.506   0.169       +0.337 [+0.292, +0.385]   5/0/0     -0.05     0.14   yes
+  Saliency      0.437   0.224       +0.213 [+0.157, +0.266]   5/0/0      0.27     0.20   yes
+  IG            0.416   0.186       +0.230 [+0.124, +0.326]   4/0/1      0.14     0.22   yes
+
+  PAINS GCN: trained acc [0.854, 0.849, 0.844, 0.843, 0.853], AUROC [0.92, 0.916, 0.912, 0.912, 0.92]
+                reset acc [0.67, 0.329, 0.361, 0.33, 0.329], AUROC [0.502, 0.537, 0.467, 0.454, 0.443], predicted positive [0.0, 1.0, 0.94, 1.0, 1.0]
+  method      trained   reset      trained - reset [95% CI]  counts  Spearman  Jaccard   passes
+  EiG           0.287   0.177       +0.110 [+0.058, +0.163]   4/0/1     -0.07     0.16   yes
+  GNNShap       0.271   0.166       +0.105 [+0.060, +0.157]   4/0/1     -0.00     0.16   yes
+  Saliency      0.273   0.171       +0.102 [+0.058, +0.143]   4/0/1     -0.09     0.15   yes
+  IG            0.256   0.204       +0.051 [+0.008, +0.095]   2/0/3     -0.03     0.19   yes
+
+  Mutagenicity GCN: trained acc [0.989, 0.986, 0.975, 0.972, 0.977], AUROC [0.995, 0.999, 0.986, 0.987, 0.989]
+                reset acc [0.342, 0.362, 0.616, 0.37, 0.638], AUROC [0.304, 0.31, 0.636, 0.563, 0.386], predicted positive [0.5, 1.0, 0.07, 0.99, 0.0]
+  method      trained   reset      trained - reset [95% CI]  counts  Spearman  Jaccard   passes
+  EiG           0.405   0.218       +0.187 [+0.092, +0.282]   3/0/2      0.24     0.29   yes
+  GNNShap       0.407   0.234       +0.173 [+0.081, +0.258]   4/0/1      0.26     0.33   yes
+  Saliency      0.451   0.059       +0.393 [+0.337, +0.454]   5/0/0      0.17     0.17   yes
+  IG            0.283   0.117       +0.166 [+0.063, +0.275]   4/0/1      0.17     0.23   yes

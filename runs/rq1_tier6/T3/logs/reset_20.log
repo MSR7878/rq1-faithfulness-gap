@@ -1,0 +1,1 @@
+mutagenicity_gcn_s4 full reset: 11 modules, 10 parameter tensors all changed; test acc 0.638 auroc 0.386 (trained 0.977 / 0.989)

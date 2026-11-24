@@ -1,0 +1,1 @@
+bxaic_indole_gcn_s2 full reset: 11 modules, 10 parameter tensors all changed; test acc 0.369 auroc 0.510 (trained 0.950 / 0.985)

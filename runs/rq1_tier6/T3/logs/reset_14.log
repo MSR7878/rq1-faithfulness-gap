@@ -1,0 +1,1 @@
+bxaic_PAINS_gcn_s3 full reset: 11 modules, 10 parameter tensors all changed; test acc 0.330 auroc 0.454 (trained 0.843 / 0.912)

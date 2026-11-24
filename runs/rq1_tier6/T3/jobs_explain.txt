@@ -1,0 +1,60 @@
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s1 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s2 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s3 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s4 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s1 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s2 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s3 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s4 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s1 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s2 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s3 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s4 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s0 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s1 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s2 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s3 --expl gnnshap
+PATH=/opt/anaconda/pkgs/ninja-1.10.2-hff7bd54_1/bin:$PATH CC=gcc-9 CXX=g++-9 TORCH_CUDA_ARCH_LIST=7.0 $PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s4 --expl gnnshap
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s0 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s1 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s2 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s3 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s4 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s0 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s1 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s2 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s3 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s4 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s0 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s1 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s2 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s3 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s4 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s0 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s1 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s2 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s3 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s4 --expl eig
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s0 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s1 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s2 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s3 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_s4 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s0 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s1 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s2 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s3 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_indole_gcn_s4 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s0 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s1 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s2 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s3 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit bxaic_PAINS_gcn_s4 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s0 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s1 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s2 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s3 --expl grad
+$PY -u -m src.analysis.tier6_explain t3 --unit mutagenicity_gcn_s4 --expl grad
