@@ -1,0 +1,15 @@
+mutag_graphxai_s8 R2 sx_fixed mol 2: N=13 rem=3 8.1s
+mutag_graphxai_s8 R2 sx_fixed mol 16: N=11 rem=5 13.1s
+mutag_graphxai_s8 R2 sx_fixed mol 28: N=23 rem=11 25.9s
+mutag_graphxai_s8 R2 sx_fixed mol 40: N=17 rem=5 27.9s
+mutag_graphxai_s8 R2 sx_fixed mol 53: N=19 rem=7 68.2s
+mutag_graphxai_s8 R2 sx_fixed mol 65: N=16 rem=4 30.2s
+mutag_graphxai_s8 R2 sx_fixed mol 77: N=16 rem=4 17.4s
+mutag_graphxai_s8 R2 sx_fixed mol 91: N=19 rem=7 9.7s
+mutag_graphxai_s8 R2 sx_fixed mol 103: N=23 rem=7 167.2s
+mutag_graphxai_s8 R2 sx_fixed mol 115: N=10 rem=4 5.4s
+mutag_graphxai_s8 R2 sx_fixed mol 128: N=14 rem=8 9.0s
+mutag_graphxai_s8 R2 sx_fixed mol 141: N=20 rem=8 97.9s
+mutag_graphxai_s8 R2 sx_fixed mol 157: N=20 rem=8 77.0s
+mutag_graphxai_s8 R2 sx_fixed mol 169: N=17 rem=3 72.6s
+mutag_graphxai_s8 R2 sx_fixed mol 183: N=22 rem=6 163.2s

@@ -1,0 +1,100 @@
+T2 -- MUTAG-GT D-MPNN, 10 seeds: GEA minus random-node when the aromatic rings are not available
+  counts = better/worse/n.s. vs random-node, Holm per seed and condition = 5 methods
+
+  [before] full graph, all 188 molecules (= Tier 5 N1 protocol)
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.095   0.145         -0.050 [-0.064, -0.035]   below         0/10/0
+  GNNShap      0.040   0.145         -0.106 [-0.116, -0.096]   below         0/10/0
+  GNN          0.359   0.145         +0.213 [+0.110, +0.300]   above          8/2/0
+  SX fixed     0.068   0.145         -0.077 [-0.101, -0.053]   below         0/10/0
+  IG           0.122   0.145         -0.023 [-0.070, +0.022]   includes 0     3/6/1
+
+  [before] full graph, the 174 molecules with an aromatic scaffold
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.085   0.144         -0.060 [-0.077, -0.043]   below         0/10/0
+  GNNShap      0.039   0.144         -0.106 [-0.116, -0.096]   below         0/10/0
+  GNN          0.371   0.144         +0.226 [+0.121, +0.321]   above          8/2/0
+  SX fixed     0.069   0.144         -0.076 [-0.101, -0.049]   below         0/10/0
+  IG           0.123   0.144         -0.022 [-0.066, +0.024]   includes 0     3/6/1
+
+  (a) the 14 molecules with no aromatic atom (the same molecules in every seed; full graph)
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.225   0.155         +0.070 [-0.015, +0.162]   includes 0     2/0/8
+  GNNShap      0.048   0.155         -0.107 [-0.140, -0.066]   below          1/5/4
+  GNN          0.205   0.155         +0.050 [+0.008, +0.094]   above         0/0/10
+  SX fixed     0.057   0.155         -0.098 [-0.146, -0.036]   below          0/7/3
+  IG           0.117   0.155         -0.038 [-0.094, +0.026]   includes 0     2/2/6
+
+  (b) scaffold hidden, 174 molecules; remaining atoms: mean 5.9 (min 3, max 14)
+      primary k = max(1, floor(0.25 n_remaining)): k = 1 for 78% of molecules; random-node GEA on the remaining atoms: mean 0.221
+      secondary k = min(n_remaining, floor(0.25 N)): mean k 3.95; random-node GEA mean 0.634
+
+  (b)-R1, primary k
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.171   0.221         -0.050 [-0.071, -0.026]   below          0/6/4
+  GNNShap      0.208   0.221         -0.013 [-0.027, +0.004]   includes 0     1/0/9
+  GNN          0.227   0.221         +0.006 [-0.002, +0.016]   includes 0     7/0/3
+  SX fixed     0.196   0.221         -0.024 [-0.046, -0.001]   below          2/3/5
+  IG           0.217   0.221         -0.004 [-0.019, +0.016]   includes 0     2/1/7
+
+  (b)-R1, secondary k
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.578   0.634         -0.056 [-0.081, -0.027]   below          0/6/4
+  GNNShap      0.591   0.634         -0.043 [-0.065, -0.018]   below          1/7/2
+  GNN          0.635   0.634         +0.001 [-0.009, +0.012]   includes 0     0/1/9
+  SX fixed     0.623   0.634         -0.011 [-0.020, -0.002]   below          1/4/5
+  IG           0.634   0.634         +0.000 [-0.022, +0.026]   includes 0     2/3/5
+      R1: predicted class changed by hiding the scaffold in 62.0% of molecules (mean over seeds)
+      R1 EiG       errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 0.02 s per molecule
+      R1 GNNShap   errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 0.05 s per molecule
+      R1 GNN       errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 2.90 s per molecule
+      R1 SX fixed  errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 0.52 s per molecule
+      R1 IG        errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 0.02 s per molecule
+
+  (b)-R2, primary k
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.177   0.221         -0.044 [-0.056, -0.029]   below          0/8/2
+  GNNShap      0.191   0.221         -0.030 [-0.052, -0.007]   below          2/4/4
+  GNN          0.234   0.221         +0.013 [-0.003, +0.029]   includes 0     8/0/2
+  SX fixed     0.200   0.221         -0.021 [-0.041, -0.002]   below          0/5/5
+  IG           0.205   0.221         -0.016 [-0.035, +0.002]   includes 0     3/2/5
+
+  (b)-R2, secondary k
+  method         GEA    null      GEA - random-node [95% CI]   category      counts
+  EiG          0.606   0.634         -0.028 [-0.042, -0.013]   below          0/7/3
+  GNNShap      0.582   0.634         -0.052 [-0.070, -0.032]   below          0/9/1
+  GNN          0.649   0.634         +0.015 [-0.005, +0.036]   includes 0     5/1/4
+  SX fixed     0.628   0.634         -0.006 [-0.031, +0.020]   includes 0     2/4/4
+  IG           0.628   0.634         -0.006 [-0.026, +0.013]   includes 0     1/3/6
+      R2: predicted class changed by hiding the scaffold in 33.3% of molecules (mean over seeds)
+      R2 EiG       errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 0.05 s per molecule
+      R2 GNNShap   errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 1.03 s per molecule
+      R2 GNN       errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 2.87 s per molecule
+      R2 SX fixed  errors   0; scores on the remaining atoms all tied in 23.0% of molecules; 84.43 s per molecule
+      R2 IG        errors   0; scores on the remaining atoms all tied in 0.0% of molecules; 0.02 s per molecule
+
+  P-T2 (EiG and GNNShap above random-node in (a), (b)-R1 and (b)-R2, primary k; all 6 needed):
+    EiG      a   +0.070 [-0.015, +0.162]  -> not above
+    GNNShap  a   -0.107 [-0.140, -0.066]  -> not above
+    EiG      R1  -0.050 [-0.071, -0.026]  -> not above
+    GNNShap  R1  -0.013 [-0.027, +0.004]  -> not above
+    EiG      R2  -0.044 [-0.056, -0.029]  -> not above
+    GNNShap  R2  -0.030 [-0.052, -0.007]  -> not above
+  P-T2 FAILED (0 of 6 cells above)
+
+  [addendum] P-T2 per cell, before next to after (GEA minus random-node, 95% CI; primary k for (b))
+  method   cell     before: N1 quoted, all 188        before: same molecules                         after   above?
+  EiG      a           -0.050 [-0.064, -0.034]       +0.070 [-0.015, +0.162]       +0.070 [-0.015, +0.162]   no
+  GNNShap  a           -0.106 [-0.117, -0.096]       -0.107 [-0.140, -0.066]       -0.107 [-0.140, -0.066]   no
+  EiG      R1          -0.050 [-0.064, -0.034]       -0.060 [-0.077, -0.043]       -0.050 [-0.071, -0.026]   no
+  GNNShap  R1          -0.106 [-0.117, -0.096]       -0.106 [-0.116, -0.096]       -0.013 [-0.027, +0.004]   no
+  EiG      R2          -0.050 [-0.064, -0.034]       -0.060 [-0.077, -0.043]       -0.044 [-0.056, -0.029]   no
+  GNNShap  R2          -0.106 [-0.117, -0.096]       -0.106 [-0.116, -0.096]       -0.030 [-0.052, -0.007]   no
+  recomputed here, all 188, full graph: EiG -0.050 [-0.064, -0.035], GNNShap -0.106 [-0.116, -0.096] (should match N1)
+  (a) is full-graph on its 14 molecules, so its 'before: same molecules' is the same number as 'after'.
+  overall: P-T2 FAILED, 0 of 6 cells above 0
+
+  [addendum] predicted class of the hidden graph vs the full graph (all 174 molecules with a scaffold, per seed)
+  R1: changed in 62.0% of molecules (per seed: [114, 113, 66, 130, 84, 125, 117, 54, 137, 139] of 174); class 1 -> 0: 1012, class 0 -> 1: 67 (summed over seeds); the 5 methods' stored predictions agree: yes
+  R2: changed in 33.3% of molecules (per seed: [115, 38, 30, 16, 31, 125, 27, 38, 66, 94] of 174); class 1 -> 0: 463, class 0 -> 1: 117 (summed over seeds); the 5 methods' stored predictions agree: yes
+  the target in (b) is the hidden graph's predicted class, so it differs from the full-graph target on these molecules.
