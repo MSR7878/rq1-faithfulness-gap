@@ -1,0 +1,41 @@
+T6 -- DOES THE MODEL NEED THE NITRO / AMINO GROUP ONCE THE RINGS ARE HIDDEN? MUTAG-GT D-MPNN, 10 seeds, the 174 molecules with an aromatic scaffold
+  group = all GT atoms. Base graph: full graph, or the scaffold hidden (R1 = deleted, R2 = features set to 0). In the base graph the group (or a null
+  set of the same size, drawn from the remaining atoms) is hidden with the rule shown. Target = the base graph's predicted class.
+  Fid+ = group hidden (necessity): shown as group minus null, > 0 = the group is needed more than a random set.
+  Fid- = only the group kept (sufficiency): shown as null minus group, > 0 = the group alone keeps the prediction better than a random set.
+  counts = group better/worse/n.s.; Holm per seed, space, null and base (full / hidden) = 2 rules x 2 metrics = 4.
+  group size: mean 4.56 atoms; remaining atoms after hiding the scaffold: mean 5.9
+  skipped (group = all remaining atoms), per seed: full [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], R1 [82, 82, 82, 82, 82, 82, 82, 82, 82, 82], R2 [82, 82, 82, 82, 82, 82, 82, 82, 82, 82]
+
+  [logit, vs random-connected]
+  base, rule                 group Fid+ null Fid+           Fid+: group - null  counts  group Fid- null Fid-           Fid-: null - group  counts
+  full graph, R1                  0.838     4.790      -3.951 [-4.887, -3.088]  0/10/0       5.325     6.380      +1.055 [+0.560, +1.620]   9/1/0
+  full graph, R2                  0.624     1.268      -0.644 [-1.029, -0.315]   0/8/2       4.120     3.850      -0.270 [-0.803, +0.112]   1/5/4
+  scaffold hidden R1, R1          0.430     0.910      -0.480 [-0.649, -0.296]  0/10/0       1.239     0.661      -0.578 [-0.823, -0.328]   1/8/1
+  scaffold hidden R2, R2          0.042     0.191      -0.149 [-0.332, -0.006]   0/4/6       0.447     0.286      -0.161 [-0.385, +0.015]   1/5/4
+
+  [logit, vs random-node]
+  base, rule                 group Fid+ null Fid+           Fid+: group - null  counts  group Fid- null Fid-           Fid-: null - group  counts
+  full graph, R1                  0.838     6.722      -5.884 [-7.379, -4.448]  0/10/0       5.325     6.043      +0.718 [+0.308, +1.220]   8/2/0
+  full graph, R2                  0.624     1.343      -0.719 [-1.146, -0.358]   0/8/2       4.120     4.158      +0.038 [-0.349, +0.379]   3/4/3
+  scaffold hidden R1, R1          0.430     1.012      -0.582 [-0.785, -0.375]  0/10/0       1.239     0.798      -0.441 [-0.737, -0.141]   2/7/1
+  scaffold hidden R2, R2          0.042     0.252      -0.210 [-0.410, -0.035]   0/6/4       0.447     0.204      -0.242 [-0.559, +0.021]   1/5/4
+
+  [prob, vs random-connected]
+  base, rule                 group Fid+ null Fid+           Fid+: group - null  counts  group Fid- null Fid-           Fid-: null - group  counts
+  full graph, R1                  0.060     0.362      -0.302 [-0.329, -0.276]  0/10/0       0.424     0.558      +0.134 [+0.068, +0.210]   9/1/0
+  full graph, R2                  0.047     0.066      -0.019 [-0.045, +0.008]   0/9/1       0.286     0.259      -0.027 [-0.052, -0.003]   1/4/5
+  scaffold hidden R1, R1          0.071     0.129      -0.058 [-0.073, -0.041]   0/9/1       0.163     0.086      -0.077 [-0.109, -0.043]   1/8/1
+  scaffold hidden R2, R2          0.039     0.039      -0.001 [-0.009, +0.010]   0/4/6       0.034     0.031      -0.003 [-0.009, +0.004]   0/4/6
+
+  [prob, vs random-node]
+  base, rule                 group Fid+ null Fid+           Fid+: group - null  counts  group Fid- null Fid-           Fid-: null - group  counts
+  full graph, R1                  0.060     0.511      -0.450 [-0.487, -0.410]  0/10/0       0.424     0.518      +0.094 [+0.033, +0.169]   8/2/0
+  full graph, R2                  0.047     0.070      -0.023 [-0.047, +0.000]   0/9/1       0.286     0.280      -0.006 [-0.029, +0.017]   2/3/5
+  scaffold hidden R1, R1          0.071     0.139      -0.068 [-0.083, -0.052]   0/9/1       0.163     0.095      -0.068 [-0.120, -0.014]   2/7/1
+  scaffold hidden R2, R2          0.039     0.043      -0.005 [-0.017, +0.010]   0/5/5       0.034     0.030      -0.004 [-0.012, +0.007]   0/4/6
+
+  [post hoc, not in the PLAN] T2(b) on the molecules where atoms other than the group remain after hiding the scaffold (92 of 174; on the others every chosen set is all GT, so every method equals random-node)
+  GEA minus random-node, primary k; counts Holm per seed = 5 methods. P-T2 is judged on the PLAN cells only (see T2.txt).
+  (b)-R1: EiG -0.094 [-0.137, -0.049] 0/7/3; GNNShap -0.025 [-0.052, +0.011] 1/7/2; GNN +0.012 [-0.004, +0.028] 1/0/9; SX fixed -0.046 [-0.084, +0.003] 1/8/1; IG -0.007 [-0.037, +0.029] 1/5/4
+  (b)-R2: EiG -0.082 [-0.105, -0.055] 0/9/1; GNNShap -0.057 [-0.098, -0.010] 2/8/0; GNN +0.025 [-0.007, +0.054] 4/2/4; SX fixed -0.041 [-0.078, -0.005] 0/6/4; IG -0.030 [-0.066, +0.004] 0/5/5
